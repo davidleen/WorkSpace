@@ -1,0 +1,23 @@
+apply plugin: 'com.android.library'
+android {
+    compileSdkVersion 17
+    buildToolsVersion '26.0.2'
+    defaultConfig {
+        minSdkVersion 12
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+    productFlavors {
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+}
+
+dependencies {
+}

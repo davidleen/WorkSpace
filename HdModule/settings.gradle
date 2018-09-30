@@ -1,0 +1,9 @@
+rootProject.name = 'HdModule'
+
+
+include ':Utils'
+
+include ':report'
+//include ':temp'
+//include 'FileService'
+//include ':SpringHibernateXmlDemo'

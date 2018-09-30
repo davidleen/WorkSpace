@@ -1,0 +1,9 @@
+
+HdModule/.idea/
+
+HdModule/.gradle/
+
+*.iml
+
+modules/library/build/
+modules/frame/build/
