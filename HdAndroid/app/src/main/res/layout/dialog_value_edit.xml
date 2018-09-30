@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="200dp"
+    android:layout_height="wrap_content"
+    android:minWidth="280dp"
+    android:gravity="top|center"
+    android:orientation="vertical"
+
+    android:padding="5dp">
+
+
+
+    <TextView
+        android:id="@+id/oldValue"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:text="IP地址：" />
+
+    <EditText
+        android:id="@+id/newValue"
+        android:layout_width="match_parent"
+        android:textSize="16sp"
+        android:layout_marginTop="5dp"
+        android:layout_height="wrap_content"
+
+        android:gravity="center" />
+
+
+    <Button
+        android:id="@+id/btn_save"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dip"
+        android:text="确定" />
+
+
+</LinearLayout>
+

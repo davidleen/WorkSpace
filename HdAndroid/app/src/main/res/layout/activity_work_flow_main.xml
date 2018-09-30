@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.giants3.hd.android.activity.WorkFlowMainActivity">
+
+
+    <LinearLayout
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/nav_header_main"></include>
+
+        <ListView
+            android:id="@+id/menu"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:listSelector="@drawable/list_item_bg_selector">
+
+        </ListView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/quotation"
+            android:text="@string/quotation"
+            android:gravity="center"
+            android:padding="10dp"
+            android:visibility="gone"
+            android:layout_height="wrap_content" />
+
+
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:id="@+id/main_content"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"></FrameLayout>
+
+
+</LinearLayout>
+

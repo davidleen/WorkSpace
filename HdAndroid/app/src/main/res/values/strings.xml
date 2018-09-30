@@ -1,0 +1,109 @@
+<resources>
+    <string name="app_name">云飞家居</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">账号</string>
+    <string name="prompt_password">输入密码</string>
+    <string name="action_sign_in">登录</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+
+    <!-- TODO: Remove or parse this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_base">BaseActivity</string>
+    <string name="title_productlistactivity_list">Items</string>
+    <string name="title_productlistactivity_detail">ProductListActivity Detail</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">设置</string>
+    <string name="action_clear">清理缓存</string>
+    <string name="action_upgrade">检查更新</string>
+    <string name="action_relogin">切换登录</string>
+    <string name="product_list">产品列表</string>
+    <string name="quotate_list">报价列表</string>
+    <string name="order_list">订单列表</string>
+    <string name="material_list">材料列表</string>
+    <string name="work_report">生产流程报表</string>
+    <string name="work_flow_list">生产流程管理</string>
+    <string name="schedule">我的流程</string>
+    <string name="work_need_finish">待办事项</string>
+
+    <string name="title_activity_work_flow_message_receive">WorkFlowMessageReceiveActivity</string>
+    <string name="action_update_password">修改密码</string>
+    <string name="quotation">广交会报价</string>
+
+
+    <string-array name="menu_title">
+        <item>@string/work_need_finish</item>
+        <!-- <item>生产事项</item>-->
+        <item>生产任务表</item>
+
+        <item>已完成生产报表</item>
+        <item>我的流程消息</item>
+        <item>未处理消息报表</item>
+        <!-- <item>合同进度报表</item>-->
+        <!-- <item>广交会报价</item>
+-->
+
+    </string-array>
+
+    <string-array name="menu_fragemnt_class">
+        <item>com.giants3.hd.android.fragment.MyUndoWorkFlowMessageFragment</item>
+
+        <!-- <item>com.giants3.hd.android.fragment.MyAvailableOrderItemFragment</item>-->
+        <item>com.giants3.hd.android.fragment.UnCompleteOrderItemFragment</item>
+        <item>com.giants3.hd.android.fragment.CompleteOrderItemFragment</item>
+        <item>com.giants3.hd.android.fragment.MyWorkFlowMessageFragment</item>
+        <item>com.giants3.hd.android.fragment.UnHandleWorkFlowMessageReport</item>
+
+        <!--    <item>com.giants3.hd.android.fragment.OrderWorkFlowReportFragment</item>
+      <item>合同进度报表</item>
+         <item>个人进度查询</item>-->
+        <!--<icom.giants3.hd.android.fragment.AppQuotationFragmententment</item>-->
+    </string-array>
+
+
+    <string-array name="quotation_menu_title">
+        <item>@string/title_activity_app_quotation</item>
+        <item>@string/title_activity_customer_list</item>
+    </string-array>
+
+    <string-array name="product_menu_title">
+        <item>@string/product_list</item>
+
+    </string-array>
+
+    <string-array name="quotation_menu_fragemnt_class">
+        <item>com.giants3.hd.android.fragment.AppQuotationFragment</item>
+        <item>com.giants3.hd.android.fragment.CustomerListFragment</item>
+
+    </string-array>
+ <string-array name="product_menu_fragemnt_class">
+        <item>com.giants3.hd.android.fragment.ProductListFragment</item>
+
+    </string-array>
+
+
+    <string name="title_activity_app_quotation">广交会报价</string>
+    <string name="title_activity_customer_list">客户列表</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确定</string>
+    <string name="title_activity_customer_edit">添加客户</string>
+    <string name="permission_write_read_neverask"  >你已经限制应用使用sd卡权限，请去应用管理授权</string>
+    <string name="permission_camera_neverask"  >你已经限制应用使用相机功能，请去应用管理授权</string>
+    <string name="permission_write_read_sd" >应用需要使用sd卡的存储读取权限</string>
+    <string name="permission_camera" >应用需要使用相机功能</string>
+    <string name="notify_channel_name" >@string/app_name</string>
+    <string name="notify_channel_id" >hdandroid</string>
+
+
+</resources>

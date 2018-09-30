@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fitsSystemWindows="true"
+    android:gravity="top|center"
+
+
+    android:orientation="vertical"
+
+    tools:context=".activity.WorkFlowListActivity"
+    tools:ignore="MergeRootFrame">
+
+    <Button
+            android:id="@+id/clear"
+        android:layout_width="wrap_content"
+        android:text="清除流程数据"
+        android:visibility="gone"
+        android:layout_height="wrap_content" />
+    <com.wefika.flowlayout.FlowLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:gravity="start|top"
+        >
+
+
+        <TextView
+            android:id="@+id/orderItemInfo"
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
+            android:drawableRight="@android:drawable/stat_notify_sync_noanim"
+
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:textSize="18sp" />
+
+
+        <TextView
+            android:id="@+id/beibang"
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
+            android:drawableRight="@android:drawable/stat_notify_sync_noanim"
+
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:textSize="18sp" />
+
+
+        <TextView
+            android:id="@+id/sampleState"
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
+            android:drawableRight="@android:drawable/stat_notify_sync_noanim"
+
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:textSize="18sp" />
+
+    </com.wefika.flowlayout.FlowLayout>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeLayout"
+        android:layout_width="match_parent"
+
+        android:layout_height="wrap_content">
+
+
+        <com.giants3.hd.android.widget.ExpandableGridView
+            android:id="@+id/workFlowReport"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:numColumns="@integer/numOfWorkFlowReportColumn"
+
+            />
+
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+
+
+
+</LinearLayout>
+

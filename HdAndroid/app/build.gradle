@@ -1,0 +1,137 @@
+apply plugin: 'com.android.application'
+apply from: 'local.gradle'
+
+
+android {
+
+    sourceSets {
+        main {
+
+
+            res.srcDirs = ['src/main/res', 'src/main/res/layout/notification/']
+
+
+        }
+
+    }
+
+    signingConfigs {
+        debug {
+            keyAlias myKeyAlias
+            keyPassword myKeyPassword
+            storeFile file(myStoreFileName)
+            storePassword myStorePassword
+        }
+    }
+
+    compileSdkVersion project.ANDROID_COMPILE_VERSION
+    buildToolsVersion project.ANDROID_BUILD_VERSION
+    defaultConfig {
+        applicationId "com.giants3.hd.android"
+        minSdkVersion project.ANDROID_MIN_VERSION
+
+
+        targetSdkVersion project.ANDROID_TARGET_VERSION
+        versionCode 56
+        versionName "1.5.6"
+
+        buildConfigField "boolean", "AUTO_UPDATES", "true"
+
+        multiDexEnabled true
+
+
+        javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
+    }
+
+
+    aaptOptions {
+        cruncherEnabled = false
+        useNewCruncher = false
+
+    }
+    dexOptions {
+        javaMaxHeapSize "4g"
+        incremental true
+        jumboMode = true
+    }
+    lintOptions {
+        abortOnError false
+        checkReleaseBuilds false
+        quiet true
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            zipAlignEnabled true
+            proguardFiles 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
+        debug {
+//               minifyEnabled true
+//               zipAlignEnabled true
+//            proguardFiles 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+    productFlavors {
+
+    }
+}
+
+
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+dependencies {
+
+    compile 'com.android.support:multidex:1.0.1'
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile('com.nostra13.universalimageloader:universal-image-loader:1.9.4') {
+        exclude group: 'com.android.support'
+    }
+    //     compile 'com.giants3:dataLib:1.0.6'
+    compile project(':domain')
+    compile project(':library')
+
+    compile project(':frame')
+    //    fullCompile project(':sharesdk')
+    //友盟分析统计
+    //noinspection GradleCompatible
+    compile "com.android.support:appcompat-v7:${ANDROID_SUPPORT_V7_VERSION}"
+    compile "com.android.support:design:${ANDROID_SUPPORT_V7_VERSION}"
+    compile "com.android.support:recyclerview-v7:${ANDROID_SUPPORT_V7_VERSION}"
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'de.greenrobot:eventbus:2.4.1'
+    compile 'com.wefika:flowlayout:0.4.1'
+    // compile 'com.android.support:support-v4:23.4.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    testCompile 'junit:junit:4.12'
+    compile 'com.lcodecorex:tkrefreshlayout:1.0.7'
+    releaseCompile project(':zxing')
+//    debugCompile project(':zxing')
+     debugCompile project(':zxing_no_op')
+//        releaseCompile project(':camcomnamecard')
+//    compile project(':xunfeinamecard')
+    compile "com.giants3.android:api:${API_VERSION}"
+//    compile project(':PushSDK_no_op')
+
+    releaseCompile project(':PushSDK')
+    releaseCompile project(path: ':umenganalysis')
+    debugCompile project(':PushSDK')
+    debugCompile project(path: ':umenganalysis')
+
+
+    compile("com.github.hotchemi:permissionsdispatcher:${PERMISSIONSDISPATCHER_VERSION}") {
+        // if you don't use android.app.Fragment you can exclude support for them
+        exclude group: "com.android.support"
+
+    }
+    annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:${PERMISSIONSDISPATCHER_VERSION}"
+
+}
