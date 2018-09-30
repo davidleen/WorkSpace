@@ -1,0 +1,17 @@
+include ':app', ':domain', ':net',     ':umenganalysis', ':NetWork'
+include ':library'
+project(':library').projectDir = new File('../modules/library')
+include ':frame'
+project(':frame').projectDir = new File('../modules/frame')
+include ':PushSDK'
+include ':PushSDK_no_op'
+include ':zxing'
+include ':zxing_no_op'
+//include   ':quotation'
+//include ':data'
+//include ':camcomnamecard'
+include   ':xunfeinamecard'
+//include ':testnamecard'
+
+include  ':api'
+include ':openApiLib_Demo_onlineAuth'
