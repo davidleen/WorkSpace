@@ -1,0 +1,15 @@
+rootProject.name = 'HomeDecoration'
+include ':Server',':Desktop'
+
+include ':domain'
+//include  'common'
+include ':deskData'
+include ':report'
+//include '../HdModule:report'
+//include ':temp'
+//include 'FileService'
+//include ':SpringHibernateXmlDemo'
+
+include ':Resource'
+include ':Utils'
+include ':NetWork'
