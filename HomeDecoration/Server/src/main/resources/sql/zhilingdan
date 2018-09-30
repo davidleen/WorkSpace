@@ -1,0 +1,49 @@
+--查询指令单完成状态
+-- 参数  起止时间   订单号模糊查询
+select  zhiling.mo_dd, zhiling.mo_no,zhiling.prd_no,zhiling.prd_name,zhiling.prd_mark, isnull(zhiling.qty_rsv,0) as qty_rsv,zhiling.mrp_no, zhiling.so_no as os_no, zhiling.mo_no_add as real_prd_name ,isnull(caigou.qty,0) as caigouqty,caigou.os_no as caigou_no,caigou.os_dd as caigou_dd,jinhuo.ps_no as jinhuo_no, jinhuo.ps_dd as jinhuo_dd ,isnull(jinhuo.qty,0) as jinhuoqty,  isnull(baseinfo.need_days,0) as need_days,isnull(baseinfo.need_dd,0) as need_dd    from (
+           --制令单
+        select b.mo_dd,a.mo_no,a.prd_no,a.prd_name,a.prd_mark,a.qty_rsv,b.so_no,b.mrp_no  ,b.mo_no_add from
+                            (
+                              select  mo_dd, mo_no,  so_no, mrp_no ,mo_no_add from mf_mo           where bil_Id = upper('MP') and  mo_dd >=:startdate and  mo_dd <= :enddate and so_no like :osname
+
+                            )  b inner join
+                           (
+                                 select  mo_no, prd_no, prd_name,prd_mark,  isnull(qty_rsv,0) as qty_rsv  from tf_mo
+                             ) a
+                            on a.mo_no=b.mo_no
+  )as zhiling
+
+   inner    join    --关联基本资料
+      (
+       select prd_no,need_days,need_dd from prdt where knd='4'  and  need_days is not null and  need_dd is not null
+
+      ) as  baseinfo  on baseinfo.prd_no=zhiling.prd_no
+
+
+
+  left   join  --关联采购单
+
+  (                                                                                              --进行时间过滤
+   select os_dd,prd_no,prd_mark,qty,qt_no,mrp_nos,os_no   from tf_pos where os_id= upper('po')  and  os_dd >=:startdate
+   ) as caigou   on zhiling.prd_no=caigou.prd_no  and zhiling.so_no=caigou.qt_no and zhiling.mrp_no=caigou.mrp_nos
+
+    --and zhiling.prd_mark=caigou.prd_mark
+
+   left   join  -- 关联进货单
+    (
+                                                                                               --进行时间过滤
+    select ps_no,ps_dd,os_no,prd_no,prd_mark,qty from tf_pss where ps_id= upper('pc')  and  ps_dd >=:startdate
+    ) as jinhuo on caigou.prd_no=jinhuo.prd_no         and caigou.os_no=jinhuo.os_no
+
+
+
+
+   --判断条件
+  -- where jinhuo.qty is null or  caigou.qty is null or jinhuo.qty < caigou.qty
+
+
+
+   order by  mo_dd desc
+
+
+

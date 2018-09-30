@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+
+
+    <!--    数据库配置-->
+    <persistence-unit name="defaultPersistenceUnit" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+        <class>com.giants3.hd.entity.AppVersion</class>
+        <class>com.giants3.hd.entity.Authority</class>
+        <class>com.giants3.hd.entity.GlobalData</class>
+        <class>com.giants3.hd.entity.Customer</class>
+
+
+        <class>com.giants3.hd.entity.ErpWorkFlowReport</class>
+
+
+
+        <class>com.giants3.hd.entity.Flow</class>
+        <class>com.giants3.hd.entity.Factory</class>
+
+        <class>com.giants3.hd.entity.HdTask</class>
+        <class>com.giants3.hd.entity.HdTaskLog</class>
+
+
+        <class>com.giants3.hd.entity.Material</class>
+        <class>com.giants3.hd.entity.MaterialClass</class>
+        <class>com.giants3.hd.entity.MaterialDelete</class>
+        <class>com.giants3.hd.entity.MaterialEquation</class>
+        <class>com.giants3.hd.entity.MaterialType</class>
+
+
+        <class>com.giants3.hd.entity.Module</class>
+        <class>com.giants3.hd.entity.OperationLog</class>
+        <class>com.giants3.hd.entity.Order</class>
+        <class>com.giants3.hd.entity.OrderAuth</class>
+        <class>com.giants3.hd.entity.OrderItem</class>
+        <class>com.giants3.hd.entity.OrderItemWorkFlow</class>
+        <class>com.giants3.hd.entity.OrderItemWorkFlowEvent</class>
+
+        <class>com.giants3.hd.entity.OrderItemWorkMemo</class>
+        <class>com.giants3.hd.entity.OrderItemWorkState</class>
+
+        <class>com.giants3.hd.entity.Pack</class>
+        <class>com.giants3.hd.entity.PClass</class>
+        <class>com.giants3.hd.entity.PackMaterialClass</class>
+        <class>com.giants3.hd.entity.PackMaterialPosition</class>
+        <class>com.giants3.hd.entity.PackMaterialType</class>
+        <class>com.giants3.hd.entity.Product</class>
+        <class>com.giants3.hd.entity.ProductDelete</class>
+        <class>com.giants3.hd.entity.ProductLog</class>
+        <class>com.giants3.hd.entity.ProductMaterial</class>
+        <class>com.giants3.hd.entity.ProductWage</class>
+        <class>com.giants3.hd.entity.ProductPaint</class>
+        <class>com.giants3.hd.entity.ProductProcess</class>
+        <class>com.giants3.hd.entity.ProductWorkMemo</class>
+
+
+        <class>com.giants3.hd.entity.QuoteAuth</class>
+        <class>com.giants3.hd.entity.app.AppQuoteAuth</class>
+
+
+        <class>com.giants3.hd.entity.Quotation</class>
+        <class>com.giants3.hd.entity.QuotationItem</class>
+        <class>com.giants3.hd.entity.QuotationLog</class>
+        <class>com.giants3.hd.entity.QuotationDelete</class>
+        <class>com.giants3.hd.entity.QuotationXKItem</class>
+
+
+        <class>com.giants3.hd.entity.Session</class>
+        <class>com.giants3.hd.entity.StockOutAuth</class>
+        <class>com.giants3.hd.entity.StockOut</class>
+        <class>com.giants3.hd.entity.StockOutItem</class>
+
+
+        <class>com.giants3.hd.entity.Unit</class>
+        <class>com.giants3.hd.entity.User</class>
+        <class>com.giants3.hd.entity.WorkFlow</class>
+
+        <class>com.giants3.hd.entity.WorkFlowTimeLimit</class>
+
+
+
+        <class>com.giants3.hd.entity.WorkFlowArranger</class>
+        <class>com.giants3.hd.entity.WorkFlowArea</class>
+        <class>com.giants3.hd.entity.WorkFlowArrangeData</class>
+        <class>com.giants3.hd.entity.WorkFlowEvent</class>
+        <class>com.giants3.hd.entity.WorkFlowEventWorker</class>
+        <class>com.giants3.hd.entity.WorkFlowMessage</class>
+        <class>com.giants3.hd.entity.WorkFlowOperator</class>
+
+
+
+        <class>com.giants3.hd.entity.WorkFlowProduct</class>
+        <class>com.giants3.hd.entity.WorkFlowReport</class>
+        <class>com.giants3.hd.entity.WorkFlowReportItem</class>
+        <class>com.giants3.hd.entity.WorkFlowSubType</class>
+
+        <class>com.giants3.hd.entity.WorkFlowWorker</class>
+        <class>com.giants3.hd.entity.WxTxtMsg</class>
+
+
+
+        <class>com.giants3.hd.entity.Xiankang</class>
+        <class>com.giants3.hd.entity.Xiankang_Jingza</class>
+        <class>com.giants3.hd.entity.Xiankang_Jiaju</class>
+        <class>com.giants3.hd.entity.Xiankang_Dengju</class>
+
+
+        <class>com.giants3.hd.entity.ErpOrderItemProcess</class>
+
+
+        <class>com.giants3.hd.entity.app.QuotationItem</class>
+        <class>com.giants3.hd.entity.app.Quotation</class>
+        <class>com.giants3.hd.entity.Company</class>
+
+
+<!--127.0.0.1-->
+<!--192.168.10.198-->
+<!--192.168.10.197-->
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2008Dialect"/>
+            <property name="hibernate.connection.url" value="jdbc:jtds:sqlserver://192.168.10.198:1433;databaseName=yunfei"/>
+            <property name="hibernate.connection.driver_class" value="net.sourceforge.jtds.jdbc.Driver"/>
+            <property name="hibernate.connection.username" value="sa"/>
+            <property name="hibernate.connection.password" value="xinsui"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.show_sql" value="true"/>
+        </properties>
+    </persistence-unit>
+
+
+
+
+    <!--erp配置-->
+    <persistence-unit name="erpPersistenceUnit" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2008Dialect"/>
+            <property name="hibernate.connection.url"
+                      value="jdbc:jtds:sqlserver://192.168.10.198:1433;databaseName=DB_YF01"/>
+            <property name="hibernate.connection.driver_class" value="net.sourceforge.jtds.jdbc.Driver"/>
+            <property name="hibernate.connection.username" value="sa"/>
+            <property name="hibernate.connection.password" value="xinsui"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.show_sql" value="true"/>
+        </properties>
+
+    </persistence-unit>
+
+
+</persistence>

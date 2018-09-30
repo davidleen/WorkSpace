@@ -1,0 +1,256 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:task="http://www.springframework.org/schema/task" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd
+         http://www.springframework.org/schema/data/jpa
+         http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+         http://www.springframework.org/schema/tx
+         http://www.springframework.org/schema/tx/spring-tx.xsd
+         http://www.springframework.org/schema/mvc
+         http://www.springframework.org/schema/mvc/spring-mvc.xsd
+         http://www.springframework.org/schema/task
+         http://www.springframework.org/schema/task/spring-task-3.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
+>
+
+
+    <context:component-scan base-package="com.giants3.hd.server"/>
+    <context:annotation-config/>
+
+    <task:annotation-driven/>
+
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="100000000"/>
+    </bean>
+
+    <mvc:annotation-driven>
+        <mvc:message-converters register-defaults="true">
+            <bean class="org.springframework.http.converter.ResourceHttpMessageConverter">
+            </bean>
+
+            <bean class="com.giants3.hd.server.converter.GsonMessageConverter"
+            >
+            </bean>
+            <bean class="com.giants3.hd.server.converter.StringMessageConverter"
+            >
+            </bean>
+        </mvc:message-converters>
+
+
+    </mvc:annotation-driven>
+
+
+    <context:property-placeholder location="config/application.properties"/>
+
+    <jpa:repositories base-package="com.giants3.hd.server.repository,com.giants3.hd.server.repository_erp"/>
+
+
+    <bean id="masterDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+
+        <property name="driverClass" value="${jdbc.driver}"/>
+
+        <property name="jdbcUrl" value="${jdbc.url}"/>
+
+        <property name="user" value="${jdbc.username}"/>
+
+        <property name="password" value="${jdbc.password}"/>
+
+    </bean>
+
+    <bean id="slaveDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+
+        <property name="driverClass" value="${jdbc.slave.driver}"/>
+
+        <property name="jdbcUrl" value="${jdbc.slave.url}"/>
+
+        <property name="user" value="${jdbc.slave.username}"/>
+        <property name="password" value="${jdbc.slave.password}"/>
+
+    </bean>
+
+
+    <!--动态数据源  主从库  -->
+    <bean id="dynamicDataSource" class="com.giants3.hd.server.datasource.DynamicDataSource">
+
+        <property name="slaves" value="2"/><!-- 允许read操作的节点个数 -->
+        <property name="targetDataSources">
+            <map key-type="java.lang.String">
+                <entry key="WRITE" value-ref="masterDataSource"/>
+                <entry key="READ_0" value-ref="slaveDataSource"/>
+                <entry key="READ_1" value-ref="slaveDataSource"/><!-- 允许部分read到slave上 -->
+                <entry key="READ_3" value-ref="slaveDataSource"/><!-- 允许部分read到slave上 -->
+            </map>
+        </property>
+        <property name="defaultTargetDataSource" ref="slaveDataSource"/><!-- or master -->
+
+    </bean>
+
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+
+    >
+
+
+        <property name="dataSource" ref="dynamicDataSource"/>
+        <property name="packagesToScan" value="com.giants3.hd.entity,com.giants3.hd.server.entity,com.giants3.hd.entity.app"/>
+        <!--<property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml" />-->
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="showSql" value="true"/>
+                <property name="generateDdl" value="true"/>
+                <property name="database" value="SQL_SERVER"/>
+                <property name="databasePlatform" value="org.hibernate.dialect.SQLServer2008Dialect"/>
+            </bean>
+        </property>
+
+    </bean>
+
+    <bean id="erpEntityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+
+    >
+        <property name="persistenceUnitName" value="erpPersistenceUnit"/>
+
+
+        <!--<property name="persistenceUnitPostProcessors">-->
+        <!--<list>-->
+        <!--<bean-->
+        <!--class="org.springframework.data.jpa.support.ClasspathScanningPersistenceUnitPostProcessor">-->
+        <!--<constructor-arg name="basePackage" value="com.giants3.hd.server.entity" />-->
+        <!--<property name="mappingFileNamePattern" value="**/*hbm.xml" />-->
+        <!--</bean>-->
+        <!--</list>-->
+        <!--</property>-->
+
+
+    </bean>
+
+
+    <mvc:interceptors>
+        <!--&lt;!&ndash; 国际化操作拦截器 如果采用基于（请求/Session/Cookie）则必需配置 &ndash;&gt;-->
+        <!--<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />-->
+        <!-- 如果不定义 mvc:mapping path 将拦截所有的URL请求 -->
+        <bean class="com.giants3.hd.server.interceptor.AuthInterceptor"></bean>
+    </mvc:interceptors>
+
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager" >
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+
+    <!-- <bean id="prdtRepository" class="com.giants3.hd.server.repository_erp.ErpPrdtRepository">
+         <property name="entityManager" ref="sharedEntityManager"/>
+     </bean>-->
+    <!-- <bean id="entityManagerFactoryERP" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+            autowire-candidate="false"
+           primary="false"
+
+             >-->
+    <!--  <property name="persistenceXmlLocation" value="classpath:config/persitence.xml" />-->
+    <!--  <property name="persistenceUnitName" value="erpPersistenceUnit" />-->
+
+    <!--<property name="dataSource" ref="restDemoLegacyDS" />
+    <property name="packagesToScan" value="org.codingpedia.demo.*" />
+    <property name="jpaVendorAdapter">
+        <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+            <property name="showSql" value="true" />
+            <property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect" />
+        </bean>
+    </property>-->
+    <!-- </bean>
+ -->
+    <!--注释方式配置事务
+     <tx:annotation-driven transaction-manager="transactionManager"/>
+ -->
+    <!-- 拦截器方式配置事物  -->
+    <tx:advice id="transactionAdvice" transaction-manager="transactionManager"  >
+        <tx:attributes>
+
+            <!--
+         <tx:method name="add*"  propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+           <tx:method name="save*"  propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+           <tx:method name="update*"  propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+           <tx:method name="modify*"  propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+           <tx:method name="edit*"  propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+           <tx:method name="delete*" propagation="REQUIRES_NEW"  rollback-for="java.lang.Exception"/>
+           <tx:method name="remove*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+           <tx:method name="repair"  propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+
+              <tx:method name="check*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+           <tx:method name="do*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+           <tx:method name="cancel*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+           <tx:method name="clear*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+           <tx:method name="correct*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+           <tx:method name="receive*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+           <tx:method name="reject*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+           <tx:method name="send*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+           <tx:method name="send*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+           <tx:method name="syn*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+           <tx:method name="copy*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+           <tx:method name="logic*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+
+               <tx:method name="deleteAndRepair"  propagation="REQUIRES_NEW"   rollback-for="java.lang.Exception"/>
+              <tx:method name="count*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>-->
+
+            <tx:method name="get*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception" read-only="true"/>
+            <tx:method name="find*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception" read-only="true"/>
+            <tx:method name="load*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception" read-only="true"/>
+            <tx:method name="search*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception" read-only="true"/>
+            <tx:method name="list*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception" read-only="true"/>
+
+
+            <tx:method name="*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>
+        </tx:attributes>
+    </tx:advice>
+
+
+
+    <!-- 那些类的哪些方法参与事务 -->
+   <aop:config>
+       <aop:pointcut id="allManagerMethod" expression="execution(* com.giants3.hd.server.service.*.*(..))||execution(* com.giants3.hd.server.app.service.*.*(..))"/>
+       <aop:advisor pointcut-ref="allManagerMethod" advice-ref="transactionAdvice" order="3"/>
+   </aop:config>
+
+
+
+
+    <!--aop 方式拦截service 方法， 进行数据库选择-->
+
+    <bean id="aspectBean" class="com.giants3.hd.server.datasource.DataSourceAspect" ></bean>
+
+    <aop:config>
+        <aop:aspect id="AopLog" ref="aspectBean" order="-1000">
+
+            <aop:pointcut id="businessService"
+                          expression="execution(* com.giants3.hd.server.service.*.*(..))||execution(* com.giants3.hd.server.app.service.*.*(..))"  />
+
+
+
+
+
+            <aop:before pointcut-ref="businessService" method="determineReadOrWriteDB" />
+
+
+        </aop:aspect>
+
+    </aop:config>
+
+
+
+    <!--  开启这个配置，spring才能识别@Scheduled注解   -->
+
+    <!--<task:annotation-driven scheduler="qbScheduler" mode="proxy"/>-->
+    <!--<task:scheduler id="qbScheduler" pool-size="10"/>-->
+
+
+</beans>

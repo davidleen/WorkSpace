@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Class-Path: forms-1.2.1.jar netty-3.10.1.Final.jar guice-4.0.jar jdate
+ picker-1.3.2.jar jxl-2.6.10.jar log4j-1.2.14.jar slf4j-api-1.7.12.jar
+  async-http-client-1.9.21.jar guava-16.0.1.jar hibernate-jpa-2.1-api-
+ 1.0.0.Final.jar javax.inject-1.jar gson-1.7.2.jar aopalliance-1.0.jar
+  java-common-2.0.0.jar
+Main-Class: Main
+

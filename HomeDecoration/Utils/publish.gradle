@@ -1,0 +1,65 @@
+apply plugin: 'maven-publish'
+
+
+
+version = '1.0'
+def fat_appendix = '-all'
+//构建jar包依赖所对应的版本号。代码有更新修改，版本号往上加。
+def  jarVersion = '1.5.7'
+def  jarArtifactId= 'dataLib'
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',
+                'Implementation-Version': version
+
+    }
+    baseName = project.name + fat_appendix
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+////打包源代码
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId GROUP_ID
+            artifactId  jarArtifactId
+            version jarVersion
+
+
+            artifact sourcesJar {
+                classifier "sources"
+            }
+            artifact(fatJar)
+            // artifact   file: file('build/libs/'+project.name +fat_appendix +'-'+version+'.jar'), name:project.name , type: 'jar'            //若是war包，就写components.web,若是jar包，就写components.java
+            //  from components.java
+        }
+    }
+    repositories {
+        maven {
+
+            if (project.version.endsWith('-SNAPSHOT')) {
+                url = LOCAL_MAVEN_SNAPSHOT_URL
+            } else {
+                url = LOCAL_MAVEN_URL
+            }
+
+            credentials {
+                username NEXUS_USERNAME
+                password NEXUS_PASSWORD
+            }
+        }
+    }
+}

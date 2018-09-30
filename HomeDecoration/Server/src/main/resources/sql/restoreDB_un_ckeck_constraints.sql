@@ -1,0 +1,1 @@
+alter table [DEST_DB].dbo.T_TABLE_TO_CHANGE  NOCHECK constraint all;

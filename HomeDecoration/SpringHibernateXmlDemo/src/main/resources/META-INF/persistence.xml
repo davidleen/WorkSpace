@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+    <persistence-unit name="PersistenceUnit_Sql2000" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect" />
+            <property name="hibernate.connection.url" value="jdbc:jtds:sqlserver://127.0.0.1:1433;databaseName=TEST" />
+            <property name="hibernate.connection.driver_class" value="net.sourceforge.jtds.jdbc.Driver" />
+            <property name="hibernate.connection.username" value="sa" />
+            <property name="hibernate.connection.password" value="sa" />
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+            <property name="hibernate.show_sql" value="false"/>
+        </properties>
+    </persistence-unit>
+
+    <!--
+    PersistenceUnit_Sql2000
+    PersistenceUnit_Sql2008
+    -->
+
+    <persistence-unit name="defaultPersistenceUnit" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2008Dialect" />
+            <property name="hibernate.connection.url" value="jdbc:jtds:sqlserver://127.0.0.1:1433;databaseName=yunfei" />
+            <property name="hibernate.connection.driver_class" value="net.sourceforge.jtds.jdbc.Driver" />
+            <property name="hibernate.connection.username" value="sa" />
+            <property name="hibernate.connection.password" value="xinsui" />
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+            <property name="hibernate.show_sql" value="false"/>
+        </properties>
+    </persistence-unit>
+
+
+
+
+    <!--    <persistence-unit name="backPersistenceUnit" transaction-type="RESOURCE_LOCAL">
+          <provider>org.hibernate.ejb.HibernatePersistence</provider>
+          <properties>
+              <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect" />
+              <property name="hibernate.connection.url" value="jdbc:jtds:sqlserver://127.0.0.1:1433;databaseName=TEST" />
+              <property name="hibernate.connection.driver_class" value="net.sourceforge.jtds.jdbc.Driver" />
+              <property name="hibernate.connection.username" value="sa" />
+              <property name="hibernate.connection.password" value="sa" />
+              <property name="hibernate.hbm2ddl.auto" value="update" />
+              <property name="hibernate.show_sql" value="true"/>
+          </properties>
+      </persistence-unit>
+
+
+      PersistenceUnit_Sql2000
+      PersistenceUnit_Sql2008
+
+
+    <persistence-unit name="backPersistenceUnit" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2008Dialect" />
+            <property name="hibernate.connection.url" value="jdbc:jtds:sqlserver://localhost:1433;databaseName=yunfei_back" />
+            <property name="hibernate.connection.driver_class" value="net.sourceforge.jtds.jdbc.Driver" />
+            <property name="hibernate.connection.username" value="sa" />
+            <property name="hibernate.connection.password" value="11111111" />
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+            <property name="hibernate.show_sql" value="true"/>
+        </properties>
+    </persistence-unit>
+
+-->
+
+    <!--erp数据库配置定义-->
+
+
+    <!--保证
+    <persistence-unit name="erpPersistenceUnit_test" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect" />
+            <property name="hibernate.connection.url" value="jdbc:jtds:sqlserver://127.0.0.1:1433;databaseName=DB_YF01" />
+            <property name="hibernate.connection.driver_class" value="net.sourceforge.jtds.jdbc.Driver" />
+            <property name="hibernate.connection.username" value="sa" />
+            <property name="hibernate.connection.password" value="sa" />
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+            <property name="hibernate.show_sql" value="true"/>
+        </properties>
+    </persistence-unit>
+            -->
+
+    <persistence-unit name="erpPersistenceUnit" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+      <!--  <class>com.giants3.hd.utils.entity_erp.Prdt</class>-->
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2008Dialect" />
+            <property name="hibernate.connection.url" value="jdbc:jtds:sqlserver://127.0.0.1:1433;databaseName=TEST1" />
+            <property name="hibernate.connection.driver_class" value="net.sourceforge.jtds.jdbc.Driver" />
+            <property name="hibernate.connection.username" value="sa" />
+            <property name="hibernate.connection.password" value="11111111" />
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+            <property name="hibernate.show_sql" value="false"/>
+
+        </properties>
+    </persistence-unit>
+</persistence>
