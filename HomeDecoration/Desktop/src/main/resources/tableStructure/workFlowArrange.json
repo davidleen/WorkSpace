@@ -1,0 +1,35 @@
+[
+  {
+    "columnName": "流程编号",
+    "fileName": "workFlowStep",
+    "width": 60,
+    "aClass": "S"
+  },
+  {
+    "columnName": "流程名称",
+    "fileName": "workFlowName",
+    "width": 60,
+    "aClass": "S"
+  },
+  {
+    "columnName": "铁件",
+    "fileName": "tiejian",
+    "width": 60,
+    "aClass": "B",
+    "isCombineField": false
+  },
+  {
+    "columnName": "木件",
+    "fileName": "mujian",
+    "width": 60,
+    "aClass": "B",
+    "isCombineField": false
+  },
+  {
+    "columnName": "PU",
+    "fileName": "pu",
+    "width": 60,
+    "aClass": "B",
+    "isCombineField": false
+  }
+]

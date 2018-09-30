@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.giants.hd.desktop.viewImpl.Panel_Work_Flow_Limit">
+  <grid id="27dc6" binding="root" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="915" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <grid id="53061" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="South"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="426a6" class="javax.swing.JCheckBox" binding="cb_updateComplete">
+            <constraints/>
+            <properties>
+              <text value="应用于所有已经完成的订单货款"/>
+            </properties>
+          </component>
+          <hspacer id="c5c0a">
+            <constraints/>
+          </hspacer>
+          <hspacer id="801a3">
+            <constraints/>
+          </hspacer>
+          <hspacer id="b337d">
+            <constraints/>
+          </hspacer>
+          <component id="bdc7f" class="javax.swing.JButton" binding="btn_save">
+            <constraints/>
+            <properties>
+              <text value="保存"/>
+            </properties>
+          </component>
+          <grid id="d9602" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints/>
+            <properties/>
+            <border type="none"/>
+            <children/>
+          </grid>
+          <hspacer id="6e6e4">
+            <constraints/>
+          </hspacer>
+        </children>
+      </grid>
+      <grid id="f7f20" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <scrollpane id="3e642">
+            <constraints border-constraint="Center"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="d5e6" class="com.giants.hd.desktop.widget.JHdTable" binding="jt" custom-create="true">
+                <constraints/>
+                <properties>
+                  <fillsViewportHeight value="true"/>
+                </properties>
+              </component>
+            </children>
+          </scrollpane>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>

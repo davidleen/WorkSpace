@@ -1,0 +1,12 @@
+添加材料分类
+
+delete   from T_MaterialClass
+
+insert T_MaterialClass(code,name) select distinct classId,className from T_Material
+
+
+
+ 添加材料类型
+delete   from T_MaterialType
+
+insert T_MaterialType(typeId,typeName) select distinct typeId,typeName from T_Material

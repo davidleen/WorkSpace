@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.giants.hd.desktop.viewImpl.Panel_Order_Report">
+  <grid id="27dc6" binding="root" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="881" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <nested-form id="ae16b" form-file="com/giants/hd/desktop/viewImpl/Panel_Page.form" binding="pagePanel">
+        <constraints border-constraint="South"/>
+      </nested-form>
+      <grid id="432a1" layout-manager="FormLayout">
+        <rowspec value="center:d:grow"/>
+        <colspec value="fill:d:grow"/>
+        <colspec value="left:4dlu:noGrow"/>
+        <colspec value="fill:max(d;4px):noGrow"/>
+        <colspec value="left:4dlu:noGrow"/>
+        <colspec value="fill:d:noGrow"/>
+        <colspec value="left:4dlu:noGrow"/>
+        <colspec value="fill:max(d;4px):noGrow"/>
+        <colspec value="left:4dlu:noGrow"/>
+        <colspec value="fill:max(d;4px):noGrow"/>
+        <colspec value="left:p:noGrow"/>
+        <colspec value="fill:max(d;100px):noGrow"/>
+        <colspec value="left:p:noGrow"/>
+        <colspec value="fill:max(d;100px):noGrow"/>
+        <colspec value="left:4dlu:noGrow"/>
+        <colspec value="fill:max(d;4px):noGrow"/>
+        <colspec value="left:3dlu:noGrow"/>
+        <colspec value="fill:d:noGrow"/>
+        <colspec value="left:max(m;4px):noGrow"/>
+        <colspec value="fill:91px:noGrow"/>
+        <colspec value="left:4dlu:grow"/>
+        <colspec value="fill:d:grow"/>
+        <constraints border-constraint="North"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="c71d4" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+              <forms/>
+            </constraints>
+            <properties>
+              <font size="20" style="1"/>
+              <horizontalAlignment value="0"/>
+              <horizontalTextPosition value="0"/>
+              <text value="出货列表"/>
+            </properties>
+          </component>
+          <component id="fa5b4" class="javax.swing.JButton" binding="btn_search">
+            <constraints>
+              <grid row="0" column="14" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <forms/>
+            </constraints>
+            <properties>
+              <text value="查询"/>
+            </properties>
+          </component>
+          <component id="c82f2" class="net.sourceforge.jdatepicker.impl.JDatePickerImpl" binding="date_start" custom-create="true">
+            <constraints>
+              <grid row="0" column="10" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <forms defaultalign-vert="false"/>
+            </constraints>
+            <properties/>
+          </component>
+          <component id="91964" class="net.sourceforge.jdatepicker.impl.JDatePickerImpl" binding="date_end" custom-create="true">
+            <constraints>
+              <grid row="0" column="12" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <forms defaultalign-vert="false"/>
+            </constraints>
+            <properties/>
+          </component>
+          <component id="f102" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="9" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <forms/>
+            </constraints>
+            <properties>
+              <text value="验货日期"/>
+            </properties>
+          </component>
+          <component id="10726" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="11" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <forms/>
+            </constraints>
+            <properties>
+              <text value="到"/>
+            </properties>
+          </component>
+          <component id="6ba69" class="javax.swing.JComboBox" binding="cb_sales">
+            <constraints>
+              <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+              <forms/>
+            </constraints>
+            <properties/>
+          </component>
+          <component id="bd9d5" class="javax.swing.JButton" binding="export">
+            <constraints>
+              <grid row="0" column="16" row-span="1" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+              <forms defaultalign-horz="false"/>
+            </constraints>
+            <properties>
+              <text value="导出"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <scrollpane id="f4f07">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="d71a0" class="com.giants.hd.desktop.widget.JHdTable" binding="orderTable">
+            <constraints/>
+            <properties>
+              <fillsViewportHeight value="true"/>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
+    </children>
+  </grid>
+</form>

@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.giants.hd.desktop.viewImpl.Panel_Quotation_Picture_Export">
+  <grid id="27dc6" binding="root" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="500" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <grid id="3b167" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints border-constraint="North"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <grid id="ef19d" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+            <constraints border-constraint="North"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="b406f" class="javax.swing.JLabel">
+                <constraints/>
+                <properties>
+                  <text value="输入货号"/>
+                </properties>
+              </component>
+              <component id="65dc1" class="javax.swing.JTextField" binding="tf_key">
+                <constraints/>
+                <properties>
+                  <columns value="15"/>
+                  <toolTipText value="输入完整货号，可以逗号空格等分隔符进行多货号查询（不支持模糊查询）"/>
+                </properties>
+              </component>
+              <component id="afbb5" class="javax.swing.JCheckBox" binding="includeCopy">
+                <constraints/>
+                <properties>
+                  <text value="包含翻单"/>
+                </properties>
+              </component>
+              <component id="12bcf" class="javax.swing.JButton" binding="search">
+                <constraints/>
+                <properties>
+                  <text value="查找"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+        </children>
+      </grid>
+      <scrollpane id="a970e">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="1b173" class="com.giants.hd.desktop.widget.JHdTable" binding="table">
+            <constraints/>
+            <properties>
+              <fillsViewportHeight value="true"/>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
+      <grid id="8cc3f" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="South"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="37b60" class="javax.swing.JButton" binding="export">
+            <constraints/>
+            <properties>
+              <text value="导出图片"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>

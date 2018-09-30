@@ -1,0 +1,20 @@
+[
+  {
+    "columnName": "图片",
+    "fileName": "thumbnail",
+    "width": 120,
+    "aClass": "iMG"
+  },
+  {
+    "columnName": "产品名称",
+    "fileName": "name",
+    "width": 100,
+    "aClass": "S"
+  },
+  {
+    "columnName": "配方号",
+    "fileName": "pVersion",
+    "width": 100,
+    "aClass": "S"
+  }
+]

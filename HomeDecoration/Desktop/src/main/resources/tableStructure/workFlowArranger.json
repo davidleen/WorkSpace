@@ -1,0 +1,26 @@
+[
+
+  {
+    "columnName": "用户名",
+    "fileName": "userName",
+    "width": 80,
+    "aClass": "S",
+    "isCombineField": false
+  },
+
+  {
+    "columnName": "自制",
+    "fileName": "selfMade",
+    "width": 60,
+    "aClass": "B",
+    "isCombineField": false
+  },
+
+  {
+    "columnName": "外购",
+    "fileName": "purchase",
+    "width": 60,
+    "aClass": "B",
+    "isCombineField": false
+  }
+]

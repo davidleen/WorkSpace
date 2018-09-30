@@ -1,0 +1,98 @@
+[
+  {
+    "columnName": "图片",
+    "fileName": "thumbnail",
+    "width": 100,
+    "aClass": "iMG"
+  },
+  {
+    "columnName": "订单",
+    "fileName": "orderName",
+    "width": 100,
+    "aClass": "S"
+  },
+  {
+    "columnName": "货号",
+    "fileName": "productName",
+    "width": 80,
+    "aClass": "S"
+  },
+  {
+    "columnName": "订单数量",
+    "fileName": "orderItemQty",
+    "width": 70,
+    "aClass": "I",
+    "isCombineField": false
+  }, {
+    "columnName": "交接数量",
+    "fileName": "transportQty",
+    "width": 70,
+    "aClass": "I",
+    "isCombineField": false
+  },
+
+  {
+    "columnName": "制令单",
+    "fileName": "mrpNo",
+    "width": 80,
+    "aClass": "S",
+    "isCombineField": false
+  },
+
+  {
+    "columnName": "发起流程",
+    "fileName": "fromFlowName",
+    "width": 80,
+    "aClass": "S",
+    "isCombineField": false
+  },
+
+  {
+    "columnName": "发起人",
+    "fileName": "senderName",
+    "width": 100,
+    "aClass": "S",
+    "isCombineField": false
+  },
+
+  {
+    "columnName": "发起时间",
+    "fileName": "createTimeString",
+    "width": 100,
+    "aClass": "S",
+    "isCombineField": false
+
+  }
+  ,
+  {
+    "columnName": "交接区域",
+    "fileName": "area",
+    "width": 80,
+    "aClass": "S",
+    "isCombineField": false
+  }
+
+  ,
+  {
+    "columnName": "接收流程",
+    "fileName": "toFlowName",
+    "width": 80,
+    "aClass": "S",
+    "isCombineField": false
+  }
+  ,
+  {
+    "columnName": "接收人",
+    "fileName": "receiverName",
+    "width": 80,
+    "aClass": "S",
+    "isCombineField": false
+  }  ,
+  {
+    "columnName": "接收时间",
+    "fileName": "receiveTimeString",
+    "width": 80,
+    "aClass": "S",
+    "isCombineField": false
+  }
+]

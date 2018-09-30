@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.giants.hd.desktop.viewImpl.Panel_XK_Pack">
+  <grid id="27dc6" binding="panel_xk_pack" layout-manager="FormLayout">
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:d:grow"/>
+    <colspec value="fill:40px:noGrow"/>
+    <colspec value="fill:80px:noGrow"/>
+    <constraints>
+      <xy x="20" y="20" width="120" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <component id="91a8e" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <text value="包装描述"/>
+        </properties>
+      </component>
+      <component id="ec938" class="javax.swing.JTextArea" binding="ta_pack_memo">
+        <constraints>
+          <grid row="12" column="0" row-span="1" col-span="2" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="100" height="50"/>
+          </grid>
+          <forms defaultalign-horz="false" defaultalign-vert="false"/>
+        </constraints>
+        <properties>
+          <lineWrap value="true"/>
+          <wrapStyleWord value="false"/>
+        </properties>
+      </component>
+      <component id="bc5fe" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <horizontalAlignment value="0"/>
+          <horizontalTextPosition value="0"/>
+          <text value="前"/>
+        </properties>
+      </component>
+      <component id="a1c9e" class="javax.swing.JTextField" binding="tf_pack_front">
+        <constraints>
+          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="92" height="28"/>
+          </grid>
+          <forms/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="756cd" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="100" height="20"/>
+          </grid>
+          <forms/>
+        </constraints>
+        <properties>
+          <horizontalAlignment value="0"/>
+          <text value="四周"/>
+        </properties>
+      </component>
+      <component id="f9e0" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="100" height="20"/>
+          </grid>
+          <forms/>
+        </constraints>
+        <properties>
+          <horizontalAlignment value="0"/>
+          <text value="前后"/>
+        </properties>
+      </component>
+      <component id="4b8e7" class="javax.swing.JTextField" binding="tf_pack_perimeter">
+        <constraints>
+          <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="92" height="28"/>
+          </grid>
+          <forms/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="a18ac" class="javax.swing.JTextField" binding="tf_pack_front_back">
+        <constraints>
+          <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="92" height="28"/>
+          </grid>
+          <forms/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="31ed3" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="100" height="20"/>
+          </grid>
+          <forms/>
+        </constraints>
+        <properties>
+          <horizontalAlignment value="0"/>
+          <text value="中间"/>
+        </properties>
+      </component>
+      <component id="2a6df" class="javax.swing.JTextField" binding="tf_pack_middle">
+        <constraints>
+          <grid row="10" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="92" height="28"/>
+          </grid>
+          <forms/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="4ec52" class="javax.swing.JTextField" binding="tf_pack_cube">
+        <constraints>
+          <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="92" height="28"/>
+          </grid>
+          <forms/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="e1608" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="100" height="20"/>
+          </grid>
+          <forms/>
+        </constraints>
+        <properties>
+          <horizontalAlignment value="0"/>
+          <text value="六面"/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+</form>

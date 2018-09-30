@@ -1,0 +1,73 @@
+[
+  {
+    "columnName": "流程编号",
+    "fileName": "workFlowStep",
+    "width": 60,
+    "aClass": "S"
+  },
+  {
+    "columnName": "流程名称",
+    "fileName": "workFlowName",
+    "width": 60,
+    "aClass": "S"
+  },
+  {
+    "columnName": "流程代码",
+    "fileName": "workFlowCode",
+    "width": 60,
+    "aClass": "S"
+  },
+  {
+    "columnName": "用户名",
+    "fileName": "userName",
+    "width": 80,
+    "aClass": "S",
+    "isCombineField": false
+  }, {
+    "columnName": "排厂类型",
+    "fileName": "produceTypeName",
+    "width": 80,
+    "aClass": "S",
+    "isCombineField": false
+  },
+
+  {
+    "columnName": "铁",
+    "fileName": "tie",
+    "width": 60,
+    "aClass": "B",
+    "isCombineField": false
+  },
+
+  {
+    "columnName": "木",
+    "fileName": "mu",
+    "width": 60,
+    "aClass": "B",
+    "isCombineField": false
+  },
+
+  {
+    "columnName": "PU",
+    "fileName": "pu",
+    "width": 60,
+    "aClass": "B",
+    "isCombineField": false
+  },
+
+  {
+    "columnName": "接收",
+    "fileName": "receive",
+    "width": 60,
+    "aClass": "B",
+    "isCombineField": false
+  },
+
+  {
+    "columnName": "发送",
+    "fileName": "send",
+    "width": 60,
+    "aClass": "B",
+    "isCombineField": false
+  }
+]

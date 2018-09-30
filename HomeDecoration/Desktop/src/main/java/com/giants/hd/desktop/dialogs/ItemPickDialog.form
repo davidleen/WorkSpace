@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.giants.hd.desktop.dialogs.ItemPickDialog">
+  <grid id="cbd77" binding="root" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="48" y="54" width="540" height="297"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <scrollpane id="befa3">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="fdd2f" class="com.giants.hd.desktop.widget.JHdTable" binding="jt">
+            <constraints/>
+            <properties>
+              <fillsViewportHeight value="true"/>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
+      <grid id="8f2cc" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="South"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="b6935" class="javax.swing.JButton" binding="select">
+            <constraints/>
+            <properties>
+              <text value="全选"/>
+            </properties>
+          </component>
+          <hspacer id="2aa00">
+            <constraints/>
+          </hspacer>
+          <component id="ddf0b" class="javax.swing.JButton" binding="confirm">
+            <constraints/>
+            <properties>
+              <text value="确定"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>

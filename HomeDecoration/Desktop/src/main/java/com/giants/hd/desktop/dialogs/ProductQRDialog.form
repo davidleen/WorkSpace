@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.giants.hd.desktop.dialogs.ProductQRDialog">
+  <grid id="cbd77" binding="contentPane" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="48" y="54" width="300" height="353"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <component id="6513" class="javax.swing.JLabel" binding="iv_qr">
+        <constraints border-constraint="Center"/>
+        <properties>
+          <background color="-1555134"/>
+          <horizontalAlignment value="0"/>
+          <horizontalTextPosition value="0"/>
+          <icon value="icons/icon_qr.png"/>
+          <text value=""/>
+        </properties>
+      </component>
+      <grid id="f6f70" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="South"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="2e7b6" class="javax.swing.JButton" binding="a4Print">
+            <constraints/>
+            <properties>
+              <text value="A4纸质打印"/>
+            </properties>
+          </component>
+          <component id="e52b0" class="javax.swing.JButton" binding="barPrint">
+            <constraints/>
+            <properties>
+              <text value="条码打印"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>

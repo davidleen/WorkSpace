@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.giants.hd.desktop.viewImpl.Panel_QuotationDetail">
+  <grid id="27dc6" binding="root" layout-manager="FormLayout">
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:5dlu:noGrow"/>
+    <rowspec value="center:m:noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:60px:noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:d:grow"/>
+    <rowspec value="center:m:noGrow"/>
+    <rowspec value="top:m:noGrow"/>
+    <rowspec value="top:m:noGrow"/>
+    <rowspec value="center:m:noGrow"/>
+    <colspec value="fill:max(d;4px):noGrow"/>
+    <colspec value="left:4dlu:noGrow"/>
+    <colspec value="fill:30px:grow"/>
+    <colspec value="left:30px:grow"/>
+    <colspec value="fill:30px:grow"/>
+    <colspec value="left:30px:grow"/>
+    <colspec value="fill:30px:grow"/>
+    <colspec value="left:30px:grow"/>
+    <colspec value="left:4dlu:noGrow"/>
+    <colspec value="fill:max(d;4px):noGrow"/>
+    <colspec value="left:36dlu:noGrow"/>
+    <colspec value="fill:max(d;4px):noGrow"/>
+    <constraints>
+      <xy x="20" y="20" width="942" height="580"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <component id="23c2f" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="8" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties>
+          <text value="备注"/>
+        </properties>
+      </component>
+      <component id="64b2f" class="javax.swing.JTextArea" binding="ta_memo">
+        <constraints>
+          <grid row="10" column="2" row-span="1" col-span="8" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="50"/>
+          </grid>
+          <forms defaultalign-horz="false" defaultalign-vert="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="a9342" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties>
+          <text value="报价单号"/>
+        </properties>
+      </component>
+      <component id="97feb" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="2" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties>
+          <text value="报价日期"/>
+        </properties>
+      </component>
+      <component id="7f4e4" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="2" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties>
+          <text value="有效日期"/>
+        </properties>
+      </component>
+      <component id="fcaa1" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties>
+          <text value="客户"/>
+        </properties>
+      </component>
+      <component id="146ad" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="4" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties>
+          <text value="业务员"/>
+        </properties>
+      </component>
+      <component id="5e4bd" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="4" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties>
+          <text value="币别"/>
+        </properties>
+      </component>
+      <scrollpane id="66670" binding="jtScroll" custom-create="true">
+        <constraints>
+          <grid row="12" column="2" row-span="1" col-span="10" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false" defaultalign-vert="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children/>
+      </scrollpane>
+      <component id="d55cb" class="javax.swing.JTextField" binding="jtf_number">
+        <constraints>
+          <grid row="2" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="59041" class="javax.swing.JComboBox" binding="cb_currency">
+        <constraints>
+          <grid row="4" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties>
+          <model>
+            <item value="人民币"/>
+            <item value="美金"/>
+          </model>
+        </properties>
+      </component>
+      <component id="2ff55" class="javax.swing.JComboBox" binding="cb_salesman" custom-create="true">
+        <constraints>
+          <grid row="4" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="ac677" class="javax.swing.JComboBox" binding="cb_customer" custom-create="true">
+        <constraints>
+          <grid row="4" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="3e665" class="net.sourceforge.jdatepicker.impl.JDatePickerImpl" binding="qDate" custom-create="true">
+        <constraints>
+          <grid row="2" column="5" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false" defaultalign-vert="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="8dc05" class="net.sourceforge.jdatepicker.impl.JDatePickerImpl" binding="vDate" custom-create="true">
+        <constraints>
+          <grid row="2" column="7" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false" defaultalign-vert="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="36441" class="javax.swing.JSeparator">
+        <constraints>
+          <grid row="15" column="0" row-span="1" col-span="11" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false" defaultalign-vert="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <grid id="6bb7d" binding="jp_log" layout-manager="GridLayoutManager" row-count="1" column-count="17" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints>
+          <grid row="16" column="0" row-span="1" col-span="11" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="21ba4" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="建立："/>
+            </properties>
+          </component>
+          <hspacer id="98570">
+            <constraints>
+              <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+          </hspacer>
+          <component id="6c3db" class="javax.swing.JLabel" binding="creator">
+            <constraints>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value=""/>
+            </properties>
+          </component>
+          <component id="44f18" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="11" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value=""/>
+            </properties>
+          </component>
+          <component id="ee69e" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="12" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value=""/>
+            </properties>
+          </component>
+          <component id="e5112" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="13" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value=""/>
+            </properties>
+          </component>
+          <component id="aca8e" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="最近修改："/>
+            </properties>
+          </component>
+          <component id="b7dd7" class="javax.swing.JLabel" binding="updator">
+            <constraints>
+              <grid row="0" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value=""/>
+            </properties>
+          </component>
+          <component id="9b045" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="---"/>
+            </properties>
+          </component>
+          <hspacer id="e6ee9">
+            <constraints>
+              <grid row="0" column="10" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+          </hspacer>
+          <component id="d7a1" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="---"/>
+            </properties>
+          </component>
+          <hspacer id="6cc9">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+          </hspacer>
+          <hspacer id="81c9b">
+            <constraints>
+              <grid row="0" column="14" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+          </hspacer>
+          <component id="841bb" class="javax.swing.JLabel" binding="createTime">
+            <constraints>
+              <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value=""/>
+            </properties>
+          </component>
+          <component id="f1db2" class="javax.swing.JLabel" binding="updateTime">
+            <constraints>
+              <grid row="0" column="9" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value=""/>
+            </properties>
+          </component>
+          <component id="8efd6" class="javax.swing.JLabel" binding="viewLog">
+            <constraints>
+              <grid row="0" column="15" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <foreground color="-13905944"/>
+              <text value="历史变动记录"/>
+            </properties>
+          </component>
+          <hspacer id="1f03e">
+            <constraints>
+              <grid row="0" column="16" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+          </hspacer>
+        </children>
+      </grid>
+      <component id="30df5" class="javax.swing.JLabel" binding="icon_verify">
+        <constraints>
+          <grid row="2" column="10" row-span="3" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties>
+          <icon value="icons/verify.png"/>
+          <text value=""/>
+        </properties>
+      </component>
+      <grid id="48a32" binding="jp_verify" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints>
+          <grid row="14" column="2" row-span="1" col-span="9" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false" defaultalign-vert="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <hspacer id="ffec2">
+            <constraints/>
+          </hspacer>
+          <component id="6a6eb" class="javax.swing.JButton" binding="btn_reimport">
+            <constraints/>
+            <properties>
+              <text value="重新导入"/>
+              <toolTipText value="刷新，每一个货款更新至最新数据"/>
+            </properties>
+          </component>
+          <hspacer id="e8a89">
+            <constraints/>
+          </hspacer>
+          <component id="85f24" class="javax.swing.JButton" binding="btn_save">
+            <constraints/>
+            <properties>
+              <text value="      保存     "/>
+              <toolTipText value="未审核的报价单方可编辑"/>
+            </properties>
+          </component>
+          <hspacer id="9e751">
+            <constraints/>
+          </hspacer>
+          <component id="7649e" class="javax.swing.JButton" binding="btn_resume">
+            <constraints/>
+            <properties>
+              <text value="恢复数据"/>
+            </properties>
+          </component>
+          <hspacer id="b10e7">
+            <constraints/>
+          </hspacer>
+          <component id="7aa" class="javax.swing.JButton" binding="btn_verify">
+            <constraints/>
+            <properties>
+              <text value="保存并通过审核"/>
+              <toolTipText value="通过审核后，可以到处报价单，但不能再修改报价内容"/>
+            </properties>
+          </component>
+          <component id="d2ce8" class="javax.swing.JButton" binding="btn_unVerify">
+            <constraints/>
+            <properties>
+              <text value="撤销审核"/>
+              <toolTipText value="撤销审核，报价人员可以修改报价内容"/>
+            </properties>
+          </component>
+          <hspacer id="46079">
+            <constraints/>
+          </hspacer>
+          <component id="b6a3c" class="javax.swing.JButton" binding="btn_delete">
+            <constraints/>
+            <properties>
+              <text value="      删除     "/>
+            </properties>
+          </component>
+          <hspacer id="2625f">
+            <constraints/>
+          </hspacer>
+          <component id="3a54e" class="javax.swing.JButton" binding="btn_export">
+            <constraints/>
+            <properties>
+              <text value="      导出      "/>
+              <toolTipText value="只有已经审核的报价单才可导出"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <component id="c7b3a" class="javax.swing.JTextField" binding="jtf_company">
+        <constraints>
+          <grid row="6" column="3" row-span="1" col-span="5" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties>
+          <toolTipText value="当客户为临时客户时输入"/>
+        </properties>
+      </component>
+      <component id="c2458" class="javax.swing.JLabel" binding="lb_company">
+        <constraints>
+          <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties>
+          <text value="公司名称"/>
+        </properties>
+      </component>
+      <component id="38a40" class="javax.swing.JLabel" binding="icon_overdue">
+        <constraints>
+          <grid row="6" column="10" row-span="5" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties>
+          <icon value="icons/overdue.png"/>
+          <text value=""/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+</form>

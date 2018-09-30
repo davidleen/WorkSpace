@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2017-03-17T23:09:44 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="product_list_4" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="287ddffa-70da-45cc-9ec8-ebed6cdd6b2c">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="ReportTitle" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="url" class="java.lang.String"/>
+	<field name="name" class="java.lang.String"/>
+	<field name="unit" class="java.lang.String"/>
+	<field name="url1" class="java.lang.String"/>
+	<field name="name1" class="java.lang.String"/>
+	<field name="unit1" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band>
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="350" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+			<frame>
+				<reportElement x="0" y="0" width="278" height="350" uuid="9081742d-d4e3-4148-bd8d-5d2254e63e79">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<image hAlign="Center" vAlign="Middle" isLazy="true" onErrorType="Blank">
+					<reportElement positionType="Float" x="10" y="10" width="190" height="320" uuid="c697b153-ae77-4873-9eec-ec6fe0891e33">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<graphicElement fill="Solid"/>
+					<imageExpression><![CDATA[$F{url}]]></imageExpression>
+				</image>
+				<staticText>
+					<reportElement x="210" y="110" width="68" height="30" uuid="68806dac-2cbb-4ea1-b532-ffba1a43b40a"/>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[白胚:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="210" y="140" width="68" height="30" uuid="12cc8e0b-c4b8-46e1-8645-d05ff258496e"/>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[颜色:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="210" y="220" width="68" height="30" uuid="04acb8e3-34e7-4618-bfca-44ca9924fde2"/>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[包装:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="210" y="180" width="68" height="30" uuid="b78bed4a-58fe-4d64-b152-e327d3f7695c"/>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[组装:]]></text>
+				</staticText>
+			</frame>
+			<frame>
+				<reportElement positionType="Float" x="278" y="0" width="277" height="350" uuid="a16ba09a-2e7e-45c2-b76c-4214b97fe815">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+				</reportElement>
+				<image hAlign="Center" vAlign="Middle" isLazy="true" onErrorType="Blank">
+					<reportElement positionType="Float" x="0" y="10" width="190" height="320" uuid="22cd79f0-eed2-4269-8d16-0cfab2b9c85c">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<imageExpression><![CDATA[$F{url1}]]></imageExpression>
+				</image>
+				<staticText>
+					<reportElement x="200" y="110" width="57" height="30" uuid="24c80cd6-428e-4c48-acda-24b70ff9acaf"/>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[白胚:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="200" y="140" width="57" height="30" uuid="549dc4b9-a82e-4f05-90fd-f8f55454337a"/>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[颜色:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="200" y="180" width="57" height="30" uuid="5e758164-e632-46e1-8262-f233bfaeb8c9"/>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[组装:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="200" y="220" width="57" height="30" uuid="87d04269-d040-403d-af8c-6258c7ba70eb"/>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[包装:]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		</band>
+	</summary>
+</jasperReport>

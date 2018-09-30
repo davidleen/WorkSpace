@@ -1,0 +1,80 @@
+[
+  {
+    "columnName": "产品名称",
+    "fileName": "productName",
+    "width": 120,
+    "aClass": "S"
+  },
+  {
+    "columnName": "图片",
+    "fileName": "thumbnail",
+    "width": 80,
+    "aClass": "iMG"
+  },
+  {
+    "columnName": "数量",
+    "fileName": "qty",
+    "width": 80,
+    "aClass": "S"
+  },
+  {
+    "columnName": "单价",
+    "fileName": "price",
+    "width": 60,
+    "aClass": "S"
+  },
+  {
+    "columnName": "原价",
+    "fileName": "priceOrigin",
+    "width": 80,
+    "aClass": "S"
+  },
+  {
+    "columnName": "规格",
+    "fileName": "spec",
+    "width": 120,
+    "aClass": "S"
+  },
+  {
+    "columnName": "净重",
+    "fileName": "weight",
+    "width": 40,
+    "aClass": "S"
+  },
+  {
+    "columnName": "单位",
+    "fileName": "unit",
+    "width": 40,
+    "aClass": "S"
+  },
+  {
+    "columnName": "箱长",
+    "fileName": "boxLong",
+    "width": 60,
+    "aClass": "S"
+  },
+  {
+    "columnName": "箱宽",
+    "fileName": "boxWidth",
+    "width": 60,
+    "aClass": "S"
+  },
+  {
+    "columnName": "箱高",
+    "fileName": "boxHeight",
+    "width": 60,
+    "aClass": "S"
+  },
+  {
+    "columnName": "体积/箱",
+    "fileName": "volumePerBox",
+    "width": 60,
+    "aClass": "S"
+  },
+  {
+    "columnName": "备注",
+    "fileName": "memo",
+    "width": 9999,
+    "aClass": "S"
+  }
+]

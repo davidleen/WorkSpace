@@ -1,0 +1,61 @@
+[
+  {
+    "columnName": "报价单号",
+    "fileName": "qNumber",
+    "width": 120,
+    "aClass": "S"
+  },
+  {
+    "columnName": "日期",
+    "fileName": "qDate",
+    "width": 80,
+    "aClass": "S"
+  },
+
+  {
+    "columnName": "有效期",
+    "fileName": "vDate",
+    "width": 80,
+    "aClass": "S"
+  },
+  {
+    "columnName": "客户编号",
+    "fileName": "customerCode",
+    "width": 60,
+    "aClass": "S"
+  },
+  {
+    "columnName": "客户名称",
+    "fileName": "customerName",
+    "width": 80,
+    "aClass": "S"
+
+  }, {
+    "columnName": "业务员",
+    "fileName": "salesman",
+    "width": 80,
+    "aClass": "S"
+  },
+
+  {
+    "columnName": "款数",
+    "fileName": "itemCount",
+    "width": 60,
+    "aClass": "S"
+
+  },
+
+  {
+    "columnName": "总额",
+    "fileName": "totalAmount",
+    "width": 60,
+    "aClass": "S"
+  },
+
+  {
+    "columnName": "备注",
+    "fileName": "memo",
+    "width": 200,
+    "aClass": "S"
+  }
+]
