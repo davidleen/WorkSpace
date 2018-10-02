@@ -23,6 +23,7 @@ public class GsonUtils {
       // return toJson(o,DEFAULT_CHARSET);
     }
 
+    @Deprecated
     public static String toIOs(Object o )
     {
 

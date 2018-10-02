@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * Created by davidleen29 on 2018/2/17.
  */
-public abstract class AppQuotationReport extends JRReport {
+public   class AppQuotationReport extends JRReport {
 
 
     private final Company company;

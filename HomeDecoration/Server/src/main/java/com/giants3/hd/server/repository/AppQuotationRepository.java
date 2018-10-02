@@ -40,7 +40,8 @@ public interface AppQuotationRepository extends JpaRepository<Quotation, Long> {
 
 
     @Query("select p from  T_AppQuotation p   where" +
-            " (p.customerCode like :key or p.customerName like :key or p.qNumber like  :key   ) " +
+            "  p.formal =true  "+
+            " and  (p.customerCode like :key or p.customerName like :key or p.qNumber like  :key   ) " +
             "and    p.qDate >=:dateStart and  p.qDate <=:dateEnd  and (:userId = -1l or p.saleId=:userId ) " +
             " order by  p.qNumber desc ")
     Page<Quotation> search( @Param("key") String  key,@Param("dateStart") String  dateStart,@Param("dateEnd") String  dateEnd,@Param("userId") long userId, Pageable pageable );

@@ -26,10 +26,10 @@ public class CustomBeanDataSource extends JRBeanCollectionDataSource {
 
     @Override
     public Object getFieldValue(JRField field) throws JRException {
-      //  System.out.println("field:"+field.getName());
+
         Object result= super.getFieldValue(field);
 
 
-        return result;
+         return result;
     }
 }

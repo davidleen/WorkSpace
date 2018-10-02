@@ -188,24 +188,51 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="30141" class="javax.swing.JButton" binding="print">
+          <hspacer id="1c998">
             <constraints/>
-            <properties>
-              <text value="打印报价单"/>
-            </properties>
-          </component>
+          </hspacer>
           <component id="d536b" class="javax.swing.JButton" binding="save">
             <constraints/>
             <properties>
               <text value="保存报价单"/>
             </properties>
           </component>
+          <hspacer id="d8be9">
+            <constraints/>
+          </hspacer>
           <component id="59796" class="javax.swing.JButton" binding="deleteQuotation">
             <constraints/>
             <properties>
               <text value="删除报价单"/>
             </properties>
           </component>
+          <hspacer id="bd758">
+            <constraints/>
+          </hspacer>
+          <hspacer id="cd3b8">
+            <constraints/>
+          </hspacer>
+          <hspacer id="7d334">
+            <constraints/>
+          </hspacer>
+          <component id="30141" class="javax.swing.JButton" binding="print">
+            <constraints/>
+            <properties>
+              <text value="打印报价单"/>
+            </properties>
+          </component>
+          <hspacer id="e0de3">
+            <constraints/>
+          </hspacer>
+          <component id="37690" class="javax.swing.JButton" binding="export_excel">
+            <constraints/>
+            <properties>
+              <text value="导出Excel"/>
+            </properties>
+          </component>
+          <hspacer id="c8515">
+            <constraints/>
+          </hspacer>
         </children>
       </grid>
     </children>

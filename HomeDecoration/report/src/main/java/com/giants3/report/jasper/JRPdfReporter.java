@@ -30,6 +30,7 @@ public class JRPdfReporter  extends JRReporter {
     public void doOutput(JasperPrint jp) {
         try {
             JasperExportManager.exportReportToPdfFile(jp,destFilePath);
+
         } catch (JRException e) {
             e.printStackTrace();
         }

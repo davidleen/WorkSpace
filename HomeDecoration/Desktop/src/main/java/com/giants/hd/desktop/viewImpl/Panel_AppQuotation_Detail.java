@@ -54,6 +54,7 @@ public class Panel_AppQuotation_Detail extends BasePanel implements AppQuotation
     private JButton moveup;
     private JButton deleteQuotation;
     private JButton print;
+    private JButton export_excel;
 
 
     private AppQuotationItemTableModel tableModel;
@@ -300,7 +301,13 @@ public class Panel_AppQuotation_Detail extends BasePanel implements AppQuotation
                 presenter.print();
             }
         });
+        export_excel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
+                presenter.exportExcel();
+            }
+        });
 
     }
 

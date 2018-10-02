@@ -49,4 +49,7 @@ public interface AppQuotationDetailPresenter extends IPresenter {
     void updateItemMemo(int itemIndex, String newValue);
 
     void viewProduct(long productId);
+
+    void exportExcel();
+
 }

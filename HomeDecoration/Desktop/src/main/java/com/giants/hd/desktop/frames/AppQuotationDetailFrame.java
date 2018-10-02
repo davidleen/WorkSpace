@@ -7,6 +7,8 @@ import com.giants.hd.desktop.model.ProductTableModel;
 import com.giants.hd.desktop.mvp.RemoteDataSubscriber;
 import com.giants.hd.desktop.mvp.presenter.AppQuotationDetailPresenter;
 import com.giants.hd.desktop.mvp.viewer.AppQuotationDetailViewer;
+import com.giants.hd.desktop.reports.excels.ReporterHelper;
+import com.giants.hd.desktop.utils.FileChooserHelper;
 import com.giants.hd.desktop.utils.HdSwingUtils;
 import com.giants.hd.desktop.viewImpl.Panel_AppQuotation_Detail;
 import com.giants3.hd.domain.api.ApiManager;
@@ -25,10 +27,18 @@ import com.giants3.hd.noEntity.ProductDetail;
 import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.noEntity.app.QuotationDetail;
 import com.giants3.hd.utils.GsonUtils;
+import com.giants3.report.JRReporter;
+import com.giants3.report.Reporter;
+import com.giants3.report.jasper.JRExcelReporter;
+import com.giants3.report.jasper.JRPdfReporter;
+import com.giants3.report.jasper.JRPreviewReporter;
 import com.giants3.report.jasper.quotation.AppQuotationPreviewReport;
+import com.giants3.report.jasper.quotation.AppQuotationReport;
 import com.google.inject.Inject;
 
+import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.io.InputStream;
 
 /**
@@ -315,15 +325,15 @@ public class AppQuotationDetailFrame extends BaseMVPFrame<AppQuotationDetailView
             return;
         }
 
-         printFile( );
+         printFile( new JRPreviewReporter());
 
 
     }
 
-    private void printFile( ) {
+    private void printFile(JRReporter jrReporter) {
          InputStream inputStream = AppQuotationDetailFrame.class.getClassLoader().getResourceAsStream("jasper/appQuotation.jrxml") ;
 
-         QuotationDetail copy=GsonUtils.fromJson(GsonUtils.toIOs(quotationDetail),QuotationDetail.class);
+         QuotationDetail copy=GsonUtils.fromJson(GsonUtils.toJson(quotationDetail),QuotationDetail.class);
 
         for(QuotationItem item:copy.items)
         {
@@ -332,8 +342,9 @@ public class AppQuotationDetailFrame extends BaseMVPFrame<AppQuotationDetailView
 //            System.out.println(item.thumbnail);
 //            System.out.println(item.photoUrl);
         }
-
-        new AppQuotationPreviewReport(CacheManager.getInstance().bufferData.company, copy,   inputStream ).report();
+//        System.out.println("xxxxxxxxxxxx"+copy.quotation.customerName);
+//        copy.quotation.qNumber+="测";
+        new AppQuotationReport(jrReporter,CacheManager.getInstance().bufferData.company, copy,   inputStream ).report();
 
     }
 
@@ -363,6 +374,22 @@ public class AppQuotationDetailFrame extends BaseMVPFrame<AppQuotationDetailView
 
         getViewer().showLoadingDialog();
 
+
+    }
+
+    @Override
+    public void exportExcel() {
+
+
+        //选择excel 文件
+        final File file = FileChooserHelper.chooseFile(JFileChooser.DIRECTORIES_ONLY, false,null);
+        if(file==null) return;
+        String fileName="报价单_"+quotationDetail.quotation.qNumber+".xls";
+        File destFile=new File(file,fileName);
+        JRExcelReporter excelReporter=new JRExcelReporter(destFile.getAbsolutePath());
+        printFile(excelReporter);
+
+        ReporterHelper.openFileHint(getWindow(),destFile);
 
     }
 }
