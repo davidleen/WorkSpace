@@ -225,4 +225,6 @@ public interface RestApi {
     Observable scanNameCard(File file);
 
     Observable scanResourceUrl(String resourceUrl);
+
+    Observable deleteCutomer(long customerId);
 }

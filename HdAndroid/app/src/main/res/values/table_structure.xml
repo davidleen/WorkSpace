@@ -306,7 +306,7 @@
     </string-array><!--广交会报价细项表 表格-->
     <string-array name="table_app_quotation_item">
 
-        <item>序号||itm||1||60</item>
+        <item>序号||itm||7||60</item>
         <item>产品名称||productName||1||91</item>
         <item>图片||thumbnail||2||91||photoUrl</item>
         <item>数量||qty||1||60</item>

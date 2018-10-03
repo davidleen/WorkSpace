@@ -44,6 +44,7 @@ public interface CustomerEditMVP {
 
         void retryLastRequest();
 
+        void deleteCustomer();
     }
 
     interface Viewer extends NewViewer {

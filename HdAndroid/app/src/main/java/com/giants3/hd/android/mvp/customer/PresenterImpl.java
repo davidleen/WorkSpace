@@ -36,15 +36,15 @@ public class PresenterImpl extends BasePresenter<CustomerEditMVP.Viewer, Custome
         UseCase useCase = UseCaseFactory.getInstance().createSaveCustomerUseCase(customer);
 
         getView().showWaiting();
-        useCase.execute(new RemoteDataSubscriber<Void>(this) {
+        useCase.execute(new RemoteDataSubscriber<Customer>(this) {
             @Override
-            protected void handleRemoteData(RemoteData<Void> data) {
+            protected void handleRemoteData(RemoteData<Customer> data) {
 
                 if (data.isSuccess()) {
 
 
                     getView().showMessage("保存成功");
-                    EventBus.getDefault().post(new CustomerUpdateEvent());
+                    EventBus.getDefault().post(new CustomerUpdateEvent(data.datas.get(0)));
 
 
                 }
@@ -174,6 +174,36 @@ public class PresenterImpl extends BasePresenter<CustomerEditMVP.Viewer, Custome
 
     }
 
+    @Override
+    public void deleteCustomer() {
+
+
+
+        Customer customer=getModel().getCustomer();
+        if(customer==null||customer.id==0)
+            return ;
+
+        UseCase useCase = UseCaseFactory.getInstance().createDeleteCustomerUseCase(customer.id);
+        getView().showWaiting();
+        useCase.execute(new RemoteDataSubscriber<Void>(this) {
+            @Override
+            protected void handleRemoteData(RemoteData<Void> data) {
+
+                if (data.isSuccess()) {
+
+                    getView().showMessage("删除成功");
+                    EventBus.getDefault().post(new CustomerUpdateEvent());
+                    getView().finish();
+
+                }
+
+            }
+
+
+        });
+
+
+    }
 
     @Override
     public void retryLastRequest() {

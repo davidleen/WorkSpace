@@ -22,6 +22,7 @@ import com.giants3.hd.android.entity.TableData;
 import com.giants3.hd.android.events.CustomerUpdateEvent;
 import com.giants3.hd.android.fragment.ItemPickDialogFragment;
 import com.giants3.hd.android.fragment.ProductDetailFragment;
+import com.giants3.hd.android.fragment.SearchCustomerFragment;
 import com.giants3.hd.android.fragment.SearchProductFragment;
 import com.giants3.hd.android.fragment.ValueEditDialogFragment;
 import com.giants3.hd.android.helper.AuthorityUtil;
@@ -50,7 +51,7 @@ import butterknife.Bind;
 import static com.giants3.hd.utils.DateFormats.FORMAT_YYYY_MM_DD;
 
 
-public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDetailMVP.Presenter> implements AppQuotationDetailMVP.Viewer, SearchProductFragment.OnFragmentInteractionListener {
+public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDetailMVP.Presenter> implements AppQuotationDetailMVP.Viewer, SearchProductFragment.OnFragmentInteractionListener , SearchCustomerFragment.OnFragmentInteractionListener {
 
     public static final String KEY_QUOTATION_ID = "KEY_QUOTATION_ID";
     private static final int REQUEST_CODE_ADD_CUSTOMER = 998;
@@ -687,16 +688,10 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
     public void chooseCustomer(Customer current, List<Customer> customers) {
 
 
-        ItemPickDialogFragment<Customer> dialogFragment = new ItemPickDialogFragment<Customer>();
-        dialogFragment.set("选择客户", customers, current, new ItemPickDialogFragment.ValueChangeListener<Customer>() {
-            @Override
-            public void onValueChange(String title, Customer oldValue, Customer newValue) {
+        SearchCustomerFragment fragment = SearchCustomerFragment.newInstance();
+        fragment.show(getSupportFragmentManager(), "dialog99989");
 
-                getPresenter().updateCustomer(newValue);
 
-            }
-        });
-        dialogFragment.show(getSupportFragmentManager(), null);
 
     }
 
@@ -712,6 +707,22 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
      */
     public void onEvent(CustomerUpdateEvent event) {
 
+
+        if(event.customer==null)
         getPresenter().loadCustomer();
+        else
+        {
+            getPresenter().updateCustomer(event.customer);
+        }
+    }
+
+    @Override
+    public void onCustomerSelect(Customer customer) {
+
+
+        getPresenter().updateCustomer(customer);
+
+
+
     }
 }

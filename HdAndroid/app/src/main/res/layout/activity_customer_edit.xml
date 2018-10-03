@@ -34,6 +34,7 @@
                 android:id="@+id/code"
                 style="@style/value_edit_text_style"
                 android:layout_width="0dp"
+                android:inputType="number"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
@@ -278,6 +279,18 @@
             </LinearLayout>
 
         </LinearLayout>
+
+
+
+        <TextView
+            android:id="@+id/delete"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/button_white_round_selector"
+            android:gravity="center"
+            android:text="删除"
+            android:padding="5dp" />
 
     </LinearLayout>
 

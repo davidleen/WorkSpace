@@ -2,9 +2,11 @@ package com.giants3.hd.server.service;
 
 import com.giants3.hd.entity.Customer;
 import com.giants3.hd.entity.User;
+import com.giants3.hd.entity.app.Quotation;
 import com.giants3.hd.exception.HdException;
 import com.giants3.hd.noEntity.NameCard;
 import com.giants3.hd.noEntity.RemoteData;
+import com.giants3.hd.server.repository.AppQuotationRepository;
 import com.giants3.hd.server.repository.CustomerRepository;
 import com.giants3.hd.server.repository.QuotationRepository;
 import com.giants3.hd.server.service_third.NameCardService;
@@ -14,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,7 +33,7 @@ import java.util.List;
 public class CustomerService extends AbstractService {
 
 
-    public static final String CATEGORY="namecards";
+    public static final String CATEGORY = "namecards";
     @Value("${rootpath}")
     private String rootpath;
 
@@ -46,6 +47,8 @@ public class CustomerService extends AbstractService {
     private CustomerRepository customerRepository;
 
 
+    @Autowired
+    private AppQuotationRepository appQuotationRepository;
     @Autowired
     private QuotationRepository quotationRepository;
 
@@ -104,6 +107,8 @@ public class CustomerService extends AbstractService {
 
                 if (quotationRepository.findFirstByCustomerIdEquals(deletedCustomer.id) != null) {
                     throw HdException.create("不能删除客户【" + deletedCustomer.name + "】,目前有报价单关联着");
+                } if (appQuotationRepository.findFirstByCustomerIdEquals(deletedCustomer.id) != null) {
+                    throw HdException.create("不能删除客户【" + deletedCustomer.name + "】,目前有广交会报价单关联着");
                 }
                 customerRepository.delete(deletedCustomer);
 
@@ -125,10 +130,8 @@ public class CustomerService extends AbstractService {
     public List<Customer> list(String key) {
 
 
-
-
-        String keyLike= StringUtils.sqlLike(key);
-       return  customerRepository.findByCodeLikeOrNameLikeOrderByCodeAsc(keyLike,keyLike);
+        String keyLike = StringUtils.sqlLike(key);
+        return customerRepository.findByCodeLikeOrNameLikeOrderByCodeAsc(keyLike, keyLike);
 
     }
 
@@ -173,30 +176,52 @@ public class CustomerService extends AbstractService {
 
     /**
      * @param id
-
      * @return
      */
     public RemoteData<Void> delete(long id) {
 
+
+        final Quotation temp = appQuotationRepository.findFirstByCustomerIdEquals(id);
+        if(temp!=null) return wrapError("广交会报价单:"+temp.qNumber+",绑定这个客户， 不能删除!");
+
+
+        final com.giants3.hd.entity.Quotation quotation = quotationRepository.findFirstByCustomerIdEquals(id);
+
+        if(quotation!=null) return wrapError("报价单:"+quotation.qNumber+",绑定这个客户， 不能删除!");
+
         customerRepository.delete(id);
+        customerRepository.flush();
         return wrapData();
     }
 
     public RemoteData<Customer> saveOne(Customer customer) {
 
 
-        Customer oldCustomer =customerRepository.findOne(customer.id);
+        Customer oldCustomer = customerRepository.findOne(customer.id);
 
-        if(oldCustomer==null)
+
+            if (oldCustomer == null||oldCustomer.code != customer.code) {
+
+                Customer temp = customerRepository.findFirstByCodeEquals(customer.code);
+                if (temp != null) {
+                    return wrapError("编码:" + customer.code + "重复， 请更换");
+                }
+            }
+
+
+        //可能修改相关联的数据
+        if(oldCustomer!=null)
         {
-            customer=      customerRepository.saveAndFlush(customer);
-        }else {
+            quotationRepository.updateCustomer(  oldCustomer.id, customer.code,   customer.name);
+            appQuotationRepository.updateCustomer(  oldCustomer.id, customer.code,   customer.name);
 
-            //可能修改相关联的数据
-            customer = customerRepository.saveAndFlush(customer);
+
         }
 
 
+
+
+        customer = customerRepository.saveAndFlush(customer);
 
 
 
@@ -206,19 +231,17 @@ public class CustomerService extends AbstractService {
     public RemoteData<String> newCustomerCode() {
 
 
-        String result="";
-        Pageable pageable=constructPageSpecification(0,1);
+        String result = "";
+        Pageable pageable = constructPageSpecification(0, 1);
 
-      Page< Customer> customers= customerRepository.findFirstOrderByCodeDesc(pageable);
-        Customer customer=customers.getTotalElements()>0?customers.getContent().get(0):null;
-        if(customer==null)
-        {
-            result="1";
+        Page<Customer> customers = customerRepository.findFirstOrderByCodeDesc(pageable);
+        Customer customer = customers.getTotalElements() > 0 ? customers.getContent().get(0) : null;
+        if (customer == null) {
+            result = "1";
 
-        }else
-        {
-            int intValue=Integer.valueOf(customer.code);
-            result=String.valueOf(intValue+1);
+        } else {
+            int intValue = Integer.valueOf(customer.code);
+            result = String.valueOf(intValue + 1);
 
         }
 
@@ -228,40 +251,39 @@ public class CustomerService extends AbstractService {
 
     public RemoteData<NameCard> scanNameCard(User user, MultipartFile[] files) {
 
-        if(files==null||files.length!=1) return wrapError("名片文件数量有错:"+files==null?"null":String.valueOf(files.length));
-        MultipartFile file=files[0];
+        if (files == null || files.length != 1)
+            return wrapError("名片文件数量有错:" + files == null ? "null" : String.valueOf(files.length));
+        MultipartFile file = files[0];
 
 
+        String fileName = Calendar.getInstance().getTimeInMillis() + "_" + FileUtils.SUFFIX_JPG;
+        final String absoluteFilePath = FileUtils.combinePath(rootpath, CATEGORY, fileName);
+        String url = null;
+        try {
+            FileUtils.copy(file, absoluteFilePath);
+            url = FileUtils.combineUrl(rootUrl, CATEGORY, fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
 
+            logger.error(e.getMessage());
+            final RemoteData<NameCard> nameCardRemoteData = wrapError(e.getMessage());
+            final NameCard failCard = new NameCard();
+            failCard.pictureUrl = url;
+            nameCardRemoteData.datas.add(failCard);
+            return nameCardRemoteData;
 
-            String fileName = Calendar.getInstance().getTimeInMillis() +"_"+   FileUtils.SUFFIX_JPG;
-            final String absoluteFilePath =FileUtils.combinePath(rootpath,CATEGORY,fileName)  ;
-            String url = null;
-            try {
-                FileUtils.copy(file, absoluteFilePath);
-                url = FileUtils.combineUrl(rootUrl,CATEGORY,fileName);
-            } catch (IOException e) {
-                e.printStackTrace();
-
-                logger.error(e.getMessage());
-                final RemoteData<NameCard> nameCardRemoteData = wrapError(e.getMessage());
-                final NameCard failCard = new NameCard();
-                failCard.pictureUrl=url;
-                nameCardRemoteData.datas.add(failCard);
-                return nameCardRemoteData;
-
-            }
-
-
-        final RemoteData<NameCard> nameCardRemoteData = nameCardService.requestScanNameCard(absoluteFilePath );
-
-        if(nameCardRemoteData.isSuccess())
-        {
-            nameCardRemoteData.datas.get(0).pictureUrl=url;
         }
 
 
+        final RemoteData<NameCard> nameCardRemoteData = nameCardService.requestScanNameCard(absoluteFilePath);
 
+        if (nameCardRemoteData.isSuccess()) {
+            nameCardRemoteData.datas.get(0).pictureUrl = url;
+        }else{
+            final NameCard failCard = new NameCard();
+            failCard.pictureUrl = url;
+            nameCardRemoteData.datas.add(failCard);
+        }
 
 
         return nameCardRemoteData;
@@ -272,18 +294,16 @@ public class CustomerService extends AbstractService {
 //        return nameCardRemoteData;
 
 
-
     }
 
     public RemoteData<NameCard> scanResourceUrl(User user, String resourceUrl) {
 
 
-        String absoluteFilePath= FileUtils.convertUrlToPath(rootpath,resourceUrl);
-        final RemoteData<NameCard> nameCardRemoteData = nameCardService.requestScanNameCard(absoluteFilePath );
+        String absoluteFilePath = FileUtils.convertUrlToPath(rootpath, resourceUrl);
+        final RemoteData<NameCard> nameCardRemoteData = nameCardService.requestScanNameCard(absoluteFilePath);
 //
-        if(nameCardRemoteData.isSuccess())
-        {
-            nameCardRemoteData.datas.get(0).pictureUrl=resourceUrl;
+        if (nameCardRemoteData.isSuccess()) {
+            nameCardRemoteData.datas.get(0).pictureUrl = resourceUrl;
         }
 
         return nameCardRemoteData;

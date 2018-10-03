@@ -43,18 +43,18 @@ public class PresenterImpl extends BasePresenter<AppQuotationDetailMVP.Viewer, A
     @Override
     public void loadCustomer() {
 
-        RemoteDataSubscriber<Customer> subscriber = new RemoteDataSubscriber<Customer>(this, true) {
-
-            @Override
-            protected void handleRemoteData(RemoteData<Customer> data) {
-                if (data.isSuccess()) {
-                    getModel().setCustomers(data.datas);
-                }
-            }
-        };
-
-
-        executeUseCase(UseCaseFactory.getInstance().createGetCustomerListUseCase(), subscriber);
+//        RemoteDataSubscriber<Customer> subscriber = new RemoteDataSubscriber<Customer>(this, true) {
+//
+//            @Override
+//            protected void handleRemoteData(RemoteData<Customer> data) {
+//                if (data.isSuccess()) {
+//                    getModel().setCustomers(data.datas);
+//                }
+//            }
+//        };
+//
+//
+//        executeUseCase(UseCaseFactory.getInstance().createGetCustomerListUseCase(), subscriber);
     }
 
 
@@ -427,19 +427,9 @@ public class PresenterImpl extends BasePresenter<AppQuotationDetailMVP.Viewer, A
         List<Customer> customers = getModel().getCustomers();
 
 
-        QuotationDetail quotationDetail = getModel().getQuotationDetail();
-
-        long customerId = quotationDetail.quotation.customerId;
-
         Customer current = null;
 
-        for (Customer temp : customers) {
-            if (temp.id == customerId) {
-                current = temp;
-                break;
-            }
 
-        }
 
         getView().chooseCustomer(current, customers);
 
@@ -454,17 +444,7 @@ public class PresenterImpl extends BasePresenter<AppQuotationDetailMVP.Viewer, A
         getModel().updateCustomer(newValue);
         bindData();
 
-        QuotationDetail quotationDetail = getModel().getQuotationDetail();
-        quotationDetail.quotation.customerId = newValue.id;
-        quotationDetail.quotation.customerCode = newValue.code;
-        quotationDetail.quotation.customerName = newValue.name;
-        bindData();
 
-
-        ;
-
-
-        executeQuotationUseCase(UseCaseFactory.getInstance().createUpdateQuotationCustomerUseCase(quotationDetail.quotation.id, newValue.id));
 
     }
 

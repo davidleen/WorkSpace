@@ -68,6 +68,9 @@ public class CustomerEditActivity extends BaseHeadViewerActivity<CustomerEditMVP
     @Bind(R.id.last)
     View last;
 
+    @Bind(R.id.delete)
+    View delete;
+
 
     CapturePictureHelper capturePictureHelper;
     @Override
@@ -225,6 +228,15 @@ public class CustomerEditActivity extends BaseHeadViewerActivity<CustomerEditMVP
             }
         });
 
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                getPresenter().deleteCustomer();
+
+
+            }
+        });
     }
 
 
@@ -234,6 +246,9 @@ public class CustomerEditActivity extends BaseHeadViewerActivity<CustomerEditMVP
 
         bindLastRequestNameCard(lastRequestNameCard);
 
+
+
+        delete.setVisibility(customer==null||customer.id==0?View.GONE:View.VISIBLE);
         img_namecard.setVisibility(customer!=null&&!StringUtils.isEmpty(customer.nameCardFileUrl)?View.VISIBLE:View.GONE);
         if (customer == null) return;
         code.setText(customer.code);
@@ -258,7 +273,6 @@ public class CustomerEditActivity extends BaseHeadViewerActivity<CustomerEditMVP
             ImageLoaderFactory.getInstance().displayImage(url, img_namecard);
             img_namecard.setTag(url);
         }
-
 
 
     }

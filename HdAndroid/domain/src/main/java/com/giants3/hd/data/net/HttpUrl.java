@@ -592,6 +592,16 @@ public class HttpUrl {
 
             return completeUrl( "/api/customer/newCustomerCode" );
     }
+
+
+    public static String deleteCustomer(long customerId) {
+
+        String apiUrl=BASE_URL + "/api/customer/delete";
+        UrlFormatter formatter=new UrlFormatter(apiUrl).append("id",customerId) ;
+        return additionInfo(formatter);
+
+
+    }
     public static String updateQuotationItemMemo(long quotationId, int itemIndex, String memo) {
 
 

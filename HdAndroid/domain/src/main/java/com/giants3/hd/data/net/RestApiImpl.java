@@ -986,4 +986,16 @@ public class RestApiImpl implements RestApi {
             }
         });
     }
+
+    @Override
+    public Observable deleteCutomer(final long customerId) {
+        return create(new ApiInvoker<Void>() {
+            @Override
+            public RemoteData<Void> invoker() throws HdException {
+
+
+                return apiManager.deleteCustomer( customerId)  ;
+            }
+        });
+    }
 }

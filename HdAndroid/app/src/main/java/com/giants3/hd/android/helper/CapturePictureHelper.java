@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
@@ -53,9 +54,10 @@ public class CapturePictureHelper implements View.OnClickListener {
     //是否相册获取
     private boolean fromAlbum=false;
 
-    public CapturePictureHelper(AndroidRouter activity, OnPictureGetListener listener) {
+    public CapturePictureHelper(AndroidRouter activity,  OnPictureGetListener listener) {
         this.activity = activity;
         this.listener = listener;
+        initTempFile();
     }
 
     public final static int FROM_ALBUM = 9911;
@@ -74,7 +76,6 @@ public class CapturePictureHelper implements View.OnClickListener {
 
                     if(clip) {
 
-                        initTempFile();
 
                     // Uri uri=   UriFileComapt.fromFile(activity.getContext(),tempFilePath);
                      Uri uri=   Uri.fromFile( tempFilePath);
@@ -126,7 +127,7 @@ public class CapturePictureHelper implements View.OnClickListener {
         {
 
 
-            initTempFile();
+
             InputStream inputStream = null;
             OutputStream outputStream = null;
 
@@ -201,8 +202,6 @@ public class CapturePictureHelper implements View.OnClickListener {
         {
             throw new RuntimeException("图片获取必须从相册或者相机");
         }
-
-        initTempFile();
         clearAlertDialog();
         final View pickPanel = LayoutInflater.from(activity.getContext()) .inflate(
                 R.layout.dialog_pick_photo, null);
@@ -271,10 +270,12 @@ public class CapturePictureHelper implements View.OnClickListener {
                 clearAlertDialog();
                 try {
                     Intent intent2 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    initTempFile();
+
                     Uri uri= UriFileComapt.fromFile(activity.getContext(),tempFilePath);
 
 
+
+                   // intent2.putExtra(MediaStore.EXTRA_FULL_SCREEN, false);
 
                     intent2.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                     intent2.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 50);
@@ -321,8 +322,10 @@ public class CapturePictureHelper implements View.OnClickListener {
 
     private void initTempFile()
     {
-        if(tempFilePath==null||!tempFilePath.exists())
-                 tempFilePath=  new File(StorageUtils.getFilePath(System.currentTimeMillis() + ".jpg"));
+        if(tempFilePath==null||!tempFilePath.exists()) {
+            tempFilePath = new File(StorageUtils.getFilePath("temp/temp_picture.jpg"));
+            FileUtils.makeDirs(tempFilePath.getAbsolutePath());
+        }
 
     }
 

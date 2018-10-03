@@ -49,7 +49,7 @@ public class AppQuotationController extends BaseController {
             , @RequestParam(value = "searchValue" , required = false, defaultValue = "") String searchValue
             , @RequestParam(value = "dateStart" , required = false, defaultValue = "") String dateStart
             , @RequestParam(value = "dateEnd" , required = false, defaultValue = "") String dateEnd
-            , @RequestParam(value = "userId" , required = false, defaultValue = "0") long  userId
+            , @RequestParam(value = "userId" , required = false, defaultValue = "-1") long  userId
             , @RequestParam(value = "pageIndex", required = false, defaultValue = "0") int pageIndex
             , @RequestParam(value = "pageSize", required = false, defaultValue = "20") int pageSize
 

@@ -44,6 +44,7 @@ public class PDFPrintDocumentAdapter extends PrintDocumentAdapter {
     private String pdfPath;
     int scaleSize;
 
+    List<Bitmap> bitmaps;
 
     public PDFPrintDocumentAdapter(Context context, String pdfPath) {
         this.context = context;
@@ -86,18 +87,19 @@ public class PDFPrintDocumentAdapter extends PrintDocumentAdapter {
 
 
             if (pdfRender.getPageCount() > 0) {
-                bmp= Bitmap.createBitmap(pageWidth*scaleSize,pageHeight*scaleSize, Bitmap.Config.ARGB_8888);
+
                 Canvas canvas=new Canvas(bmp);
                 totalpages = pdfRender.getPageCount();
-                for (int i = 0; i < pdfRender.getPageCount(); i++) {
+                bitmaps=new ArrayList<>();
+                for (int i = 0; i < totalpages; i++) {
                     if(null != page)
                         page.close();
                     page = pdfRender.openPage(i);
-
+                    bmp= Bitmap.createBitmap(pageWidth*scaleSize,pageHeight*scaleSize, Bitmap.Config.ARGB_8888);
+                    bitmaps.add(bmp);
                     canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
-
                     page.render(bmp, null, null, PdfRenderer.Page.RENDER_MODE_FOR_PRINT);
-                    BitmapHelper.bitmapSaveToFile(bmp,   getPrintBitmapPath(i),true);
+                   // BitmapHelper.bitmapSaveToFile(bmp,   getPrintBitmapPath(i),true);
 
                 }
             }
@@ -112,7 +114,7 @@ public class PDFPrintDocumentAdapter extends PrintDocumentAdapter {
         } catch (IOException e) {
             e.printStackTrace();
         }finally {
-            BitmapHelper.recycleBitmap(bmp);
+//            BitmapHelper.recycleBitmap(bmp);
 
         }
 
@@ -140,7 +142,7 @@ public class PDFPrintDocumentAdapter extends PrintDocumentAdapter {
         paint.setDither(true);
 
 
-        Bitmap bitmap =Bitmap.createBitmap(pageWidth*scaleSize,pageHeight*scaleSize, Bitmap.Config.ARGB_8888);
+//        Bitmap bitmap =Bitmap.createBitmap(pageWidth*scaleSize,pageHeight*scaleSize, Bitmap.Config.ARGB_8888);
 
 
         for (int i = 0; i < totalpages; i++) {
@@ -157,13 +159,15 @@ public class PDFPrintDocumentAdapter extends PrintDocumentAdapter {
                     mPdfDocument = null;
                     return;
                 }
-                bitmap=  BitmapHelper.fromFile( getPrintBitmapPath(i),bitmap);
-                drawPage(page, i,bitmap,paint);  //将内容绘制到页面Canvas上
+//              Bitmap    result=  BitmapHelper.fromFile( getPrintBitmapPath(i),bitmap);
+                Bitmap result=bitmaps.get(i);
+                drawPage(page, i,result,paint);  //将内容绘制到页面Canvas上
                 mPdfDocument.finishPage(page);
             }
         }
 
-        BitmapHelper.recycleBitmap(bitmap);
+        BitmapHelper.recycleBitmap(bitmaps);
+        bitmaps=null;
         try {
             mPdfDocument.writeTo(new FileOutputStream(
                     destination.getFileDescriptor()));

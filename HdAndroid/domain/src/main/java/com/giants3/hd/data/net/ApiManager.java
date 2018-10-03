@@ -796,4 +796,12 @@ public class ApiManager {
         return remoteData;
 
     }
+
+    public RemoteData<Void> deleteCustomer(long customerId) throws HdException {
+        String url = HttpUrl.deleteCustomer(customerId);
+        String result = apiConnection.getString(url );
+        RemoteData<Void> remoteData = invokeByReflect(result, Void.class);
+        return remoteData;
+
+    }
 }

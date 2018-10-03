@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -21,9 +20,13 @@ import com.giants3.android.frame.util.Utils;
 import com.giants3.hd.android.activity.ProductDetailActivity;
 import com.giants3.hd.android.adapter.ItemListAdapter;
 import com.giants3.hd.android.entity.TableData;
+import com.giants3.hd.android.mvp.RemoteDataSubscriber;
+import com.giants3.hd.android.mvp.searchcustomer.SearchCustomerMvp;
 import com.giants3.hd.android.mvp.searchproduct.SearchProductMvp;
-import com.giants3.hd.appdata.AProduct;
+import com.giants3.hd.data.interractor.UseCaseFactory;
 import com.giants3.hd.data.utils.GsonUtils;
+import com.giants3.hd.entity.Customer;
+import com.giants3.hd.noEntity.RemoteData;
 
 import java.util.List;
 
@@ -32,7 +35,7 @@ import butterknife.Bind;
 /**
  *  查找产品Fragment
  */
-public class SearchProductFragment extends BaseDialogFragment<SearchProductMvp.Presenter> implements SearchProductMvp.Viewer {
+public class SearchCustomerFragment extends BaseDialogFragment <SearchCustomerMvp.Presenter> implements SearchCustomerMvp.Viewer  {
 
     private static final String ARG_AVAILABLE_ITEMS = "ARG_AVAILABLE_ITEMS";
 
@@ -40,28 +43,27 @@ public class SearchProductFragment extends BaseDialogFragment<SearchProductMvp.P
 
     @Bind(R.id.key)
     EditText editText;
-    @Bind(R.id.withCopy)
-    CheckBox withCopy;
     @Bind(R.id.list)
     ListView listView;
-    ItemListAdapter<AProduct> listAdapter;
+    ItemListAdapter<Customer> listAdapter;
     private OnFragmentInteractionListener mListener;
+    private String keytoSearch;
 
-    public SearchProductFragment() {
+    public SearchCustomerFragment() {
 
     }
 
 
-    public static SearchProductFragment newInstance() {
-        SearchProductFragment fragment = new SearchProductFragment();
+    public static SearchCustomerFragment newInstance() {
+        SearchCustomerFragment fragment = new SearchCustomerFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    protected SearchProductMvp.Presenter onLoadPresenter() {
-        return new com.giants3.hd.android.mvp.searchproduct.PresenterImpl();
+    protected SearchCustomerMvp.Presenter onLoadPresenter() {
+        return new com.giants3.hd.android.mvp.searchcustomer.PresenterImpl();
     }
 
     @Override
@@ -70,7 +72,7 @@ public class SearchProductFragment extends BaseDialogFragment<SearchProductMvp.P
 
 
       listAdapter =new ItemListAdapter<>(getActivity());
-        listAdapter.setTableData(TableData.resolveData(getActivity(),R.array.table_product_item));
+        listAdapter.setTableData(TableData.resolveData(getActivity(),R.array.table_customer_list));
      int wh[]=   Utils.getScreenWH();
 
         ViewGroup.LayoutParams layoutParams = listView.getLayoutParams();
@@ -85,43 +87,32 @@ public class SearchProductFragment extends BaseDialogFragment<SearchProductMvp.P
 
 
 
-                AProduct aProduct= (AProduct) parent.getItemAtPosition(position);
-                if(aProduct!=null&&mListener!=null
+                Customer customer= (Customer) parent.getItemAtPosition(position);
+                if(customer!=null&&mListener!=null
                         )
                 {
-                    mListener.onProductSelect(aProduct);
+                    mListener.onCustomerSelect(customer);
                     dismiss();
                 }
             }
         });
 
 
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//
+//
+//                //调整act
+//                Intent intent = new Intent(getContext(), ProductDetailActivity.class);
+//                intent.putExtra(ProductDetailFragment.ARG_ITEM, GsonUtils.toJson(parent.getItemAtPosition(position)));
+//                startActivity(intent);
+//                return true;
+//            }
+//        }) ;
 
 
-                //调整act
-                Intent intent = new Intent(SearchProductFragment.this.getContext(), ProductDetailActivity.class);
-                intent.putExtra(ProductDetailFragment.ARG_ITEM, GsonUtils.toJson(parent.getItemAtPosition(position)));
-                startActivity(intent);
-                return true;
-            }
-        }) ;
 
-
-
-        withCopy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                getPresenter().setWithCopy(isChecked);
-                listAdapter.setTableData(TableData.resolveData(getActivity(),isChecked?R.array.table_product_item_with_copy:R.array.table_product_item));
-                listView.setAdapter(listAdapter);
-                doSearch();
-
-            }
-        });
 
         editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -148,7 +139,7 @@ public class SearchProductFragment extends BaseDialogFragment<SearchProductMvp.P
         editText.post(new Runnable() {
             @Override
             public void run() {
-                String text = "18A";
+                String text = "";
                 editText.setText(text);
                 editText.setSelection(text.length());
             }
@@ -157,13 +148,15 @@ public class SearchProductFragment extends BaseDialogFragment<SearchProductMvp.P
     }
 
 
+
     Runnable runnable=new Runnable() {
         @Override
         public void run() {
+            getPresenter().search();
 
-        getPresenter().search();
         }
     };
+
 
     private void doSearch() {
 
@@ -189,7 +182,7 @@ public class SearchProductFragment extends BaseDialogFragment<SearchProductMvp.P
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
-        return inflater.inflate(R.layout.fragment_search_product, container, false);
+        return inflater.inflate(R.layout.fragment_search_customer, container, false);
     }
 
 
@@ -213,8 +206,9 @@ public class SearchProductFragment extends BaseDialogFragment<SearchProductMvp.P
         mListener = null;
     }
 
+
     @Override
-    public void bindDatas(List<AProduct> datas) {
+    public void bindDatas(List<Customer> datas) {
 
 
 
@@ -227,7 +221,7 @@ public class SearchProductFragment extends BaseDialogFragment<SearchProductMvp.P
 
 
 
-        void onProductSelect(AProduct aProduct);
+        void onCustomerSelect(Customer aProduct);
     }
 
 

@@ -429,6 +429,11 @@ public class UseCaseFactory {
 
 
     }
+    public UseCase createDeleteCustomerUseCase(long customerId) {
+        return new DeleteCustomerUseCase( customerId, restApi);
+    }
+
+
     public UseCase createUpdateQuotationItemMemoUseCase(long quotationId, int itm, String memo) {
         return  new UpdateQuotationItemMemoUseCase(quotationId,itm,memo,restApi);
     }
@@ -456,4 +461,6 @@ public class UseCaseFactory {
     public UseCase createScanResourceUrlUseCase(String pictureUrl) {
         return new  ScanResourceUrlUseCase(  pictureUrl,restApi);
     }
+
+
 }
