@@ -33,7 +33,7 @@ import java.util.List;
 import butterknife.Bind;
 
 /**
- *  查找产品Fragment
+ *  查找客户Fragment
  */
 public class SearchCustomerFragment extends BaseDialogFragment <SearchCustomerMvp.Presenter> implements SearchCustomerMvp.Viewer  {
 
@@ -135,7 +135,7 @@ public class SearchCustomerFragment extends BaseDialogFragment <SearchCustomerMv
             }
         });
 
-        editText.setRawInputType(InputType.TYPE_CLASS_NUMBER);
+//        editText.setRawInputType(InputType.TYPE_CLASS_NUMBER);
         editText.post(new Runnable() {
             @Override
             public void run() {

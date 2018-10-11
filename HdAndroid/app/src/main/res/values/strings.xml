@@ -79,6 +79,7 @@
 
     <string-array name="product_menu_title">
         <item>@string/product_list</item>
+        <item>@string/material_list</item>
 
     </string-array>
 
@@ -89,6 +90,7 @@
     </string-array>
  <string-array name="product_menu_fragemnt_class">
         <item>com.giants3.hd.android.fragment.ProductListFragment</item>
+        <item>com.giants3.hd.android.fragment.MaterialListFragment</item>
 
     </string-array>
 

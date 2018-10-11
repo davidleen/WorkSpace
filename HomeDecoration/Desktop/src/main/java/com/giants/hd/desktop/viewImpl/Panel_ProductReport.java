@@ -58,6 +58,7 @@ public class Panel_ProductReport extends BasePanel {
     private JButton export4;
     private JButton printQR;
     private JButton printQRA4;
+    private JButton printQRLand;
     ProductTableModel model;
 
 
@@ -416,6 +417,24 @@ public class Panel_ProductReport extends BasePanel {
 
 
                 printQR("qrproducta4" );
+
+
+            }
+        });
+
+
+        printQRLand.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                if(products==null||products.size()==0)
+                {
+                    showMesssage("无记录打印");
+                    return;
+                }
+
+
+                printQR("qrproduct_land" );
 
 
             }

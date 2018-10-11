@@ -56,7 +56,7 @@ public class BaseRepositoryImpl  {
      * @param <T>
      * @return
      */
-    public <T> Observable<RemoteData<T>>   crateObservable(final ApiCaller<T> caller)
+    public static  <T> Observable<RemoteData<T>>   crateObservable(final ApiCaller<T> caller)
     {
 
         return Observable.create(new Observable.OnSubscribe<RemoteData<T>>() {
@@ -86,7 +86,7 @@ public class BaseRepositoryImpl  {
 
 
 
-    interface  ApiCaller<T>
+    public interface  ApiCaller<T>
     {
         RemoteData<T> call()throws  HdException;
     }

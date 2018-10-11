@@ -33,8 +33,11 @@ public class CompanyReportData<T> extends ReportData<T> {
     @Override
     public Object get(Object key) {
         final Object result = super.get(key);
+
+//        System.out.println("field:" + key+",result :"+result);
 //        if(result instanceof  String) {
-//            System.out.println("field:" + key+",result :"+result);
+//
+//
 //            return result + "测试";
 //        }
         return result;

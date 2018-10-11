@@ -32,8 +32,8 @@ android {
 
 
         targetSdkVersion project.ANDROID_TARGET_VERSION
-        versionCode 56
-        versionName "1.5.6"
+        versionCode 59
+        versionName "1.5.9"
 
         buildConfigField "boolean", "AUTO_UPDATES", "true"
 
@@ -114,10 +114,10 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.lcodecorex:tkrefreshlayout:1.0.7'
     releaseCompile project(':zxing')
-//    debugCompile project(':zxing')
-     debugCompile project(':zxing_no_op')
-//        releaseCompile project(':camcomnamecard')
-//    compile project(':xunfeinamecard')
+    debugCompile project(':zxing')
+//     debugCompile project(':zxing_no_op')
+//     releaseCompile project(':camcomnamecard')
+//     compile project(':xunfeinamecard')
     compile "com.giants3.android:api:${API_VERSION}"
 //    compile project(':PushSDK_no_op')
 

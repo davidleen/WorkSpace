@@ -107,7 +107,7 @@ public class CustomerService extends AbstractService {
 
                 if (quotationRepository.findFirstByCustomerIdEquals(deletedCustomer.id) != null) {
                     throw HdException.create("不能删除客户【" + deletedCustomer.name + "】,目前有报价单关联着");
-                } if (appQuotationRepository.findFirstByCustomerIdEquals(deletedCustomer.id) != null) {
+                } if (appQuotationRepository.findFirstByCustomerIdEqualsAndFormalIsTrue(deletedCustomer.id) != null) {
                     throw HdException.create("不能删除客户【" + deletedCustomer.name + "】,目前有广交会报价单关联着");
                 }
                 customerRepository.delete(deletedCustomer);
@@ -131,7 +131,7 @@ public class CustomerService extends AbstractService {
 
 
         String keyLike = StringUtils.sqlLike(key);
-        return customerRepository.findByCodeLikeOrNameLikeOrderByCodeAsc(keyLike, keyLike);
+        return customerRepository.findByCodeLikeOrNameLikeOrderByCodeAsc(keyLike);
 
     }
 
@@ -181,7 +181,7 @@ public class CustomerService extends AbstractService {
     public RemoteData<Void> delete(long id) {
 
 
-        final Quotation temp = appQuotationRepository.findFirstByCustomerIdEquals(id);
+        final Quotation temp = appQuotationRepository.findFirstByCustomerIdEqualsAndFormalIsTrue(id);
         if(temp!=null) return wrapError("广交会报价单:"+temp.qNumber+",绑定这个客户， 不能删除!");
 
 
@@ -201,11 +201,28 @@ public class CustomerService extends AbstractService {
 
 
             if (oldCustomer == null||oldCustomer.code != customer.code) {
+                String newCode=customer.code;
 
-                Customer temp = customerRepository.findFirstByCodeEquals(customer.code);
+
+                //查詢數據庫，保證customerCode是唯一的。
+                Customer temp =null;
+                int maxTryTime=5;
+                int tryTime=0;
+                do {
+                    temp= customerRepository.findFirstByCodeEquals(newCode);
+                    if(temp!=null)
+                    {
+                        newCode=generateNewCustomerCode();
+                        tryTime++;
+                    }
+                }while(temp!=null||tryTime>=maxTryTime);
+
+
                 if (temp != null) {
-                    return wrapError("编码:" + customer.code + "重复， 请更换");
+                    return wrapError("编码:" + customer.code + "重复，且沒有自动生成，请重新保存 ");
                 }
+                customer.code=newCode;
+
             }
 
 
@@ -231,6 +248,17 @@ public class CustomerService extends AbstractService {
     public RemoteData<String> newCustomerCode() {
 
 
+        String result = generateNewCustomerCode();
+
+        return wrapData(result);
+
+    }
+
+    /**
+     * 生成新的客戶編碼
+     * @return
+     */
+    public String generateNewCustomerCode() {
         String result = "";
         Pageable pageable = constructPageSpecification(0, 1);
 
@@ -244,9 +272,7 @@ public class CustomerService extends AbstractService {
             result = String.valueOf(intValue + 1);
 
         }
-
-        return wrapData(result);
-
+        return result;
     }
 
     public RemoteData<NameCard> scanNameCard(User user, MultipartFile[] files) {

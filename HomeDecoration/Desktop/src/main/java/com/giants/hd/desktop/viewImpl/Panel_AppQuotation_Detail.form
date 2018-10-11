@@ -168,6 +168,24 @@
               </component>
             </children>
           </grid>
+          <component id="3f374" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="2" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+              <forms defaultalign-horz="false"/>
+            </constraints>
+            <properties>
+              <text value="展位号"/>
+            </properties>
+          </component>
+          <component id="8274e" class="javax.swing.JTextField" binding="tf_booth">
+            <constraints>
+              <grid row="2" column="10" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <forms defaultalign-horz="false"/>
+            </constraints>
+            <properties/>
+          </component>
         </children>
       </grid>
       <scrollpane id="34bdb">
@@ -233,6 +251,12 @@
           <hspacer id="c8515">
             <constraints/>
           </hspacer>
+          <component id="27dd6" class="javax.swing.JButton" binding="export_pdf">
+            <constraints/>
+            <properties>
+              <text value="导出PDF"/>
+            </properties>
+          </component>
         </children>
       </grid>
     </children>

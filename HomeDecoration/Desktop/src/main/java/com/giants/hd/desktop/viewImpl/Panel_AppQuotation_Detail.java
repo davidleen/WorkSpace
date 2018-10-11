@@ -3,7 +3,6 @@ package com.giants.hd.desktop.viewImpl;
 import com.giants.hd.desktop.ImageViewDialog;
 import com.giants.hd.desktop.local.HdDateComponentFormatter;
 import com.giants.hd.desktop.model.AppQuotationItemTableModel;
-import com.giants.hd.desktop.mvp.RemoteDataSubscriber;
 import com.giants.hd.desktop.mvp.presenter.AppQuotationDetailPresenter;
 import com.giants.hd.desktop.mvp.viewer.AppQuotationDetailViewer;
 import com.giants.hd.desktop.utils.JTableUtils;
@@ -11,14 +10,10 @@ import com.giants.hd.desktop.widget.JHdTable;
 import com.giants.hd.desktop.widget.TableMenuAdapter;
 import com.giants3.hd.domain.api.CacheManager;
 import com.giants3.hd.domain.api.HttpUrl;
-import com.giants3.hd.domain.interractor.UseCaseFactory;
 import com.giants3.hd.entity.Customer;
-import com.giants3.hd.entity.Product;
 import com.giants3.hd.entity.User;
 import com.giants3.hd.entity.app.Quotation;
 import com.giants3.hd.entity.app.QuotationItem;
-import com.giants3.hd.logic.QuotationAnalytics;
-import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.noEntity.app.QuotationDetail;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
@@ -55,6 +50,8 @@ public class Panel_AppQuotation_Detail extends BasePanel implements AppQuotation
     private JButton deleteQuotation;
     private JButton print;
     private JButton export_excel;
+    private JButton export_pdf;
+    private JTextField tf_booth;
 
 
     private AppQuotationItemTableModel tableModel;
@@ -75,6 +72,23 @@ public class Panel_AppQuotation_Detail extends BasePanel implements AppQuotation
         public void changedUpdate(DocumentEvent e) {
 
             presenter.updateQNumber(tf_qNumber.getText());
+
+        }
+    };private DocumentListener boothDocListener = new DocumentListener() {
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            presenter.updateBooth(tf_booth.getText());
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            presenter.updateBooth(tf_booth.getText());
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+
+            presenter.updateBooth(tf_booth.getText());
 
         }
     };
@@ -139,20 +153,19 @@ public class Panel_AppQuotation_Detail extends BasePanel implements AppQuotation
             public void onPriceChange(int itemIndex, float newValue) {
 
 
-
-                presenter.updateItemPrice(itemIndex,newValue);
+                presenter.updateItemPrice(itemIndex, newValue);
             }
 
             @Override
             public void onQtyChange(int itemIndex, int newQty) {
 
-                presenter.updateItemQty(itemIndex,newQty);
+                presenter.updateItemQty(itemIndex, newQty);
 
             }
 
             @Override
             public void onMemoChange(int itemIndex, String newValue) {
-                presenter.updateItemMemo(itemIndex,newValue);
+                presenter.updateItemMemo(itemIndex, newValue);
             }
         });
 
@@ -199,9 +212,6 @@ public class Panel_AppQuotation_Detail extends BasePanel implements AppQuotation
                         case 0:
 
                             presenter.viewProduct(item.productId);
-
-
-
 
 
                             break;
@@ -267,8 +277,8 @@ public class Panel_AppQuotation_Detail extends BasePanel implements AppQuotation
         deleteQuotation.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               if( showConfirmMessage("确定删除当前报价单?"))
-                presenter.deleteQuotation();
+                if (showConfirmMessage("确定删除当前报价单?"))
+                    presenter.deleteQuotation();
             }
         });
         moveup.addActionListener(new ActionListener() {
@@ -306,6 +316,15 @@ public class Panel_AppQuotation_Detail extends BasePanel implements AppQuotation
             public void actionPerformed(ActionEvent e) {
 
                 presenter.exportExcel();
+
+            }
+        });
+        export_pdf.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+
+                presenter.exportPdf();
             }
         });
 
@@ -314,6 +333,7 @@ public class Panel_AppQuotation_Detail extends BasePanel implements AppQuotation
 
     public void setEditable(boolean editable) {
         tf_qNumber.setEditable(editable);
+        tf_booth.setEditable(editable);
         vDate.setEnabled(editable);
         qDate.setEnabled(editable);
 
@@ -344,6 +364,9 @@ public class Panel_AppQuotation_Detail extends BasePanel implements AppQuotation
         tf_qNumber.getDocument().removeDocumentListener(qNumberDocListener);
         tf_qNumber.setText(item.qNumber);
         tf_qNumber.getDocument().addDocumentListener(qNumberDocListener);
+        tf_booth.getDocument().removeDocumentListener(boothDocListener);
+        tf_booth.setText(item.booth);
+        tf_booth.getDocument().addDocumentListener(boothDocListener);
         qDate.getJFormattedTextField().getDocument().removeDocumentListener(qDateDocListener);
         qDate.getJFormattedTextField().setText(item.qDate);
         qDate.getJFormattedTextField().getDocument().addDocumentListener(qDateDocListener);

@@ -4,6 +4,7 @@ import com.giants.hd.desktop.model.TableField;
 import com.giants.hd.desktop.mvp.RemoteDataSubscriber;
 import com.giants.hd.desktop.mvp.presenter.WorkFlowMessageReportPresenter;
 import com.giants.hd.desktop.mvp.viewer.WorkFlowMessageReportViewer;
+import com.giants.hd.desktop.reports.ExcelReportTaskUseCase;
 import com.giants.hd.desktop.reports.excels.ReporterHelper;
 import com.giants.hd.desktop.reports.excels.TableToExcelReporter;
 import com.giants.hd.desktop.utils.FileChooserHelper;
@@ -66,17 +67,29 @@ public class WorkFlowMessageReportFrame extends BaseMVPFrame<WorkFlowMessageRepo
         if(file==null) return;
         final String fileName = "未处理消息报表-" + DateFormats.FORMAT_YYYY_MM_DD_HH_MM_SS_LOG.format(Calendar.getInstance().getTime()) + ".xls";
         TableToExcelReporter tableToExcelReporter=new TableToExcelReporter(fileName,fieldList );
-        System.out.println(new File(file,fileName));
-        try {
-            tableToExcelReporter.report(mDatas, file.getAbsolutePath());
+        new ExcelReportTaskUseCase<>(tableToExcelReporter,mDatas,file.getAbsolutePath()).execute(new RemoteDataSubscriber<Void>(getViewer()) {
+            @Override
+            protected void handleRemoteData(RemoteData data) {
+                ReporterHelper.openFileHint(getWindow(),new File(file,fileName));
+            }
+        });
 
-            ReporterHelper.openFileHint(getWindow(),new File(file,fileName));
 
-        } catch (Throwable e) {
 
-            e.printStackTrace();
-            getViewer().showError(e.getMessage());
-        }
+        getViewer().showLoadingDialog();
+
+//
+//        System.out.println(new File(file,fileName));
+//        try {
+//            tableToExcelReporter.report(mDatas, file.getAbsolutePath());
+//
+//            ReporterHelper.openFileHint(getWindow(),new File(file,fileName));
+//
+//        } catch (Throwable e) {
+//
+//            e.printStackTrace();
+//            getViewer().showError(e.getMessage());
+//        }
 
 
 

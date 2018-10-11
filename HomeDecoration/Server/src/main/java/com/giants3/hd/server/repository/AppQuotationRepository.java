@@ -47,7 +47,7 @@ public interface AppQuotationRepository extends JpaRepository<Quotation, Long> {
     Page<Quotation> search( @Param("key") String  key,@Param("dateStart") String  dateStart,@Param("dateEnd") String  dateEnd,@Param("userId") long userId, Pageable pageable );
 
 
-     Quotation findFirstByCustomerIdEquals(long id);
+     Quotation findFirstByCustomerIdEqualsAndFormalIsTrue(long id);
 
     @Modifying
     @Query("update T_AppQuotation p set    p.customerCode=:customerCode, p.customerName=:customerName   WHERE p.customerId =   :customerId   ")

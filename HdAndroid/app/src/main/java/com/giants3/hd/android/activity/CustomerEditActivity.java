@@ -96,7 +96,12 @@ public class CustomerEditActivity extends BaseHeadViewerActivity<CustomerEditMVP
                 getPresenter().save();
             }
         });
-
+        code.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showMessage("客户编号不允许修改");
+            }
+        });
         namecard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-/**
+/**  表格对应的数据模型导出。
  * Created by davidleen29 on 2018/9/23.
  */
 public class TableToExcelReporter<T> extends SimpleExcelReporter<List<T >> {

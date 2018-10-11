@@ -20,7 +20,6 @@
             android:id="@+id/key"
 
             android:layout_width="0dp"
-            android:text="18A"
             android:layout_weight="1"
             android:layout_height="wrap_content" />
 

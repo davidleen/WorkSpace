@@ -21,10 +21,10 @@ public abstract class SimpleExcelReporter<T> extends AbstractExcelReporter<T> {
 
 
         //以包起始的地方开始   jar 根目录开始。
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(getTemplateFilePath());
+        final String templateFilePath = getTemplateFilePath();
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(templateFilePath);
         String fileName = fileOutputDirectory + File.separator + getDestFileName(data);
         System.out.println(fileName);
-        System.out.println(data);
         HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
         report(data, workbook);
         FileOutputStream fos = new FileOutputStream(fileName);

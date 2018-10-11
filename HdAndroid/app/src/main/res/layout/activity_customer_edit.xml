@@ -34,7 +34,7 @@
                 android:id="@+id/code"
                 style="@style/value_edit_text_style"
                 android:layout_width="0dp"
-                android:inputType="number"
+                android:editable="false"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 

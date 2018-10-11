@@ -233,10 +233,15 @@ public class PresenterImpl extends BasePresenter<AppQuotationDetailMVP.Viewer, A
 
 
         getModel().updateQuotationNumber(newValue);
-
         bindData();
+    }
 
 
+    @Override
+    public void updateQuotationBooth(String newValue) {
+
+        getModel().updateQuotationBooth(newValue);
+        bindData();
     }
 
     @Override

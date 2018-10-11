@@ -89,6 +89,20 @@
                 style="@style/value_edit_text_style" />
 
         </LinearLayout>
+        <LinearLayout
+            style="@style/item_group_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/title_text_style"
+                android:text="展位号" />
+
+            <TextView
+                android:id="@+id/booth"
+                style="@style/value_edit_text_style" />
+
+        </LinearLayout>
 
     </com.wefika.flowlayout.FlowLayout>
 

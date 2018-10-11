@@ -76,6 +76,8 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
 
     @Bind(R.id.salesman)
     TextView salesman;
+    @Bind(R.id.booth)
+    TextView booth;
     @Bind(R.id.save)
     TextView save;
     @Bind(R.id.delete)
@@ -354,6 +356,7 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
         createTime.setText(data.quotation.qDate);
 
         qNumber.setText(data.quotation.qNumber);
+        booth.setText(data.quotation.booth);
         customer.setText(data.quotation.customerName);
         salesman.setText(data.quotation.salesman);
         memo.setText(data.quotation.memo);
@@ -377,6 +380,7 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
         setEditable(customer, canEdit);
         setEditable(memo, canEdit);
         setEditable(qNumber, canEdit);
+        setEditable(booth, canEdit);
 
 
     }
@@ -523,6 +527,32 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
 
 
                                         getPresenter().updateQuotationNumber(newValue);
+                                    }
+                                } catch (Throwable t) {
+                                    t.printStackTrace();
+                                }
+
+
+                            }
+                        });
+
+
+            }
+
+            break; case R.id.booth: {
+
+                final String oldBooth = booth.getText().toString();
+                updateValue("修改展位号", oldBooth,
+                        new ValueEditDialogFragment.ValueChangeListener() {
+                            @Override
+                            public void onValueChange(String title, String oldValue, String newValue) {
+                                try {
+
+
+                                    if (!StringUtils.compare(newValue, oldBooth)) {
+
+
+                                        getPresenter().updateQuotationBooth(newValue);
                                     }
                                 } catch (Throwable t) {
                                     t.printStackTrace();

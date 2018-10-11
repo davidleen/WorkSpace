@@ -709,4 +709,14 @@ public class UseCaseFactory {
         return   new AppQuoteCountReportUseCase( startDate,endDate,   quotationRepository);
 
     }
+
+
+    public UseCase createRunnableUseCase(Runnable runnable) {
+
+        return   new RunnableWorkReportUseCase( runnable);
+
+    }
+
+
+
 }

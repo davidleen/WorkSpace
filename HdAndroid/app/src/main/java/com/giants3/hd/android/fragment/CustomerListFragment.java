@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -110,6 +112,8 @@ public class CustomerListFragment extends BaseMvpFragment<CustomerListMVP.Presen
             }
         };
         search_text.addTextChangedListener(watcher);
+        search_text.setRawInputType(InputType.TYPE_CLASS_NUMBER);
+        search_text.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
 
 
         add.setOnClickListener(new View.OnClickListener() {

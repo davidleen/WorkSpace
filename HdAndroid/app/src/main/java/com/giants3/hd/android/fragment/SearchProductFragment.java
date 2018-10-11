@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -145,14 +146,15 @@ public class SearchProductFragment extends BaseDialogFragment<SearchProductMvp.P
         });
 
         editText.setRawInputType(InputType.TYPE_CLASS_NUMBER);
-        editText.post(new Runnable() {
-            @Override
-            public void run() {
-                String text = "18A";
-                editText.setText(text);
-                editText.setSelection(text.length());
-            }
-        });
+        editText.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+//        editText.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                String text = "18A";
+//                editText.setText(text);
+//                editText.setSelection(text.length());
+//            }
+//        });
 
     }
 

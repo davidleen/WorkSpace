@@ -19,7 +19,7 @@ import java.util.List;
 public class CustomerDialog extends BaseSimpleDialog<Customer>
 {
     private JPanel contentPane;
-    private JButton btn_save;
+    private JButton btn_add;
     private JHdTable tb;
 
 
@@ -41,28 +41,7 @@ public class CustomerDialog extends BaseSimpleDialog<Customer>
         setTitle("客户列表");
         tb.setModel(model);
         setMinimumSize(new Dimension(600, 400));
-        btn_save.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
 
-                doSaveWork();
-            }
-        });
-        String[] menu=new String[]{"删除"};
-        tb.addMouseListener(new TableMenuAdapter(tb, menu, new TableMenuAdapter.TableMenuListener() {
-            @Override
-            public void onMenuClick(JTable table, int index) {
-
-                if(index==0)
-                {int row=table.getSelectedRow();
-                    int modelRow=  table.convertRowIndexToModel(row);
-
-                    model.deleteRow(modelRow);
-
-                }
-
-            }
-        }));
     }
 
 

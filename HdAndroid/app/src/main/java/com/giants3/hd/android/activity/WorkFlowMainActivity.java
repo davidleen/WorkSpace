@@ -1,7 +1,7 @@
 package com.giants3.hd.android.activity;
+
 import android.app.AlertDialog;
 import android.content.Context;
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -17,13 +17,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.giants3.android.frame.util.Log;
-import com.giants3.android.frame.util.StorageUtils;
 import com.giants3.hd.android.BuildConfig;
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.adapter.WorkFLowMainMenuAdapter;
 import com.giants3.hd.android.events.LoginSuccessEvent;
 import com.giants3.hd.android.fragment.AppQuotationFragment;
-import com.giants3.hd.android.fragment.ListFragment;
 import com.giants3.hd.android.fragment.MaterialDetailFragment;
 import com.giants3.hd.android.fragment.OrderDetailFragment;
 import com.giants3.hd.android.fragment.QuotationDetailFragment;
@@ -35,12 +33,10 @@ import com.giants3.hd.android.mvp.MainAct.WorkFlowMainActPresenter;
 import com.giants3.hd.appdata.AUser;
 import com.giants3.hd.data.interractor.UseCaseFactory;
 import com.giants3.hd.data.net.HttpUrl;
-import com.giants3.hd.entity.WorkFlowMessage;
 import com.giants3.hd.noEntity.BufferData;
 import com.giants3.hd.noEntity.FileInfo;
 import com.giants3.hd.noEntity.RemoteData;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,15 +84,13 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
     View view;
 
 
-
     List<String> menuTitleList = null;
     List<String> menuFragmentClassList;
-    WorkFLowMainMenuAdapter adapter  ;
+    WorkFLowMainMenuAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
 
         setBackEnable(false);
@@ -118,8 +112,8 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
         }
 
 
-        quotation.setVisibility(BuildConfig.DEBUG ?View.VISIBLE:View.GONE);
-       // quotation.setVisibility(BuildConfig.DEBUG&&SharedPreferencesHelper.getLoginUser().isSalesman?View.VISIBLE:View.GONE);
+        quotation.setVisibility(BuildConfig.DEBUG ? View.VISIBLE : View.GONE);
+        // quotation.setVisibility(BuildConfig.DEBUG&&SharedPreferencesHelper.getLoginUser().isSalesman?View.VISIBLE:View.GONE);
         handleMessageEntry(getIntent());
 
 
@@ -145,25 +139,22 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
     }
 
 
-    private  void handleMessageEntry(Intent intent)
-    {
+    private void handleMessageEntry(Intent intent) {
         Log.e("handleMessageEntry");
 
-        final long messageId=intent.getLongExtra(EXTRA_FLOW_MESSAGE,0);
-        if(messageId!=0)
-        {
+        final long messageId = intent.getLongExtra(EXTRA_FLOW_MESSAGE, 0);
+        if (messageId != 0) {
 
 
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    WorkFlowMessageReceiveActivity.start(WorkFlowMainActivity.this,messageId,0);
+                    WorkFlowMessageReceiveActivity.start(WorkFlowMainActivity.this, messageId, 0);
                 }
             });
 
 
         }
-
 
 
     }
@@ -187,7 +178,7 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
                 int index = -1;
                 int length = menuTitleList.size();
                 for (int i = 0; i < length; i++) {
-                    String temp = menuTitleList.get(i) ;
+                    String temp = menuTitleList.get(i);
                     if (temp.equalsIgnoreCase(title)) {
                         index = i;
                         break;
@@ -195,7 +186,7 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
                 }
 
 
-                String className =menuFragmentClassList.get(index);
+                String className = menuFragmentClassList.get(index);
                 showNewListFragment(className);
                 setActTitle(title);
 
@@ -207,8 +198,6 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
 
 
 //        adapter.setDataArray(menuTitles);
-
-
 
 
         quotation.setOnClickListener(new View.OnClickListener() {
@@ -248,23 +237,20 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
         name.setText(loginUser.chineseName);
 
 
-
         updateMenu(loginUser);
 
 
     }
 
 
-
     private void updateMenu(AUser loginUser)
 
     {
-        menuTitleList=new ArrayList<>();
-        menuFragmentClassList=new ArrayList<>();
-        if(loginUser.isSalesman||BuildConfig.DEBUG)
-        {
-          String[]  menuTitles=getResources().getStringArray(R.array.quotation_menu_title);
-            String[]   menuFragmentClass=getResources().getStringArray(R.array.quotation_menu_fragemnt_class);
+        menuTitleList = new ArrayList<>();
+        menuFragmentClassList = new ArrayList<>();
+        if (loginUser.isSalesman || BuildConfig.DEBUG) {
+            String[] menuTitles = getResources().getStringArray(R.array.quotation_menu_title);
+            String[] menuFragmentClass = getResources().getStringArray(R.array.quotation_menu_fragemnt_class);
             for (int i = 0; i < menuTitles.length; i++) {
                 menuTitleList.add(menuTitles[i]);
                 menuFragmentClassList.add(menuFragmentClass[i]);
@@ -273,10 +259,9 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
         }
 
 
-
         {
-            String[]    menuTitles = getResources().getStringArray(R.array.menu_title);
-            String[]     menuFragmentClass= getResources().getStringArray(R.array.menu_fragemnt_class);
+            String[] menuTitles = getResources().getStringArray(R.array.menu_title);
+            String[] menuFragmentClass = getResources().getStringArray(R.array.menu_fragemnt_class);
 
             for (int i = 0; i < menuTitles.length; i++) {
                 menuTitleList.add(menuTitles[i]);
@@ -285,8 +270,8 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
         }
 
         {
-            String[]    menuTitles = getResources().getStringArray(R.array.product_menu_title);
-            String[]     menuFragmentClass= getResources().getStringArray(R.array.product_menu_fragemnt_class);
+            String[] menuTitles = getResources().getStringArray(R.array.product_menu_title);
+            String[] menuFragmentClass = getResources().getStringArray(R.array.product_menu_fragemnt_class);
 
             for (int i = 0; i < menuTitles.length; i++) {
                 menuTitleList.add(menuTitles[i]);
@@ -472,7 +457,7 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
 
 
         int childCount = menu.getChildCount();
-        int index=menuTitleList.indexOf(getResources().getString(R.string.work_need_finish));
+        int index = menuTitleList.indexOf(getResources().getString(R.string.work_need_finish));
         for (int i = 0; i < childCount; i++) {
 
             View child = menu.getChildAt(i);
@@ -494,15 +479,13 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
     public void showApkUpdate(final FileInfo fileInfo) {
 
 
-       new  AlertDialog.Builder(this).setMessage("有新版本apk，是否下载安装？").setNegativeButton("取消",null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
-           @Override
-           public void onClick(DialogInterface dialog, int which) {
-               startDownLoadApk(fileInfo);
+        new AlertDialog.Builder(this).setMessage("有新版本apk，是否下载安装？").setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startDownLoadApk(fileInfo);
 
-           }
-       }).create().show();
-
-
+            }
+        }).create().show();
 
 
     }
@@ -510,7 +493,9 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
     public static void start(Context context) {
 
 
-        Intent intent = new Intent(context,WorkFlowMainActivity.class);
+        Intent intent = new Intent(context, WorkFlowMainActivity.class);
         context.startActivity(intent);
     }
+
+
 }

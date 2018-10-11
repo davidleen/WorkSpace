@@ -4,6 +4,7 @@ import com.giants.hd.desktop.model.TableField;
 import com.giants.hd.desktop.mvp.RemoteDataSubscriber;
 import com.giants.hd.desktop.mvp.presenter.AppQuotationCountReportPresenter;
 import com.giants.hd.desktop.mvp.viewer.AppQuotationCountReportViewer;
+import com.giants.hd.desktop.reports.ExcelReportTaskUseCase;
 import com.giants.hd.desktop.reports.excels.ReporterHelper;
 import com.giants.hd.desktop.reports.excels.TableToExcelReporter;
 import com.giants.hd.desktop.viewImpl.Panel_AppQuotation_Count_Report;
@@ -49,7 +50,6 @@ public class AppQuotationCountReportFrame extends BaseMVPFrame<AppQuotationCount
                 if(data.isSuccess())
                 {
                     mData=data;
-
                     getViewer().bindData(data);
 
                 }
@@ -67,22 +67,23 @@ public class AppQuotationCountReportFrame extends BaseMVPFrame<AppQuotationCount
     }
 
     @Override
-    public void exportExcel(List<TableField> fieldList, String directory, String fileName) {
+    public void exportExcel(List<TableField> fieldList, final String directory, final String fileName) {
 
         if(mData==null||mData.datas.size()==0) {
             getViewer().showMesssage("无数据可导出");
             return ;
         }
-        TableToExcelReporter tableToExcelReporter=new TableToExcelReporter(fileName,fieldList );
-        try {
-            tableToExcelReporter.report(mData.datas,directory);
-            ReporterHelper.openFileHint(getWindow(),new File(directory,fileName));
-        } catch (Throwable e) {
+      final TableToExcelReporter tableToExcelReporter=new TableToExcelReporter(fileName,fieldList );
+        new ExcelReportTaskUseCase<List<Map>>(tableToExcelReporter,mData.datas,directory).execute(new RemoteDataSubscriber<Void>(getViewer()) {
+            @Override
+            protected void handleRemoteData(RemoteData data) {
+                ReporterHelper.openFileHint(getWindow(),new File(directory,fileName));
+            }
+        });
 
-            e.printStackTrace();
-            getViewer().showError(e.getMessage());
-        }
 
+
+        getViewer().showLoadingDialog();
 
 
     }

@@ -16,7 +16,6 @@ public class Quotation implements Serializable {
     public long id;
 
     public String qNumber;
-    ;
 
 
     public long saleId;
@@ -29,8 +28,8 @@ public class Quotation implements Serializable {
     public String memo;
     public long customerId;
     public String customerCode;
-    public String customerName;
-    public String customerAddress;
+    public String customerName="";
+    public String customerAddress="";
 
     /**
      * 货柜类型
@@ -103,4 +102,10 @@ public class Quotation implements Serializable {
      * 唯一标识，不同数据库同步用。
      */
     public String uuid;
+
+
+    /**
+     * 展位号
+     */
+    public String booth="";
 }

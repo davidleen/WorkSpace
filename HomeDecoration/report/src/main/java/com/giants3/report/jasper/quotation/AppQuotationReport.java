@@ -7,6 +7,8 @@ import com.giants3.hd.noEntity.app.QuotationDetail;
 import com.giants3.report.JRReporter;
 import com.giants3.report.jasper.*;
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JasperPrint;
 
 import java.io.FileInputStream;
@@ -47,7 +49,31 @@ public   class AppQuotationReport extends JRReport {
     public JRDataSource getDataSource() {
 
         List<QuotationItem> quotationItems = quotationDetail.items;
-        return new CustomBeanDataSource(quotationItems);
+        return new CustomBeanDataSource(quotationItems)
+        {
+            @Override
+            public Object getFieldValue(Object bean,JRField field) throws JRException {
+
+
+                String propertiyName=super.getPropertyName(field);
+
+                QuotationItem item = (QuotationItem) bean;
+
+                switch (propertiyName)
+                {
+                    case "packageSize":
+
+                        return item.inBoxCount+"/"+item.packQuantity+"/"+item.packageSize;
+
+
+                }
+
+
+
+
+                return super.getFieldValue(bean,field);
+            }
+        };
 
     }
 
@@ -65,6 +91,8 @@ public   class AppQuotationReport extends JRReport {
     public Map<String, Object> getParameters() {
         return new CompanyReportData(company,quotationDetail.quotation, Quotation.class);
     }
+
+
 
 
 }

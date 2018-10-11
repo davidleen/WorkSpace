@@ -7,7 +7,10 @@ import com.giants.hd.desktop.model.ProductTableModel;
 import com.giants.hd.desktop.mvp.RemoteDataSubscriber;
 import com.giants.hd.desktop.mvp.presenter.AppQuotationDetailPresenter;
 import com.giants.hd.desktop.mvp.viewer.AppQuotationDetailViewer;
+import com.giants.hd.desktop.reports.ExcelReportTaskUseCase;
+import com.giants.hd.desktop.reports.excels.Report_App_Quotation_XLXS;
 import com.giants.hd.desktop.reports.excels.ReporterHelper;
+import com.giants.hd.desktop.reports.excels.TableToExcelReporter;
 import com.giants.hd.desktop.utils.FileChooserHelper;
 import com.giants.hd.desktop.utils.HdSwingUtils;
 import com.giants.hd.desktop.viewImpl.Panel_AppQuotation_Detail;
@@ -23,6 +26,7 @@ import com.giants3.hd.entity.app.QuotationItem;
 import com.giants3.hd.exception.HdException;
 import com.giants3.hd.logic.AppQuotationAnalytics;
 import com.giants3.hd.logic.QuotationAnalytics;
+import com.giants3.hd.noEntity.BufferData;
 import com.giants3.hd.noEntity.ProductDetail;
 import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.noEntity.app.QuotationDetail;
@@ -40,6 +44,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.InputStream;
+import java.util.*;
+import java.util.List;
 
 /**
  * 订单详情界面
@@ -259,6 +265,11 @@ public class AppQuotationDetailFrame extends BaseMVPFrame<AppQuotationDetailView
     }
 
     @Override
+    public void updateBooth(String text) {
+        quotationDetail.quotation.booth = text;
+    }
+
+    @Override
     public void updateQDate(String date) {
 
         quotationDetail.quotation.qDate = date;
@@ -378,6 +389,20 @@ public class AppQuotationDetailFrame extends BaseMVPFrame<AppQuotationDetailView
     }
 
     @Override
+    public void exportPdf() {
+
+
+        //选择excel 文件
+        final File file = FileChooserHelper.chooseFile(JFileChooser.DIRECTORIES_ONLY, false,null);
+        if(file==null) return;
+        String fileName="报价单_"+quotationDetail.quotation.qNumber+".pdf";
+        File destFile=new File(file,fileName);
+        JRPdfReporter excelReporter=new JRPdfReporter(destFile.getAbsolutePath());
+        printFile(excelReporter);
+        ReporterHelper.openFileHint(getWindow(),destFile);
+
+    }
+    @Override
     public void exportExcel() {
 
 
@@ -385,11 +410,24 @@ public class AppQuotationDetailFrame extends BaseMVPFrame<AppQuotationDetailView
         final File file = FileChooserHelper.chooseFile(JFileChooser.DIRECTORIES_ONLY, false,null);
         if(file==null) return;
         String fileName="报价单_"+quotationDetail.quotation.qNumber+".xls";
-        File destFile=new File(file,fileName);
-        JRExcelReporter excelReporter=new JRExcelReporter(destFile.getAbsolutePath());
-        printFile(excelReporter);
+      File destFile=new File(file,fileName);
+//        JRExcelReporter excelReporter=new JRExcelReporter(destFile.getAbsolutePath());
+//        printFile(excelReporter);
+//
+//        ReporterHelper.openFileHint(getWindow(),destFile);
 
-        ReporterHelper.openFileHint(getWindow(),destFile);
+
+        final String absolutePath = destFile.getAbsolutePath();
+        final Report_App_Quotation_XLXS tableToExcelReporter=new Report_App_Quotation_XLXS(  CacheManager.getInstance().bufferData.company, quotationDetail, fileName);
+        new ExcelReportTaskUseCase<QuotationDetail>(tableToExcelReporter,quotationDetail, file.getAbsolutePath()).execute(new RemoteDataSubscriber<Void>(getViewer()) {
+            @Override
+            protected void handleRemoteData(RemoteData data) {
+                ReporterHelper.openFileHint(getWindow(),new File(absolutePath));
+            }
+        });
+
+        getViewer().showLoadingDialog();
+
 
     }
 }

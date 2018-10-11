@@ -88,7 +88,7 @@ public class PDFPrintDocumentAdapter extends PrintDocumentAdapter {
 
             if (pdfRender.getPageCount() > 0) {
 
-                Canvas canvas=new Canvas(bmp);
+
                 totalpages = pdfRender.getPageCount();
                 bitmaps=new ArrayList<>();
                 for (int i = 0; i < totalpages; i++) {
@@ -97,7 +97,7 @@ public class PDFPrintDocumentAdapter extends PrintDocumentAdapter {
                     page = pdfRender.openPage(i);
                     bmp= Bitmap.createBitmap(pageWidth*scaleSize,pageHeight*scaleSize, Bitmap.Config.ARGB_8888);
                     bitmaps.add(bmp);
-                    canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
+                  //  canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
                     page.render(bmp, null, null, PdfRenderer.Page.RENDER_MODE_FOR_PRINT);
                    // BitmapHelper.bitmapSaveToFile(bmp,   getPrintBitmapPath(i),true);
 

@@ -77,7 +77,7 @@ public class ErpStockSubmitRepository  extends  ErpRepository{
 
     //销库单明细日期区间查询  并关联销库记录数据
     public static final String searchstockXiaokuItemSql = " select * from (select ps_no as no, os_no as so_no ,PRD_NO,PRD_NAME, PRD_MARK ,BAT_NO,CUS_OS_NO,QTY ,ps_dd as dd ,  3 as type, ID_NO ,'' as dept,ITM  from TF_PSS WHERE  PS_ID=" + SA_UPPER + " AND WH=" + CP_UPPER + "   and ps_no  like :ps_no   and ps_dd  >= :" + START_DATE + "  and ps_dd  <= :" + END_DATE + " ) as a    inner join  (select BOM_NO ,KHXG,SO_ZXS,XGTJ from MF_BOM_Z  where KHXG IS NOT NULL  )  as b on a.ID_NO=b.BOM_NO  inner join (select os_no, cus_no from V_mf_pos where OS_ID=" + SO_UPPER + " ) as c on a.so_no = c.os_no    " +
-            " inner  join (select PS_ID,PS_NO,CGY,TCGS,isnull(XHDG,0) as XHDG ,XHFQ,XHGBQ,XHGH,XHGX,XHPH  from MF_PSS_Z ) as d on  a.no=d.ps_no " +//关联柜子相关数据
+            " inner  join (select PS_ID,PS_NO,TCGS,isnull(XHDG,0) as XHDG ,XHFQ,XHGBQ,XHGH,XHGX,XHPH  from MF_PSS_Z ) as d on  a.no=d.ps_no " +//关联柜子相关数据
             "" +
             " order by  LEFT (convert(nvarchar(50),a.dd, 120) ,7) desc,cast (ISNULL(xhdg,0) as float)  ASC ";//按月降序  按柜号升序
 

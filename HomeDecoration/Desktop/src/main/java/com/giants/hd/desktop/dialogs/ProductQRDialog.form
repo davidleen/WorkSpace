@@ -2,7 +2,7 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.giants.hd.desktop.dialogs.ProductQRDialog">
   <grid id="cbd77" binding="contentPane" layout-manager="BorderLayout" hgap="0" vgap="0">
     <constraints>
-      <xy x="48" y="54" width="300" height="353"/>
+      <xy x="48" y="54" width="401" height="353"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -31,7 +31,13 @@
           <component id="e52b0" class="javax.swing.JButton" binding="barPrint">
             <constraints/>
             <properties>
-              <text value="条码打印"/>
+              <text value="条码打印(竖）"/>
+            </properties>
+          </component>
+          <component id="88565" class="javax.swing.JButton" binding="barPrintLand">
+            <constraints/>
+            <properties>
+              <text value="条码打印(横）"/>
             </properties>
           </component>
         </children>

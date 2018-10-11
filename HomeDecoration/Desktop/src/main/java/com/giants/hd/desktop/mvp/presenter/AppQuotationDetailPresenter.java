@@ -50,6 +50,8 @@ public interface AppQuotationDetailPresenter extends IPresenter {
 
     void viewProduct(long productId);
 
+    void exportPdf();
     void exportExcel();
 
+    void updateBooth(String text);
 }

@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
+/** 这个是单纯的表格数据导出。
  * Created by davidleen29 on 2018/9/23.
  */
 public class JTableToExcelReporter extends AbstractExcelReporter<JTable> {

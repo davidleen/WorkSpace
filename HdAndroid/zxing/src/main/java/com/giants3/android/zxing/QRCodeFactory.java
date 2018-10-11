@@ -38,6 +38,22 @@ public class QRCodeFactory {
         integrator.initiateScan();
     }
 
+
+//    public static  void start(Activity activity,String title)
+//    {
+//
+//        IntentIntegrator integrator = new IntentIntegrator(activity);
+//        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+//        integrator.setResultDisplayDuration(0);//Text..
+//        integrator.setPrompt(title);
+//        DisplayMetrics displayMetrics = activity.getResources().getDisplayMetrics();
+//        int size=Math.min(displayMetrics.widthPixels,displayMetrics.heightPixels)*2/3;
+//
+//        integrator.setScanningRectangle(size, size );//size
+//        integrator.setCameraId(0);  // Use a specific camera of the device
+//        integrator.initiateScan();
+//    }
+
     public static QRCodeResult onActivityResult(int requestCode, int resultCode, Intent data)
     {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);

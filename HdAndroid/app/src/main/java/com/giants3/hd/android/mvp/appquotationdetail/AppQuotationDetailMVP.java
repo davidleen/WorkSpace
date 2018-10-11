@@ -52,6 +52,7 @@ public interface AppQuotationDetailMVP {
 
         boolean hasModify();
 
+        void updateQuotationBooth(String newValue);
     }
 
     interface Presenter extends NewPresenter<AppQuotationDetailMVP.Viewer> {
@@ -96,6 +97,8 @@ public interface AppQuotationDetailMVP {
         void updateQuotationMemo(String newValue);
 
         void updateQuotationNumber(String newValue);
+
+        void updateQuotationBooth(String newValue);
     }
 
     interface Viewer extends NewViewer {

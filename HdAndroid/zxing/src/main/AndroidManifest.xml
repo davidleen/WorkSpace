@@ -10,6 +10,7 @@
 
         <activity
             android:name=".QRCaptureActivity"
-          ></activity>
+
+          ></activity> <!--android:theme="@style/Theme.Translucent"-->
     </application>
 </manifest>

@@ -24,6 +24,7 @@ public class ProductQRDialog extends BaseDialog<Product> {
     private JLabel iv_qr;
     private JButton a4Print;
     private JButton barPrint;
+    private JButton barPrintLand;
     BufferedImage scaledImg;
 
     String qrLocalPath;
@@ -64,11 +65,7 @@ public class ProductQRDialog extends BaseDialog<Product> {
 
 
                 try {
-                    FileUtils.makeDirs(qrLocalPath);
-                    ImageIO.write(scaledImg, "png",new File( qrLocalPath));
-                    ProductWithQR productWithQR=new ProductWithQR();
-                    productWithQR.product=product;
-                    productWithQR.qrFilePath=qrLocalPath;
+                    ProductWithQR productWithQR = getProductWithQR(product);
                     new QrProductReport(productWithQR, "qrproducta4",3*6).report();
                 } catch (IOException e1) {
                     e1.printStackTrace();
@@ -87,14 +84,24 @@ public class ProductQRDialog extends BaseDialog<Product> {
             public void actionPerformed(ActionEvent e) {
 
                 try {
-                    FileUtils.makeDirs(qrLocalPath);
-                    ImageIO.write(scaledImg, "png",new File( qrLocalPath));
-
-
-                    ProductWithQR productWithQR=new ProductWithQR();
-                    productWithQR.product=product;
-                    productWithQR.qrFilePath=qrLocalPath;
+                    ProductWithQR productWithQR = getProductWithQR(product);
                     new QrProductReport(productWithQR, "qrproduct",1).report();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                    JOptionPane.showMessageDialog(ProductQRDialog.this,e1.getMessage());
+                }
+            }
+        });
+
+
+
+        barPrintLand.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                try {
+                    ProductWithQR productWithQR = getProductWithQR(product);
+                    new QrProductReport(productWithQR, "qrproduct_land",1).report();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                     JOptionPane.showMessageDialog(ProductQRDialog.this,e1.getMessage());
@@ -105,10 +112,16 @@ public class ProductQRDialog extends BaseDialog<Product> {
         setModal(false);
     }
 
+    public ProductWithQR getProductWithQR(Product product) throws IOException {
+        FileUtils.makeDirs(qrLocalPath);
+        ImageIO.write(scaledImg, "png",new File( qrLocalPath));
 
 
-
-
+        ProductWithQR productWithQR=new ProductWithQR();
+        productWithQR.product=product;
+        productWithQR.qrFilePath=qrLocalPath;
+        return productWithQR;
+    }
 
 
 }

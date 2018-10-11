@@ -101,6 +101,11 @@ public class ModelImpl extends PageModelImpl<QuotationDetail> implements AppQuot
     }
 
     @Override
+    public void updateQuotationBooth(String newValue) {
+        quotationDetail.quotation.booth=newValue;
+    }
+
+    @Override
     public void updateQuotationMemo(String newValue) {
         quotationDetail.quotation.memo=newValue;
     }

@@ -21,15 +21,9 @@ public class CustomBeanDataSource extends JRBeanCollectionDataSource {
     @Override
     protected String getPropertyName(JRField field) {
 
-        return super.getPropertyName(field);
+        final String propertyName = super.getPropertyName(field);
+        return propertyName;
     }
 
-    @Override
-    public Object getFieldValue(JRField field) throws JRException {
 
-        Object result= super.getFieldValue(field);
-
-
-         return result;
-    }
 }
