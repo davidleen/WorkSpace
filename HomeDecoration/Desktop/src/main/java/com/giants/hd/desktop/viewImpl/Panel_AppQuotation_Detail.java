@@ -225,10 +225,10 @@ public class Panel_AppQuotation_Detail extends BasePanel implements AppQuotation
                     //单击第一列 显示原图
 
                     switch (column) {
-                        case 1:
+                        case 2:
                             ImageViewDialog.showDialog(getWindow(), HttpUrl.loadPicture(item.photoUrl), item.productName);
                             break;
-                        case 0:
+                        case 1:
 
                             presenter.viewProduct(item.productId);
 

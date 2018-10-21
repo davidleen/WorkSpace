@@ -1,5 +1,10 @@
 [
   {
+    "columnName": "序号",
+    "fileName": "itm",
+    "width": 40,
+    "aClass": "S"
+  },{
     "columnName": "产品名称",
     "fileName": "productName",
     "width": 120,

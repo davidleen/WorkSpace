@@ -46,9 +46,13 @@ public abstract class BaseInternalFrame extends JInternalFrame  implements IPres
 
 
         //Set the window's location.
-        setLocation(xOffset*openFrameCount, yOffset*openFrameCount);
+        final int x = xOffset * (openFrameCount%8+1);
+        final int y = yOffset * (openFrameCount%8+1);
+        setLocation(x, y);
 
     }
+
+
 
 
 

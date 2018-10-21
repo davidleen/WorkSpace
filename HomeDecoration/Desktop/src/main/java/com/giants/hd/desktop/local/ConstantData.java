@@ -16,4 +16,8 @@ public class ConstantData {
      * 序号列常量
      */
     public static final String  COLUMN_INDEX="COLUMN_INDEX";
+    /**
+     * 序号列常量
+     */
+    public static final String  COLUMN_ITM="itm";
 }

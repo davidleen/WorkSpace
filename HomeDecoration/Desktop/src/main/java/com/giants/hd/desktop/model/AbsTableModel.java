@@ -198,7 +198,7 @@ public  abstract  class AbsTableModel<T> extends AbstractTableModel implements  
 
 
         final String currentFieldName = getFieldName(columnIndex);
-        if (currentFieldName.equals(ConstantData.COLUMN_INDEX)) {
+        if (currentFieldName.equalsIgnoreCase(ConstantData.COLUMN_INDEX)) {
             return rowIndex + 1;
         }
 
@@ -235,6 +235,13 @@ public  abstract  class AbsTableModel<T> extends AbstractTableModel implements  
             }
         }
         if(obj  ==null) return null;
+        if (currentFieldName.equalsIgnoreCase(ConstantData.COLUMN_ITM)) {
+
+            try{
+               return Integer.valueOf(obj.toString())+1;
+            }catch (Throwable t){}
+
+        }
 
         //数字为0  显示空字符串
         if (obj instanceof Number) {
