@@ -1,0 +1,28 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion project.ANDROID_COMPILE_VERSION
+    buildToolsVersion project.ANDROID_BUILD_VERSION
+    defaultConfig {
+        applicationId "test.changu.com.customreader"
+        minSdkVersion project.ANDROID_MIN_VERSION
+        targetSdkVersion  project.ANDROID_TARGET_VERSION
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile "com.android.support:appcompat-v7:${ANDROID_SUPPORT_V7_VERSION}"
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    testCompile 'junit:junit:4.12'
+    compile project(path: ':core')
+}
