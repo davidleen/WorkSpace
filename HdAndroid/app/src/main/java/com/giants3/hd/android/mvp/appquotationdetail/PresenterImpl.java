@@ -1,10 +1,12 @@
 package com.giants3.hd.android.mvp.appquotationdetail;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
 
+import com.giants3.android.frame.util.FileUtils;
 import com.giants3.android.frame.util.Log;
 import com.giants3.android.frame.util.StorageUtils;
 import com.giants3.hd.android.mvp.BasePresenter;
@@ -15,8 +17,11 @@ import com.giants3.hd.data.interractor.UseCase;
 import com.giants3.hd.data.interractor.UseCaseFactory;
 import com.giants3.hd.entity.Customer;
 import com.giants3.hd.entity.Product;
+import com.giants3.hd.entity.Quotation;
 import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.noEntity.app.QuotationDetail;
+import com.giants3.hd.utils.GsonUtils;
+import com.giants3.hd.utils.StringUtils;
 
 import java.io.File;
 import java.util.List;
@@ -111,10 +116,21 @@ public class PresenterImpl extends BasePresenter<AppQuotationDetailMVP.Viewer, A
 
 
     @Override
-    public void addNewProduct(long productId) {
+    public void addNewProduct(long productId,String productName,String pVersion) {
+
+
+        if(getModel().containsProduct(productId))
+        {
+            getView().showMessage((StringUtils.isEmpty(pVersion)?productName:(productName+"-"+pVersion))+"已经存在报价单中，报价单添加重复。");
+            return ;
+        }
+
 
 
         getView().showWaiting();
+
+
+
 
 
         RemoteDataSubscriber<Product> useCaseSubscriber = new RemoteDataSubscriber<Product>(this) {
@@ -122,7 +138,6 @@ public class PresenterImpl extends BasePresenter<AppQuotationDetailMVP.Viewer, A
             @Override
             protected void handleRemoteData(RemoteData<Product> data) {
                 if (data.isSuccess()) {
-
                     Product product = data.datas.get(0);
                     getModel().addNewProduct(product);
                     bindData();
@@ -245,6 +260,85 @@ public class PresenterImpl extends BasePresenter<AppQuotationDetailMVP.Viewer, A
     }
 
     @Override
+    public void cancelAllQuotationDiscount() {
+
+
+        getModel().cancelAllQuotationDiscount();
+        bindData();
+    }
+
+    @Override
+    public boolean restoreInstance(Bundle restoreInstance) {
+
+        String key_quotationdetail = restoreInstance.getString("KEY_QUOTATIONDETAIL");
+        if(StringUtils.isEmpty(key_quotationdetail)) return false;
+        QuotationDetail quotationDetail= GsonUtils.fromJson(key_quotationdetail,QuotationDetail.class);
+        String  oldData=  restoreInstance.getString("KEY_QUOTATIONDETAIL_OLD") ;
+        getModel().restoreQuotationDetail(quotationDetail,oldData);
+        bindData();
+
+        return true;
+    }
+
+    @Override
+    public void saveInstance(Bundle savedInstance) {
+
+
+        QuotationDetail quotationDetail=getModel().getQuotationDetail();
+        String oldData=getModel().getOriginData();
+       savedInstance.putString("KEY_QUOTATIONDETAIL",GsonUtils.toJson(quotationDetail));
+       savedInstance.putString("KEY_QUOTATIONDETAIL_OLD",oldData);
+
+
+    }
+
+    @Override
+    public void exportQuotationPDF() {
+
+        if (getModel().hasModify()) {
+            getView().showMessage("先保存报价单。");
+            return;
+        }
+
+
+        QuotationDetail quotationDetail = getModel().getQuotationDetail();
+
+
+        final String filePath =  StorageUtils.getFilePath(   "报价单"+File.separator + quotationDetail.quotation.qNumber+".pdf");
+        File file = new File(filePath);
+        if(file.exists())
+        {
+              file.delete();
+
+
+        }
+        FileUtils.makeDirs(filePath);
+
+        long quotationId = quotationDetail.quotation.id;
+
+        UseCase useCase = UseCaseFactory.getInstance().createPrintQuotationUseCase(quotationId, filePath);
+
+        getView().showWaiting();
+        useCase.execute(new RemoteDataSubscriber<Void>(this) {
+            @Override
+            protected void handleRemoteData(RemoteData<Void> data) {
+
+                if (data.isSuccess()) {
+
+
+                    getView().showMessage("报价单导出成功，存放在目录:"+filePath);
+
+
+                }
+
+            }
+
+
+        });
+
+    }
+
+    @Override
     public void deleteQuotation() {
 
 
@@ -287,12 +381,9 @@ public class PresenterImpl extends BasePresenter<AppQuotationDetailMVP.Viewer, A
     @Override
     public void updateQuotationDiscount(float newDisCount) {
         QuotationDetail quotationDetail = getModel().getQuotationDetail();
-        long quotationId = quotationDetail.quotation.id;
 
-
-        UseCase useCase = UseCaseFactory.getInstance().createUpdateQuotationDiscountUseCase(quotationId, newDisCount);
-
-        executeQuotationUseCase(useCase);
+        getModel().updateQuotationDiscount( newDisCount);
+        bindData();
     }
 
 
@@ -372,8 +463,8 @@ public class PresenterImpl extends BasePresenter<AppQuotationDetailMVP.Viewer, A
         PrintAttributes.Builder builder = new PrintAttributes.Builder();
         builder.setColorMode(PrintAttributes.COLOR_MODE_COLOR);
         builder.setMediaSize(PrintAttributes.MediaSize.ISO_A4);;
-        PrintDocumentAdapter documentAdapter = new PDFPrintDocumentAdapter(getView().getContext(), filePath);
-//        PrintDocumentAdapter documentAdapter = new FilePrintDocumentAdapter(  filePath);
+        //  PrintDocumentAdapter documentAdapter = new PDFPrintDocumentAdapter(getView().getContext(), filePath);
+         PrintDocumentAdapter documentAdapter = new FilePrintDocumentAdapter(  filePath);
         printManager.print("test pdf print", documentAdapter, builder.build());
     }
 

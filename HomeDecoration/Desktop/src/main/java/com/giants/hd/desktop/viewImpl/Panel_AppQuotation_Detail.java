@@ -51,7 +51,9 @@ public class Panel_AppQuotation_Detail extends BasePanel implements AppQuotation
     private JButton print;
     private JButton export_excel;
     private JButton export_pdf;
-    private JTextField tf_booth;
+    private JButton setAllDiscount;
+    private JButton cancelAllDiscount;
+//    private JTextField tf_booth;
 
 
     private AppQuotationItemTableModel tableModel;
@@ -74,24 +76,25 @@ public class Panel_AppQuotation_Detail extends BasePanel implements AppQuotation
             presenter.updateQNumber(tf_qNumber.getText());
 
         }
-    };private DocumentListener boothDocListener = new DocumentListener() {
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            presenter.updateBooth(tf_booth.getText());
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            presenter.updateBooth(tf_booth.getText());
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-
-            presenter.updateBooth(tf_booth.getText());
-
-        }
     };
+//    private DocumentListener boothDocListener = new DocumentListener() {
+//        @Override
+//        public void insertUpdate(DocumentEvent e) {
+//            presenter.updateBooth(tf_booth.getText());
+//        }
+//
+//        @Override
+//        public void removeUpdate(DocumentEvent e) {
+//            presenter.updateBooth(tf_booth.getText());
+//        }
+//
+//        @Override
+//        public void changedUpdate(DocumentEvent e) {
+//
+//            presenter.updateBooth(tf_booth.getText());
+//
+//        }
+//    };
     private DocumentListener qDateDocListener = new DocumentListener() {
         @Override
         public void insertUpdate(DocumentEvent e) {
@@ -172,7 +175,7 @@ public class Panel_AppQuotation_Detail extends BasePanel implements AppQuotation
         table.setModel(tableModel);
 
 
-        table.addMouseListener(new TableMenuAdapter(table, new String[]{"添加", "删除", "打折"}, new TableMenuAdapter.TableMenuListener() {
+        table.addMouseListener(new TableMenuAdapter(table, new String[]{"   添加   ", "   删除   ", "   打折   ", "   取消折扣   "}, new TableMenuAdapter.TableMenuListener() {
             @Override
             public void onMenuClick(JTable table, int index) {
                 int[] selectRow = JTableUtils.getSelectedRowSOnModel(table);
@@ -184,7 +187,23 @@ public class Panel_AppQuotation_Detail extends BasePanel implements AppQuotation
                         presenter.deleteItem(selectRow);
                         break;
                     case 2:
-                        presenter.discountItem(selectRow, 0.65f);
+
+                        String result=  JOptionPane.showInputDialog(getWindow(),"输入折扣值（0-1）之间","1");
+                        if(result==null) return;
+                        float value= 0;
+                        try {
+                            value = Float.valueOf(result);
+                        } catch (NumberFormatException e1) {
+                            e1.printStackTrace();
+                        }
+                        if(value>1||value<=0) {
+                            showMesssage("折扣值设置不正确，必须在0-1之间");
+                            return;
+                        }
+
+                        presenter.discountItem(selectRow,value);
+                        break; case 3:
+                        presenter.discountItem(selectRow, 1f);
                         break;
                 }
 
@@ -328,12 +347,46 @@ public class Panel_AppQuotation_Detail extends BasePanel implements AppQuotation
             }
         });
 
+
+        setAllDiscount.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+              String result=  JOptionPane.showInputDialog(getWindow(),"输入折扣值（0-1）之间","1");
+                if(result==null) return;
+                float value= 0;
+                try {
+                    value = Float.valueOf(result);
+                } catch (NumberFormatException e1) {
+                    e1.printStackTrace();
+                }
+                if(value>1||value<=0) {
+                    showMesssage("折扣值设置不正确，必须在0-1之间");
+                    return;
+                }
+
+
+
+
+                presenter.setAllDiscount(value);
+
+            }
+        });
+
+        cancelAllDiscount.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                presenter.cancelAllDiscount();
+            }
+        });
+
     }
 
 
     public void setEditable(boolean editable) {
         tf_qNumber.setEditable(editable);
-        tf_booth.setEditable(editable);
+       // tf_booth.setEditable(editable);
         vDate.setEnabled(editable);
         qDate.setEnabled(editable);
 
@@ -364,9 +417,9 @@ public class Panel_AppQuotation_Detail extends BasePanel implements AppQuotation
         tf_qNumber.getDocument().removeDocumentListener(qNumberDocListener);
         tf_qNumber.setText(item.qNumber);
         tf_qNumber.getDocument().addDocumentListener(qNumberDocListener);
-        tf_booth.getDocument().removeDocumentListener(boothDocListener);
-        tf_booth.setText(item.booth);
-        tf_booth.getDocument().addDocumentListener(boothDocListener);
+//        tf_booth.getDocument().removeDocumentListener(boothDocListener);
+//        tf_booth.setText(item.booth);
+//        tf_booth.getDocument().addDocumentListener(boothDocListener);
         qDate.getJFormattedTextField().getDocument().removeDocumentListener(qDateDocListener);
         qDate.getJFormattedTextField().setText(item.qDate);
         qDate.getJFormattedTextField().getDocument().addDocumentListener(qDateDocListener);

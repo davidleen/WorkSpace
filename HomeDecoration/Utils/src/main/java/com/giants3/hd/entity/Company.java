@@ -25,4 +25,9 @@ public class Company implements Serializable{
     public String email;
 
 
+    /**
+     * 公司展位号
+     */
+    public String boothNo;
+
 }

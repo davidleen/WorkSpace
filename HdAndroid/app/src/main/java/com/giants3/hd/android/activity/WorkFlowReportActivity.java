@@ -1,7 +1,6 @@
 package com.giants3.hd.android.activity;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
@@ -73,7 +72,7 @@ public class WorkFlowReportActivity extends BaseHeadViewerActivity<WorkFlowRepor
     }
 
     @Override
-    protected void initEventAndData() {
+    protected void initEventAndData(Bundle savedInstance) {
         unDeliveryList.setOnClickListener(this);
         progressSearch.setOnClickListener(this);
 

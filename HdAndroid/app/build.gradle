@@ -32,8 +32,8 @@ android {
 
 
         targetSdkVersion project.ANDROID_TARGET_VERSION
-        versionCode 59
-        versionName "1.5.9"
+        versionCode 62
+        versionName "1.6.2"
 
         buildConfigField "boolean", "AUTO_UPDATES", "true"
 
@@ -68,9 +68,9 @@ android {
             signingConfig signingConfigs.debug
         }
         debug {
-//               minifyEnabled true
-//               zipAlignEnabled true
-//            proguardFiles 'proguard-rules.pro'
+               minifyEnabled true
+               zipAlignEnabled true
+            proguardFiles 'proguard-rules.pro'
             signingConfig signingConfigs.debug
         }
     }
@@ -113,8 +113,8 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
     compile 'com.lcodecorex:tkrefreshlayout:1.0.7'
-    releaseCompile project(':zxing')
-    debugCompile project(':zxing')
+//    compile project(':zxing')
+    compile project(':zxing_yipianfengye')
 //     debugCompile project(':zxing_no_op')
 //     releaseCompile project(':camcomnamecard')
 //     compile project(':xunfeinamecard')

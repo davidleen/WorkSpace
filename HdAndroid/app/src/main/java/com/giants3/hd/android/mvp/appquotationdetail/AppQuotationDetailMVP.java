@@ -1,6 +1,8 @@
 package com.giants3.hd.android.mvp.appquotationdetail;
 
 
+import android.os.Bundle;
+
 import com.giants3.hd.android.mvp.NewPresenter;
 import com.giants3.hd.android.mvp.NewViewer;
 import com.giants3.hd.android.mvp.PageModel;
@@ -53,6 +55,16 @@ public interface AppQuotationDetailMVP {
         boolean hasModify();
 
         void updateQuotationBooth(String newValue);
+
+        void cancelAllQuotationDiscount();
+
+        void updateQuotationDiscount(float newDisCount);
+
+        boolean containsProduct(long productId);
+
+        String getOriginData();
+
+        void restoreQuotationDetail(QuotationDetail quotationDetail, String oldData);
     }
 
     interface Presenter extends NewPresenter<AppQuotationDetailMVP.Viewer> {
@@ -61,7 +73,7 @@ public interface AppQuotationDetailMVP {
         void setQuotationId(long quotationId);
 
 
-        void addNewProduct(long  productId);
+        void addNewProduct(long  productId,String productName,String pVersion);
 
         void deleteQuotationItem(int item);
 
@@ -99,6 +111,15 @@ public interface AppQuotationDetailMVP {
         void updateQuotationNumber(String newValue);
 
         void updateQuotationBooth(String newValue);
+
+        void cancelAllQuotationDiscount();
+
+        boolean restoreInstance(Bundle savedInstance);
+
+        void saveInstance(Bundle savedInstance);
+
+        void exportQuotationPDF();
+
     }
 
     interface Viewer extends NewViewer {

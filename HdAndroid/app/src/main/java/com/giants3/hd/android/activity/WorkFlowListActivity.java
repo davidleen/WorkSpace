@@ -100,7 +100,7 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
     }
 
     @Override
-    protected void initEventAndData() {
+    protected void initEventAndData(Bundle savedInstance) {
         ErpOrderItem orderItem = null;
         try {
             orderItem = GsonUtils.fromJson(getIntent().getStringExtra(KEY_ORDER_ITEM), ErpOrderItem.class);

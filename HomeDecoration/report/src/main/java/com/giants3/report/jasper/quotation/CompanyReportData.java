@@ -27,6 +27,7 @@ public class CompanyReportData<T> extends ReportData<T> {
         put("companyEAddress",company.eAddress);
         put("tel",company.tel);
         put("fax",company.fax);
+        put("booth",company.boothNo);
 
     }
 

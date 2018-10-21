@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2018-10-10T22:11:08 -->
+<!-- 2018-10-13T11:21:18 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="qrcode" printOrder="Horizontal" pageWidth="183" pageHeight="124" orientation="Landscape" columnWidth="183" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="bfda6e99-1a3b-45c8-b5c2-d4f3524ff91d">
 	<property name="com.jaspersoft.studio.unit." value="mm"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
@@ -42,8 +42,8 @@
 					<reportElement x="101" y="31" width="80" height="39" uuid="134901aa-88fd-43a1-bce1-1fd5a4f86146">
 						<property name="com.jaspersoft.studio.unit.height" value="mm"/>
 					</reportElement>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Song"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Song" size="12"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 				</textField>
@@ -54,9 +54,9 @@
 					<imageExpression><![CDATA[$F{url}]]></imageExpression>
 				</image>
 				<textField>
-					<reportElement x="119" y="71" width="46" height="19" uuid="34961fee-e758-4c98-9d24-98223eb4214f"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Song"/>
+					<reportElement x="101" y="71" width="80" height="29" uuid="34961fee-e758-4c98-9d24-98223eb4214f"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Song" size="12"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{unit}]]></textFieldExpression>
 				</textField>

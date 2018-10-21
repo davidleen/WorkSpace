@@ -1,6 +1,8 @@
 package com.giants3.hd.android.mvp.customer;
 
 
+import android.os.Bundle;
+
 import com.giants3.hd.android.mvp.NewPresenter;
 import com.giants3.hd.android.mvp.NewViewer;
 import com.giants3.hd.android.mvp.PageModel;
@@ -19,6 +21,7 @@ public interface CustomerEditMVP {
     interface Model extends PageModel<Customer> {
 
 
+        boolean hasModify();
         Customer getCustomer();
 
         void setCustomer(Customer customer);
@@ -29,6 +32,10 @@ public interface CustomerEditMVP {
         NameCard getLastRequestNameCard();
 
         void setLastRequestNameCard(NameCard nameCard);
+
+        String getOriginData();
+
+        void restoreCustomer(Customer customer, String oldData);
     }
 
     interface Presenter extends NewPresenter<Viewer> {
@@ -45,6 +52,10 @@ public interface CustomerEditMVP {
         void retryLastRequest();
 
         void deleteCustomer();
+
+        boolean restoreInstance(Bundle savedInstance);
+
+        void saveInstance(Bundle savedInstance);
     }
 
     interface Viewer extends NewViewer {

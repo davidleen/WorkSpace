@@ -20,7 +20,6 @@ import com.giants3.hd.android.R;
 import com.giants3.hd.android.adapter.ItemListAdapter;
 import com.giants3.hd.android.entity.TableData;
 import com.giants3.hd.android.events.CustomerUpdateEvent;
-import com.giants3.hd.android.fragment.ItemPickDialogFragment;
 import com.giants3.hd.android.fragment.ProductDetailFragment;
 import com.giants3.hd.android.fragment.SearchCustomerFragment;
 import com.giants3.hd.android.fragment.SearchProductFragment;
@@ -51,7 +50,7 @@ import butterknife.Bind;
 import static com.giants3.hd.utils.DateFormats.FORMAT_YYYY_MM_DD;
 
 
-public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDetailMVP.Presenter> implements AppQuotationDetailMVP.Viewer, SearchProductFragment.OnFragmentInteractionListener , SearchCustomerFragment.OnFragmentInteractionListener {
+public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDetailMVP.Presenter> implements AppQuotationDetailMVP.Viewer, SearchProductFragment.OnFragmentInteractionListener, SearchCustomerFragment.OnFragmentInteractionListener {
 
     public static final String KEY_QUOTATION_ID = "KEY_QUOTATION_ID";
     private static final int REQUEST_CODE_ADD_CUSTOMER = 998;
@@ -64,6 +63,8 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
     ImageView scanItem;
     @Bind(R.id.discountAll)
     View discountAll;
+    @Bind(R.id.cancelDiscount)
+    View cancelDiscount;
 
     @Bind(R.id.qNumber)
     TextView qNumber;
@@ -76,6 +77,8 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
 
     @Bind(R.id.salesman)
     TextView salesman;
+    @Bind(R.id.exportPdf)
+    View exportPdf;
     @Bind(R.id.booth)
     TextView booth;
     @Bind(R.id.save)
@@ -115,7 +118,7 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
 
 
     @Override
-    protected void initEventAndData() {
+    protected void initEventAndData(Bundle savedInstance) {
 
 
         adapter = new ItemListAdapter(this);
@@ -266,7 +269,7 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
 
                 final QuotationItem item = (QuotationItem) parent.getItemAtPosition(position);
                 if (item != null) {
-                    new AlertDialog.Builder(AppQuotationActivity.this).setItems(new String[]{"删除", "折扣"}, new DialogInterface.OnClickListener() {
+                    new AlertDialog.Builder(AppQuotationActivity.this).setItems(new String[]{"删除", "设置折扣", "取消折扣"}, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
@@ -305,6 +308,13 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
                                         }
                                     });
                                     break;
+                                case 2:
+
+                                    //取消折扣， 很简单设置1
+                                    getPresenter().updateItemDiscount(item.itm, 1);
+
+
+                                    break;
 
                             }
 
@@ -324,8 +334,10 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
         pickItem.setOnClickListener(this);
         scanItem.setOnClickListener(this);
         discountAll.setOnClickListener(this);
+        cancelDiscount.setOnClickListener(this);
         save.setOnClickListener(this);
         print.setOnClickListener(this);
+        exportPdf.setOnClickListener(this);
         customer.setOnClickListener(this);
         addCustomer.setOnClickListener(this);
         delete.setOnClickListener(this);
@@ -333,8 +345,18 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
         createTime.setOnClickListener(this);
 
 
-        long quotationId = getIntent().getLongExtra(KEY_QUOTATION_ID, -1);
-        getPresenter().setQuotationId(quotationId);
+        //现场恢复
+        if(savedInstance!=null&&getPresenter().restoreInstance(savedInstance))
+        {
+
+            return;
+
+        }
+
+        {
+            long quotationId = getIntent().getLongExtra(KEY_QUOTATION_ID, -1);
+            getPresenter().setQuotationId(quotationId);
+        }
 
     }
 
@@ -397,6 +419,12 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
 
     }
 
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getPresenter().saveInstance(outState);
+    }
 
     public static void start(AndroidRouter router, long id) {
 
@@ -483,6 +511,12 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
                 getPresenter().printQuotation();
 
                 break;
+            case R.id.exportPdf:
+
+
+                getPresenter().exportQuotationPDF();
+
+                break;
 
 
             case R.id.memo: {
@@ -539,7 +573,8 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
 
             }
 
-            break; case R.id.booth: {
+            break;
+            case R.id.booth: {
 
                 final String oldBooth = booth.getText().toString();
                 updateValue("修改展位号", oldBooth,
@@ -583,8 +618,6 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
 
                 break;
             case R.id.discountAll:
-
-
                 updateValue("设置全部折扣", "0", new ValueEditDialogFragment.ValueChangeListener() {
                     @Override
                     public void onValueChange(String title, String oldValue, String newValue) {
@@ -612,6 +645,13 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
                 });
 
                 break;
+            //撤销全部折扣
+            case R.id.cancelDiscount: {
+                getPresenter().cancelAllQuotationDiscount();
+            }
+
+
+            break;
             case R.id.scanItem:
 
 
@@ -641,7 +681,7 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
     @Override
     public void onProductSelect(AProduct aProduct) {
 
-        getPresenter().addNewProduct(aProduct.id);
+        getPresenter().addNewProduct(aProduct.id,aProduct.name,aProduct.pVersion);
 
 
     }
@@ -658,7 +698,7 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
                 QRProduct product = GsonUtils.fromJson(qrCodeResult.contents, QRProduct.class);
 
                 if (product != null) {
-                    getPresenter().addNewProduct(product.id);
+                    getPresenter().addNewProduct(product.id,product.name,product.pVersion);
 
                 }
                 Log.i("result:" + product);
@@ -722,7 +762,6 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
         fragment.show(getSupportFragmentManager(), "dialog99989");
 
 
-
     }
 
 
@@ -738,10 +777,9 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
     public void onEvent(CustomerUpdateEvent event) {
 
 
-        if(event.customer==null)
-        getPresenter().loadCustomer();
-        else
-        {
+        if (event.customer == null)
+            getPresenter().loadCustomer();
+        else {
             getPresenter().updateCustomer(event.customer);
         }
     }
@@ -751,7 +789,6 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
 
 
         getPresenter().updateCustomer(customer);
-
 
 
     }

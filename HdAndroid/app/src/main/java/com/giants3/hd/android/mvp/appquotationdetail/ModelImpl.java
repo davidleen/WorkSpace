@@ -4,6 +4,7 @@ import com.giants3.hd.android.mvp.PageModelImpl;
 import com.giants3.hd.data.utils.GsonUtils;
 import com.giants3.hd.entity.Customer;
 import com.giants3.hd.entity.Product;
+import com.giants3.hd.entity.app.QuotationItem;
 import com.giants3.hd.logic.AppQuotationAnalytics;
 import com.giants3.hd.noEntity.app.QuotationDetail;
 import com.google.gson.Gson;
@@ -28,6 +29,19 @@ public class ModelImpl extends PageModelImpl<QuotationDetail> implements AppQuot
         this.quotationDetail = quotationDetail;
 
         olddData= GsonUtils.toJson(quotationDetail);
+    }
+
+    @Override
+    public String getOriginData() {
+        return olddData;
+    }
+
+    @Override
+    public void restoreQuotationDetail(QuotationDetail quotationDetail, String oldData) {
+
+
+        this.quotationDetail=quotationDetail;
+        this.olddData=oldData;
     }
 
     @Override
@@ -72,6 +86,37 @@ public class ModelImpl extends PageModelImpl<QuotationDetail> implements AppQuot
         AppQuotationAnalytics.discountItem(quotationDetail,new int[]{itm},newDisCount);
     }
 
+
+
+    @Override
+    public void cancelAllQuotationDiscount() {
+        //取消打折 设置折扣为1
+        AppQuotationAnalytics.discountAll(quotationDetail,  1);
+
+    }
+
+    @Override
+    public void updateQuotationDiscount(float newDisCount) {
+        AppQuotationAnalytics.discountAll(quotationDetail,  newDisCount);
+    }
+
+
+    @Override
+    public boolean containsProduct(long productId) {
+
+
+        if(quotationDetail==null) return false;
+        if(quotationDetail.items==null) return false;
+        for(QuotationItem item:quotationDetail.items)
+        {
+            if(item.productId==productId)
+                return true;
+        }
+
+        return false;
+
+    }
+
     @Override
     public void updateCustomer(Customer customer) {
 
@@ -105,6 +150,8 @@ public class ModelImpl extends PageModelImpl<QuotationDetail> implements AppQuot
         quotationDetail.quotation.booth=newValue;
     }
 
+
+
     @Override
     public void updateQuotationMemo(String newValue) {
         quotationDetail.quotation.memo=newValue;
@@ -113,6 +160,7 @@ public class ModelImpl extends PageModelImpl<QuotationDetail> implements AppQuot
     @Override
     public void addNewProduct(Product product) {
 
+        if(containsProduct(product.id)) return;
 
         AppQuotationAnalytics.addItem(quotationDetail,-1,product);
     }

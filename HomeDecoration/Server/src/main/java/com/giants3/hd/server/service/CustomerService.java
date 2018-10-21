@@ -200,7 +200,7 @@ public class CustomerService extends AbstractService {
         Customer oldCustomer = customerRepository.findOne(customer.id);
 
 
-            if (oldCustomer == null||oldCustomer.code != customer.code) {
+            if (oldCustomer == null||!oldCustomer.code.equals( customer.code) ){
                 String newCode=customer.code;
 
 
@@ -215,7 +215,7 @@ public class CustomerService extends AbstractService {
                         newCode=generateNewCustomerCode();
                         tryTime++;
                     }
-                }while(temp!=null||tryTime>=maxTryTime);
+                }while(temp!=null&&tryTime<=maxTryTime);
 
 
                 if (temp != null) {

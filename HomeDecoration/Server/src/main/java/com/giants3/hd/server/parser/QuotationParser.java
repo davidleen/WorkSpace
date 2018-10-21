@@ -21,6 +21,7 @@ public class QuotationParser implements DataParser<com.giants3.hd.entity.Quotati
         aQuotation.vDate=data.vDate;
         aQuotation.qDate=data.qDate;
 
+
         return aQuotation;
     }
 }

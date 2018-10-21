@@ -22,7 +22,7 @@ public  abstract  class BaseHeadViewerActivity<P extends NewPresenter> extends B
         mPresenter = onLoadPresenter();
         getPresenter().attachView(this);
 
-        initEventAndData();
+        initEventAndData(savedInstanceState);
 
         runOnUiThread(new Runnable() {
             @Override
@@ -61,7 +61,7 @@ public  abstract  class BaseHeadViewerActivity<P extends NewPresenter> extends B
 
     protected abstract P onLoadPresenter();
 
-    protected abstract void initEventAndData();
+    protected abstract void initEventAndData(Bundle savedInstance);
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

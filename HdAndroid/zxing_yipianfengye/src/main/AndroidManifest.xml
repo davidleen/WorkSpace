@@ -1,0 +1,13 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.giants3.android.zxing_yipianfengye" >
+
+    <application>
+
+
+        <activity android:name=".CustomerCaptureActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/scanStyle"
+
+            />
+    </application>
+</manifest>

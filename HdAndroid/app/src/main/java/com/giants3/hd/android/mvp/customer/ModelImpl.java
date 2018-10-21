@@ -3,9 +3,11 @@ package com.giants3.hd.android.mvp.customer;
 
 import com.giants3.hd.android.mvp.AppQuotationMVP;
 import com.giants3.hd.android.mvp.PageModelImpl;
+import com.giants3.hd.data.utils.GsonUtils;
 import com.giants3.hd.entity.Customer;
 import com.giants3.hd.entity.app.Quotation;
 import com.giants3.hd.noEntity.NameCard;
+import com.google.gson.Gson;
 
 /**
  * Created by davidleen29 on 2016/10/10.
@@ -14,9 +16,29 @@ import com.giants3.hd.noEntity.NameCard;
 public class ModelImpl extends PageModelImpl<Customer> implements CustomerEditMVP.Model {
 
 
+    String oldCustormer="";
     private Customer customer;
 
     private NameCard lastRequestNameCard;
+
+    @Override
+    public String getOriginData() {
+        return oldCustormer;
+    }
+
+    @Override
+    public void restoreCustomer(Customer customer, String oldData) {
+
+        this.customer=customer;
+        this.oldCustormer=oldData;
+    }
+
+    @Override
+    public boolean hasModify() {
+
+        return !(customer==null?"": GsonUtils.toJson(customer)).equals(oldCustormer);
+
+    }
 
     @Override
     public Customer getCustomer() {
@@ -27,6 +49,7 @@ public class ModelImpl extends PageModelImpl<Customer> implements CustomerEditMV
     public void setCustomer(Customer customer) {
 
         this.customer = customer;
+        oldCustormer=customer==null?"": GsonUtils.toJson(customer);
     }
 
 

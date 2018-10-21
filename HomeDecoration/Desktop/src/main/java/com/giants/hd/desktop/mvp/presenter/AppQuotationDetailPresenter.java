@@ -54,4 +54,8 @@ public interface AppQuotationDetailPresenter extends IPresenter {
     void exportExcel();
 
     void updateBooth(String text);
+
+    void cancelAllDiscount();
+
+    void setAllDiscount(float discountVlaue);
 }

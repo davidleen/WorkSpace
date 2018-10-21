@@ -31,6 +31,7 @@ public class CompanyInfoDialog extends BaseDialog {
     private JTextField tf_eAddress;
     private JTextField tf_tel;
     private JTextField tf_fax;
+    private JTextField tf_booth;
 
     Company oldData;
     Company newData;
@@ -123,6 +124,7 @@ public class CompanyInfoDialog extends BaseDialog {
             company.eAddress = tf_eAddress.getText();
             company.tel= tf_tel.getText() ;
             company.fax= tf_fax.getText();
+            company.boothNo= tf_booth.getText();
 
 
 
@@ -151,6 +153,7 @@ public class CompanyInfoDialog extends BaseDialog {
         tf_eAddress.setText(String.valueOf(company.eAddress))  ;
 
         tf_fax.setText(String.valueOf(company.fax))  ;
+        tf_booth.setText(String.valueOf(company.boothNo))  ;
 
 
 

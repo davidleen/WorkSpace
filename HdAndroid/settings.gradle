@@ -1,4 +1,4 @@
-include ':app', ':domain', ':net',     ':umenganalysis', ':NetWork'
+include ':app', ':domain', ':net',     ':umenganalysis', ':NetWork', ':zxing_yipianfengye'
 include ':library'
 project(':library').projectDir = new File('../modules/library')
 include ':frame'

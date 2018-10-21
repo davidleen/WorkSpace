@@ -1,6 +1,8 @@
 package com.giants3.hd.android.mvp.customer;
 
 
+import android.os.Bundle;
+
 import com.giants3.hd.android.events.CustomerUpdateEvent;
 import com.giants3.hd.android.mvp.BasePresenter;
 import com.giants3.hd.android.mvp.RemoteDataSubscriber;
@@ -9,6 +11,7 @@ import com.giants3.hd.data.interractor.UseCaseFactory;
 import com.giants3.hd.entity.Customer;
 import com.giants3.hd.noEntity.NameCard;
 import com.giants3.hd.noEntity.RemoteData;
+import com.giants3.hd.utils.GsonUtils;
 import com.giants3.hd.utils.StringUtils;
 
 import java.io.File;
@@ -29,6 +32,13 @@ public class PresenterImpl extends BasePresenter<CustomerEditMVP.Viewer, Custome
     @Override
     public void save() {
 
+        if(!getModel().hasModify())
+        {
+            getView().showMessage("数据无改变");
+
+            return ;
+        }
+
         Customer customer = getModel().getCustomer();
 
         if (customer == null) return;
@@ -42,6 +52,8 @@ public class PresenterImpl extends BasePresenter<CustomerEditMVP.Viewer, Custome
 
                 if (data.isSuccess()) {
 
+                    getModel().setCustomer(data.datas.get(0));
+                    bindViewData();
 
                     getView().showMessage("保存成功");
                     EventBus.getDefault().post(new CustomerUpdateEvent(data.datas.get(0)));
@@ -201,6 +213,29 @@ public class PresenterImpl extends BasePresenter<CustomerEditMVP.Viewer, Custome
 
 
         });
+
+
+    }
+
+    @Override
+    public boolean restoreInstance(Bundle savedInstance) {
+
+        String value = savedInstance.getString("KEY_CUSTOMER");
+        if(StringUtils.isEmpty(value)) return false;
+        Customer customer= GsonUtils.fromJson(value,Customer.class);
+        String  oldData=  savedInstance.getString("KEY_CUSTOMER_OLD") ;
+        getModel().restoreCustomer(customer,oldData);
+        bindViewData();
+        return true;
+    }
+
+    @Override
+    public void saveInstance(Bundle savedInstance) {
+
+        Customer customer=getModel().getCustomer();
+        String oldData=getModel().getOriginData();
+        savedInstance.putString("KEY_CUSTOMER",GsonUtils.toJson(customer));
+        savedInstance.putString("KEY_CUSTOMER_OLD",oldData);
 
 
     }

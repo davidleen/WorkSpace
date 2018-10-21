@@ -18,8 +18,6 @@ import com.giants3.hd.android.helper.ImageViewerHelper;
 import com.giants3.hd.android.mvp.AndroidRouter;
 import com.giants3.hd.android.mvp.customer.CustomerEditMVP;
 import com.giants3.hd.android.mvp.customer.PresenterImpl;
-import com.giants3.hd.android.namecard.NameCardFactory;
-import com.giants3.hd.data.net.HttpUrl;
 import com.giants3.hd.data.net.PictureUrl;
 import com.giants3.hd.entity.Customer;
 import com.giants3.hd.noEntity.NameCard;
@@ -115,13 +113,7 @@ public class CustomerEditActivity extends BaseHeadViewerActivity<CustomerEditMVP
         namecard.setVisibility( View.VISIBLE );
         last.setVisibility( View.GONE );
 
-        Customer customer = (Customer) getIntent().getSerializableExtra(KEY_CUSTOMER);
 
-
-        getPresenter().initCustomer(customer);
-
-
-        setTitle(customer == null ? "添加客户" : "客户编辑");
 
         runOnUiThread(new Runnable() {
             @Override
@@ -310,7 +302,24 @@ public class CustomerEditActivity extends BaseHeadViewerActivity<CustomerEditMVP
     }
 
     @Override
-    protected void initEventAndData() {
+    protected void initEventAndData(Bundle savedInstance) {
+
+
+        setTitle(   "客户编辑");
+
+        //现场恢复
+        if(savedInstance!=null&&getPresenter().restoreInstance(savedInstance))
+        {
+
+            return;
+
+        }
+
+        {
+            Customer customer = (Customer) getIntent().getSerializableExtra(KEY_CUSTOMER);
+            getPresenter().initCustomer(customer);
+
+        }
 
     }
 
@@ -328,7 +337,11 @@ public class CustomerEditActivity extends BaseHeadViewerActivity<CustomerEditMVP
         communicator.startActivityForResult(intent, requestCode);
     }
 
-
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getPresenter().saveInstance(outState);
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -337,4 +350,6 @@ public class CustomerEditActivity extends BaseHeadViewerActivity<CustomerEditMVP
         capturePictureHelper.onActivityResult(requestCode, resultCode, data);
 
     }
+
+
 }

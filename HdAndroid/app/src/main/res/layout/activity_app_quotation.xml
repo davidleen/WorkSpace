@@ -74,7 +74,6 @@
         </LinearLayout>
 
 
-
         <LinearLayout
             style="@style/item_group_style"
             android:layout_width="wrap_content"
@@ -89,10 +88,12 @@
                 style="@style/value_edit_text_style" />
 
         </LinearLayout>
+
         <LinearLayout
             style="@style/item_group_style"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone">
 
             <TextView
                 style="@style/title_text_style"
@@ -109,8 +110,8 @@
     <LinearLayout
 
         android:layout_width="match_parent"
-        android:layout_marginTop="3dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp">
 
         <TextView
             style="@style/title_text_style"
@@ -118,10 +119,10 @@
 
         <TextView
             android:id="@+id/memo"
+            style="@style/value_edit_text_style"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minLines="2"
-            style="@style/value_edit_text_style" />
+            android:minLines="2" />
 
     </LinearLayout>
 
@@ -157,83 +158,107 @@
 
            android:scrollbars="none">
    -->
-    <LinearLayout
+    <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="left|center"
-        android:orientation="horizontal"
-        android:padding="5dp">
+        android:scrollbars="none"
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/pickItem"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:src="@drawable/icon_add_green_selector" />
+            android:gravity="left|center"
+            android:orientation="horizontal"
+            android:padding="5dp">
 
-        <ImageView
-            android:id="@+id/scanItem"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:src="@drawable/icon_scan_selector" />
+            <ImageView
+                android:id="@+id/pickItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/icon_add_green_selector" />
+
+            <ImageView
+                android:id="@+id/scanItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:src="@drawable/icon_scan_selector" />
 
 
-        <TextView
-            android:id="@+id/discountAll"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:background="@drawable/button_white_round_selector"
-            android:padding="5dp"
-            android:text="全部打折" />
+            <TextView
+                android:id="@+id/discountAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:background="@drawable/button_white_round_selector"
+                android:padding="5dp"
+                android:text="全部打折" />
 
-        <TextView
-            android:id="@+id/save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:background="@drawable/button_white_round_selector"
-            android:padding="5dp"
-            android:text="保存" />
+            <TextView
+                android:id="@+id/cancelDiscount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:background="@drawable/button_white_round_selector"
+                android:padding="5dp"
+                android:text="撤销全部折扣" />
 
-        <TextView
-            android:id="@+id/delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:background="@drawable/button_white_round_selector"
-            android:padding="5dp"
-            android:text="删除" />
+            <TextView
+                android:id="@+id/save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:background="@drawable/button_white_round_selector"
+                android:padding="5dp"
+                android:text="保存" />
 
-        <TextView
-            android:id="@+id/print"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:background="@drawable/button_white_round_selector"
-            android:padding="5dp"
-            android:text="打印" />
+            <TextView
+                android:id="@+id/delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:background="@drawable/button_white_round_selector"
+                android:padding="5dp"
+                android:text="删除" />
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1" />
+            <TextView
+                android:id="@+id/print"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:background="@drawable/button_white_round_selector"
+                android:padding="5dp"
+                android:text="打印" />
 
-        <TextView
-            android:id="@+id/addCustomer"
+            <TextView
+                android:id="@+id/exportPdf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:background="@drawable/button_white_round_selector"
+                android:padding="5dp"
+                android:text="导出PDF" />
 
-            android:layout_width="wrap_content"
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
 
-            android:layout_height="wrap_content"
-            android:layout_marginRight="15dp"
-            android:background="@drawable/button_white_round_selector"
-            android:padding="5dp"
-            android:text="添加客户"
-            android:visibility="visible" />
+            <TextView
+                android:id="@+id/addCustomer"
 
-    </LinearLayout>
+                android:layout_width="wrap_content"
 
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:background="@drawable/button_white_round_selector"
+                android:padding="5dp"
+                android:text="添加客户"
+                android:visibility="visible" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
     <!--
         </HorizontalScrollView>-->
 

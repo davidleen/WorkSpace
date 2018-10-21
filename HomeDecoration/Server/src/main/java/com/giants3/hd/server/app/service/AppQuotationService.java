@@ -1,6 +1,7 @@
 package com.giants3.hd.server.app.service;
 
 import com.giants3.hd.domain.api.Client;
+import com.giants3.hd.entity.Company;
 import com.giants3.hd.entity.Customer;
 import com.giants3.hd.entity.Product;
 import com.giants3.hd.entity.User;
@@ -45,6 +46,8 @@ public class AppQuotationService extends AbstractService {
     private CustomerRepository customerRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private CompanyRepository companyRepository;
 
     /**
      * 新建临时订单
@@ -55,7 +58,9 @@ public class AppQuotationService extends AbstractService {
     public QuotationDetail createNew(User user) {
 
 
+        Company company=companyRepository.findAll().get(0);
         Quotation quotation = new Quotation();
+        quotation.booth=company.boothNo;
         quotation.qNumber= generateDefaultQuotationId(user);
         final Calendar instance = Calendar.getInstance();
         quotation.qDate = DateFormats.FORMAT_YYYY_MM_DD.format(instance.getTime());

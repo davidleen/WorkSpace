@@ -77,6 +77,7 @@
         <activity
             android:name=".activity.WorkFlowMainActivity"
             android:configChanges="orientation"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:screenOrientation="landscape"
             android:parentActivityName=".activity.BaseActivity"
             android:theme="@style/AppTheme.NoActionBar">

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.widget.FrameLayout;
 
 import com.journeyapps.barcodescanner.CaptureActivity;
+import com.journeyapps.barcodescanner.camera.CameraManager;
 
 /**
  * Created by david on 2015/12/19.
@@ -14,6 +15,8 @@ public class QRCaptureActivity extends CaptureActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
 //        FrameLayout content = (FrameLayout) findViewById(android.R.id.content);
 //
 //        int widthPixels = getResources().getDisplayMetrics().widthPixels;

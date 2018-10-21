@@ -160,6 +160,19 @@ public class AppQuotationDetailFrame extends BaseMVPFrame<AppQuotationDetailView
 
     }
 
+
+    @Override
+    public void cancelAllDiscount() {
+        AppQuotationAnalytics.discountAll(quotationDetail, 1);
+        getViewer().bindDetail(quotationDetail);
+    }
+
+    @Override
+    public void setAllDiscount(float discountVlaue) {
+        AppQuotationAnalytics.discountAll(quotationDetail, discountVlaue);
+        getViewer().bindDetail(quotationDetail);
+    }
+
     @Override
     public void addItem(int itemIndex) {
 
