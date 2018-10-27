@@ -25,6 +25,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <!--所有嵌套依赖的支持包配置，全部替换为默认配置，避免support编译版本不一致问题。-->
+        <meta-data android:name="android.support.VERSION"  tools:replace="android:value" android:value="${ANDROID_SUPPORT_VERSION}"/>
     </application>
 
 </manifest>

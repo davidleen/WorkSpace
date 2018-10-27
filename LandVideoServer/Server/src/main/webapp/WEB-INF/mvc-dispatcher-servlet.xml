@@ -1,0 +1,286 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:task="http://www.springframework.org/schema/task" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd
+         http://www.springframework.org/schema/data/jpa
+         http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+         http://www.springframework.org/schema/tx
+         http://www.springframework.org/schema/tx/spring-tx.xsd
+         http://www.springframework.org/schema/mvc
+         http://www.springframework.org/schema/mvc/spring-mvc.xsd
+         http://www.springframework.org/schema/task
+         http://www.springframework.org/schema/task/spring-task-3.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
+>
+
+
+    <context:component-scan base-package="com.giants3.lanvideo.server"/>
+    <context:annotation-config/>
+
+    <task:annotation-driven/>
+
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="100000000"/>
+    </bean>
+
+    <bean id="stringConverter" class="com.giants3.lanvideo.server.converter.CustomStringMessageConverter">
+
+    </bean>
+
+    <mvc:annotation-driven>
+        <mvc:message-converters register-defaults="true">
+            <bean class="org.springframework.http.converter.ResourceHttpMessageConverter">
+            </bean>
+
+            <bean class="com.giants3.lanvideo.server.converter.GsonMessageConverter"
+            >
+            </bean>
+            <bean class="com.giants3.lanvideo.server.converter.StringMessageConverter"
+            >
+            </bean>
+        </mvc:message-converters>
+
+
+    </mvc:annotation-driven>
+
+
+    <context:property-placeholder location="config/application.properties"/>
+
+    <jpa:repositories base-package="com.giants3.lanvideo.server.repository"/>
+
+
+    <!--<bean id="masterDataSource" class="org.apache.commons.dbcp.BasicDataSource">-->
+        <!--<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>-->
+        <!--<property name="url" value="jdbc:mysql://192.168.1.100:3306/test?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=false"></property>-->
+        <!--<property name="username" value="root"></property>-->
+        <!--<property name="password" value="root"></property>-->
+        <!--<property name="maxActive" value="128"></property>-->
+        <!--<property name="maxIdle" value="6"></property>-->
+        <!--<property name="minIdle" value="2"></property>-->
+        <!--<property name="maxWait" value="30000"></property>-->
+        <!--<property name="defaultAutoCommit" value="true"></property>-->
+    <!--</bean>-->
+
+  <!--  <bean id="slaveDataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+        <property name="url" value="jdbc:mysql://192.168.1.101:3306/test?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=false"></property>
+        <property name="username" value="root"></property>
+        <property name="password" value="root"></property>
+        <property name="maxActive" value="128"></property>
+        <property name="maxIdle" value="6"></property>
+        <property name="minIdle" value="2"></property>
+        <property name="maxWait" value="30000"></property>
+        <property name="defaultAutoCommit" value="true"></property>
+    </bean>-->
+
+    <bean id="masterDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+
+        <property name="driverClass" value="${jdbc.driver}" />
+
+        <property name="jdbcUrl" value="${jdbc.url}" />
+
+        <property name="user" value="${jdbc.username}" />
+
+        <property name="password" value="${jdbc.password}" />
+
+    </bean>
+
+    <bean id="slaveDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+
+        <property name="driverClass" value="${jdbc.slave.driver}" />
+
+        <property name="jdbcUrl" value="${jdbc.slave.url}" />
+
+        <property name="user" value="${jdbc.slave.username}" />
+
+        <property name="password" value="${jdbc.slave.password}" />
+
+    </bean>
+
+
+
+
+    <!--<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"-->
+
+    <!--&gt;-->
+         <!---->
+       <!--<property name="persistenceUnitName" value="MASTER_0"/>-->
+
+
+
+
+
+    <!--</bean>-->
+
+      <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+
+    >
+
+
+          <property name="packagesToScan" value="com.giants3.lanvideo.data" />
+          <!--<property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml" />-->
+          <property name="jpaVendorAdapter">
+              <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                  <property name="showSql" value="false" />
+                  <property name="generateDdl" value="true" />
+                  <property name="database" value="SQL_SERVER" />
+                  <property name="databasePlatform" value="org.hibernate.dialect.SQLServer2008Dialect" />
+
+              </bean>
+          </property>
+
+
+
+
+
+      </bean>
+
+
+
+
+
+
+    <!--<bean id="secondEntityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"-->
+
+    <!--&gt;-->
+        <!--<property name="persistenceUnitName" value="secondPersistenceUnit"/>-->
+
+        <!--&lt;!&ndash;<property name="packagesToScan">&ndash;&gt;-->
+            <!--&lt;!&ndash;<list>&ndash;&gt;-->
+                <!--&lt;!&ndash;<value>com.giants3.lanvideoeo.server.repository_second</value>&ndash;&gt;-->
+            <!--&lt;!&ndash;</list>&ndash;&gt;-->
+        <!--&lt;!&ndash;</property>&ndash;&gt;-->
+
+
+
+
+
+
+
+
+    <!--</bean>-->
+     <!--<bean id="transactionManager" class="com.giants3.lanvideo.transaction.CustomJPATransactionManager">-->
+
+    <!--</bean>-->
+
+
+    <!--<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">-->
+        <!--<property name="entityManagerFactory" ref="entityManagerFactory"/>-->
+        <!--<property name="dataSource" ref="dynamicDataSource"/>-->
+    <!--</bean>-->
+
+
+  <!--  <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+
+        <property name="dataSource" ref="dynamicDataSource"/>
+    </bean>-->
+
+    <!--<bean id="entityManagerFactoryERP" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="erpPersistenceUnit"/>
+    </bean>-->
+
+    <!-- <bean id="prdtRepository" class="com.giants3.readerader.server.repository.ErpPrdtRepository">
+         <property name="entityManager" ref="sharedEntityManager"/>
+     </bean>-->
+    <!-- <bean id="entityManagerFactoryERP" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+            autowire-candidate="false"
+           primary="false"
+
+             >-->
+    <!--  <property name="persistenceXmlLocation" value="classpath:config/persitence.xml" />-->
+    <!--  <property name="persistenceUnitName" value="erpPersistenceUnit" />-->
+
+    <!--<property name="dataSource" ref="restDemoLegacyDS" />
+    <property name="packagesToScan" value="org.codingpedia.demo.*" />
+    <property name="jpaVendorAdapter">
+        <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+            <property name="showSql" value="true" />
+            <property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect" />
+        </bean>
+    </property>-->
+    <!-- </bean>
+ -->
+    <!--注释方式配置事务
+  <tx:annotation-driven transaction-manager="transactionManager"
+
+
+
+
+  />
+-->
+
+
+    <!--&lt;!&ndash; 拦截器方式配置事物 &ndash;&gt;-->
+     <!--<tx:advice id="transactionAdvice" transaction-manager="transactionManager" >-->
+        <!--<tx:attributes>-->
+            <!--&lt;!&ndash;<tx:method name="add*" rollback-for="java.lang.Exception"/>&ndash;&gt;-->
+            <!--&lt;!&ndash;<tx:method name="save*" rollback-for="java.lang.Exception"/>&ndash;&gt;-->
+            <!--&lt;!&ndash;<tx:method name="update*" rollback-for="java.lang.Exception"/>&ndash;&gt;-->
+            <!--&lt;!&ndash;<tx:method name="modify*" rollback-for="java.lang.Exception"/>&ndash;&gt;-->
+            <!--&lt;!&ndash;<tx:method name="edit*" rollback-for="java.lang.Exception"/>&ndash;&gt;-->
+            <!--&lt;!&ndash;<tx:method name="delete*" propagation="SUPPORTS" rollback-for="java.lang.Exception"/>&ndash;&gt;-->
+            <!--&lt;!&ndash;<tx:method name="remove*" rollback-for="java.lang.Exception"/>&ndash;&gt;-->
+            <!--&lt;!&ndash;<tx:method name="repair" rollback-for="java.lang.Exception"/>&ndash;&gt;-->
+            <!--&lt;!&ndash;<tx:method name="deleteAndRepair" propagation="SUPPORTS" rollback-for="java.lang.Exception"/>&ndash;&gt;-->
+            <!--&lt;!&ndash;<tx:method name="check*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>&ndash;&gt;-->
+            <!--&lt;!&ndash;<tx:method name="count*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>&ndash;&gt;-->
+
+            <!--<tx:method name="get*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception" read-only="true"/>-->
+            <!--<tx:method name="find*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception" read-only="true"/>-->
+            <!--<tx:method name="load*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception" read-only="true"/>-->
+            <!--<tx:method name="search*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception" read-only="true"/>-->
+            <!--<tx:method name="datagrid*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception" read-only="true" />-->
+
+            <!--<tx:method name="*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception"/>-->
+        <!--</tx:attributes>-->
+    <!--</tx:advice>-->
+
+
+
+    <!-- 那些类的哪些方法参与事务 -->
+    <!--<aop:config>-->
+        <!--<aop:pointcut id="allManagerMethod" expression="execution(* com.giants3.lanvideo.server.service.*.*(..))"/>-->
+        <!--<aop:advisor pointcut-ref="allManagerMethod" advice-ref="transactionAdvice" order="3"/>-->
+    <!--</aop:config>-->
+
+
+
+
+
+
+
+
+    <!--<bean id="aspectBean" class="com.giants3.lanvideoeo.datasource.AopLog"></bean>-->
+
+    <!--<aop:config>-->
+        <!--<aop:aspect id="AopLog" ref="aspectBean">-->
+
+            <!--<aop:pointcut id="businessService"-->
+                          <!--expression="execution(* com.giants3.lanvideoeo.server.controller.*.*(..)) || execution(* com.giants3.lanvideoeo.server.service.*.*(..))" />-->
+
+
+
+            <!--<aop:before pointcut-ref="businessService" method="doBefore"/>-->
+            <!--<aop:after pointcut-ref="businessService" method="doAfter"/>-->
+            <!--<aop:around pointcut-ref="businessService" method="doAround"/>-->
+            <!--<aop:after-throwing pointcut-ref="businessService" method="doThrowing" throwing="ex"/>-->
+
+        <!--</aop:aspect>-->
+
+    <!--</aop:config>-->
+
+
+
+
+
+</beans>

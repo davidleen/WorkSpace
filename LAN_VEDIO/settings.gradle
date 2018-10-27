@@ -1,0 +1,5 @@
+include ':app'
+include ':library'
+project(':library').projectDir = new File('../modules/library')
+include ':frame'
+project(':frame').projectDir = new File('../modules/frame')

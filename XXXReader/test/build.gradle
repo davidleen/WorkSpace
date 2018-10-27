@@ -10,6 +10,7 @@ android {
         targetSdkVersion  project.ANDROID_TARGET_VERSION
         versionCode 1
         versionName "1.0"
+        manifestPlaceholders = [ANDROID_SUPPORT_VERSION: "${ANDROID_SUPPORT_V7_VERSION}"]
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 

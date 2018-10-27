@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //SimpleBitmapProvider provider=new SimpleBitmapProvider(this,wh[0],wh[1]);
-        BitmapProvider provider= comicPagePlayer;
+      BitmapProvider provider= comicPagePlayer;
 
         DrawLayer drawLayer = new DrawLayer(this,comicPagePlayer,readerView);
 
@@ -64,8 +64,9 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-       IPageTurner pageTurner=new ScrollPageTurner(this,pageSwitchListener,readerView,provider);
-        // pageTurner=new SimPageTurner(this,pageSwitchListener,readerView,provider);
+        IPageTurner pageTurner=null;
+       //  pageTurner=new ScrollPageTurner(this,pageSwitchListener,readerView,provider);
+         pageTurner=new SimPageTurner(this,pageSwitchListener,readerView,provider);
         drawLayer.setPageTurner(pageTurner);
         readerView.setDrawLayer(drawLayer);
 
