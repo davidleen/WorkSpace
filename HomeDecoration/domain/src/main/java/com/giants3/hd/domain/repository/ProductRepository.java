@@ -34,10 +34,13 @@ public interface ProductRepository {
      * @return
      */
     Observable<RemoteData<Void>> synchronizeProductOnEquationUpdate();
+    Observable<RemoteData<Void>> syncProductInfo(String remoteResource, String filterKey, boolean shouldOverride);
 
     Observable<RemoteData<Void>> syncRelateProductPicture();
 
     Observable<RemoteData<Product>> loadById(long[] productId);
 
     Observable<RemoteData<ProductDetail>> loadDetailById(long productId);
+
+
 }

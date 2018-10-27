@@ -12,7 +12,9 @@ public interface AppQuotationSyncPresenter extends IPresenter {
 
     void beginAsync(String urlHead, String startDate, String endDate);
 
-    void beginAsyncPicture(String remoteResource,String filterKey);
+    void beginAsyncPicture(String remoteResource,String filterKey,boolean shouldOverride);
 
     void initData();
+
+    void beginAsyncProduct(String remoteResource, String filterKey, boolean shouldOverride);
 }

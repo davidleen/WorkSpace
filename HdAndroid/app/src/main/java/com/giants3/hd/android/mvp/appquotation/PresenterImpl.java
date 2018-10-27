@@ -62,6 +62,29 @@ public class PresenterImpl extends BasePresenter<AppQuotationMVP.Viewer, AppQuot
     @Override
     public void loadMoreData() {
 
+
+        if(!getModel().hasNextPage()) {
+            getView().hideWaiting();
+            return;
+        }
+
+        int  pageIndex=getModel().getPageIndex();
+        int pageSize=getModel().getPageSize();
+        String key=getModel().getKey();
+        UseCaseFactory.getInstance().createGetAppQuotationsUseCase(key, pageIndex+1, pageSize).execute(new RemoteDataSubscriber<Quotation>(this) {
+            @Override
+            protected void handleRemoteData(RemoteData<Quotation> data) {
+                getModel().setRemoteData(data);
+                getView().hideWaiting();
+                bindData();
+
+            }
+
+
+        });
+
+
+
     }
 
     @Override

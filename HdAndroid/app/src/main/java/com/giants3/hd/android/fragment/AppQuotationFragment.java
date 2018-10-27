@@ -203,4 +203,15 @@ public class AppQuotationFragment extends BaseMvpFragment<AppQuotationMVP.Presen
         }
 
     }
+
+    @Override
+    public void showWaiting() {
+        swipeLayout.startRefresh();
+    }
+
+    @Override
+    public void hideWaiting() {
+        swipeLayout.finishRefreshing();
+        swipeLayout.finishLoadmore();
+    }
 }

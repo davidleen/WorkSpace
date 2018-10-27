@@ -22,5 +22,5 @@ public interface FileRepository {
     public Observable<List<String>> uploadTempFile(File[] file );
 
 
-    Observable<RemoteData<Void>> syncProductPicture(String remoteResource,String filterKey);
+    Observable<RemoteData<Void>> syncProductPicture(String remoteResource,String filterKey,boolean shouldOverride);
 }

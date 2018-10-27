@@ -1341,10 +1341,20 @@ public class HttpUrl {
         return additionInfo(urlFormatter);
     }
 
-    public static String syncProductPicture(String remoteResource,String filterKey) {
+    public static String syncProductPicture(String remoteResource,String filterKey,boolean shouldOverride) {
         UrlFormatter urlFormatter = new UrlFormatter(BaseUrl + "/api/file/syncProductPicture");
         urlFormatter.append("remoteUrlHead", remoteResource);
         urlFormatter.append("filterKey", filterKey);
+        urlFormatter.append("shouldOverride",   shouldOverride);
+        return additionInfo(urlFormatter);
+    }
+
+
+    public static String syncProductInfo(String remoteResource, String filterKey, boolean shouldOverride) {
+        UrlFormatter urlFormatter = new UrlFormatter(BaseUrl + "/api/product/syncProductFromRemote");
+        urlFormatter.append("remoteUrlHead", remoteResource);
+        urlFormatter.append("filterKey", filterKey);
+        urlFormatter.append("shouldOverride",   shouldOverride);
         return additionInfo(urlFormatter);
     }
 
@@ -1359,4 +1369,6 @@ public class HttpUrl {
                 .append("endDate",endDate);
         return additionInfo(urlFormatter);
     }
+
+
 }

@@ -166,6 +166,19 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl implements Product
     }
 
     @Override
+    public Observable<RemoteData<Void>> syncProductInfo(final String remoteResource, final String filterKey, final boolean shouldOverride) {
+        return crateObservable(new ApiCaller<Void>() {
+            @Override
+            public RemoteData<Void> call() throws HdException {
+
+
+                return apiManager.syncProductInfo(remoteResource,  filterKey,  shouldOverride);
+
+
+            }
+        });
+    }
+    @Override
     public Observable<RemoteData<Void>> correctThumbnail(final long productId) {
         return Observable.create(new Observable.OnSubscribe<RemoteData<Void>>() {
             @Override

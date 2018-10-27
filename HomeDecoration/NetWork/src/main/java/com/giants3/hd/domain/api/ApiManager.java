@@ -56,4 +56,15 @@ public class ApiManager {
             e.printStackTrace();
         }
     }
+
+    public String getString(String url) {
+
+        try {
+            return  client.getWithStringReturned(url);
+        } catch ( Throwable  e) {
+            e.printStackTrace();
+        }
+        return "";
+
+    }
 }

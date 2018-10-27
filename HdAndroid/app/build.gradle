@@ -32,13 +32,13 @@ android {
 
 
         targetSdkVersion project.ANDROID_TARGET_VERSION
-        versionCode 62
-        versionName "1.6.2"
+        versionCode 63
+        versionName "1.6.3"
 
         buildConfigField "boolean", "AUTO_UPDATES", "true"
 
         multiDexEnabled true
-
+        manifestPlaceholders = [ANDROID_SUPPORT_VERSION: "${ANDROID_SUPPORT_V7_VERSION}"]
 
         javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
     }
@@ -68,9 +68,9 @@ android {
             signingConfig signingConfigs.debug
         }
         debug {
-               minifyEnabled true
-               zipAlignEnabled true
-            proguardFiles 'proguard-rules.pro'
+//               minifyEnabled true
+//               zipAlignEnabled true
+//            proguardFiles 'proguard-rules.pro'
             signingConfig signingConfigs.debug
         }
     }

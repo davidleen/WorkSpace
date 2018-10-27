@@ -1,20 +1,21 @@
 package com.giants3.hd.server.service;
 
+import com.giants3.hd.domain.api.ApiManager;
+import com.giants3.hd.entity.*;
 import com.giants3.hd.exception.HdException;
-import com.giants3.hd.noEntity.ProductAgent;
-import com.giants3.hd.noEntity.ProductListViewType;
+import com.giants3.hd.noEntity.*;
 import com.giants3.hd.server.entity.ProductEquationUpdateTemp;
 import com.giants3.hd.server.repository.*;
 import com.giants3.hd.server.repository_wrapper.ProductRepositoryWrapper;
 import com.giants3.hd.server.utils.AttachFileUtils;
 import com.giants3.hd.server.utils.BackDataHelper;
 import com.giants3.hd.server.utils.FileUtils;
+import com.giants3.hd.server.utils.HttpUrl;
+import com.giants3.hd.utils.DigestUtils;
+import com.giants3.hd.utils.GsonUtils;
 import com.giants3.hd.utils.ObjectUtils;
-import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.utils.StringUtils;
-import com.giants3.hd.entity.*;
 import com.giants3.hd.utils.file.ImageUtils;
-import com.giants3.hd.noEntity.ProductDetail;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -112,6 +113,8 @@ public class ProductService extends AbstractService implements InitializingBean,
 
     TransactionTemplate transactionTemplate;
 
+    private ApiManager apiManager;
+
 
     @Override
     public void destroy() throws Exception {
@@ -121,21 +124,24 @@ public class ProductService extends AbstractService implements InitializingBean,
 
             executorService.shutdown();
         }
+        if (apiManager != null)
+            apiManager.close();
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
         transactionTemplate = new TransactionTemplate(platformTransactionManager);
+        apiManager = new ApiManager();
     }
-    public RemoteData<Product> searchProductList(String name, int pageIndex, int pageSize)
-    {
+
+    public RemoteData<Product> searchProductList(String name, int pageIndex, int pageSize) {
 
 
         Pageable pageable = constructPageSpecification(pageIndex, pageSize);
         String likeValue = "%" + name.trim() + "%";
         Page<Product> pageValue;
 
-            pageValue = productRepository.findByNameLikeOrPVersionLikeOrderByNameAsc(likeValue, likeValue, pageable);
+        pageValue = productRepository.findByNameLikeOrPVersionLikeOrderByNameAsc(likeValue, likeValue, pageable);
 
         List<Product> products = pageValue.getContent();
 
@@ -144,19 +150,18 @@ public class ProductService extends AbstractService implements InitializingBean,
 
     }
 
-    public RemoteData<Product> searchAppProductList(String name, int pageIndex, int pageSize,boolean withCopy) {
+    public RemoteData<Product> searchAppProductList(String name, int pageIndex, int pageSize, boolean withCopy) {
 
         Pageable pageable = constructPageSpecification(pageIndex, pageSize);
         String likeValue = "%" + name.trim() + "%";
         Page<Product> pageValue;
-        if(!withCopy)
-        {
+        if (!withCopy) {
             //查询原单，过滤掉有版本号的产品信息
-            pageValue=productRepository.findByKeyWithoutCopy(likeValue,pageable);
+            pageValue = productRepository.findByKeyWithoutCopy(likeValue, pageable);
 
 
-        }else {
-              pageValue = productRepository.findByNameLikeOrPVersionLikeOrderByNameDesc(likeValue, likeValue, pageable);
+        } else {
+            pageValue = productRepository.findByNameLikeOrPVersionLikeOrderByNameDesc(likeValue, likeValue, pageable);
         }
 
         List<Product> products = pageValue.getContent();
@@ -167,39 +172,34 @@ public class ProductService extends AbstractService implements InitializingBean,
 
     }
 
-    public RemoteData<Product> searchProductListByViewType(String name,int viewType, int pageIndex, int pageSize) {
+    public RemoteData<Product> searchProductListByViewType(String name, int viewType, int pageIndex, int pageSize) {
 
 
-
-
-        Page<Product> pageValue=null;
+        Page<Product> pageValue = null;
         Pageable pageable = constructPageSpecification(pageIndex, pageSize);
         String likeValue = "%" + name.trim() + "%";
-        switch (viewType)
-        {
-
+        switch (viewType) {
 
 
             case ProductListViewType.VIEWTYPE_PEITI_UNSET:
-                pageValue =   productRepository.findByNameLikeAndConceptusCostEqualsOrderByNameAsc(likeValue, 0, pageable);
+                pageValue = productRepository.findByNameLikeAndConceptusCostEqualsOrderByNameAsc(likeValue, 0, pageable);
                 break;
-            case ProductListViewType.VIEWTYPE_ZUZHUANG_UNSET :
-                pageValue =   productRepository.findByNameLikeAndAssembleCostEqualsOrderByNameAsc(likeValue, 0, pageable);
+            case ProductListViewType.VIEWTYPE_ZUZHUANG_UNSET:
+                pageValue = productRepository.findByNameLikeAndAssembleCostEqualsOrderByNameAsc(likeValue, 0, pageable);
                 break;
             case ProductListViewType.VIEWTYPE_YOUQI_UNSETE:
 
-                pageValue =   productRepository.findByNameLikeAndPaintCostEqualsOrderByNameAsc(likeValue, 0, pageable);
+                pageValue = productRepository.findByNameLikeAndPaintCostEqualsOrderByNameAsc(likeValue, 0, pageable);
                 break;
             case ProductListViewType.VIEWTYPE_BAOZHUANG_UNSETE:
-                pageValue =   productRepository.findByNameLikeAndPackCostEqualsOrderByNameAsc(likeValue, 0, pageable);
+                pageValue = productRepository.findByNameLikeAndPackCostEqualsOrderByNameAsc(likeValue, 0, pageable);
                 break;
-
 
 
         }
 
 
-        if(pageValue==null)
+        if (pageValue == null)
             return wrapData();
 
 
@@ -219,7 +219,6 @@ public class ProductService extends AbstractService implements InitializingBean,
      * @return
      */
     public ProductDetail findProductDetailById(long productId) {
-
 
 
         return productWrapperRepository.findProductDetailById(productId);
@@ -406,10 +405,10 @@ public class ProductService extends AbstractService implements InitializingBean,
             //    String thumbnailPath = FileUtils.getProductThumbnailFilePath(productFilePath, product);
             //   boolean thumbnailFileExist = new File(thumbnailPath).exists();
 
-            String oldThumbnailFilePath =  FileUtils.convertThumbnailUrlToPath(productFilePath, product.thumbnail);
+            String oldThumbnailFilePath = FileUtils.convertThumbnailUrlToPath(productFilePath, product.thumbnail);
             boolean oldThumbnailFileExist = new File(oldThumbnailFilePath).exists();
             //四种情况下 更新图片路径  1 图片已经被修改。  2  新图片路径与旧路径不一致  3 缩略图未生成 4 缩略图对应图片不存在
-            if (lastPhotoUpdateTime != product.lastPhotoUpdateTime || !newUrl.equals(product.url) || StringUtils.isEmpty(product.thumbnail)||!oldThumbnailFileExist  ) {
+            if (lastPhotoUpdateTime != product.lastPhotoUpdateTime || !newUrl.equals(product.url) || StringUtils.isEmpty(product.thumbnail) || !oldThumbnailFileExist) {
 
                 product.setLastPhotoUpdateTime(lastPhotoUpdateTime);
                 product.setUrl(newUrl);
@@ -417,14 +416,12 @@ public class ProductService extends AbstractService implements InitializingBean,
 
 
                 String thumbnailUrl = FileUtils.getProductThumbnailUrl(product);
-                String thumbnailPath =  FileUtils.convertThumbnailUrlToPath(productFilePath, thumbnailUrl);
+                String thumbnailPath = FileUtils.convertThumbnailUrlToPath(productFilePath, thumbnailUrl);
 
-                if(ImageUtils.scalePicture(filePath,thumbnailPath))
-                {
+                if (ImageUtils.scalePicture(filePath, thumbnailPath)) {
                     product.thumbnail = thumbnailUrl;
-                }else
-                {
-                    logger.error("product:" + ProductAgent.getFullName(product) + ",图片缩略图需要同步， 但是同步失败,原因：原图地址:"+ filePath+",缩略图地址："+thumbnailPath );
+                } else {
+                    logger.error("product:" + ProductAgent.getFullName(product) + ",图片缩略图需要同步， 但是同步失败,原因：原图地址:" + filePath + ",缩略图地址：" + thumbnailPath);
 
                 }
 
@@ -840,11 +837,10 @@ public class ProductService extends AbstractService implements InitializingBean,
 
         ProductDetail oldDetail = ObjectUtils.deepCopyWidthJson(findProductDetailById(productDetail.product.id), ProductDetail.class);
 //将修改前的数据缓存起来
-        String productDetailBackPath="";
+        String productDetailBackPath = "";
         if (oldDetail != null) {
-            productDetailBackPath= BackDataHelper.backProductModifyData(oldDetail,  productBackFilePath);
-            if(StringUtils.isEmpty(productDetailBackPath)||!(new File(productDetailBackPath).exists()))
-            {
+            productDetailBackPath = BackDataHelper.backProductModifyData(oldDetail, productBackFilePath);
+            if (StringUtils.isEmpty(productDetailBackPath) || !(new File(productDetailBackPath).exists())) {
                 throw HdException.create("产品数据缓存出错");
             }
         }
@@ -996,7 +992,7 @@ public class ProductService extends AbstractService implements InitializingBean,
         //将修改前的数据缓存起来
 
         if (oldDetail != null) {
-            BackDataHelper.productBackFileRenameTo(productDetailBackPath,oldDetail, operationLog, productBackFilePath);
+            BackDataHelper.productBackFileRenameTo(productDetailBackPath, oldDetail, operationLog, productBackFilePath);
         }
 
 
@@ -1127,7 +1123,7 @@ public class ProductService extends AbstractService implements InitializingBean,
             e.printStackTrace();
         }
 
-        if (result!=null&& result.isSuccess()) {
+        if (result != null && result.isSuccess()) {
 
 
             ProductDetail newProductDetail = result.datas.get(0);
@@ -1359,10 +1355,10 @@ public class ProductService extends AbstractService implements InitializingBean,
 
     public List<Product> findProductById(String[] productIds) {
 
-        long[] productIdArray= new long[productIds.length];
+        long[] productIdArray = new long[productIds.length];
         for (int i = 0; i < productIds.length; i++) {
 
-            productIdArray[i]= Long.parseLong(productIds[i]);
+            productIdArray[i] = Long.parseLong(productIds[i]);
         }
 
         return productRepository.findByIdIn(productIdArray);
@@ -1490,6 +1486,99 @@ public class ProductService extends AbstractService implements InitializingBean,
     }
 
     public List<Product> findByNameEquals(String prd_name) {
-      return   productRepository.findByNameEquals(prd_name);
+        return productRepository.findByNameEquals(prd_name);
+    }
+
+    /**
+     * 从远处端复制产品信息。
+     *
+     * @param user
+     * @param remoteUrlHead
+     * @param filterKey
+     * @param shouldOverride
+     * @return
+     */
+    public RemoteData<Void> syncProductFromRemote(User user, String remoteUrlHead, String filterKey, boolean shouldOverride) {
+
+        String remoteServerUrlHead = remoteUrlHead + "Server/";
+
+        String loginUrl = HttpUrl.login(remoteServerUrlHead, user.id, DigestUtils.md5(user.password));
+        String result = apiManager.getString(loginUrl);
+        RemoteData remoteData = GsonUtils.fromJson(result, RemoteData.class);
+        int copyCount = 0;
+        if (remoteData.isSuccess()) {
+
+            final int PageSize = 20;
+            RemoteData<Product> productRemoteData = readProductFromRemote(remoteServerUrlHead, remoteData.token, filterKey, 0, PageSize);
+
+
+            while (productRemoteData.isSuccess()) {
+
+                for (Product product : productRemoteData.datas) {
+
+                    final Product oldProduct = productRepository.findFirstByNameEqualsAndPVersionEquals(product.name, product.pVersion);
+                    if (oldProduct != null) {
+                        //有找到旧数据，判断是否覆盖
+                        if (shouldOverride) {
+                            product.id = oldProduct.id;
+                            product.xiankang = oldProduct.xiankang;
+                            productRepository.save(product);
+                            copyCount++;
+
+                        }
+
+                    } else {
+                        product.setId(-1);
+                        Xiankang xiankang =    product.xiankang;;
+                        if (xiankang != null) {
+                            xiankang.setId(-1);
+                            if (xiankang.xiankang_dengju != null) {
+                                xiankang.xiankang_dengju.setId(-1);
+                            }
+                            if (xiankang.xiankang_jiaju != null) {
+                                xiankang.xiankang_jiaju.setId(-1);
+                            }
+                            if (xiankang.xiankang_jingza != null) {
+                                xiankang.xiankang_jingza.setId(-1);
+                            }
+                            product.xiankang = xiankang;
+                        }
+                        productRepository.save(product);
+                        copyCount++;
+
+                    }
+
+
+                }
+                productRepository.flush();
+
+                if (productRemoteData.hasNext()) {
+
+
+                    productRemoteData = readProductFromRemote(remoteServerUrlHead, remoteData.token, filterKey, productRemoteData.pageIndex + 1, PageSize);
+
+                } else {
+                    break;
+                }
+
+
+            }
+
+
+        }
+
+
+        return wrapMessageData("===共复制" + (shouldOverride ? "并覆盖" : "") + copyCount + ",款产品");
+
+    }
+
+
+    private RemoteData<Product> readProductFromRemote(String remoteServerUrlHead, String token, String filterKey, int pageIndex, int pageSize) {
+        String productUrl = HttpUrl.findProductList(remoteServerUrlHead, token, filterKey, pageIndex, pageSize);
+
+        String result = apiManager.getString(productUrl);
+
+        RemoteData<Product> productRemoteData = GsonUtils.fromJson(result, new RemoteDateParameterizedType(Product.class));
+        return productRemoteData;
     }
 }

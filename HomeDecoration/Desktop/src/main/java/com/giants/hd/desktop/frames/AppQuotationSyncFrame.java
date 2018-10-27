@@ -52,10 +52,10 @@ public class AppQuotationSyncFrame extends BaseMVPFrame<AppQuotationSyncViewer> 
     }
 
     @Override
-    public void beginAsyncPicture(String remoteResource,String filterKey) {
+    public void beginAsyncPicture(String remoteResource,String filterKey,boolean shouldOverride) {
 
 
-        final UseCase syncProductPictureUseCase = UseCaseFactory.getInstance().createSyncProductPictureUseCase(remoteResource,filterKey);
+        final UseCase syncProductPictureUseCase = UseCaseFactory.getInstance().createSyncProductPictureUseCase(remoteResource,filterKey,shouldOverride);
 
         syncProductPictureUseCase.execute(new RemoteDataSubscriber<Void>(getViewer()) {
             @Override
@@ -78,6 +78,31 @@ public class AppQuotationSyncFrame extends BaseMVPFrame<AppQuotationSyncViewer> 
 
 
 
+
+    }
+
+
+    @Override
+    public void beginAsyncProduct(String remoteResource, String filterKey, boolean shouldOverride) {
+
+        final UseCase syncProductPictureUseCase = UseCaseFactory.getInstance().createSyncProductInfoUseCase(remoteResource,filterKey,shouldOverride);
+
+        syncProductPictureUseCase.execute(new RemoteDataSubscriber<Void>(getViewer()) {
+            @Override
+            protected void handleRemoteData(RemoteData data) {
+
+                if (data.isSuccess()) {
+                    getViewer().showMesssage("同步产品数据成功==" + data.message);
+                } else {
+
+                    getViewer().showMesssage(data.message);
+                }
+
+            }
+
+        });
+
+        getViewer().showLoadingDialog();
 
     }
 

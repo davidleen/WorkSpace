@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.giants3.hd.android"
     android:versionCode="3"
     android:versionName="v_1.0.3">
@@ -166,6 +167,8 @@
             android:name="android.max_aspect"
             android:value="2.1"></meta-data>
 
+        <!--所有嵌套依赖的支持包配置，全部替换为默认配置，避免support编译版本不一致问题。-->
+        <meta-data android:name="android.support.VERSION"  tools:replace="android:value" android:value="${ANDROID_SUPPORT_VERSION}"/>
 
     </application>
 

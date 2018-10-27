@@ -2172,12 +2172,20 @@ public class ApiManager {
         return remoteData;
     }
 
-    public RemoteData<Void> syncProductPicture(String remoteResource,String filterKey) throws HdException {
-        String url = HttpUrl.syncProductPicture(remoteResource,filterKey);
+    public RemoteData<Void> syncProductPicture(String remoteResource,String filterKey,boolean shouldOverride) throws HdException {
+        String url = HttpUrl.syncProductPicture(remoteResource,filterKey,  shouldOverride);
         String result = client.getWithStringReturned(url);
         RemoteData<Void> remoteData = invokeByReflect(result, Void.class);
         return remoteData;
 
+    }
+
+
+    public RemoteData<Void> syncProductInfo(String remoteResource, String filterKey, boolean shouldOverride) throws HdException {
+        String url = HttpUrl.syncProductInfo(remoteResource,filterKey,  shouldOverride);
+        String result = client.getWithStringReturned(url);
+        RemoteData<Void> remoteData = invokeByReflect(result, Void.class);
+        return remoteData;
     }
 
     public RemoteData<Void> initGjhData() throws HdException {
@@ -2197,4 +2205,5 @@ public class ApiManager {
 
 
     }
+
 }

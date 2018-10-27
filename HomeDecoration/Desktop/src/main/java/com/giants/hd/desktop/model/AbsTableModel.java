@@ -83,6 +83,7 @@ public  abstract  class AbsTableModel<T> extends AbstractTableModel implements  
             ImageLoader.getInstance().displayImage(new Iconable() {
                 @Override
                 public void setIcon(ImageIcon icon, String url) {
+
                     pictureMaps.put(url, icon);
                     if(Config.DEBUG)
                     {
@@ -117,7 +118,7 @@ public  abstract  class AbsTableModel<T> extends AbstractTableModel implements  
      * 异步加载的图片缓存
      * 最多50
      */
-    private static LRUMap pictureMaps = new LRUMap(100, 0.75f, false);
+    private   LRUMap pictureMaps = new LRUMap(100, 0.75f, false);
 
 
     /**

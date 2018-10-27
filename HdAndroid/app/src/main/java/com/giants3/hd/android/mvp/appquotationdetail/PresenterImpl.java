@@ -304,7 +304,7 @@ public class PresenterImpl extends BasePresenter<AppQuotationDetailMVP.Viewer, A
         QuotationDetail quotationDetail = getModel().getQuotationDetail();
 
 
-        final String filePath =  StorageUtils.getFilePath(   "报价单"+File.separator + quotationDetail.quotation.qNumber+".pdf");
+        final String filePath =  StorageUtils.getFilePath(   "quotation"+File.separator + quotationDetail.quotation.qNumber+".pdf");
         File file = new File(filePath);
         if(file.exists())
         {
@@ -463,8 +463,8 @@ public class PresenterImpl extends BasePresenter<AppQuotationDetailMVP.Viewer, A
         PrintAttributes.Builder builder = new PrintAttributes.Builder();
         builder.setColorMode(PrintAttributes.COLOR_MODE_COLOR);
         builder.setMediaSize(PrintAttributes.MediaSize.ISO_A4);;
-        //  PrintDocumentAdapter documentAdapter = new PDFPrintDocumentAdapter(getView().getContext(), filePath);
-         PrintDocumentAdapter documentAdapter = new FilePrintDocumentAdapter(  filePath);
+          PrintDocumentAdapter documentAdapter = new PDFPrintDocumentAdapter(getView().getContext(), filePath);
+//         PrintDocumentAdapter documentAdapter = new FilePrintDocumentAdapter(  filePath);
         printManager.print("test pdf print", documentAdapter, builder.build());
     }
 

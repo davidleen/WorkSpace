@@ -35,6 +35,12 @@ import java.util.Calendar;
 @RequestMapping("/file")
 public class FileController extends BaseController {
 
+    /**
+     * 是否支持同步功能（从另外一个服务器复制数据）
+     */
+    @Value("${synchonize}")
+    private boolean synchonize;
+
 
     public static final String JPG = "jpg";
     @Value("${rootpath}")
@@ -555,10 +561,18 @@ public class FileController extends BaseController {
     @RequestMapping(value = "/syncProductPicture", method = RequestMethod.GET)
     public
     @ResponseBody
-    RemoteData<Void> syncProductPicture(@RequestParam("remoteUrlHead") String remoteUrlHead,@RequestParam(value = "filterKey",required = false,defaultValue = "" ) String filterKey ) {
+    RemoteData<Void> syncProductPicture(@RequestParam("remoteUrlHead") String remoteUrlHead,@RequestParam(value = "filterKey",required = false,defaultValue = "" ) String filterKey,
+                                        @RequestParam(value = "shouldOverride",required = false,defaultValue = "false" ) boolean shouldOverride ) {
+
+        if(!synchonize)
+        {
+
+            return wrapError("当前服务器不支持同步复制操作。");
+        }
 
 
 
+         String remoteResourceUrlHead=remoteUrlHead+"Resource/";
 
 
         String searchKey=filterKey;
@@ -577,10 +591,10 @@ public class FileController extends BaseController {
 
                 final String productPicturePath = FileUtils.getProductPicturePath(productFilePath, product.name, product.pVersion, JPG);
                 FileSystemResource resource = new FileSystemResource(productPicturePath);
-                if (!resource.exists()) {
+                if (!resource.exists()||shouldOverride) {
 
                     if (!StringUtils.isEmpty(product.url)) {
-                        String url = remoteUrlHead + product.url;
+                        String url = remoteResourceUrlHead + product.url;
 
                         if (apiManager.downloadUrlToFilePath(url, productPicturePath)) {
                             updateCount++;
@@ -596,7 +610,7 @@ public class FileController extends BaseController {
                     String thumbNailFilePath = FileUtils.convertThumbnailUrlToPath(productFilePath, product.thumbnail);
                     FileSystemResource thumbNailFileResource = new FileSystemResource(thumbNailFilePath);
 
-                    if (!thumbNailFileResource.exists()) {
+                    if (!thumbNailFileResource.exists()||shouldOverride) {
                         if (ImageUtils.scalePicture(productPicturePath, thumbNailFilePath)) {
                             thumbnailUpdateCount++;
                         }
@@ -612,7 +626,7 @@ public class FileController extends BaseController {
         }
 
 
-        return wrapMessageData("共检查"+productRemoteData.totalCount+"产品，同步"+updateCount+"款图片,生成"+thumbnailUpdateCount+"个缩略图=="+remoteUrlHead);
+        return wrapMessageData("共检查"+productRemoteData.totalCount+"产品，同步"+updateCount+"款图片,生成"+thumbnailUpdateCount+"个缩略图=="+remoteResourceUrlHead);
 
 
     }

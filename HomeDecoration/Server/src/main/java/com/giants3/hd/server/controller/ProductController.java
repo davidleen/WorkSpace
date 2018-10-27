@@ -2,16 +2,20 @@ package com.giants3.hd.server.controller;
 
 
 import com.giants3.hd.app.AProduct;
+import com.giants3.hd.domain.api.ApiManager;
 import com.giants3.hd.entity.*;
 import com.giants3.hd.exception.HdException;
 import com.giants3.hd.noEntity.ProductDetail;
 import com.giants3.hd.noEntity.ProductListViewType;
 import com.giants3.hd.noEntity.RemoteData;
+import com.giants3.hd.noEntity.RemoteDateParameterizedType;
 import com.giants3.hd.server.parser.DataParser;
 import com.giants3.hd.server.parser.RemoteDataParser;
 import com.giants3.hd.server.service.ProductRelateService;
 import com.giants3.hd.server.service.ProductService;
 import com.giants3.hd.server.utils.Constraints;
+import com.giants3.hd.server.utils.HttpUrl;
+import com.giants3.hd.utils.GsonUtils;
 import com.giants3.hd.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,6 +38,12 @@ import java.util.Set;
 public class ProductController extends BaseController {
 
 
+    /**
+     * 是否支持同步功能（从另外一个服务器复制数据）
+     */
+    @Value("${synchonize}")
+    private boolean synchonize;
+
     @Value("${filepath}")
     private String productFilePath;
 
@@ -51,7 +61,6 @@ public class ProductController extends BaseController {
     @Autowired
     @Qualifier("productParser")
     private DataParser<Product, AProduct> dataParser;
-
 
     @RequestMapping(value = "/search", method = {RequestMethod.GET, RequestMethod.POST})
     public
@@ -547,6 +556,34 @@ public class ProductController extends BaseController {
 
 
         return wrapData();
+
+
+    }
+
+
+    /**
+     * 同步另外服务器的产品信息到当前服务器
+     *
+     * @return
+     */
+    @RequestMapping(value = "/syncProductFromRemote", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    RemoteData<Void> syncProductFromRemote(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user,@RequestParam("remoteUrlHead") String remoteUrlHead , @RequestParam(value = "filterKey", required = false, defaultValue = "") String filterKey
+                                         ,  @RequestParam(value = "shouldOverride",required = false,defaultValue = "false" ) boolean shouldOverride
+    ) {
+
+
+        if(!synchonize)
+        {
+
+            return wrapError("当前服务器不支持同步复制操作。");
+        }
+
+
+        return productService.syncProductFromRemote(user,remoteUrlHead,filterKey,shouldOverride);
+
+
 
 
     }

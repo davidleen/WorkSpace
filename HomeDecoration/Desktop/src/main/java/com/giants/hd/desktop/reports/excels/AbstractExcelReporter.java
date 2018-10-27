@@ -5,6 +5,8 @@ import com.giants3.hd.utils.StringUtils;
 import com.giants3.hd.utils.UnitUtils;
 import com.giants3.hd.exception.HdException;
 import com.giants3.hd.utils.file.ImageUtils;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 
@@ -127,8 +129,29 @@ public abstract class AbstractExcelReporter<T> {
     }
 
     protected void addNumber(Sheet sheet, double value, int column, int rowUpdate) {
+
         Row row = getRow(sheet,rowUpdate);
         Cell cell = row.getCell(column, Row.CREATE_NULL_AS_BLANK);
+        cell.setCellValue(value);
+
+    }protected void addNumberScaled(Sheet sheet, double value, int column, int rowUpdate) {
+
+        Row row = getRow(sheet,rowUpdate);
+        Workbook workbook= sheet.getWorkbook();
+        Cell cell = row.getCell(column, Row.CREATE_NULL_AS_BLANK);
+        CellStyle contextstyle =workbook.createCellStyle();
+
+            contextstyle.cloneStyleFrom(cell.getCellStyle());
+
+            cell.setCellStyle(contextstyle);
+
+
+          DataFormat df = workbook.createDataFormat(); // 此处设置数据格式
+
+
+        contextstyle.setDataFormat(df.getFormat("#,##0.00"));//保留两位小数点
+
+
 
         cell.setCellValue(value);
 

@@ -5,7 +5,7 @@ package com.giants3.hd.android.mvp;
  * @param <T>
  * @param <M>
  */
-public abstract class BasePresenter<T extends NewViewer,M extends NewModel> implements NewPresenter<T> {
+public abstract class BasePresenter<T extends NewViewer,M extends NewModel> implements NewPresenter<T>   {
 
     protected static final String TAG = "BasePresenter";
     protected T mView;

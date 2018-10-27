@@ -29,25 +29,25 @@
     "columnName": "报价次数",
     "fileName": "count",
     "width": 70,
-    "aClass": "S"
+    "aClass": "I"
   },
   {
     "columnName": "平均报价",
     "fileName": "avgPrice",
     "width": 70,
-    "aClass": "S"
+    "aClass": "F"
   },
   {
     "columnName": "最高报价",
     "fileName": "maxPrice",
     "width": 70,
-    "aClass": "S"
+    "aClass": "F"
   },
   {
     "columnName": "最低报价",
     "fileName": "minPrice",
     "width": 70,
-    "aClass": "S"
+    "aClass": "F"
   },
   {
     "columnName": " ",

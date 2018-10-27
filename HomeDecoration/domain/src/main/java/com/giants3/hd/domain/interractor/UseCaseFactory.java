@@ -693,10 +693,18 @@ public class UseCaseFactory {
 
     }
 
-    public UseCase createSyncProductPictureUseCase(String remoteResource,String filterKey) {
+    public UseCase createSyncProductPictureUseCase(String remoteResource,String filterKey,boolean shouldOverride) {
 
 
-        return   new SyncProductPictureUseCase(  remoteResource,   filterKey,  fileRepository);
+        return   new SyncProductPictureUseCase(  remoteResource,   filterKey,   shouldOverride , fileRepository);
+    }
+
+
+
+    public UseCase createSyncProductInfoUseCase(String remoteResource, String filterKey, boolean shouldOverride) {
+
+        return   new SyncProductInfoUseCase(  remoteResource,   filterKey,   shouldOverride , productRepository);
+
     }
 
     public UseCase createInitGjhDataUseCase() {
@@ -716,7 +724,6 @@ public class UseCaseFactory {
         return   new RunnableWorkReportUseCase( runnable);
 
     }
-
 
 
 }

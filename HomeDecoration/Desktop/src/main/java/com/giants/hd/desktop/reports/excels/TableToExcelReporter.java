@@ -1,6 +1,7 @@
 package com.giants.hd.desktop.reports.excels;
 
 import com.giants.hd.desktop.model.TableField;
+import com.giants3.hd.utils.FloatHelper;
 import com.giants3.report.ResourceUrl;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -229,10 +230,14 @@ public class TableToExcelReporter<T> extends SimpleExcelReporter<List<T >> {
 
                             break;
                         case I:
-                        case L:
-                        case F:
-                            final Float value = Float.valueOf(str);
+                        case L: {
+                            final int value = Integer.valueOf(str);
                             addNumber(sheet, value, i, j + startRow);
+                            }
+                            break;
+                        case F:
+                            final Float value =  Float.valueOf(str) ;
+                            addNumberScaled(sheet, value, i, j + startRow);
                             break;
                         default:
                             addString(sheet, str, i, j + startRow);

@@ -25,6 +25,8 @@ public class Panel_AppQuotation_Sync extends BasePanel implements AppQuotationSy
     private JTextField remoteResourceText;
     private JTextField tf_filter;
     private JButton btn_init;
+    private JButton syncProduct;
+    private JCheckBox cb_override;
 
 
     public Panel_AppQuotation_Sync(final AppQuotationSyncPresenter presenter) {
@@ -60,13 +62,37 @@ public class Panel_AppQuotation_Sync extends BasePanel implements AppQuotationSy
 
                 String remoteResource=remoteResourceText.getText().trim();
                 String filterKey=tf_filter.getText().trim();
-
-                presenter.beginAsyncPicture(remoteResource,filterKey);
+                boolean shouldOverride=cb_override.isSelected();
+                presenter.beginAsyncPicture(remoteResource,filterKey,shouldOverride);
 
 
 
             }
         });
+
+        syncProduct.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+
+
+
+
+
+                String remoteResource=remoteResourceText.getText().trim();
+                String filterKey=tf_filter.getText().trim();
+                boolean shouldOverride=cb_override.isSelected();
+
+
+                presenter.beginAsyncProduct(remoteResource,filterKey,shouldOverride);
+
+
+
+            }
+        });
+
+
+
     }
 
 
