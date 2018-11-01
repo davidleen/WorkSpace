@@ -81,6 +81,7 @@ public class MovieService extends AbstractService {
                 Movie movie = new Movie();
                 movie.setVideoUrl(file.getAbsolutePath());
                 movie.setTitle(file.getName());
+                movie.setCardImageUrl(file.getName());
                 movies.add(movie);
 
 

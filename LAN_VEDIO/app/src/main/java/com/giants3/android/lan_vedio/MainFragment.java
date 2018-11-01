@@ -14,14 +14,10 @@
 
 package com.giants3.android.lan_vedio;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v17.leanback.app.BackgroundManager;
@@ -49,6 +45,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.giants3.hd.domain.api.ApiManager;
+import com.giants3.lanvideo.data.Movie;
+import com.giants3.lanvideo.data.RemoteData;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainFragment extends BrowseFragment {
     private static final String TAG = "MainFragment";
@@ -56,7 +60,7 @@ public class MainFragment extends BrowseFragment {
     private static final int BACKGROUND_UPDATE_DELAY = 300;
     private static final int GRID_ITEM_WIDTH = 200;
     private static final int GRID_ITEM_HEIGHT = 200;
-    private static final int NUM_ROWS = 6;
+    private static final int NUM_ROWS = 3;
     private static final int NUM_COLS = 15;
 
     private final Handler mHandler = new Handler();
@@ -76,7 +80,8 @@ public class MainFragment extends BrowseFragment {
 
         setupUIElements();
 
-        loadRows();
+       // loadRows();
+        loadData();
 
         setupEventListeners();
     }
@@ -93,11 +98,44 @@ public class MainFragment extends BrowseFragment {
     private void loadRows() {
 
 
-
-
-
         List<Movie> list = MovieList.setupMovies();
+        setRows(list);
 
+    }
+
+
+    private void loadData() {
+
+        new AsyncTask<Void,Void,RemoteData<Movie>>() {
+
+            @Override
+            protected void onPostExecute(RemoteData<Movie> result) {
+
+                if(result.isSuccess())
+                {
+                    setRows(result.datas);
+                }
+
+            }
+
+            @Override
+            protected RemoteData<Movie> doInBackground(Void[] objects) {
+
+                ApiManager apiManager = new ApiManager();
+                String result = apiManager.getString("http://192.168.1.6:8080/lanvideo/api/movie/list?category=Fmovie");
+                RemoteData<Movie> movieRemoteData = GsonUtils.fromJson(result, new RemoteDateParameterizedType(Movie.class));
+
+
+                return movieRemoteData;
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+
+    }
+
+
+    private void setRows(List<Movie> movies) {
+        List<Movie> list = movies;
         mRowsAdapter = new ArrayObjectAdapter(new ListRowPresenter());
         CardPresenter cardPresenter = new CardPresenter();
 
@@ -156,9 +194,6 @@ public class MainFragment extends BrowseFragment {
             public void onClick(View view) {
                 Toast.makeText(getActivity(), "Implement your own in-app search", Toast.LENGTH_LONG)
                         .show();
-
-
-
 
 
             }

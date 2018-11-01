@@ -149,7 +149,7 @@ public class PresenterImpl extends BasePresenter<AppQuotationDetailMVP.Viewer, A
             }
         };
 
-        UseCaseFactory.getInstance().createGetProductByIdCase(productId).execute(useCaseSubscriber);
+        UseCaseFactory.getInstance().createGetProductByNameAndVersionUseCase(productName,pVersion).execute(useCaseSubscriber);
 
 
     }

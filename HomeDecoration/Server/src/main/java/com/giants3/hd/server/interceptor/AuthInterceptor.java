@@ -80,11 +80,12 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         if (ConstantData.FOR_TEST || url.contains(UN_INTERCEPT_LOGIN) || url.contains(UN_INTERCEPT_ALOGIN) || url.contains(UN_INTERCEPT_USERLIST) || url.contains(UNLOGIN) || url.contains(WEIXIN))
             return true;
         else
-            if(url.contains("app/quotation/findDetails")||url.contains("api/customer/list"))//特殊接口，用来服务器之间同步。
+//            if(url.contains("app/quotation/findDetails")||url.contains("api/customer/list"))//特殊接口，用来服务器之间同步。
+//            {
+//                return true;
+//            }
+//             else
             {
-                return true;
-            }
-             else {
             String token = request.getParameter(TOKEN);
 
             String appVersion = request.getParameter("appVersion");

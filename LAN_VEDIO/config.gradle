@@ -1,0 +1,27 @@
+ext{
+    rxVersion= '1.1.0'
+    gsonVersion='1.7.2'
+    okHttpVersion = '2.3.0'
+
+    DataLibVersion='1.0.0'
+
+
+
+    ANDROID_COMPILE_VERSION=26
+    ANDROID_TARGET_VERSION=26
+    ANDROID_MIN_VERSION=19
+    ANDROID_BUILD_VERSION='26.0.2'
+
+    ANDROID_SUPPORT_V7_VERSION='23.4.0'
+
+
+
+    API_VERSION='1.7.5'
+
+
+    PERMISSIONSDISPATCHER_VERSION='3.3.1'
+
+
+
+
+}

@@ -98,14 +98,24 @@ public class UseCaseFactory {
     public UseCase createGetProductDetailCase(long productId) {
         return new GetProductDetailCase(Schedulers.newThread(), AndroidSchedulers.mainThread(), productId, restApi);
     }
-/***
-     * 读取订单详情
+    /***
+     * 产品基本信息
      *
      * @param productId
      * @return
      */
     public UseCase createGetProductByIdCase(long productId) {
         return new FindProductByIdUseCase( productId, restApi);
+    }
+ /***
+     * 产品基本信息
+     *
+     * @param pName
+     * @param pVersion
+     * @return
+     */
+    public UseCase createGetProductByNameAndVersionUseCase(String pName,String pVersion  ) {
+        return new FindProductByNameAndVersionUseCase( pName,pVersion, restApi);
     }
 
     public UseCase createGetQuotationList(String name, int pageIndex, int pageSize) {

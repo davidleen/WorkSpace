@@ -218,6 +218,17 @@ public class HttpUrl {
 
     }
 
+
+
+    public static String findProductByNameAndVersion(String pName, String pVersion) {
+        String apiUrl=BASE_URL + "/api/product/findByNameAndVersion";
+        UrlFormatter formatter=new UrlFormatter(apiUrl)
+                .append("pName",pName)
+                .append("pVersion",pVersion)
+
+                ;
+        return additionInfo(formatter);
+    }
     public static String getOrderList(String name, int pageIndex, int pageSize) {
         return completeUrl(String.format(API_URL_GET_ORDER_LIST, UrlFormatter.encode(name), pageIndex, pageSize));
     }
@@ -639,7 +650,6 @@ public class HttpUrl {
         return additionInfo(formatter);
 
     }
-
 
 
 }

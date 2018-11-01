@@ -2,20 +2,16 @@ package com.giants3.hd.server.controller;
 
 
 import com.giants3.hd.app.AProduct;
-import com.giants3.hd.domain.api.ApiManager;
 import com.giants3.hd.entity.*;
 import com.giants3.hd.exception.HdException;
 import com.giants3.hd.noEntity.ProductDetail;
 import com.giants3.hd.noEntity.ProductListViewType;
 import com.giants3.hd.noEntity.RemoteData;
-import com.giants3.hd.noEntity.RemoteDateParameterizedType;
 import com.giants3.hd.server.parser.DataParser;
 import com.giants3.hd.server.parser.RemoteDataParser;
 import com.giants3.hd.server.service.ProductRelateService;
 import com.giants3.hd.server.service.ProductService;
 import com.giants3.hd.server.utils.Constraints;
-import com.giants3.hd.server.utils.HttpUrl;
-import com.giants3.hd.utils.GsonUtils;
 import com.giants3.hd.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -256,6 +252,17 @@ public class ProductController extends BaseController {
 
 
         final RemoteData<Product> productRemoteData = wrapData(productService.findProductById(productId));
+        return productRemoteData;
+
+    }
+
+    @RequestMapping(value = "/findByNameAndVersion", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    RemoteData<Product> findByNameAndVersion(@RequestParam("pName") String pName, @RequestParam("pVersion") String pVersion) {
+
+
+        final RemoteData<Product> productRemoteData = productService.findByNameAndVersion(pName, pVersion);
         return productRemoteData;
 
     }
@@ -569,21 +576,18 @@ public class ProductController extends BaseController {
     @RequestMapping(value = "/syncProductFromRemote", method = RequestMethod.GET)
     public
     @ResponseBody
-    RemoteData<Void> syncProductFromRemote(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user,@RequestParam("remoteUrlHead") String remoteUrlHead , @RequestParam(value = "filterKey", required = false, defaultValue = "") String filterKey
-                                         ,  @RequestParam(value = "shouldOverride",required = false,defaultValue = "false" ) boolean shouldOverride
+    RemoteData<Void> syncProductFromRemote(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam("remoteUrlHead") String remoteUrlHead, @RequestParam(value = "filterKey", required = false, defaultValue = "") String filterKey
+            , @RequestParam(value = "shouldOverride", required = false, defaultValue = "false") boolean shouldOverride
     ) {
 
 
-        if(!synchonize)
-        {
+        if (!synchonize) {
 
             return wrapError("当前服务器不支持同步复制操作。");
         }
 
 
-        return productService.syncProductFromRemote(user,remoteUrlHead,filterKey,shouldOverride);
-
-
+        return productService.syncProductFromRemote(user, remoteUrlHead, filterKey, shouldOverride);
 
 
     }

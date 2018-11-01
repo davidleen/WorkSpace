@@ -1,7 +1,6 @@
 package com.giants3.lanvideo.server.utils;
 
 
-import de.greenrobot.common.io.IoUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,7 +16,6 @@ import java.nio.file.attribute.FileTime;
  */
 
 public class FileUtils {
-
 
 
     public static final String IMAGE_JPG = "jpg";
@@ -41,7 +39,6 @@ public class FileUtils {
      * url 中 对路径的表示， 获取文件资源时， 将这个标识改成  SEPARATOR
      */
     public static final String URL_PATH_SEPARATOR = "___";
-
 
 
     /**
@@ -353,8 +350,17 @@ public class FileUtils {
         } catch (Throwable e) {
             throw e;
         } finally {
-            IoUtils.safeClose(fileOutputStream);
-            IoUtils.safeClose(inputStream);
+            safeClose(fileOutputStream);
+            safeClose(inputStream);
+        }
+
+    }
+
+    private static void safeClose(Closeable closeable) {
+        try {
+            closeable.close();
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
 
     }
@@ -371,5 +377,11 @@ public class FileUtils {
         return new File(maitoufilepath + os_no + ".xls");
 
 
+    }
+
+    public static String readUtf8(File file) {
+
+
+        return "";
     }
 }

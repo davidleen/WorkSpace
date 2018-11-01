@@ -93,6 +93,8 @@ public class RestApiImpl implements RestApi {
         });
     }
 
+
+
     /**
      * 登录接口
      *
@@ -185,6 +187,20 @@ public class RestApiImpl implements RestApi {
                 return apiManager.findProductById(productId);
             }
         });
+    }
+
+    @Override
+    public Observable findProductByNameAndVersion(final String pName, final String pVersion) {
+
+        return create(new ApiInvoker<Product>() {
+            @Override
+            public RemoteData<Product> invoker() throws HdException {
+
+                return apiManager.findProductByNameAndVersion(pName,pVersion);
+
+            }
+        });
+
     }
 
     /**

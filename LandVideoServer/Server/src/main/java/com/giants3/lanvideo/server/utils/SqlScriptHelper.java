@@ -21,7 +21,7 @@ public class SqlScriptHelper {
         try {
 
 
-            String sql = de.greenrobot.common.io.FileUtils.readUtf8(resource.getFile());
+            String sql =  FileUtils.readUtf8(resource.getFile());
 
 
              return  sql;

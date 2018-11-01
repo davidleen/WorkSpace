@@ -20,6 +20,8 @@ import android.support.v17.leanback.app.VideoSupportFragmentGlueHost;
 import android.support.v17.leanback.media.MediaPlayerGlue;
 import android.support.v17.leanback.media.PlaybackGlue;
 
+import com.giants3.lanvideo.data.Movie;
+
 /**
  * Handles video playback with media controls.
  */
@@ -44,7 +46,22 @@ public class PlaybackVideoFragment extends VideoSupportFragment {
         mTransportControlGlue.setTitle(movie.getTitle());
         mTransportControlGlue.setArtist(movie.getDescription());
         mTransportControlGlue.addPlayerCallback(
+
+
                 new PlaybackGlue.PlayerCallback() {
+
+                    @Override
+                    public void onPlayStateChanged(PlaybackGlue glue) {
+                        super.onPlayStateChanged(glue);
+
+                        //showloading,
+                        //hide loading,
+                        if(glue.isPlaying())
+                        {
+
+                        }
+                    }
+
                     @Override
                     public void onPreparedStateChanged(PlaybackGlue glue) {
                         if (glue.isPrepared()) {
@@ -52,7 +69,7 @@ public class PlaybackVideoFragment extends VideoSupportFragment {
                         }
                     }
                 });
-        mTransportControlGlue.setVideoUrl(movie.getVideoUrl());
+        mTransportControlGlue.setVideoUrl(HttpUrl.complteUrl(movie.getVideoUrl()));
     }
 
     @Override

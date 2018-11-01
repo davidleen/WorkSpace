@@ -333,10 +333,10 @@ public class AppQuotationController extends BaseController {
     @RequestMapping(value = "/sync", method = RequestMethod.GET)
     public
     @ResponseBody
-    RemoteData<Void> updateItemPrice(@RequestParam(value = "urlHead") String urlHead, @RequestParam(value = "startDate") String startDate, @RequestParam(value = "endDate",required = false,defaultValue = "") String endDate) {
+    RemoteData<Void> sync(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user,@RequestParam(value = "urlHead") String urlHead, @RequestParam(value = "startDate") String startDate, @RequestParam(value = "endDate",required = false,defaultValue = "") String endDate) {
 
 
-        return quotationService.syncData(urlHead,startDate,endDate);
+        return quotationService.syncData(user,urlHead,startDate,endDate);
 
 
     }

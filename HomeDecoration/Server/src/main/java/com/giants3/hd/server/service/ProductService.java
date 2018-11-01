@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.rmi.Remote;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -1353,6 +1354,15 @@ public class ProductService extends AbstractService implements InitializingBean,
         return productRepository.findOne(productId);
     }
 
+
+
+
+    public RemoteData<Product> findByNameAndVersion(String pName, String pVersion) {
+        final Product product = productRepository.findFirstByNameEqualsAndPVersionEquals(pName, pVersion);
+        if(product==null) return wrapError("未找到"+pName+","+pVersion+"的产品信息");
+        return wrapData(product);
+    }
+
     public List<Product> findProductById(String[] productIds) {
 
         long[] productIdArray = new long[productIds.length];
@@ -1502,7 +1512,7 @@ public class ProductService extends AbstractService implements InitializingBean,
 
         String remoteServerUrlHead = remoteUrlHead + "Server/";
 
-        String loginUrl = HttpUrl.login(remoteServerUrlHead, user.id, DigestUtils.md5(user.password));
+        String loginUrl = HttpUrl.login(remoteServerUrlHead, user.id,  user.passwordMD5);
         String result = apiManager.getString(loginUrl);
         RemoteData remoteData = GsonUtils.fromJson(result, RemoteData.class);
         int copyCount = 0;
@@ -1581,4 +1591,5 @@ public class ProductService extends AbstractService implements InitializingBean,
         RemoteData<Product> productRemoteData = GsonUtils.fromJson(result, new RemoteDateParameterizedType(Product.class));
         return productRemoteData;
     }
+
 }

@@ -1,6 +1,6 @@
 package com.giants3.hd.server.app.service;
 
-import com.giants3.hd.domain.api.Client;
+import com.giants3.hd.domain.api.ApiManager;
 import com.giants3.hd.entity.Company;
 import com.giants3.hd.entity.Customer;
 import com.giants3.hd.entity.Product;
@@ -10,19 +10,23 @@ import com.giants3.hd.entity.app.QuotationItem;
 import com.giants3.hd.exception.HdException;
 import com.giants3.hd.logic.AppQuotationAnalytics;
 import com.giants3.hd.noEntity.RemoteData;
+import com.giants3.hd.noEntity.RemoteDateParameterizedType;
 import com.giants3.hd.noEntity.app.QuotationDetail;
+import com.giants3.hd.server.entity.ProductToUpdate;
 import com.giants3.hd.server.repository.*;
 import com.giants3.hd.server.service.AbstractService;
-import com.giants3.hd.server.utils.HttpUrl;
+import com.giants3.hd.server.service.CustomerService;
+import com.giants3.hd.server.utils.*;
 import com.giants3.hd.utils.*;
-import com.google.gson.reflect.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -32,7 +36,8 @@ import java.util.*;
 @Service
 public class AppQuotationService extends AbstractService {
 
-
+    @Value("${rootpath}")
+    private String rootpath;
     @Autowired
     MapRepository mapRepository;
 
@@ -58,17 +63,17 @@ public class AppQuotationService extends AbstractService {
     public QuotationDetail createNew(User user) {
 
 
-        Company company=companyRepository.findAll().get(0);
+        Company company = companyRepository.findAll().get(0);
         Quotation quotation = new Quotation();
-        quotation.booth=company.boothNo;
-        quotation.qNumber= generateDefaultQuotationId(user);
+        quotation.booth = company.boothNo;
+        quotation.qNumber = generateDefaultQuotationId(user);
         final Calendar instance = Calendar.getInstance();
         quotation.qDate = DateFormats.FORMAT_YYYY_MM_DD.format(instance.getTime());
         quotation.createTime = instance.getTimeInMillis();
         quotation.saleId = user.id;
         quotation.salesman = user.toString();
         quotation.email = user.email;
-        quotation.uuid= UUID.randomUUID().toString();
+        quotation.uuid = UUID.randomUUID().toString();
         quotation = appQuotationRepository.save(quotation);
         QuotationDetail quotationDetail = new QuotationDetail();
         quotationDetail.quotation = quotation;
@@ -118,13 +123,13 @@ public class AppQuotationService extends AbstractService {
      * @param pageSize
      * @return
      */
-    public RemoteData<Quotation> search(User user, String searchValue,String  dateStart,  String  dateEnd,   long  userId,int pageIndex, int pageSize) {
+    public RemoteData<Quotation> search(User user, String searchValue, String dateStart, String dateEnd, long userId, int pageIndex, int pageSize) {
 
 
         Pageable pageable = constructPageSpecification(pageIndex, pageSize);
         Page<Quotation> pageValue;
         final String key = StringUtils.sqlLike(searchValue);
-        pageValue = appQuotationRepository.search(key, dateStart,dateEnd,userId,pageable);
+        pageValue = appQuotationRepository.search(key, dateStart, dateEnd, userId, pageable);
 
         List<Quotation> datas = pageValue.getContent();
 
@@ -202,7 +207,7 @@ public class AppQuotationService extends AbstractService {
 
         if (item == null) return wrapError("未找到报价单明细项次：" + itemIndex);
 
-        Product product=productRepository.findOne(productId);
+        Product product = productRepository.findOne(productId);
         AppQuotationAnalytics.bindProductToQuotationItem(item, product);
 
         appQuotationItemRepository.saveAndFlush(item);
@@ -445,9 +450,7 @@ public class AppQuotationService extends AbstractService {
         if (!quotation.formal) {
 
 
-
-
-          //  quotation.qNumber= generateDefaultQuotationId();
+            //  quotation.qNumber= generateDefaultQuotationId();
 
             quotation.formal = true;
             quotation = appQuotationRepository.saveAndFlush(quotation);
@@ -458,8 +461,7 @@ public class AppQuotationService extends AbstractService {
     }
 
 
-    private String generateDefaultQuotationId(User user)
-    {
+    private String generateDefaultQuotationId(User user) {
 
 
         //生成流水单号  日期—+流水单号
@@ -475,12 +477,12 @@ public class AppQuotationService extends AbstractService {
             try {
                 final int integer = Integer.valueOf(maxQuotation.qNumber.substring(8));
 
-                for (int i =1; i <10000 ; i++) {
-                      qNumber=  today + String.valueOf(integer + 10000+i).substring(1);
-                    if(appQuotationRepository.findFirstByQNumberEquals(qNumber)==null)
-                    {break;}
+                for (int i = 1; i < 10000; i++) {
+                    qNumber = today + String.valueOf(integer + 10000 + i).substring(1);
+                    if (appQuotationRepository.findFirstByQNumberEquals(qNumber) == null) {
+                        break;
+                    }
                 }
-
 
 
             } catch (Throwable t) {
@@ -523,7 +525,7 @@ public class AppQuotationService extends AbstractService {
         }
 
 
-      AppQuotationAnalytics.setCustomerToQuotation(quotation,customer);
+        AppQuotationAnalytics.setCustomerToQuotation(quotation, customer);
         quotation = appQuotationRepository.save(quotation);
         return loadAQuotationDetail(quotationId);
 
@@ -566,7 +568,7 @@ public class AppQuotationService extends AbstractService {
         }
 
 
-        AppQuotationAnalytics.setSaleManToQuotation(quotation,user);
+        AppQuotationAnalytics.setSaleManToQuotation(quotation, user);
 
 
         quotation = appQuotationRepository.save(quotation);
@@ -641,7 +643,7 @@ public class AppQuotationService extends AbstractService {
         }
 
 
-        if (quotation.saleId != user.id&&!user.isAdmin()) {
+        if (quotation.saleId != user.id && !user.isAdmin()) {
             return wrapError("无权删除报价单，当前用户不是创建者");
         }
 
@@ -684,10 +686,9 @@ public class AppQuotationService extends AbstractService {
 
 
                 final Quotation findQuotation = appQuotationRepository.findFirstByQNumberEqualsAndFormalIsTrue(data);
-                if(findQuotation!=null)
-                {
+                if (findQuotation != null) {
 
-                    return wrapError("报价单号重复，已经存在："+data+",的报价单");
+                    return wrapError("报价单号重复，已经存在：" + data + ",的报价单");
                 }
 
                 quotation.qNumber = data;
@@ -695,75 +696,56 @@ public class AppQuotationService extends AbstractService {
         }
 
 
-
-
-
         appQuotationRepository.saveAndFlush(quotation);
-        return  wrapData(getDetail(id));
+        return wrapData(getDetail(id));
 
     }
 
     public RemoteData<QuotationDetail> saveDetail(QuotationDetail quotationDetail) {
 
 
+        if (!quotationDetail.quotation.formal) {
 
 
-
-
-
-
-        if(!quotationDetail.quotation.formal)
-        {
-
-
-          Quotation quotation=  appQuotationRepository.findFirstByQNumberEqualsAndFormalIsTrue(quotationDetail.quotation.qNumber);
-            if(quotation!=null)
-            {
+            Quotation quotation = appQuotationRepository.findFirstByQNumberEqualsAndFormalIsTrue(quotationDetail.quotation.qNumber);
+            if (quotation != null) {
                 //表示这个编号已经被占用
 
                 return wrapError("当前报价单号已经存在，请修改");
             }
 
-            quotationDetail.quotation.formal=true;
-
-
+            quotationDetail.quotation.formal = true;
 
 
         }
-
-
 
 
         //找出被移除的數據
 
 
-        List<QuotationItem> oldItems=appQuotationItemRepository.findByQuotationIdEqualsOrderByItmAsc(quotationDetail.quotation.id);
+        List<QuotationItem> oldItems = appQuotationItemRepository.findByQuotationIdEqualsOrderByItmAsc(quotationDetail.quotation.id);
 
-        List<QuotationItem> removedItems=new ArrayList<>();
+        List<QuotationItem> removedItems = new ArrayList<>();
 
-        for(QuotationItem oldItem:oldItems)
-        {
+        for (QuotationItem oldItem : oldItems) {
 
-            boolean found=false;
+            boolean found = false;
             for (
-                    QuotationItem newItem:quotationDetail.items                 )
-            {
+                    QuotationItem newItem : quotationDetail.items) {
 
-                if(oldItem.id==newItem.id)
-                {
-                    found=true;
+                if (oldItem.id == newItem.id) {
+                    found = true;
                     break;
                 }
             }
 
-            if(!found)removedItems.add(oldItem);
+            if (!found) removedItems.add(oldItem);
 
 
         }
 
 
-        if(removedItems.size()>0)
-        {
+        if (removedItems.size() > 0) {
 
             appQuotationItemRepository.delete(removedItems);
             appQuotationItemRepository.flush();
@@ -771,25 +753,20 @@ public class AppQuotationService extends AbstractService {
 
 
         //校正itm值，设置 quotationId，
-        int newItm=0;
-        for (QuotationItem item:quotationDetail.items)
-        {
+        int newItm = 0;
+        for (QuotationItem item : quotationDetail.items) {
 
-            item.quotationId=quotationDetail.quotation.id;
-            item.itm=newItm++;
+            item.quotationId = quotationDetail.quotation.id;
+            item.itm = newItm++;
 
         }
 
 
-         appQuotationItemRepository.save(quotationDetail.items);
+        appQuotationItemRepository.save(quotationDetail.items);
         appQuotationRepository.save(quotationDetail.quotation);
 
         appQuotationItemRepository.flush();
         appQuotationRepository.flush();
-
-
-
-
 
 
         return loadAQuotationDetail(quotationDetail.quotation.id);
@@ -799,16 +776,25 @@ public class AppQuotationService extends AbstractService {
     /**
      * 同步数据库数据， 同步另外一个服务器数据到当前服务器来。
      *
-     * @param urlHead  另外一个服务器ip地址
-     * @param startDate   开始的报价单日期
-     * @param endDate       结束的报价单日期
+     * @param urlHead   另外一个服务器ip地址
+     * @param startDate 开始的报价单日期
+     * @param endDate   结束的报价单日期
      */
-    public  RemoteData<Void> syncData(String urlHead,String startDate, String endDate) {
+    public RemoteData<Void> syncData(User user, String urlHead, String startDate, String endDate) {
 
 
         try {
-            synchronizedAppQuotationFromRemote(urlHead, startDate, endDate);
-            synchronizedCustomerFromRemote(urlHead);
+
+            ApiManager apiManager = new ApiManager();
+            String loginUrl = HttpUrl.login(urlHead, user.id, user.passwordMD5);
+            String result = apiManager.getString(loginUrl);
+            RemoteData remoteData = GsonUtils.fromJson(result, RemoteData.class);
+
+            if (remoteData.isSuccess()) {
+
+                synchronizedAppQuotationFromRemote(urlHead, startDate, endDate, apiManager, remoteData.token);
+                synchronizedCustomerFromRemote(urlHead, apiManager, remoteData.token);
+            }
             return wrapData();
         } catch (Exception e) {
             e.printStackTrace();
@@ -816,132 +802,175 @@ public class AppQuotationService extends AbstractService {
         }
 
 
-
-
-
     }
 
     /**
      * 同步报价数据
+     *
      * @param urlHead
      * @param startDate
      * @param endDate
      */
-    private void synchronizedAppQuotationFromRemote(String urlHead, String startDate, String endDate) throws HdException {
+    private void synchronizedAppQuotationFromRemote(String urlHead, String startDate, String endDate, ApiManager apiManager, String token) throws HdException {
+
+
         int pageIndex = 0;
         int pageSize = 20;
-        String url = HttpUrl.findAppQuotationDetails(urlHead, startDate, endDate, pageIndex, pageSize);
-
-        Client client = new Client();
-        String result = null;
-
-        try {
-            result = client.getWithStringReturned(url);
-        } catch (Exception e) {
-            throw HdException.create(e.getCause());
-        }
 
 
-        RemoteData<QuotationDetail> remoteData = GsonUtils.fromJson(result, new TypeToken<RemoteData<QuotationDetail>>() {
-        }.getType());
+        RemoteData<QuotationDetail> remoteData = readAppQuotationFromRemote(apiManager, urlHead, startDate,  endDate, pageIndex, pageSize,token);
 
-//        do{}while (remoteData.)
-        for (QuotationDetail detail : remoteData.datas)
-        {
-              Quotation newQuotation = detail.quotation;
-            final Quotation quotation = appQuotationRepository.findFirstByQNumberEqualsAndFormalIsTrue(newQuotation.qNumber);
-            if(quotation!=null)
-            {
-                //标识码一致，表示已经同步过一次 ，覆盖更新处理。
-                if(newQuotation.uuid!=null&&newQuotation.uuid.equals(quotation.uuid))
-                {
-                    newQuotation.id=quotation.id;
-                    for (QuotationItem item:detail.items)
-                    {
-                        item.quotationId=quotation.id;
+        while (remoteData.isSuccess()) {
+
+
+            for (QuotationDetail detail : remoteData.datas) {
+                Quotation newQuotation = detail.quotation;
+                final Quotation quotation = appQuotationRepository.findFirstByQNumberEqualsAndFormalIsTrue(newQuotation.qNumber);
+                if (quotation != null) {
+                    //标识码一致，表示已经同步过一次 ，覆盖更新处理。
+                    if (newQuotation.uuid != null && newQuotation.uuid.equals(quotation.uuid)) {
+                        newQuotation.id = quotation.id;
+                        for (QuotationItem item : detail.items) {
+                            item.quotationId = quotation.id;
+                            updateProductIdForQuotationItem(item);
+                        }
+                        appQuotationRepository.save(newQuotation);
+                        appQuotationItemRepository.save(detail.items);
+
+                    } else {//未同步过
+                        newQuotation.id = -1;
+
+                        int i = 0;
+                        Quotation temp = null;
+                        //遍历 查出不重复的qnumber
+                        do {
+                            i++;
+                            temp = appQuotationRepository.findFirstByQNumberEqualsAndFormalIsTrue(quotation.qNumber + "_" + i);
+
+                        } while (temp != null);
+
+                        //修改原有的报价单的单号，兼容处理
+                        quotation.qNumber = quotation.qNumber + "_" + i;
+
+                        appQuotationRepository.save(quotation);
+
+                        newQuotation = appQuotationRepository.save(newQuotation);
+                        for (QuotationItem item : detail.items) {
+                            item.quotationId = newQuotation.id;
+                            updateProductIdForQuotationItem(item);
+                            item.id = -1;
+                        }
+                        appQuotationItemRepository.save(detail.items);
+                    }
+
+
+                } else {
+                    newQuotation.id = -1;
+                    newQuotation = appQuotationRepository.save(newQuotation);
+                    for (QuotationItem item : detail.items) {
+                        item.quotationId = newQuotation.id;
+                        updateProductIdForQuotationItem(item);
+                        item.id = -1;
                     }
                     appQuotationRepository.save(newQuotation);
                     appQuotationItemRepository.save(detail.items);
 
+
                 }
-                else
-                {//未同步过
-                    newQuotation.id=0;
+                appQuotationRepository.flush();
+                appQuotationItemRepository.flush();
+            }
 
-                    int i=0;
-                    Quotation temp=null;
-                    //遍历 查出不重复的qnumber
-                    do {
-                          i++;
-                          temp = appQuotationRepository.findFirstByQNumberEqualsAndFormalIsTrue( quotation.qNumber+"_"+i);
-
-                    }while (temp!=null);
-
-                    //修改原有的报价单的单号，兼容处理
-                    quotation.qNumber=quotation.qNumber+"_"+i;
-
-                    appQuotationRepository.save(quotation);
-
-                    newQuotation=appQuotationRepository.save(newQuotation);
-                    for (QuotationItem item:detail.items)
-                    {
-                        item.quotationId=newQuotation.id;
-                        item.id=0;
-                    }
-                    appQuotationItemRepository.save(detail.items);
-                }
-
-
+            if (remoteData.hasNext()) {
+                remoteData = readAppQuotationFromRemote(apiManager, urlHead, startDate, endDate, remoteData.pageIndex + 1, remoteData.pageSize,token );
             }else
             {
-                newQuotation.id=0;
-                newQuotation=appQuotationRepository.save(newQuotation);
-                for (QuotationItem item:detail.items)
-                {
-                    item.quotationId=newQuotation.id;
-                    item.id=0;
-                }
-                appQuotationRepository.save(newQuotation);
-                appQuotationItemRepository.save(detail.items);
-
-
-
+                break;
             }
-            appQuotationRepository.flush();
-            appQuotationItemRepository.flush();
         }
+
+
+    }
+
+
+    private void  updateProductIdForQuotationItem(QuotationItem item)
+    {
+
+
+
+      Product product= productRepository.findFirstByNameEqualsAndPVersionEquals(item.productName,item.pVersion);
+
+        if(product!=null )
+        {
+            item.productId=product.id;
+        }
+
+
+
+
+
+
+
+
+    }
+
+    private RemoteData<QuotationDetail> readAppQuotationFromRemote(ApiManager apiManager, String remoteHeadUrl, String startDate, String endDate, int pageIndex, int pageSize, String token) {
+
+        String url = HttpUrl.findAppQuotationDetails(remoteHeadUrl, startDate, endDate, pageIndex, pageSize, token);
+
+
+        String result = null;
+
+        result = apiManager.getString(url);
+
+        RemoteData<QuotationDetail> remoteData = GsonUtils.fromJson(result, new RemoteDateParameterizedType(QuotationDetail.class));
+        return remoteData;
     }
 
     /**
      * 同步客户信息
+     *
      * @param urlHead
      */
-    private void synchronizedCustomerFromRemote(String urlHead ) throws HdException {
+    private void synchronizedCustomerFromRemote(String urlHead, ApiManager apiManager, String token) throws HdException {
 
-        String url = HttpUrl.findCustomer(urlHead );
+        String url = HttpUrl.findCustomer(urlHead,token);
+        String result = apiManager.getString(url);
 
-        Client client = new Client();
-        String result = null;
-        try {
-            result = client.getWithStringReturned(url);
-        } catch (Exception e) {
-            throw HdException.create(e.getCause());
-        }
-        RemoteData<Customer> remoteData = GsonUtils.fromJson(result, new TypeToken<RemoteData<Customer>>() {
-        }.getType());
+        RemoteData<Customer> remoteData = GsonUtils.fromJson(result, new RemoteDateParameterizedType(Customer.class));
+        if(!remoteData.isSuccess()) return;
 
         List<Customer> datas = remoteData.datas;
         final int size = datas.size();
         for (int i = 0; i < size; i++) {
             Customer customer = datas.get(i);
+
+            if(!StringUtils.isEmpty(customer.nameCardFileUrl))
+            {
+                String filePath= com.giants3.hd.server.utils.FileUtils.convertUrlToPath(rootpath,customer.nameCardFileUrl);
+                if(!new File(filePath).exists()) {
+                    //读取目标名片图片
+                    String pictureUrl=urlHead+customer.nameCardFileUrl;
+                    boolean downloadResult = apiManager.downloadUrlToFilePath(pictureUrl, filePath);
+                    System.out.println("pictureUrl:" + pictureUrl + ",filePath:" + filePath + ",downloadResult:" + downloadResult);
+                }
+
+
+
+            }
+
             Customer oldCustomer = customerRepository.findFirstByCodeEquals(customer.code);
             long currentCustomerId = customer.id;
             if (oldCustomer == null) {
-                customer.id = 0;
+                customer.id = -1;
                 Customer newCustomer = customerRepository.save(customer);
                 appQuotationRepository.replaceCustomerId(newCustomer.id, currentCustomerId);
 
-            } else {
+
+
+            }
+
+            else {
                 if (!oldCustomer.equals(customer)) {
 
                     customer.id = oldCustomer.id;
@@ -952,7 +981,7 @@ public class AppQuotationService extends AbstractService {
 
             }
 
-            if((i+1)%20==0) {
+            if ((i + 1) % 20 == 0) {
                 appQuotationRepository.flush();
                 customerRepository.flush();
             }
@@ -966,6 +995,7 @@ public class AppQuotationService extends AbstractService {
 
     /**
      * 查询广交会报价单
+     *
      * @param startDate
      * @param endDate
      * @param pageIndex
@@ -975,20 +1005,19 @@ public class AppQuotationService extends AbstractService {
     public RemoteData<QuotationDetail> findDetails(String startDate, String endDate, int pageIndex, int pageSize) {
 
 
-        final Pageable pageable = constructPageSpecification(pageIndex, pageSize,sortByParam(Sort.Direction.ASC,"qDate"));
-        Page<Quotation> quotations=appQuotationRepository.findByQDateGreaterThanEqualAndQDateLessThanEqualAndFormalIsTrueOrderByQDateAsc(startDate,endDate,pageable);
+        final Pageable pageable = constructPageSpecification(pageIndex, pageSize, sortByParam(Sort.Direction.ASC, "qDate"));
+        Page<Quotation> quotations = appQuotationRepository.findByQDateGreaterThanEqualAndQDateLessThanEqualAndFormalIsTrueOrderByQDateAsc(startDate, endDate, pageable);
 
-        List<QuotationDetail> quotationDetails=new ArrayList<>();
-        for (Quotation quotation:quotations)
-        {
-            QuotationDetail quotationDetail=new QuotationDetail();
-            quotationDetail.quotation=quotation;
-            quotationDetail.items=appQuotationItemRepository.findByQuotationIdEqualsOrderByItmAsc(quotation.id);
+        List<QuotationDetail> quotationDetails = new ArrayList<>();
+        for (Quotation quotation : quotations) {
+            QuotationDetail quotationDetail = new QuotationDetail();
+            quotationDetail.quotation = quotation;
+            quotationDetail.items = appQuotationItemRepository.findByQuotationIdEqualsOrderByItmAsc(quotation.id);
             quotationDetails.add(quotationDetail);
         }
 
 
-        return wrapData(pageIndex,pageSize,quotations.getTotalPages(),(int)quotations.getTotalElements(),quotationDetails);
+        return wrapData(pageIndex, pageSize, quotations.getTotalPages(), (int) quotations.getTotalElements(), quotationDetails);
 
 
     }
@@ -996,8 +1025,7 @@ public class AppQuotationService extends AbstractService {
     public RemoteData<Map> reportQuoteCount(String startDate, String endDate) {
 
 
-
-        List<Map> result=mapRepository.reportQuoteCount(startDate,endDate );
+        List<Map> result = mapRepository.reportQuoteCount(startDate, endDate);
 
         return wrapData(result);
 

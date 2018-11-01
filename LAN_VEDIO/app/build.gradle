@@ -27,4 +27,7 @@ dependencies {
     compile project(':library')
 
     compile project(':frame')
+    compile project(':NetWork')
+    compile "com.google.code.gson:gson:${gsonVersion}"
+    compile "com.giants3.lanvideo:data:${DataLibVersion}"
 }

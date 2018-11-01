@@ -28,6 +28,10 @@ public class User implements Serializable,Valuable {
     @Basic
     public String chineseName;
     @Basic
+    @Deprecated
+    /**
+     *  use  {@link  #passwordMD5 } instead@@@
+     */
     public String password;
 
 

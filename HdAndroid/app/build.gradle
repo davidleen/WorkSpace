@@ -32,8 +32,8 @@ android {
 
 
         targetSdkVersion project.ANDROID_TARGET_VERSION
-        versionCode 63
-        versionName "1.6.3"
+        versionCode 65
+        versionName "1.6.5"
 
         buildConfigField "boolean", "AUTO_UPDATES", "true"
 

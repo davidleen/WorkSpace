@@ -227,4 +227,6 @@ public interface RestApi {
     Observable scanResourceUrl(String resourceUrl);
 
     Observable deleteCutomer(long customerId);
+
+    Observable findProductByNameAndVersion(String pName, String pVersion);
 }

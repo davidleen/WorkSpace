@@ -113,6 +113,17 @@ public class ApiManager {
     }
 
 
+    public RemoteData<Product> findProductByNameAndVersion(String pName, String pVersion) throws HdException {
+
+        String url = HttpUrl.findProductByNameAndVersion(pName,pVersion);
+        String result = apiConnection.getString(url);
+        RemoteData<Product> remoteData = invokeByReflect(result, Product.class);
+
+        return remoteData;
+
+    }
+
+
     /**
      * 通用方法 将字符串转换成指定类型的对象
      *
@@ -804,4 +815,6 @@ public class ApiManager {
         return remoteData;
 
     }
+
+
 }

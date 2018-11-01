@@ -14,6 +14,8 @@
 
 package com.giants3.android.lan_vedio;
 
+import com.giants3.lanvideo.data.Movie;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,10 +23,7 @@ public final class MovieList {
     public static final String MOVIE_CATEGORY[] = {
             "Gmovie",
             "Imovie",
-            "Fmovie",
-            "Category Three",
-            "Category Four",
-            "Category Five",
+            "Fmovie"
     };
 
     private static List<Movie> list;

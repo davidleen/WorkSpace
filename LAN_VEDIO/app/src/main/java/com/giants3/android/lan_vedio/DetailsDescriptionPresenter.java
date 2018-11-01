@@ -16,6 +16,8 @@ package com.giants3.android.lan_vedio;
 
 import android.support.v17.leanback.widget.AbstractDetailsDescriptionPresenter;
 
+import com.giants3.lanvideo.data.Movie;
+
 public class DetailsDescriptionPresenter extends AbstractDetailsDescriptionPresenter {
 
     @Override
