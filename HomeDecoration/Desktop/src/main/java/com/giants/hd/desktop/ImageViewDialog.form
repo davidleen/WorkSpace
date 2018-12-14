@@ -25,7 +25,7 @@
             <properties>
               <horizontalAlignment value="0"/>
               <horizontalTextPosition value="0"/>
-              <text value="这是一个测试"/>
+              <text value=""/>
             </properties>
           </component>
           <component id="746bc" class="javax.swing.JButton" binding="previous">

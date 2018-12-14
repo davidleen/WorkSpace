@@ -109,6 +109,33 @@ public class ProductController extends BaseController {
 
     }
 
+    /**
+     * 提供移动端接口  查询
+     *
+     * @param key
+     * @param pageIndex
+     * @param pageSize
+     * @param withCopy
+     * @return
+     * @Param pageSize
+     */
+    @RequestMapping(value = "/query", method = {RequestMethod.GET})
+    public
+    @ResponseBody
+    RemoteData<Product> query(@RequestParam(value = "key", required = false, defaultValue = "") String key
+            , @RequestParam(value = "pageIndex", required = false, defaultValue = "0") int pageIndex, @RequestParam(value = "pageSize", required = false, defaultValue = "20") int pageSize, @RequestParam(value = "withCopy", required = false) boolean withCopy
+
+    ) throws UnsupportedEncodingException {
+
+
+        RemoteData<Product> productRemoteData = productService.searchAppProductList(key, pageIndex, pageSize, withCopy);
+
+
+        return productRemoteData;
+
+
+    }
+
 
     @RequestMapping(value = "/loadByNameBetween", method = {RequestMethod.GET, RequestMethod.POST})
     public

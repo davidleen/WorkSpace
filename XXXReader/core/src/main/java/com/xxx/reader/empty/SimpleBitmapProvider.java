@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
-
 import com.xxx.reader.core.AbstractBitmapHolder;
 import com.xxx.reader.text.layout.BitmapHolder;
 import com.xxx.reader.text.layout.BitmapProvider;
@@ -27,32 +26,45 @@ public class SimpleBitmapProvider implements BitmapProvider {
 
     BitmapHolder[] bitmapHolders = new BitmapHolder[3];
 
-    public SimpleBitmapProvider(Context context, int width, int height) {
+    public SimpleBitmapProvider(final Context context, final int width, final int height) {
 
 
         this.width = width;
         this.height = height;
         for (int i = 0; i < 3; i++) {
-            bitmapHolders[i] = new AbstractBitmapHolder(width, height);
+            final int finalI = i;
+            bitmapHolders[i] = new AbstractBitmapHolder(width, height)
+            {
+
+                Bitmap bitmap=null;
+
+                @Override
+                public void draw(Canvas canvas) {
+
+                    if(bitmap==null)
+                    {
+                        InputStream open = null;
+                        try {
+                            open = context.getAssets().open("test" + finalI + ".jpg");
+
+                        bitmap=   BitmapFactory.decodeStream(open);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    if(bitmap!=null)
+                    canvas.drawBitmap(bitmap, null, new Rect(0, 0, width, height), null);
 
 
-            Bitmap bitmap = bitmapHolders[i].lockWrite();
 
-            if (bitmap != null) {
 
-                Canvas canvas = new Canvas(bitmap);
-                InputStream open = null;
-                try {
-                    open = context.getAssets().open("test" + i + ".jpg");
-                    canvas.drawBitmap(BitmapFactory.decodeStream(open), null, new Rect(0, 0, width, height), null);
-                } catch (IOException e) {
-                    e.printStackTrace();
+
+
                 }
+            };
 
-
-            }
-
-            bitmapHolders[i].unLockWrite();
 
 
         }
@@ -79,4 +91,7 @@ public class SimpleBitmapProvider implements BitmapProvider {
     public BitmapHolder getPreviousBitmap() {
         return bitmapHolders[0];
     }
+
+
+
 }

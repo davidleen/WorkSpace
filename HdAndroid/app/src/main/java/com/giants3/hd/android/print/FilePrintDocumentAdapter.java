@@ -10,12 +10,11 @@ import android.print.PrintDocumentAdapter;
 import android.print.PrintDocumentInfo;
 
 import com.giants3.ByteArrayPool;
-import com.giants3.android.frame.util.FileUtils;
+import com.giants3.io.FileUtils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 

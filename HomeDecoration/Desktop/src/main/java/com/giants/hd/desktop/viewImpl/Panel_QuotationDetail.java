@@ -4,7 +4,7 @@ import com.giants.hd.desktop.ImageViewDialog;
 import com.giants.hd.desktop.dialogs.ExportQuotationDialog;
 import com.giants.hd.desktop.dialogs.OperationLogDialog;
 import com.giants.hd.desktop.dialogs.SearchDialog;
-import com.giants.hd.desktop.interf.ComonSearch;
+import com.giants.hd.desktop.interf.CommonSearchAdapter;
 import com.giants.hd.desktop.local.HdDateComponentFormatter;
 import com.giants.hd.desktop.local.HdSwingWorker;
 import com.giants.hd.desktop.local.HdUIException;
@@ -733,16 +733,14 @@ public class Panel_QuotationDetail extends BasePanel implements QuotationDetailV
                 } else {
 
 
-                    SearchDialog<Product> dialog = new SearchDialog.Builder().setWindow(getWindow(root)).setTableModel(new ProductTableModel()).setComonSearch(new ComonSearch<Product>() {
+                    SearchDialog<Product> dialog = new SearchDialog.Builder().setWindow(getWindow(root)).setTableModel(new ProductTableModel()).setCommonSearch(new CommonSearchAdapter<Product>() {
+
                         @Override
                         public RemoteData<Product> search(String value, int pageIndex, int pageCount) throws HdException {
                             return apiManager.readProductList(value, pageIndex, pageCount);
                         }
                     }).setValue(text).setRemoteData(data).createSearchDialog();
-                    dialog.setMinimumSize(new Dimension(800, 600));
-                    dialog.pack();
-                    dialog.setLocationRelativeTo(tb);
-                    dialog.setVisible(true);
+                    dialog.show(tb);
                     product = dialog.getResult();
 
 
@@ -756,7 +754,7 @@ public class Panel_QuotationDetail extends BasePanel implements QuotationDetailV
                         QuotationAnalytics.updateProduct(Panel_QuotationDetail.this.quotationItems.get(rowIndex), product, globalData);
 
                     } else {
-                        QuotationAnalytics.updateProduct(Panel_QuotationDetail.this.quotationXKItems.get(rowIndex), product,globalData);
+                        QuotationAnalytics.updateProduct(Panel_QuotationDetail.this.quotationXKItems.get(rowIndex), product, globalData);
                     }
 
                     notifyModelRowUpdate(rowIndex, rowIndex);
@@ -802,23 +800,22 @@ public class Panel_QuotationDetail extends BasePanel implements QuotationDetailV
                 } else {
 
 
-                    SearchDialog<Product> dialog = new SearchDialog.Builder().setWindow(getWindow(root)).setTableModel(new ProductTableModel()).setComonSearch(new ComonSearch<Product>() {
+                    SearchDialog<Product> dialog = new SearchDialog.Builder().setWindow(getWindow(root)).setTableModel(new ProductTableModel()).setCommonSearch(new CommonSearchAdapter<Product>() {
+
+
                         @Override
                         public RemoteData<Product> search(String value, int pageIndex, int pageCount) throws HdException {
                             return apiManager.readProductList(value, pageIndex, pageCount);
                         }
                     }).setValue(text).setRemoteData(data).createSearchDialog();
-                    dialog.setMinimumSize(new Dimension(800, 600));
-                    dialog.pack();
-                    dialog.setLocationRelativeTo(tb);
-                    dialog.setVisible(true);
+                    dialog.show(tb);
                     product = dialog.getResult();
 
 
                 }
                 if (product != null) {
 
-                    QuotationAnalytics.updateProduct2(quotationXKItems.get(rowIndex), product,CacheManager.getInstance().bufferData.globalData);
+                    QuotationAnalytics.updateProduct2(quotationXKItems.get(rowIndex), product, CacheManager.getInstance().bufferData.globalData);
                     notifyModelRowUpdate(rowIndex, rowIndex);
                 }
 

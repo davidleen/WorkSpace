@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -153,7 +154,7 @@ public class ProductService extends AbstractService implements InitializingBean,
 
     public RemoteData<Product> searchAppProductList(String name, int pageIndex, int pageSize, boolean withCopy) {
 
-        Pageable pageable = constructPageSpecification(pageIndex, pageSize);
+        Pageable pageable = constructPageSpecification(pageIndex, pageSize,sortByParam(Sort.Direction.DESC,"name"));
         String likeValue = "%" + name.trim() + "%";
         Page<Product> pageValue;
         if (!withCopy) {

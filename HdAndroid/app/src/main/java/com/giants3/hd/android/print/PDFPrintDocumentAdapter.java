@@ -21,10 +21,8 @@ import android.print.pdf.PrintedPdfDocument;
 import android.support.annotation.RequiresApi;
 
 import com.giants3.android.frame.util.BitmapHelper;
-import com.giants3.android.frame.util.FileUtils;
 import com.giants3.android.frame.util.Log;
 import com.giants3.android.frame.util.StorageUtils;
-import com.giants3.hd.utils.file.ImageUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;

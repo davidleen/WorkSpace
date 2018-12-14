@@ -52,4 +52,13 @@ public interface AppQuotationRepository extends JpaRepository<Quotation, Long> {
     @Modifying
     @Query("update T_AppQuotation p set    p.customerCode=:customerCode, p.customerName=:customerName   WHERE p.customerId =   :customerId   ")
     void updateCustomer(@Param("customerId") long customerId, @Param("customerCode") String customerCode, @Param("customerName") String customerName);
+
+    @Modifying
+    @Query("update T_AppQuotation p set    p.customerId=:customerId   WHERE p.customerCode =   :customerCode   ")
+    void resetCustomerIdByCodeInQuotation(@Param("customerId") long customerId, @Param("customerCode") String customerCode );
+
+
+
+
+
 }

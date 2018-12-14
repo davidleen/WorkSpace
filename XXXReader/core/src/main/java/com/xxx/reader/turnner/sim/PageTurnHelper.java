@@ -15,7 +15,7 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
 
-import com.xxx.frame.Log;
+import com.giants3.android.frame.util.Log;
 import com.xxx.reader.Utils;
 import com.xxx.reader.core.IPageTurner;
 

@@ -23,7 +23,11 @@ public interface CustomerRepository extends JpaRepository<Customer,Long> {
       List<Customer> findByCodeLikeOrNameLikeOrderByNameDesc(String codeLike,String nameLike);
 
     @Query(" select   p from T_Customer  p  where p.code like :key or  p.name like :key   order by convert(int ,p.code) asc ")
-      List<Customer> findByCodeLikeOrNameLikeOrderByCodeAsc(@Param("key") String  key);
+      List<Customer> findByCodeLikeOrNameLikeOrderByCodeAsc(@Param("key") String  key );
+
+
+    @Query(" select   p from T_Customer  p  where p.code like :key or  p.name like :key   order by convert(int ,p.code) asc ")
+      Page<Customer> findByCodeLikeOrNameLikeOrderByCodeAsc(@Param("key") String  key,Pageable pageable);
 
 
 }

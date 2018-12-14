@@ -9,6 +9,7 @@ import com.giants3.hd.entity.Xiankang;
 import com.giants3.hd.entity.Xiankang_Dengju;
 import com.giants3.hd.exception.HdException;
 import com.giants3.hd.noEntity.QuotationDetail;
+import com.giants3.hd.utils.StringUtils;
 import com.google.inject.Guice;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -119,6 +120,13 @@ public class Report_Excel_XK_DENGJU extends ExcelReportor {
 
             //净重
             addNumber(writableSheet, item.weight, 39, rowUpdate);
+            //包装规格 inch
+
+            addString(writableSheet, StringUtils.convertCmStringToInchString(item.packageSize), 46, rowUpdate);
+            //包装规格cm
+
+            addString(writableSheet, item.packageSize, 47, rowUpdate);
+
             addString(writableSheet, item.memo, 58, rowUpdate);
 
 
@@ -143,6 +151,7 @@ public class Report_Excel_XK_DENGJU extends ExcelReportor {
                 //甲醛标示
 
                 addString(writableSheet, xiankang.getJiaquan(), 9, rowUpdate);
+
 
                 //包装描述
                 addString(writableSheet, xiankang.getPack_memo(), 50, rowUpdate);

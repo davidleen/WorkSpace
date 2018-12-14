@@ -2,6 +2,8 @@
 apply from:'version.gradle'
 buildscript {
     repositories {
+
+        google()
         jcenter()
     }
     dependencies {
@@ -14,8 +16,10 @@ buildscript {
 
 allprojects {
     repositories {
-        jcenter()
+
         maven{ url LOCAL_MAVEN_URL}
+        google()
+        jcenter()
     }
 }
 

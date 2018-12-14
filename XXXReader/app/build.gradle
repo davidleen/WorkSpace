@@ -26,4 +26,7 @@ dependencies {
 
     testCompile 'junit:junit:4.12'
     compile project(path: ':core')
+
+
+    compile 'com.giants3.reader:data:0.0.0'
 }

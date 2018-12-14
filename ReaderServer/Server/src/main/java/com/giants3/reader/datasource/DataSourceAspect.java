@@ -1,6 +1,6 @@
 package com.giants3.reader.datasource;
 
-import com.giants3.reader.utils.StringUtils;
+import com.giants3.utils.StringUtils;
 import org.aspectj.lang.JoinPoint;
 
 /**

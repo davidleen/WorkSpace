@@ -7,9 +7,11 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.giants3.hd.android.R;
+import com.giants3.hd.utils.StringUtils;
 
 import java.io.Serializable;
 import java.util.List;
@@ -48,11 +50,15 @@ public class ValueEditDialogFragment<T extends Serializable> extends DialogFragm
         super.onViewCreated(view, savedInstanceState);
         final TextView oldValueTextView= (TextView) view.findViewById(R.id.oldValue);
         oldValueTextView.setText(oldValue);
-        final TextView newValueTextView= (TextView) view.findViewById(R.id.newValue);
-
+        final EditText newValueTextView=   view.findViewById(R.id.newValue);
+        if(!StringUtils.isEmpty(oldValue)) {
+            newValueTextView.setText(oldValue);
+            newValueTextView.setSelection(oldValue.length());
+        }
         if(isMutiableText)
         {
             newValueTextView.setMinLines(4);
+
             newValueTextView.setGravity(Gravity.LEFT|Gravity.TOP);
         }else
         {

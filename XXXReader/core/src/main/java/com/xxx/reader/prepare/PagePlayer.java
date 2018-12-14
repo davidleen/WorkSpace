@@ -3,7 +3,7 @@ package com.xxx.reader.prepare;
 import android.os.Message;
 import android.view.MotionEvent;
 
-import com.xxx.frame.Log;
+import com.giants3.android.frame.util.Log;
 import com.xxx.reader.book.ChapterMeasureResult;
 import com.xxx.reader.book.IBook;
 import com.xxx.reader.book.IChapter;
@@ -80,21 +80,38 @@ public class PagePlayer<C extends IChapter, P extends PageInfo, DP extends DrawP
      * @param iDrawable  界面重绘回调接口
      * @param creator
      */
-    public PagePlayer(PrepareJob<C, P, DP> prepareJob, IDrawable iDrawable, PageBitmapCreator<PB> creator) {
+    public PagePlayer(PrepareJob<C, P, DP> prepareJob, final IDrawable iDrawable, PageBitmapCreator<PB> creator) {
 
         this.iDrawable = iDrawable;
         this.prepareJob = prepareJob;
         chapterMeasureManager = new ChapterMeasureManager<>(this, prepareJob, IPageTurner.HORIZENTAL);
+
+        PageBitmap.PageUpdateListener listener=new PageBitmap.PageUpdateListener() {
+            @Override
+            public void onPageUpdate(PageBitmap pageBitmap) {
+
+
+                int index=-1;
+                for (int i = 0; i < MAX_CACHE_SIZE; i++) {
+                    if (cacheBitmaps[i]==pageBitmap) {
+                        index=i;
+                    }
+                }
+
+                if(Math.abs(MID_CACHE_INDEX-index)<=1)
+                 iDrawable.updateView();
+                //updateCache();
+            }
+        };
         for (int i = 0; i < MAX_CACHE_SIZE; i++) {
             cacheBitmaps[i] = creator.create();
-            cacheBitmaps[i].updateIDrawable(iDrawable);
+            cacheBitmaps[i].setPageUpdateListener(listener);
         }
 
 
         prepareThread = new PrepareThread(this, MAX_CACHE_SIZE);
         prepareThread.start();
 
-//        pageCacheThread=PageCacheThread.getSingleton();
 
 
     }

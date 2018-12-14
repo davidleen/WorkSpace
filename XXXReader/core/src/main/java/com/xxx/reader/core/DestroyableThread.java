@@ -1,6 +1,8 @@
 package com.xxx.reader.core;
 
-import com.xxx.frame.Log;
+
+
+import com.giants3.android.frame.util.Log;
 
 import java.util.Calendar;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -14,6 +16,17 @@ public abstract class DestroyableThread extends Thread {
     public AtomicBoolean destroy = new AtomicBoolean();
 
     private static final int SLEEP_DURATION = Integer.MAX_VALUE;
+
+    private long sleepTime;
+
+    public DestroyableThread()
+    {
+        this(SLEEP_DURATION);
+    }
+    public DestroyableThread(long sleepTime)
+    {
+        this.sleepTime = sleepTime;
+    }
     /**
      * 标记 当前绘制界面是否销毁 是 直接退出死循环
      */
@@ -46,20 +59,23 @@ public abstract class DestroyableThread extends Thread {
             runOnThread();
 
 
-            Log.e("time use in prepare:" + (Calendar.getInstance().getTimeInMillis() - time));
+            Log.i("time use in prepare:" + (Calendar.getInstance().getTimeInMillis() - time));
 
 
             //线程进入睡眠等待状态。调用update 中断睡眠，可以继续循环。
             try {
-                Thread.sleep(SLEEP_DURATION);
+                Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
-                e.printStackTrace();
-                Log.e("interrupt for preparing");
+                Log.d(e);
+                Log.d(this);
+
             }
 
 
         }
     }
+
+
 
     protected abstract void runOnThread();
 }

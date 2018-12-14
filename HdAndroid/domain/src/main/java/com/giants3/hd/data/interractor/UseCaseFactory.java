@@ -418,9 +418,12 @@ public class UseCaseFactory {
     }
 
     public UseCase createGetCustomerListUseCase() {
-        return createGetCustomerListUseCase("");
-    }public UseCase createGetCustomerListUseCase(String key) {
-        return new GetCustomerListUseCase( key,restApi);
+        return createGetCustomerListUseCase("",0,999);
+    }
+
+
+    public UseCase createGetCustomerListUseCase(String key,int pageIndex,int pageSize) {
+        return new GetCustomerListUseCase( key,   pageIndex,  pageSize,restApi);
     }
 
     public UseCase createUpdateQuotationCustomerUseCase(long quotationId, long customerId) {

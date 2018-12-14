@@ -11,9 +11,9 @@ import android.view.MotionEvent;
  */
 
 public interface IPageTurner {
-    public static final int TURN_NONE					= 0x00;
-    public static final int TURN_PREVIOUS				= 0x01;
-    public static final int TURN_NEXT					= 0x02;
+    public static final int TURN_NONE					=0;
+    public static final int TURN_PREVIOUS				= -1;
+    public static final int TURN_NEXT					= 1;
     public static final int TURN_NO_PREVIOUS			= 0x41;
     public static final int TURN_NO_NEXT				= 0x42;
 

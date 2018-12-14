@@ -563,11 +563,15 @@ public class HttpUrl {
         return completeUrl(String.format("/api/app/quotation/print?quotationId=%d", quotationId));
     }
 
-    public static String getCustomerList(String key) {
+    public static String getCustomerList(String key,int pageIndex,int pageSize) {
 
 
-        String apiUrl=BASE_URL + "/api/customer/list";
-        UrlFormatter formatter=new UrlFormatter(apiUrl).append("key",key) ;
+        String apiUrl=BASE_URL + "/api/customer/search";
+        UrlFormatter formatter=new UrlFormatter(apiUrl)
+                .append("key",key)
+                .append("pageIndex",pageIndex)
+                .append("pageSize",pageSize)
+                ;
         return additionInfo(formatter);
 
 

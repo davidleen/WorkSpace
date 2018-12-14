@@ -35,8 +35,7 @@ public class QuotationItem implements Serializable,Valuable {
     @Basic
     public String productName;
 
-//    @Lob  @Basic
-//    public byte[]  productPhoto;
+
 
 
     @Basic

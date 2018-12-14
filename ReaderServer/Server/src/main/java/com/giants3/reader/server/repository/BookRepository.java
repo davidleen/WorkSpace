@@ -2,7 +2,6 @@ package com.giants3.reader.server.repository;
 //
 
 import com.giants3.reader.entity.Book;
-import com.giants3.reader.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

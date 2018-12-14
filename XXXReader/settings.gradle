@@ -1,4 +1,14 @@
-//include ':app'
+include ':network'
+project(':network').projectDir = new File('../modules/network_okhttp')
 
-include ':core', ':test', ':frame', ':comic'
-//include  ':test'
+
+include ':library-android'
+project(':library-android').projectDir = new File('../modules/library-android')
+
+include ':library-java'
+project(':library-java').projectDir = new File('../modules/library-java')
+
+include ':frame'
+project(':frame').projectDir = new File('../modules/frame')
+
+include ':core', ':test',   ':comic', ':domain'

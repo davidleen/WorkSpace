@@ -2,6 +2,7 @@ package com.giants3.lanvideo.server.controller;
 
 import com.giants3.lanvideo.data.Movie;
 
+import com.giants3.lanvideo.data.MovieGroup;
 import com.giants3.lanvideo.data.RemoteData;
 
 import com.giants3.lanvideo.server.service.MovieService;
@@ -36,7 +37,7 @@ public class MovieController extends BaseController {
     ) {
 
 
-          return  movieService.list(category);
+          return  wrapData(movieService.list(category));
     }
 
 
@@ -49,6 +50,17 @@ public class MovieController extends BaseController {
 
 
         return movieService.getCategories();
+
+
+    }@RequestMapping(value = "/listGroups", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    RemoteData<MovieGroup> listGroups(
+    ) {
+
+
+
+        return wrapData(movieService.listGroups());
 
 
     }

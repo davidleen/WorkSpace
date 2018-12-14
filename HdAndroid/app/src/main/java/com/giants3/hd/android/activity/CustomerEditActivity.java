@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.giants3.android.frame.util.BitmapHelper;
 import com.giants3.hd.android.R;
+import com.giants3.hd.android.events.CustomerUpdateEvent;
 import com.giants3.hd.android.helper.AndroidUtils;
 import com.giants3.hd.android.helper.CapturePictureHelper;
 import com.giants3.hd.android.helper.ImageLoaderFactory;
@@ -350,6 +351,13 @@ public class CustomerEditActivity extends BaseHeadViewerActivity<CustomerEditMVP
         capturePictureHelper.onActivityResult(requestCode, resultCode, data);
 
     }
+    /**
+     * @param event
+     * @author davidleen29
+     */
+    public void onEvent(CustomerUpdateEvent event) {
 
+        setResult(RESULT_OK);
+    }
 
 }

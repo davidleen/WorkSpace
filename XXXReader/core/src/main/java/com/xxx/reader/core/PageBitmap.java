@@ -1,6 +1,7 @@
 package com.xxx.reader.core;
 
 
+import android.graphics.Canvas;
 import android.view.MotionEvent;
 
 import com.xxx.reader.text.layout.BitmapHolder;
@@ -18,33 +19,39 @@ public abstract class PageBitmap<P extends PageInfo, D extends DrawParam> extend
 
     /**
      * 缓存图片的状态   0  初始 1 已经绘制  2 DIRTY
+     *
      */
+    private final  int STATE_DIRTY=1;
+    private final  int STATE_NONE=0;
+    private final IDrawable iDrawable;
     public volatile int state;
 
 
-    BitmapPainThread thread;
-    private IDrawable drawable;
+
+    private PageUpdateListener pageUpdateListener;
 
     public P getPageInfo() {
         return pageInfo;
     }
 
-    private P pageInfo;
-    private D drawParam;
+    protected P pageInfo;
+    protected D drawParam;
 
 
-    public PageBitmap(int screenWidth, int screenHeight) {
+    public PageBitmap(int screenWidth, int screenHeight,IDrawable iDrawable) {
         super(screenWidth, screenHeight);
-        thread = new BitmapPainThread();
-        thread.start();
 
+
+        this.iDrawable = iDrawable;
     }
 
 
     public void attachPageInfo(P pageInfo) {
-        if (this.pageInfo == pageInfo) return;
+        if (this.pageInfo == pageInfo  ) return;
         this.pageInfo = pageInfo;
-        thread.interrupt();
+        drawPage(pageInfo,drawParam);
+        iDrawable.updateView();
+
 
 
     }
@@ -52,64 +59,45 @@ public abstract class PageBitmap<P extends PageInfo, D extends DrawParam> extend
     public void updateDrawParam(D drawParam) {
         if (this.drawParam == drawParam) return;
         this.drawParam = drawParam;
-        thread.interrupt();
-
-    }
-
-    public void updateIDrawable(IDrawable drawable) {
-        if (this.drawable == drawable) return;
-        this.drawable = drawable;
+        drawPage(pageInfo,drawParam);
+        iDrawable.updateView();
 
 
     }
+
+
 
     public void setDirty() {
 
 
     }
+   protected void  drawPage(P pageInfo,D drawParam)
+   {
 
+   }
 
     public void setState(int drawState) {
         this.state = drawState;
     }
 
 
-    /**
-     * 分页绘制方法
-     *
-     * @param pageInfo
-     */
-    public abstract void drawPage(P pageInfo, D drawParam);
+
 
 
     public abstract boolean onTouchEvent(MotionEvent event);
 
 
-    class BitmapPainThread extends DestroyableThread {
 
-
-        @Override
-        public void runOnThread() {
-
-            final P aPageInfo=pageInfo;
-            final D aDrawPara=drawParam;
-
-            if(aPageInfo==null) return ;
-            if(aDrawPara==null) return ;
-            drawPage(pageInfo, drawParam);
-            drawable.updateView();
-
-
-        }
-
-
+    public void setPageUpdateListener(PageUpdateListener pageUpdateListener) {
+        this.pageUpdateListener = pageUpdateListener;
     }
 
 
+
+
+
     public void onDestroy() {
-        if (thread != null) {
-            thread.setDestroy();
-        }
+
 
 
     }
@@ -117,13 +105,29 @@ public abstract class PageBitmap<P extends PageInfo, D extends DrawParam> extend
 
     @Override
     public void updateView() {
+        state=STATE_DIRTY;
 
-        if (thread != null) {
+        pageUpdateListener.onPageUpdate(this);
 
-            thread.interrupt();
 
-        }
+    }
 
+
+    public void invalidate()
+    {
+
+
+
+    }
+
+
+     public  interface  PageUpdateListener
+    {
+        public void onPageUpdate(PageBitmap pageBitmap);
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
 
     }
 }

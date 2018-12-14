@@ -39,7 +39,7 @@ public class CustomerListPresenterImpl extends BasePresenter<CustomerListMVP.Vie
 
 
 //
-        UseCaseFactory.getInstance().createGetCustomerListUseCase(key ).execute(new RemoteDataSubscriber<Customer>(this) {
+        UseCaseFactory.getInstance().createGetCustomerListUseCase(key,0,999 ).execute(new RemoteDataSubscriber<Customer>(this) {
             @Override
             protected void handleRemoteData(RemoteData<Customer> data) {
                 getModel().setRemoteData(data);

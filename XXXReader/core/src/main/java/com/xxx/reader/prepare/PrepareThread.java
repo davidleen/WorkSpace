@@ -1,7 +1,7 @@
 package com.xxx.reader.prepare;
 
 
-import com.xxx.frame.Log;
+import com.giants3.android.frame.util.Log;
 import com.xxx.reader.core.DestroyableThread;
 
 import java.util.concurrent.atomic.AtomicBoolean;

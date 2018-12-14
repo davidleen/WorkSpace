@@ -3,7 +3,7 @@ package com.giants3.hd.android.fragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.giants3.hd.android.adapter.AbstractAdapter;
+import com.giants3.android.adapter.AbstractAdapter;
 import com.giants3.hd.android.adapter.OrderListAdapter;
 import com.giants3.hd.data.interractor.UseCase;
 import com.giants3.hd.data.interractor.UseCaseFactory;

@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v17.leanback.app.BackgroundManager;
@@ -47,6 +48,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.giants3.hd.domain.api.ApiManager;
 import com.giants3.lanvideo.data.Movie;
+import com.giants3.lanvideo.data.MovieGroup;
 import com.giants3.lanvideo.data.RemoteData;
 
 import java.util.Collections;
@@ -54,13 +56,14 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static android.os.Build.VERSION.SDK;
+
 public class MainFragment extends BrowseFragment {
     private static final String TAG = "MainFragment";
 
     private static final int BACKGROUND_UPDATE_DELAY = 300;
     private static final int GRID_ITEM_WIDTH = 200;
     private static final int GRID_ITEM_HEIGHT = 200;
-    private static final int NUM_ROWS = 3;
     private static final int NUM_COLS = 15;
 
     private final Handler mHandler = new Handler();
@@ -80,7 +83,6 @@ public class MainFragment extends BrowseFragment {
 
         setupUIElements();
 
-       // loadRows();
         loadData();
 
         setupEventListeners();
@@ -95,35 +97,39 @@ public class MainFragment extends BrowseFragment {
         }
     }
 
-    private void loadRows() {
 
-
-        List<Movie> list = MovieList.setupMovies();
-        setRows(list);
-
-    }
 
 
     private void loadData() {
 
-        new AsyncTask<Void,Void,RemoteData<Movie>>() {
+
+        if(isDetached()) return;
+        new AsyncTask<Void,Void,RemoteData<MovieGroup>>() {
 
             @Override
-            protected void onPostExecute(RemoteData<Movie> result) {
+            protected void onPostExecute(RemoteData<MovieGroup> result) {
 
-                if(result.isSuccess())
+                if(result!=null&&result.isSuccess())
                 {
                     setRows(result.datas);
+                }else
+                {
+                    getView().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadData();
+                        }
+                    },3000);
                 }
 
             }
 
             @Override
-            protected RemoteData<Movie> doInBackground(Void[] objects) {
+            protected RemoteData<MovieGroup> doInBackground(Void[] objects) {
 
                 ApiManager apiManager = new ApiManager();
-                String result = apiManager.getString("http://192.168.1.6:8080/lanvideo/api/movie/list?category=Fmovie");
-                RemoteData<Movie> movieRemoteData = GsonUtils.fromJson(result, new RemoteDateParameterizedType(Movie.class));
+                String result = apiManager.getString(HttpUrl.complteUrl( "api/movie/listGroups"));
+                RemoteData<MovieGroup> movieRemoteData = GsonUtils.fromJson(result, new RemoteDateParameterizedType(MovieGroup.class));
 
 
                 return movieRemoteData;
@@ -134,21 +140,24 @@ public class MainFragment extends BrowseFragment {
     }
 
 
-    private void setRows(List<Movie> movies) {
-        List<Movie> list = movies;
+    private void setRows(List<MovieGroup> movieGroups) {
+        int NUM_ROWS=movieGroups.size();
+
         mRowsAdapter = new ArrayObjectAdapter(new ListRowPresenter());
         CardPresenter cardPresenter = new CardPresenter();
 
         int i;
         for (i = 0; i < NUM_ROWS; i++) {
+            String category=movieGroups.get(i).title;
+            List<Movie> list = movieGroups.get(i).movies;
             if (i != 0) {
+
                 Collections.shuffle(list);
             }
             ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(cardPresenter);
-            for (int j = 0; j < NUM_COLS; j++) {
-                listRowAdapter.add(list.get(j % 5));
-            }
-            HeaderItem header = new HeaderItem(i, MovieList.MOVIE_CATEGORY[i]);
+
+            listRowAdapter.addAll(0,list);
+            HeaderItem header = new HeaderItem(i, category);
             mRowsAdapter.add(new ListRow(header, listRowAdapter));
         }
 
@@ -176,7 +185,8 @@ public class MainFragment extends BrowseFragment {
     private void setupUIElements() {
         // setBadgeDrawable(getActivity().getResources().getDrawable(
         // R.drawable.videos_by_google_banner));
-        setTitle(getString(R.string.browse_title)); // Badge, when set, takes precedent
+
+        setTitle(getString(R.string.browse_title)+ "======="+ Build.VERSION.RELEASE+"-"+ Build.VERSION.CODENAME+"-"+ Build.VERSION.SDK_INT);
         // over title
         setHeadersState(HEADERS_ENABLED);
         setHeadersTransitionOnBackEnabled(true);

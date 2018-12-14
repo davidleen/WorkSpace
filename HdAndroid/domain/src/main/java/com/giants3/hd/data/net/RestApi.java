@@ -204,7 +204,7 @@ public interface RestApi {
 
   Observable printQuotation(long quotationId,String filePath);
 
-    Observable getCustomerList(String key);
+    Observable getCustomerList(String key,int pageIndex,int pageSize);
 
     Observable updateQuotationCustomer(long quotationId, long customerId);
 

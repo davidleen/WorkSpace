@@ -7,8 +7,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.giants3.android.adapter.AbstractAdapter;
 import com.giants3.hd.android.R;
-import com.giants3.hd.entity.ErpOrderItem;
 import com.giants3.hd.entity.ErpWorkFlowReport;
 import com.giants3.hd.utils.StringUtils;
 

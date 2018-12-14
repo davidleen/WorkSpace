@@ -10,23 +10,29 @@ import com.giants3.reader.server.repository.BookRepository;
 import com.giants3.reader.server.repository.ComicBookRepository;
 import com.giants3.reader.server.repository.ComicChapterFileRepository;
 import com.giants3.reader.server.repository.ComicChapterRepository;
-import com.giants3.reader.utils.Assets;
-import com.giants3.reader.utils.StringUtils;
-import com.giants3.reader.utils.UrlFormatter;
+import com.giants3.utils.Assets;
+import com.giants3.utils.StringUtils;
+import de.greenrobot.common.io.IoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import java.io.File;
-import java.net.URLEncoder;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by davidleen29 on 2018/5/12.
  */
 @Service
-public class BookService  extends AbstractService{
+public class BookService extends AbstractService {
 
     @Value("${comicFilePath}")
     private String comicFilePath;
@@ -38,8 +44,8 @@ public class BookService  extends AbstractService{
     ComicChapterRepository comicChapterRepository;
     @Autowired
     ComicChapterFileRepository comicChapterFileRepository;
-    public RemoteData<Book> list()
-    {
+
+    public RemoteData<Book> list() {
 
 
         return wrapData(bookRepository.findByNameLike(StringUtils.sqlLike("")));
@@ -48,8 +54,8 @@ public class BookService  extends AbstractService{
     public void addOne() {
 
 
-        Book book=new Book();
-        book.name="a new book";
+        Book book = new Book();
+        book.name = "a new book";
         bookRepository.save(book);
 
     }
@@ -57,9 +63,9 @@ public class BookService  extends AbstractService{
     public void addOneComic() {
 
 
-        ComicBook book=new ComicBook();
-        book.name="a new  comic book";
-        book.comicFilePath="aa1111111111";
+        ComicBook book = new ComicBook();
+        book.name = "a new  comic book";
+        book.comicFilePath = "aa1111111111";
         bookRepository.save(book);
 
     }
@@ -74,43 +80,71 @@ public class BookService  extends AbstractService{
 
         final ComicBook comicBook = comicBookRepository.findOne(bookId);
 
-        File file=new File(comicFilePath,comicBook.name);
-        if(!file.exists()||!file.isDirectory()) return wrapData();
+        File file = new File(comicFilePath, comicBook.name);
+        if (!file.exists() || !file.isDirectory()) return wrapData();
 
 
+        File[] chapters = file.listFiles();
 
-
-         File[] chapters=file.listFiles();
-
-        int len=chapters.length;
-        final List<ComicChapter> comicChapters=new ArrayList<>();
-        List<ComicChapterInfo> comicChapterInfos=new ArrayList<>();
+        int len = chapters.length;
+        final List<ComicChapter> comicChapters = new ArrayList<>();
+        List<ComicChapterInfo> comicChapterInfos = new ArrayList<>();
         for (int i = 0; i < len; i++) {
-            File chapterFile=chapters[i];
-            ComicChapter comicChapter=new ComicChapter();
-            comicChapter.name=chapterFile.getName();
-            ComicChapterInfo info=new ComicChapterInfo();
-            info.comicChapter=comicChapter;
+            File chapterFile = chapters[i];
+            ComicChapter comicChapter = new ComicChapter();
+            comicChapter.name = chapterFile.getName();
+            ComicChapterInfo info = new ComicChapterInfo();
+            info.comicChapter = comicChapter;
 
 
-            if(chapterFile.exists()&&chapterFile.isDirectory())
-            {
-                info.comicFileList=new ArrayList<>();
+            if (chapterFile.exists() && chapterFile.isDirectory()) {
+                info.comicFileList = new ArrayList<>();
 
                 final String[] list = chapterFile.list();
 
-                for (String temp:list)
-                {
+                for (String temp : list) {
 
-                    if(temp.toLowerCase().endsWith(".jpg")||temp.toLowerCase().endsWith(".png")) {
+                    if (temp.toLowerCase().endsWith(".jpg") || temp.toLowerCase().endsWith(".png")) {
+
+
                         ComicChapterFile comicChapterFile = new ComicChapterFile();
-
-                        String path="comic"+ File.separator+  comicBook.name+File.separator+comicChapter.name+File.separator+temp;
+                        String path = "comic" + File.separator + comicBook.name + File.separator + comicChapter.name + File.separator + temp;
                         comicChapterFile.url = Assets.completeUrl(path);
+
+                        int width = 1000;
+                        int height = 1000;
+                        FileInputStream input = null;
+                        try {
+                            input = new FileInputStream(new File(chapterFile,temp));
+                            final ImageInputStream imageInputStream = ImageIO.createImageInputStream(input);
+
+
+                            Iterator<ImageReader> readers = ImageIO.getImageReaders(imageInputStream);
+                            while (readers.hasNext()) {
+                                ImageReader reader = readers.next();
+                                reader.setInput(imageInputStream);
+                                width = reader.getWidth(0);
+                                height = reader.getHeight(0);
+                            }
+
+
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } finally {
+
+                            IoUtils.safeClose(input);
+                        }
+
+
+
+
+                        comicChapterFile.width = width;
+                        comicChapterFile.height = height;
                         info.comicFileList.add(comicChapterFile);
                     }
                 }
-
 
 
             }

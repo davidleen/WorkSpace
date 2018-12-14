@@ -1,15 +1,11 @@
 package com.giants3.reader.server.controller;
 
-import com.giants3.reader.utils.Assets;
-import com.giants3.reader.utils.StringUtils;
-import com.sun.xml.internal.ws.policy.AssertionSet;
+import com.giants3.utils.Assets;
+import com.giants3.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.File;
-import java.io.UnsupportedEncodingException;
 
 /**
  * Created by davidleen29 on 2018/5/19.

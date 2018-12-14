@@ -1,9 +1,9 @@
 package com.giants3.reader.domain.api;
 
 
-import com.giants3.reader.utils.StringUtils;
+import com.giants3.utils.StringUtils;
 import com.giants3.crypt.CryptUtils;
-import com.giants3.reader.exception.HdException;
+import com.giants3.exception.HdException;
 
 import com.ning.http.client.*;
 import com.ning.http.client.multipart.FilePart;

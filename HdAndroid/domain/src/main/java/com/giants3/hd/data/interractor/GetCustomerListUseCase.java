@@ -10,16 +10,20 @@ import rx.Observable;
 
 class GetCustomerListUseCase extends DefaultUseCase {
     private String key;
+    private final int pageIndex;
+    private final int pageSize;
     private RestApi restApi;
 
-    public GetCustomerListUseCase(String key,RestApi restApi) {
+    public GetCustomerListUseCase(String key,int pageIndex,int pageSize,RestApi restApi) {
         super();
         this.key = key;
+        this.pageIndex = pageIndex;
+        this.pageSize = pageSize;
         this.restApi = restApi;
     }
 
     @Override
     protected Observable buildUseCaseObservable() {
-        return restApi.getCustomerList(key);
+        return restApi.getCustomerList(key,  pageIndex,  pageSize);
     }
 }

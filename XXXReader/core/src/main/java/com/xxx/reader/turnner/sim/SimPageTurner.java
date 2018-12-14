@@ -17,7 +17,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.xxx.frame.Log;
+import com.giants3.android.frame.util.Log;
 import com.xxx.reader.core.DrawParam;
 import com.xxx.reader.core.IDrawable;
 import com.xxx.reader.core.PageSwitchListener;
@@ -101,10 +101,9 @@ public class SimPageTurner extends AbsPageTurner {
 
         int width = drawParam.width;
         int height = drawParam.height;
-        if(drawParam.padding!=null)
-        {
-            width-=(drawParam.padding[0]+drawParam.padding[2]);
-            height-=(drawParam.padding[1]+drawParam.padding[3]);
+        if (drawParam.padding != null) {
+            width -= (drawParam.padding[0] + drawParam.padding[2]);
+            height -= (drawParam.padding[1] + drawParam.padding[3]);
         }
         setShape(width, height);
     }
@@ -119,25 +118,23 @@ public class SimPageTurner extends AbsPageTurner {
     public boolean onTouchEvent(MotionEvent event) {
 
 
-
-        if(pageSwitchListener==null) return false;
-
+        if (pageSwitchListener == null) return false;
 
 
         int action = event.getAction() & MotionEvent.ACTION_MASK;
         float eX = event.getX(), eY = event.getY();
         switch (action) {
             case MotionEvent.ACTION_UP:
-                isTouched=false;
+                isTouched = false;
                 setMotionEvent(MotionEvent.ACTION_UP);
                 setTouchUp(eX, eY, true);
 
-               int direction=   getDragTag();
+                int direction = getDragTag();
                 startAnimation(direction);
                 break;
 
             case MotionEvent.ACTION_CANCEL:
-                isTouched=false;
+                isTouched = false;
                 break;
 
             case MotionEvent.ACTION_MOVE:
@@ -151,9 +148,10 @@ public class SimPageTurner extends AbsPageTurner {
 
             case MotionEvent.ACTION_DOWN:
 
-                isTouched=true;
-                firstTouch.x=eX;
-                firstTouch.y=eY;
+                abortAnimation();
+                isTouched = true;
+                firstTouch.x = eX;
+                firstTouch.y = eY;
                 lastTouch.x = eX;
                 lastTouch.y = eY;
                 setTouchDown(eX, eY, true);
@@ -168,6 +166,38 @@ public class SimPageTurner extends AbsPageTurner {
         drawable.updateView();
         return true;
 
+    }
+
+    public void abortAnimation() {
+        try {
+
+            if (!scroller.isFinished()) {
+                scroller.abortAnimation();
+            }
+            setSpeedUpState(false);
+
+            if (isInAnimation()) {
+
+                pageTurnType=0;
+                if (turnMoveDirection == TURN_NEXT) {
+
+                    pageTurnType = PageSwitchListener.TURN_NEXT;
+                } else if (turnMoveDirection == TURN_PREVIOUS) {
+                    pageTurnType = PageSwitchListener.TURN_PREVIOUS;
+
+
+                }
+                pageSwitchListener.afterPageChanged(pageTurnType);
+
+
+                animating = false;
+
+            }
+
+            drawable.updateView();
+
+        } catch (NullPointerException e) {
+        }
     }
 
     public void setSpeedUpState(boolean isEnable) {
@@ -307,19 +337,6 @@ public class SimPageTurner extends AbsPageTurner {
         setPagging(!isOnTouch);
     }
 
-    public void setTouchUpSlide(float x, float y) {
-        isDirectionSetting = false;
-        isMotionMoveSetting = false;
-        motionEvent = MotionEvent.ACTION_UP;
-        PageTurnHelper.coordinateTouchMoveSlide(mTouchUp, x, y);
-    }
-
-    public void setTouchUpRolling(float x, float y) {
-        isDirectionSetting = false;
-        isMotionMoveSetting = false;
-        motionEvent = MotionEvent.ACTION_UP;
-        PageTurnHelper.coordinateTouchMoveRolling(mTouchUp, x, y);
-    }
 
     public void setMotionEvent(int motionEvent) {
         this.motionEvent = motionEvent;
@@ -367,7 +384,6 @@ public class SimPageTurner extends AbsPageTurner {
     /**
      * 上一touch时翻页趋势
      *
-
      * @return
      */
     public int getLastTurnDirection() {
@@ -467,11 +483,13 @@ public class SimPageTurner extends AbsPageTurner {
     }
 
     public void onTurn(Canvas mCanvas, BitmapProvider provider, int trun) throws Throwable {
-        if (provider == null || provider.getCurrentBitmap()== null) return;
+        if (provider == null || provider.getCurrentBitmap() == null) return;
 
         mCanvas.save();
         calculate(trun);
         //获取当前页和底页
+
+
 
         //获取当前页和底页
         BitmapHolder topPage = null;
@@ -489,19 +507,15 @@ public class SimPageTurner extends AbsPageTurner {
         Path lastPath = null;
         if (topPage != null) {
 
-            Bitmap bitmap = topPage.lockRead();
 
-            lastPath = drawCurrentPageArea(mCanvas, bitmap);
-          //  drawCurrentBackArea(mCanvas, bitmap, lastPath);
-            topPage.unLockRead();
+            lastPath = drawCurrentPageArea(mCanvas, topPage);
         }
 
         if (bottomPage != null) {
 
-            Bitmap bitmap = bottomPage.lockRead();
 
-            drawUndersidePageAreaAndShadow(mCanvas, bitmap, lastPath);
-            bottomPage.unLockRead();
+            drawUndersidePageAreaAndShadow(mCanvas, bottomPage, lastPath);
+
         }
 
         if (!needSpeedUp || mBezierVertical.control.x > 0) {
@@ -530,47 +544,7 @@ public class SimPageTurner extends AbsPageTurner {
 //        //mCanvas.restore();
 //    }
 
-    public void onTurnSlide(Canvas mCanvas, BitmapProvider provider, int trun) throws Throwable {
-//      mCanvas.save();
-        calculateSlide(trun);
 
-        //获取当前页和底页
-        BitmapHolder topPage = null;
-        BitmapHolder bottomPage = null;
-        if (trun == TURN_PREVIOUS || trun == TURN_NO_PREVIOUS) {
-            topPage = provider.getPreviousBitmap();
-            bottomPage = provider.getCurrentBitmap();
-
-        } else if (trun == TURN_NEXT || trun == TURN_NO_NEXT) {
-            topPage = provider.getCurrentBitmap();
-            bottomPage = provider.getNextBitmap();
-        }
-        Path tempPath = PageTurnHelper.drawPolygonSlide(mTouchBottom, mCornerBottom, mCornerTop, mTouchTop);
-        if (bottomPage != null) {
-
-
-            Bitmap bitmap = bottomPage.lockRead();
-            try {
-
-
-                drawUndersidePageAreaAndShadowSlide(mCanvas, bitmap, tempPath);
-            } finally {
-                bottomPage.unLockRead();
-            }
-
-
-        }
-
-        if (topPage != null) {
-            Bitmap bitmap = topPage.lockRead();
-            try {
-                drawCurrentPageAreaSlide(mCanvas, bitmap, tempPath);
-            } finally {
-                topPage.unLockRead();
-            }
-        }
-//      mCanvas.restore();
-    }
 
     /**
      * 是否从左边翻向右边
@@ -728,7 +702,7 @@ public class SimPageTurner extends AbsPageTurner {
      * 当前页的显示区域
      * (扣掉下一页显示区域和当前页的背影区域)
      */
-    private Path drawCurrentPageArea(Canvas canvas, Bitmap topPage) throws Throwable {
+    private Path drawCurrentPageArea(Canvas canvas, BitmapHolder topPage) throws Throwable {
         Path tempPath = new Path();
         if (canvas != null) {
             //下一页显示区域和当前页的背影区域
@@ -746,15 +720,16 @@ public class SimPageTurner extends AbsPageTurner {
                 }
             }
             canvas.clipPath(tempPath, Region.Op.XOR);
-            canvas.clipRect(0,0,mShape.width,mShape.height);
-            canvas.clipRect(0,0,mShape.width,mShape.height);
+            canvas.clipRect(0, 0, mShape.width, mShape.height);
             canvas.translate(0, 0);
-            canvas.drawBitmap(topPage, 0, 0, mPaint);
+//            canvas.drawBitmap(topPage, 0, 0, mPaint);
+            topPage.draw(canvas);
             canvas.restore();
         }
 
         return tempPath;
     }
+
     private boolean isXXhdpi() {
         return mShape.width > 1900 || mShape.height > 1900;
     }
@@ -806,39 +781,12 @@ public class SimPageTurner extends AbsPageTurner {
 //        return null;
 //    }
 
-    /**
-     * 当前页的显示区域
-     * (扣掉下一页显示区域和当前页的背影区域)
-     *
-     * @param tempPath
-     */
-    private Path drawCurrentPageAreaSlide(Canvas canvas, Bitmap topPage, Path tempPath) throws Throwable {
 
-        if (canvas != null) {
-            //下一页显示区域和当前页的背影区域
-            canvas.save();
-
-            if (needSpeedUp) {
-                if (isXXhdpi()) {
-                    mPaint.setAntiAlias(mTouchMove.x > 0);
-                    mPaint.setSubpixelText(mTouchMove.x > 0);
-                }
-            }
-            canvas.clipPath(tempPath, Region.Op.XOR);
-            canvas.clipRect(0,0,mShape.width,mShape.height);
-            canvas.clipRect(0,0,mShape.width,mShape.height);
-            canvas.translate(mTouchBottom.x - mShape.width + PageTurnHelper.getBookBoxRectLeft(PageTurnHelper.getBookBoxRect().left), 0);
-            canvas.drawBitmap(topPage, 0, 0, mPaint);
-            canvas.restore();
-        }
-
-        return tempPath;
-    }
 
     /**
      * 下一页显示区域
      */
-    private void drawUndersidePageAreaAndShadow(Canvas canvas, Bitmap bottomPage, Path lastPath) throws Throwable {
+    private void drawUndersidePageAreaAndShadow(Canvas canvas, BitmapHolder bottomPage, Path lastPath) throws Throwable {
         if (canvas != null && lastPath != null) {
             //下一页显示区域
             canvas.save();
@@ -849,12 +797,12 @@ public class SimPageTurner extends AbsPageTurner {
             if (isHorizonTurnning) {
                 canvas.clipPath(lastPath);
                 canvas.clipPath(PageTurnHelper.drawPolygon(mFoldBottom, mCornerBottom, mCornerTop, mFoldTop), Region.Op.INTERSECT);
-                canvas.clipRect(0,0,mShape.width,mShape.height);
+                canvas.clipRect(0, 0, mShape.width, mShape.height);
                 canvas.save();
 
                 canvas.translate(0, 0);
-                canvas.drawBitmap(bottomPage, 0, 0, mPaint);
-
+//                canvas.drawBitmap(bottomPage, 0, 0, mPaint);
+                bottomPage.draw(canvas);
                 canvas.restore();
                 if (!PageTurnHelper.isDayModeTitleLineColor()) {
                     GradientDrawable mBackShadowDrawable = PageTurnHelper.getBackShadowDrawableLR();
@@ -867,11 +815,12 @@ public class SimPageTurner extends AbsPageTurner {
 
                 canvas.clipPath(lastPath);
                 canvas.clipPath(tempPath, Region.Op.INTERSECT);
-                canvas.clipRect(0,0,mShape.width,mShape.height);
+                canvas.clipRect(0, 0, mShape.width, mShape.height);
                 canvas.save();
                 Rect bookBoxRect = PageTurnHelper.getBookBoxRect();
                 canvas.translate(PageTurnHelper.getBookBoxRectLeft(bookBoxRect.left), 0);
-                canvas.drawBitmap(bottomPage, 0, 0, mPaint);
+//                canvas.drawBitmap(bottomPage, 0, 0, mPaint);
+                bottomPage.draw(canvas);
                 canvas.restore();
                 canvas.rotate(mDegrees, mBezierHorizontal.start.x, mBezierHorizontal.start.y);
                 if (!PageTurnHelper.isDayModeTitleLineColor()) {
@@ -885,32 +834,7 @@ public class SimPageTurner extends AbsPageTurner {
         }
     }
 
-    /**
-     * 下一页显示区域
-     */
-    private void drawUndersidePageAreaAndShadowSlide(Canvas canvas, Bitmap bottomPage, Path lastPath) throws Throwable {
-        if (canvas != null && lastPath != null) {
-            //下一页显示区域
-            canvas.save();
-            if (needSpeedUp && isXXhdpi()) {
-                mPaint.setAntiAlias(mTouchMove.x < 0);
-                mPaint.setSubpixelText(mTouchMove.x < 0);
-            }
 
-            canvas.clipPath(lastPath);
-            canvas.clipPath(PageTurnHelper.drawPolygon(mFoldBottom,
-                    mCornerBottom, mCornerTop, mFoldTop), Region.Op.INTERSECT);
-            canvas.clipRect(0,0,mShape.width,mShape.height);
-            canvas.translate(PageTurnHelper.getBookBoxRectLeft(PageTurnHelper.getBookBoxRect().left), 0);
-
-            canvas.drawBitmap(bottomPage, 0, 0, mPaint);
-
-            GradientDrawable mBackShadowDrawable = PageTurnHelper.getBackShadowDrawableLR();
-            mBackShadowDrawable.setBounds(PageTurnHelper.getUndersideShadowRectSlide(mTouchBottom, mShape));
-            mBackShadowDrawable.draw(canvas);
-            canvas.restore();
-        }
-    }
 
     /**
      * 绘制翻起页
@@ -920,7 +844,7 @@ public class SimPageTurner extends AbsPageTurner {
             //绘制翻起水平阴影
             canvas.save();
             canvas.clipPath(lastPath, Region.Op.XOR);
-            canvas.clipRect(0,0,mShape.width,mShape.height);
+            canvas.clipRect(0, 0, mShape.width, mShape.height);
             if (!PageTurnHelper.isDayModeTitleLineColor()) {
                 GradientDrawable mCurrentPageShadow = PageTurnHelper.getFrontShadowDrawableVRL();
                 mCurrentPageShadow.setBounds(PageTurnHelper.getCurrentHorizontalShadowRect(mTouchBottom,
@@ -950,7 +874,7 @@ public class SimPageTurner extends AbsPageTurner {
                 canvas.clipPath(lastPath, Region.Op.XOR);
                 canvas.clipPath(PageTurnHelper.drawPolygon(shadowVertexPoint, mTouchMove,
                         mBezierHorizontal.control, mBezierHorizontal.start), Region.Op.INTERSECT);
-                canvas.clipRect(0,0,mShape.width,mShape.height);
+                canvas.clipRect(0, 0, mShape.width, mShape.height);
                 if (!PageTurnHelper.isDayModeTitleLineColor()) {
                     mCurrentPageShadow = mIsRtLb ? PageTurnHelper.getFrontShadowDrawableVLR() : PageTurnHelper.getFrontShadowDrawableVRL();
                     mCurrentPageShadow.setBounds(PageTurnHelper.getCurrentHorizontalShadowRect(mIsRtLb,
@@ -970,7 +894,7 @@ public class SimPageTurner extends AbsPageTurner {
                 canvas.clipPath(lastPath, Region.Op.XOR);
                 canvas.clipPath(PageTurnHelper.drawPolygon(shadowVertexPoint, mTouchMove,
                         mBezierVertical.control, mBezierVertical.start), Region.Op.INTERSECT);
-                canvas.clipRect(0,0,mShape.width,mShape.height);
+                canvas.clipRect(0, 0, mShape.width, mShape.height);
                 if (!PageTurnHelper.isDayModeTitleLineColor()) {
                     mCurrentPageShadow = mIsRtLb ? PageTurnHelper.getFrontShadowDrawableHTB() : PageTurnHelper.getFrontShadowDrawableHBT();
                     mCurrentPageShadow.setBounds(PageTurnHelper.getCurrentVerticalShadowRect(mIsRtLb,
@@ -997,7 +921,7 @@ public class SimPageTurner extends AbsPageTurner {
             if (isHorizonTurnning) {
                 canvas.clipPath(lastPath);
                 canvas.clipPath(PageTurnHelper.drawPolygon(mTouchBottom, mFoldBottom, mFoldTop, mTouchTop), Region.Op.INTERSECT);
-                canvas.clipRect(0,0,mShape.width,mShape.height);
+                canvas.clipRect(0, 0, mShape.width, mShape.height);
                 Matrix matrix = PageTurnHelper.getCurrentBackAreaMatrix(mShape, mTouchTop);
                 canvas.save();
                 canvas.setMatrix(matrix);
@@ -1005,7 +929,6 @@ public class SimPageTurner extends AbsPageTurner {
                 canvas.translate(PageTurnHelper.getBookBoxRectLeft(PageTurnHelper.getBookBoxRect().right), 0);
                 canvas.drawBitmap(topPage, 0, 0, mPaint);
                 canvas.restore();
-
 
 
                 if (!PageTurnHelper.isDayModeTitleLineColor()) {
@@ -1017,7 +940,7 @@ public class SimPageTurner extends AbsPageTurner {
                 canvas.clipPath(lastPath);
                 canvas.clipPath(PageTurnHelper.drawPolygon(mBezierVertical.vertex, mBezierHorizontal.vertex,
                         mBezierHorizontal.end, mTouchMove, mBezierVertical.end), Region.Op.INTERSECT);
-                canvas.clipRect(0,0,mShape.width,mShape.height);
+                canvas.clipRect(0, 0, mShape.width, mShape.height);
                 Matrix matrix = PageTurnHelper.getCurrentBackAreaMatrix(mCorner, mBezierHorizontal, mBezierVertical);
                 matrix.preConcat(PageTurnHelper.getRotateMatrix(mShape.isLandscape, mShape.width));
                 canvas.save();
@@ -1046,7 +969,6 @@ public class SimPageTurner extends AbsPageTurner {
     public void release() {
 
     }
-    
 
 
     public void resetPoints() {
@@ -1057,101 +979,143 @@ public class SimPageTurner extends AbsPageTurner {
     }
 
 
-
-
     @Override
     public void onDraw(Canvas canvas) {
 
         canvas.save();
 
-        if(drawParam.padding!=null)
-        {
-            canvas.clipRect(drawParam.padding[0],drawParam.padding[1],mShape.width+drawParam.padding[0],mShape.height+drawParam.padding[1]);
-            canvas.translate(drawParam.padding[0],drawParam.padding[1]);
-
-
+        if (drawParam.padding != null) {
+            canvas.clipRect(drawParam.padding[0], drawParam.padding[1], mShape.width + drawParam.padding[0], mShape.height + drawParam.padding[1]);
+            canvas.translate(drawParam.padding[0], drawParam.padding[1]);
 
 
         }
 
-        if (isInAnimation()) {
+        if (!(turnMoveDirection==TURN_NONE)&&(isInAnimation() || isTouched)) {
             try {
 
-                onTurn(canvas, bitmapProvider ,turnMoveDirection);
+                onTurn(canvas, bitmapProvider, turnMoveDirection);
 
             } catch (Throwable throwable) {
                 Log.e(throwable);
             }
-        }else
-        {
+        } else {
             BitmapHolder currentBitmap = bitmapProvider.getCurrentBitmap();
-            Bitmap bitmap = currentBitmap.lockRead();
-            canvas.drawBitmap(bitmap,0,0,null);
-            currentBitmap.unLockRead();
+            currentBitmap.draw(canvas);
+
         }
-
-
 
 
         canvas.restore();
         drawRect(canvas);
         computeScroll();
-       // onDrawTemp( );
+        // onDrawTemp( );
 
     }
 
-    private void  drawRect(Canvas canvas)
-    {
-        Paint paint=new Paint();
+
+    @Override
+    public boolean isInAnimation() {
+
+
+        return animating;
+    }
+
+    boolean animating = false;
+
+    private void drawRect(Canvas canvas) {
+        Paint paint = new Paint();
         paint.setColor(Color.RED);
         paint.setStyle(Paint.Style.STROKE);
-        canvas.drawRect(0,0,mShape.width,mShape.height,paint);
+        canvas.drawRect(0, 0, mShape.width, mShape.height, paint);
 
     }
 
-    private void onDrawTemp( ) {
-        Bitmap tempBitmap=Bitmap.createBitmap(2000,2000, Bitmap.Config.RGB_565);
-        Canvas canvas=new Canvas(tempBitmap);
+    private void onDrawTemp() {
+        Bitmap tempBitmap = Bitmap.createBitmap(2000, 2000, Bitmap.Config.RGB_565);
+        Canvas canvas = new Canvas(tempBitmap);
         canvas.save();
-        if(drawParam.padding!=null)
-        {
+        if (drawParam.padding != null) {
 
-            canvas.translate(drawParam.padding[0],drawParam.padding[1]);
-            canvas.clipRect(0,0,mShape.width,mShape.height);
+            canvas.translate(drawParam.padding[0], drawParam.padding[1]);
+            canvas.clipRect(0, 0, mShape.width, mShape.height);
         }
 
         if (isInAnimation()) {
             try {
-                onTurn(canvas, bitmapProvider ,turnMoveDirection);
+                onTurn(canvas, bitmapProvider, turnMoveDirection);
 
             } catch (Throwable throwable) {
                 Log.e(throwable);
             }
-        }else
-        {
+        } else {
             BitmapHolder currentBitmap = bitmapProvider.getCurrentBitmap();
-            Bitmap bitmap = currentBitmap.lockRead();
-            canvas.drawBitmap(bitmap,0,0,null);
-            currentBitmap.unLockRead();
+//            Bitmap bitmap = currentBitmap.lockRead();
+//            canvas.drawBitmap(bitmap,0,0,null);
+//            currentBitmap.unLockRead();
+            currentBitmap.draw(canvas);
         }
-
-
 
 
         canvas.restore();
 
 
-
     }
+
+    boolean hasSwitch = false;
+    int pageTurnType = 0;
 
     private void computeScroll() {
 
 
-            if (scroller.computeScrollOffset()) {
-                int x = scroller.getCurrX(), y = scroller.getCurrY();
-                setTouch(x, y, false);
-                drawable.updateView();
+        if (scroller.computeScrollOffset()) {
+            int x = scroller.getCurrX(), y = scroller.getCurrY();
+            setTouch(x, y, false);
+
+
+            if (!hasSwitch) {
+
+                if (x <= scroller.getFinalX() / 3
+                        && turnMoveDirection == TURN_NEXT) {
+
+                    pageTurnType = PageSwitchListener.TURN_NEXT;
+
+
+                } else if (x >= scroller.getFinalX() / 3
+                        && turnMoveDirection == TURN_PREVIOUS) {
+                    pageTurnType = PageSwitchListener.TURN_PREVIOUS;
+
+
+                }
             }
+
+
+            drawable.updateView();
+
+            Log.e("doPageTurning！！！！！！！！！scroller.isFinished():=" + scroller.isFinished() + ",x=" + x + ",scroller.getFinalX()=" + scroller.getFinalX() + "------y=" + y + "，scroller.getFinalY()=" + scroller.getFinalY());
+
+            boolean scollEnd = false;
+            if (scroller.isFinished()) {
+                scollEnd = true;
+            }
+//
+            if (x == scroller.getFinalX() && y == scroller.getFinalY()) {
+                scroller.abortAnimation();
+                scollEnd = true;
+            }
+            if (scollEnd) {
+
+                setSpeedUpState(false);
+                pageSwitchListener.afterPageChanged(pageTurnType);
+                Log.e("doPageTurning！！！！！！！！！");
+
+                hasSwitch = true;
+
+                animating = false;
+            }
+
+
+        }
 
 
     }
@@ -1161,27 +1125,26 @@ public class SimPageTurner extends AbsPageTurner {
         Log.i(turn);
 
 
+        PointF touchUp = getTouchUp();
+        setMotionEvent(MotionEvent.ACTION_MASK);
+        setSpeedUpState(true);
+        int millis = getPaggingDelayMillis(turn);
+        if (turn == TURN_NO_PREVIOUS || turn == TURN_NO_NEXT) {
+            Point distancePoint = getNoDistancePoint(turn);
+            scroller.startScroll((int) touchUp.x, (int) touchUp.y, distancePoint.x, distancePoint.y, millis);
+            hasSwitch = false;
+            animating = true;
+        } else if (turn == TURN_PREVIOUS || turn == TURN_NEXT) {
+            Point distancePoint = getDistancePoint(turn);
+            scroller.startScroll((int) touchUp.x, (int) touchUp.y, distancePoint.x, distancePoint.y, millis);
+            hasSwitch = false;
+            animating = true;
+        }
 
-
-
-                PointF touchUp = getTouchUp();
-                setMotionEvent(MotionEvent.ACTION_MASK);
-                setSpeedUpState(true);
-                int millis = getPaggingDelayMillis(turn);
-                if (turn == TURN_NO_PREVIOUS || turn == TURN_NO_NEXT) {
-                    Point distancePoint = getNoDistancePoint(turn);
-                    scroller.startScroll((int) touchUp.x, (int) touchUp.y, distancePoint.x, distancePoint.y, millis);
-                } else if (turn == TURN_PREVIOUS || turn == TURN_NEXT) {
-                    Point distancePoint = getDistancePoint(turn);
-                    scroller.startScroll((int) touchUp.x, (int) touchUp.y, distancePoint.x, distancePoint.y, millis);
-                }
-
-                drawable.updateView();
-
+        drawable.updateView();
 
 
     }
-
 
 
 }

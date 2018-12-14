@@ -315,30 +315,30 @@ public class Report_Excel_XK_HUALEI extends ExcelReportor {
 //            label1 = new Label(33, rowUpdate,  String.valueOf(packValue[0]) ,format);
 //            writableSheet.addCell(label1);
 
-            addNumber(writableSheet, packValue[0],33,rowUpdate);
-            addNumber(writableSheet, packValue[0],33,rowUpdate);
+
+            addNumber(writableSheet, UnitUtils.cmToInch(packValue[0]),33,rowUpdate);
             //折盒包装w
 //            label1 = new Label(34, rowUpdate,  String.valueOf(packValue[1]) ,format);
 //            writableSheet.addCell(label1);
-            addNumber(writableSheet, packValue[1],34,rowUpdate);
+            addNumber(writableSheet, UnitUtils.cmToInch(packValue[1]),34,rowUpdate);
             //折盒包装h
 //            label1 = new Label(35, rowUpdate,  String.valueOf(packValue[2]) ,format);
 //            writableSheet.addCell(label1);
-            addNumber(writableSheet, packValue[2],35,rowUpdate);
+            addNumber(writableSheet, UnitUtils.cmToInch(packValue[2]),35,rowUpdate);
 
             //折盒包装l cm
 //            label1 = new Label(37, rowUpdate,  String.valueOf(UnitUtils.cmToInch(packValue[0])) ,format);
 //            writableSheet.addCell(label1);
-            addNumber(writableSheet,UnitUtils.cmToInch(packValue[0]),37,rowUpdate);
+            addNumber(writableSheet,packValue[0],37,rowUpdate);
             //折盒包装w cm
 //            label1 = new Label(38, rowUpdate,  String.valueOf(UnitUtils.cmToInch(packValue[1])) ,format);
 //            writableSheet.addCell(label1);
-            addNumber(writableSheet,UnitUtils.cmToInch(packValue[1]),38,rowUpdate);
+            addNumber(writableSheet,packValue[1],38,rowUpdate);
 
             //折盒包装h cm
 //            label1 = new Label(39, rowUpdate,  String.valueOf(UnitUtils.cmToInch(packValue[2])) ,format);
 //            writableSheet.addCell(label1);
-            addNumber(writableSheet,UnitUtils.cmToInch(packValue[2]),39,rowUpdate);
+            addNumber(writableSheet, packValue[2] ,39,rowUpdate);
            // PF Pack G.W. (KGS)
 //            label1 = new Label(40, rowUpdate, "" ,format);
 //            writableSheet.addCell(label1);
@@ -359,32 +359,32 @@ public class Report_Excel_XK_HUALEI extends ExcelReportor {
             //加强包装包装l
 //            label1 = new Label(43, rowUpdate,  String.valueOf(packValue2[0]) ,format);
 //            writableSheet.addCell(label1);
-            addNumber(writableSheet,packValue2[0],43,rowUpdate);
+            addNumber(writableSheet,UnitUtils.cmToInch(packValue2[0]),43,rowUpdate);
             //加强包装w
 //            label1 = new Label(44, rowUpdate,  String.valueOf(packValue2[1]) ,format);
 //            writableSheet.addCell(label1);
-            addNumber(writableSheet,packValue2[1],44,rowUpdate);
+            addNumber(writableSheet,UnitUtils.cmToInch(packValue2[1]),44,rowUpdate);
 
             //加强包装h
 //            label1 = new Label(45, rowUpdate,  String.valueOf(packValue2[2]) ,format);
 //            writableSheet.addCell(label1);
-            addNumber(writableSheet,packValue2[2],45,rowUpdate);
+            addNumber(writableSheet,UnitUtils.cmToInch(packValue2[2]),45,rowUpdate);
 
 
             //加强包装l cm
 //            label1 = new Label(49, rowUpdate,  String.valueOf(UnitUtils.cmToInch(packValue2[0])) ,format);
 //            writableSheet.addCell(label1);
-            addNumber(writableSheet,UnitUtils.cmToInch(packValue2[0]),49,rowUpdate);
+            addNumber(writableSheet,packValue2[0],49,rowUpdate);
 
             //加强包装w cm
 //            label1 = new Label(50, rowUpdate,  String.valueOf(UnitUtils.cmToInch(packValue2[1])) ,format);
 //            writableSheet.addCell(label1);
-            addNumber(writableSheet,UnitUtils.cmToInch(packValue2[1]),50,rowUpdate);
+            addNumber(writableSheet, packValue2[1],50,rowUpdate);
 
             //加强包装h cm
 //            label1 = new Label(51, rowUpdate,  String.valueOf(UnitUtils.cmToInch(packValue2[2])) ,format);
 //            writableSheet.addCell(label1);
-            addNumber(writableSheet, UnitUtils.cmToInch(packValue2[2]), 51, rowUpdate);
+            addNumber(writableSheet,  packValue2[2], 51, rowUpdate);
             //Reshipper Pack N.W. (KGS)
 
 //            label1 = new Label(52, rowUpdate, "" ,format);

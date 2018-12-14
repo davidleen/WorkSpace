@@ -7,13 +7,17 @@ android {
     defaultConfig {
         applicationId "changu.com.test"
         minSdkVersion project.ANDROID_MIN_VERSION
-        targetSdkVersion  project.ANDROID_TARGET_VERSION
+        targetSdkVersion project.ANDROID_TARGET_VERSION
         versionCode 1
         versionName "1.0"
         manifestPlaceholders = [ANDROID_SUPPORT_VERSION: "${ANDROID_SUPPORT_V7_VERSION}"]
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
     }
     buildTypes {
         release {
@@ -33,4 +37,10 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     compile project(path: ':comic')
+    compile project(path: ':domain')
+
+    compile 'com.jakewharton:butterknife:7.0.1'
+//    compile 'com.google.inject:guice:4.0:no_aop'
+//    provided 'com.google.inject:guice:4.0'
+    compile 'com.giants3.reader:data:0.0.0'
 }

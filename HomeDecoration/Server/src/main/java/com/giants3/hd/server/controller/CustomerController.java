@@ -30,9 +30,15 @@ public class CustomerController extends BaseController {
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public
     @ResponseBody
-    RemoteData<Customer> list(@RequestParam(value = "key", required = false, defaultValue = "") String key) {
+    RemoteData<Customer> list(@RequestParam(value = "key", required = false, defaultValue = "") String key ) {
 
-        return wrapData(customerService.list(key));
+        return wrapData(customerService.list(key ));
+    } @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    RemoteData<Customer> search(@RequestParam(value = "key", required = false, defaultValue = "") String key,  @RequestParam(value = "pageIndex", required = false, defaultValue = "0") int pageIndex, @RequestParam(value = "pageSize", required = false, defaultValue = "30") int pageSize) {
+
+        return customerService.list(key,pageIndex,pageSize);
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)

@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.util.SparseArray;
 
-import com.xxx.frame.Log;
+import com.giants3.android.frame.util.Log;
 import com.xxx.reader.book.ChapterMeasureResult;
 import com.xxx.reader.book.IBook;
 import com.xxx.reader.book.IChapter;

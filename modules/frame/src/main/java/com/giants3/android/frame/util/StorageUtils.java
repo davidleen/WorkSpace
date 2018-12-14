@@ -2,6 +2,8 @@ package com.giants3.android.frame.util;
 
 import android.os.Environment;
 
+import com.giants3.io.FileUtils;
+
 import java.io.File;
 
 /**
@@ -24,8 +26,11 @@ public class StorageUtils {
     public static  void writeString(String data,String fileName)
     {
         String filePath=getFilePath(fileName);
-        FileUtils.writeStringToFile(data,filePath);
-
+        try {
+            FileUtils.writeStringToFile(data,filePath);
+        } catch (Exception e) {
+            Log.e(e);
+        }
 
 
     }

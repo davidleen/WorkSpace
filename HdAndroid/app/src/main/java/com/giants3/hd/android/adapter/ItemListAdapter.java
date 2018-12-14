@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.giants3.android.adapter.AbstractAdapter;
 import com.giants3.hd.android.R;
 import com.giants3.android.frame.util.Utils;
 import com.giants3.hd.android.activity.LongTextActivity;

@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.giants3.hd.android.R;
 import com.giants3.android.frame.util.Utils;
-import com.giants3.hd.android.adapter.AbstractAdapter;
+import com.giants3.android.adapter.AbstractAdapter;
 import com.giants3.hd.android.adapter.ItemListAdapter;
 import com.giants3.hd.android.entity.TableData;
 import com.giants3.hd.android.helper.AuthorityUtil;

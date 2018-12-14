@@ -1,12 +1,12 @@
 package com.giants3.reader.server.interceptor;
 
 
-import com.giants3.reader.entity.Session;
+
 import com.giants3.reader.noEntity.RemoteData;
-import com.giants3.reader.server.repository.SessionRepository;
+
 import com.giants3.reader.server.utils.Constraints;
-import com.giants3.reader.utils.GsonUtils;
-import com.giants3.reader.utils.UrlFormatter;
+import com.giants3.utils.GsonUtils;
+import com.giants3.utils.UrlFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -36,8 +36,8 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 
     public long VALIDATE_TIME = 24l * 60 * 60 * 1000;
 
-    @Autowired
-    SessionRepository sessionRepository;
+//    @Autowired
+//    SessionRepository sessionRepository;
     private boolean DEVELOP=true;
 
 
@@ -65,46 +65,9 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         }
 
 
-//        request.setAttribute(Constraints.ATTR_BASE_URL, baseUrl);
+        return true;
 
 
-        HttpServletRequestWrapper wrapper;
-        //非过滤的url
-        if (url.contains(UN_INTERCEPT_LOGIN) || url.contains(UN_INTERCEPT_ALOGIN) || url.contains(UN_INTERCEPT_USERLIST) || url.contains(UNLOGIN) || url.contains(UN_INTERCEPT_FILE) || url.contains(WEIXIN))
-            return true;
-
-        else {
-            String token = request.getParameter(TOKEN);
-            String appVersion = request.getParameter("appVersion");
-            int
-                    integer = 0;
-            try {
-                integer = Integer.valueOf(appVersion).intValue();
-            } catch (Throwable t) {
-
-            }
-            //  ConstantData.IS_CRYPT_JSON = integer >= ConstantData.CRYPE_JSON_FROM_VERSION;
-            Session session = sessionRepository.findFirstByTokenEquals(token);
-
-            if (session != null) {
-
-                long currentTime = Calendar.getInstance().getTimeInMillis();
-                if (currentTime - session.loginTime < VALIDATE_TIME) {
-                    request.setAttribute(Constraints.ATTR_LOGIN_USER, session.user);
-                    //  request.setAttribute(Constraints.ATTR_LOGIN_SESSION, session);
-                    return true;
-                }
-
-
-            }
-            //如果验证失败
-            //返回到登录界面
-            writeErrorMessage(response.getOutputStream(), RemoteData.CODE_UNLOGIN, "用户未登录，或者登录超时失效");
-
-            return false;
-
-
-        }
 
     }
 

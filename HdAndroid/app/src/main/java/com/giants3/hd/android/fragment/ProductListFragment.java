@@ -4,9 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.giants3.hd.android.activity.MainActivity;
 import com.giants3.hd.android.activity.ProductDetailActivity;
-import com.giants3.hd.android.adapter.AbstractAdapter;
+import com.giants3.android.adapter.AbstractAdapter;
 import com.giants3.hd.android.adapter.ProductListAdapter;
 import com.giants3.hd.appdata.AProduct;
 import com.giants3.hd.data.interractor.UseCase;

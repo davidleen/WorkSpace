@@ -11,26 +11,17 @@ import android.view.MotionEvent;
 public interface BitmapHolder {
 
 
-    Bitmap lockRead();
 
-
-    void unLockRead( );
-
-
-    Bitmap lockWrite();
-
-
-    void unLockWrite( );
 
 
       boolean onTouchEvent(MotionEvent event);
 
 
-    int getWidth();
-    int getHeight();
 
 
 
-    Canvas lockCanvas();
-    void unLockCanvas();
+
+
+
+    void draw(Canvas canvas);
 }

@@ -710,8 +710,8 @@ public class ApiManager {
 
     }
 
-    public RemoteData<Customer> getCustomerList(String key) throws HdException {
-        String url = HttpUrl.getCustomerList(key);
+    public RemoteData<Customer> getCustomerList(String key,int pageIndex,int pageSize) throws HdException {
+        String url = HttpUrl.getCustomerList(key,  pageIndex,  pageSize);
         String result = apiConnection.getString(url);
         RemoteData<Customer> remoteData = invokeByReflect(result, Customer.class);
         return remoteData;

@@ -92,23 +92,28 @@ public class DrawLayer {
         if (zoomHandler != null)
             zoomHandler.zoom(canvas);
 
-        if (pageTurner != null && pageTurner.isInAnimation()) {
+        if (pageTurner != null ) {
+            boolean test=false;
+            if(test) {
+
+                Bitmap bitmap = Bitmap.createBitmap(drawParam.width, drawParam.height, Bitmap.Config.ARGB_4444);
+                Canvas tempCanvas = new Canvas(bitmap);
+                pageTurner.onDraw(tempCanvas);
+            }
+
             pageTurner.onDraw(canvas);
         } else {
 
             BitmapHolder currentBitmap = drawCache.getCurrentBitmap();
-            Bitmap bitmap = currentBitmap.lockRead();
-            if (bitmap != null) {
-                canvas.drawBitmap(bitmap, 0, 0, null);
-            }
+            currentBitmap.draw(canvas);
 
-            currentBitmap.unLockRead();
 
 
         }
 
 
         canvas.restoreToCount(count);
+
 
     }
 

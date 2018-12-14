@@ -12,7 +12,8 @@ import android.view.MotionEvent;
 import android.view.TextureView;
 import android.view.View;
 
-import com.xxx.frame.Log;
+
+import com.giants3.android.frame.util.Log;
 import com.xxx.reader.core.DrawParam;
 import com.xxx.reader.core.IDrawable;
 import com.xxx.reader.prepare.DrawLayer;

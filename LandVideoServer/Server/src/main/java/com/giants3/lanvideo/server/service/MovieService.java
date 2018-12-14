@@ -1,8 +1,8 @@
 package com.giants3.lanvideo.server.service;
 
 import com.giants3.lanvideo.data.Movie;
+import com.giants3.lanvideo.data.MovieGroup;
 import com.giants3.lanvideo.data.RemoteData;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -21,18 +21,17 @@ public class MovieService extends AbstractService {
 
     public static final String API_MOVIE_DOWNLOAD = "api/movie/download/";
 
-    public RemoteData<Movie> list(String category) {
-        String categoryPath="";
+    public List<Movie> list(String category) {
+        String categoryPath = "";
 
         for (int i = 0; i < categoryNames.length; i++) {
 
-            if(categoryNames[i].equalsIgnoreCase(category))
-            {
-                categoryPath=categoryPaths[i];
+            if (categoryNames[i].equalsIgnoreCase(category)) {
+                categoryPath = categoryPaths[i];
             }
 
         }
-        if(StringUtils.isEmpty(categoryPath)) return wrapData();
+        if (StringUtils.isEmpty(categoryPath)) return new ArrayList<>();
 
 
         File directory = new File(categoryPath);
@@ -43,25 +42,23 @@ public class MovieService extends AbstractService {
         readAllMovie(directory, movies);
 
 
-        for (Movie movie:movies)
-        {
+        for (Movie movie : movies) {
 
             final String originPath = movie.getVideoUrl();
-            String restPath=originPath.substring(categoryPath.length());
+            String restPath = originPath.substring(categoryPath.length());
 
-            final String replace =   API_MOVIE_DOWNLOAD + category + "/"+ encode(restPath.replace(String.valueOf(File.separatorChar), FILE_SEPARATOR) );
+            final String replace = API_MOVIE_DOWNLOAD + category + "/" + encode(restPath.replace(String.valueOf(File.separatorChar), FILE_SEPARATOR));
             movie.setVideoUrl(replace);
         }
 
 
-        return wrapData(movies);
+        return movies;
     }
 
-    private String encode(String path)
-    {
+    private String encode(String path) {
 
         try {
-            return  URLEncoder.encode(path,"UTF-8").replace("+","%20");
+            return URLEncoder.encode(path, "UTF-8").replace("+", "%20");
         } catch (UnsupportedEncodingException e) {
 
             return path;
@@ -73,10 +70,10 @@ public class MovieService extends AbstractService {
         for (File file : directory.listFiles()) {
             if (file.isDirectory()) readAllMovie(file, movies);
 
-            if(file.isHidden())continue;
+            if (file.isHidden()) continue;
             final String filePath = file.getAbsolutePath().toLowerCase();
 
-            if (filePath.endsWith(".mp4") || filePath.endsWith(".mkv")) {
+            if (filePath.endsWith(".mp4")) {  //|| filePath.endsWith(".mkv")
 
                 Movie movie = new Movie();
                 movie.setVideoUrl(file.getAbsolutePath());
@@ -93,66 +90,44 @@ public class MovieService extends AbstractService {
     }
 
 
-    public RemoteData<String> listCategories() {
-
-        String[] categories = new String[]{
-
-                "F:\\movie\\"
-                , "G:\\movie\\"
-                , "I:\\movie\\"
-
-
-        };
-
-        List<String> temp = new ArrayList<>();
-        for (String s : categories) {
-            temp.add(s);
-        }
-
-
-        return wrapData(temp);
-    }
-
     public String getResourceFilePath(String category, String fileName) {
 
 
-
-
-
-        String categoryPath="";
+        String categoryPath = "";
 
         for (int i = 0; i < categoryNames.length; i++) {
 
-            if(categoryNames[i].equals(category))
-            {
-                categoryPath=categoryPaths[i];
+            if (categoryNames[i].equals(category)) {
+                categoryPath = categoryPaths[i];
             }
 
         }
-        if(StringUtils.isEmpty(categoryPath)) return null;
+        if (StringUtils.isEmpty(categoryPath)) return null;
 
-        fileName=   fileName.replace(FILE_SEPARATOR,File.separator);
+        fileName = fileName.replace(FILE_SEPARATOR, File.separator);
 
 
-
-        return categoryPath+ File.separator +fileName;
+        return categoryPath + File.separator + fileName;
     }
 
 
-    public static final String FILE_SEPARATOR="___";
-
-
-
+    public static final String FILE_SEPARATOR = "___";
 
 
     final String[] categoryPaths = {
-            "F:\\movie\\"
-            , "G:\\movie\\"
+            "I:\\movie\\漫威\\"
+            ,"G:\\movie\\日剧\\我的恐怖妻子\\"
+            , "F:\\movie\\"
+            , "G:\\movie\\test\\"
             , "I:\\movie\\"
 
-    };  final String[] categoryNames = {
-            "Fmovie"
-            , "Gmovie"
+    };
+    final String[] categoryNames = {
+
+            "漫威系列"
+            ,"日剧-我的恐怖妻子"
+            , "Fmovie"
+            , "GmovieTest"
             , "Imovie"
 
     };
@@ -160,8 +135,33 @@ public class MovieService extends AbstractService {
     public RemoteData<String> getCategories() {
 
 
-
         return wrapArrayData(categoryNames);
+    }
+
+
+
+    public  List<MovieGroup> listGroups()
+    {
+
+
+        List<MovieGroup> groups=new ArrayList<>();
+
+        for (String category:categoryNames)
+        {
+
+
+            MovieGroup movieGroup=new MovieGroup();
+            movieGroup.title=category;
+            movieGroup.movies=list(category);
+            groups.add(movieGroup);
+        }
+
+
+
+
+
+        return groups;
+
     }
 
 }

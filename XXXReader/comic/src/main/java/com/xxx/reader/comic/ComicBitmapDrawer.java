@@ -15,9 +15,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.view.MotionEvent;
 
-import com.xxx.frame.Log;
-import com.xxx.frame.MathUtils;
-import com.xxx.frame.StringUtil;
+import com.giants3.android.frame.util.Log;
+import com.giants3.android.frame.util.MathUtils;
+import com.giants3.android.frame.util.StringUtil;
 import com.xxx.reader.ThreadConst;
 import com.xxx.reader.Utils;
 import com.xxx.reader.core.IDrawable;
@@ -27,6 +27,7 @@ import com.xxx.reader.text.layout.BitmapHolder;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
 
 /**
  * 漫画图片绘制功能类
@@ -147,7 +148,9 @@ public class ComicBitmapDrawer {
 
     public void draw(Canvas canvas, int width, int height) {
 
-        canvas.drawColor(Color.BLACK);
+
+
+
         switch (state) {
 
             case STATE_EMPTY:
@@ -157,7 +160,7 @@ public class ComicBitmapDrawer {
             case STATE_OK:
 
                 sourceRect.set(0, 0, decodeRect.width() / inSampleSize, decodeRect.height() / inSampleSize);
-
+                Log.e("sourceRect:="+sourceRect+",decodeRect:="+decodeRect+",drawRect:="+drawRect);
 //                tempCanvas.drawBitmap(bitmap, sourceRect, drawRect, null);
 
                 canvas.drawBitmap(bitmap, sourceRect, drawRect, null);
@@ -179,8 +182,6 @@ public class ComicBitmapDrawer {
 
 
             case STATE_ERROR: {
-
-
                 int left = ((width - reloadTextLength) / 2);
                 int top = height / 2;
 
@@ -209,7 +210,7 @@ public class ComicBitmapDrawer {
                 } else {
                     int left = (width - loadBitmap.getWidth()) / 2;
                     int top = (height - loadBitmap.getHeight()) / 2;
-                    rotate += 10;
+                    rotate += 3;
                     rotate %= 360;
 
                     canvas.save();
@@ -217,7 +218,8 @@ public class ComicBitmapDrawer {
                     canvas.drawBitmap(loadBitmap, left, top, null);
                     canvas.restore();
                 }
-                iDrawable.updateView();
+
+                    iDrawable.updateView();
             }
 
             break;
@@ -398,6 +400,7 @@ public class ComicBitmapDrawer {
                     public void onComplete(String url, String filePath) {
                         if (bitmapFrame != null && url.equals(bitmapFrame.url) && filePath.equals(bitmapFrame.filePath)) {
                             progress = -1;
+                            state=STATE_DRAWING;
                             update(bitmapFrame);
                         }
                     }
@@ -489,14 +492,17 @@ public class ComicBitmapDrawer {
             }
 
 
+
+
             Bitmap bitmap = null;
             BitmapRegionDecoder bitmapRegionDecoder = null;
             try {
+                long loadTime= Calendar.getInstance().getTimeInMillis();
                 bitmapRegionDecoder = BitmapRegionDecoder.newInstance(filePath, true);
                 bitmap = bitmapRegionDecoder.decodeRegion(decodeRect, options);
                 bitmapRegionDecoder.recycle();
 
-
+                Log.e("time use in load Bitmap:" +(Calendar.getInstance().getTimeInMillis()-loadTime));
                 if (isCancelled()) {
                     return null;
                 }

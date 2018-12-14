@@ -12,10 +12,8 @@ import com.giants3.hd.logic.AppQuotationAnalytics;
 import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.noEntity.RemoteDateParameterizedType;
 import com.giants3.hd.noEntity.app.QuotationDetail;
-import com.giants3.hd.server.entity.ProductToUpdate;
 import com.giants3.hd.server.repository.*;
 import com.giants3.hd.server.service.AbstractService;
-import com.giants3.hd.server.service.CustomerService;
 import com.giants3.hd.server.utils.*;
 import com.giants3.hd.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -783,6 +781,21 @@ public class AppQuotationService extends AbstractService {
     public RemoteData<Void> syncData(User user, String urlHead, String startDate, String endDate) {
 
 
+
+
+//        List<QuotationItem> items=appQuotationItemRepository.findAll();
+//        for (QuotationItem item:items)
+//        {
+//
+//            updateProductIdAndPhotoForQuotationItem( item);
+//
+//        }
+//        appQuotationItemRepository.flush();
+
+
+
+
+
         try {
 
             ApiManager apiManager = new ApiManager();
@@ -790,10 +803,18 @@ public class AppQuotationService extends AbstractService {
             String result = apiManager.getString(loginUrl);
             RemoteData remoteData = GsonUtils.fromJson(result, RemoteData.class);
 
-            if (remoteData.isSuccess()) {
+            if (remoteData!=null&&remoteData.isSuccess()) {
 
                 synchronizedAppQuotationFromRemote(urlHead, startDate, endDate, apiManager, remoteData.token);
                 synchronizedCustomerFromRemote(urlHead, apiManager, remoteData.token);
+
+
+
+
+
+
+
+
             }
             return wrapData();
         } catch (Exception e) {
@@ -803,6 +824,8 @@ public class AppQuotationService extends AbstractService {
 
 
     }
+
+
 
     /**
      * 同步报价数据
@@ -820,7 +843,7 @@ public class AppQuotationService extends AbstractService {
 
         RemoteData<QuotationDetail> remoteData = readAppQuotationFromRemote(apiManager, urlHead, startDate,  endDate, pageIndex, pageSize,token);
 
-        while (remoteData.isSuccess()) {
+        while (remoteData!=null&&remoteData.isSuccess()) {
 
 
             for (QuotationDetail detail : remoteData.datas) {
@@ -832,7 +855,7 @@ public class AppQuotationService extends AbstractService {
                         newQuotation.id = quotation.id;
                         for (QuotationItem item : detail.items) {
                             item.quotationId = quotation.id;
-                            updateProductIdForQuotationItem(item);
+                            updateProductIdAndPhotoForQuotationItem(item);
                         }
                         appQuotationRepository.save(newQuotation);
                         appQuotationItemRepository.save(detail.items);
@@ -857,7 +880,7 @@ public class AppQuotationService extends AbstractService {
                         newQuotation = appQuotationRepository.save(newQuotation);
                         for (QuotationItem item : detail.items) {
                             item.quotationId = newQuotation.id;
-                            updateProductIdForQuotationItem(item);
+                            updateProductIdAndPhotoForQuotationItem(item);
                             item.id = -1;
                         }
                         appQuotationItemRepository.save(detail.items);
@@ -869,7 +892,7 @@ public class AppQuotationService extends AbstractService {
                     newQuotation = appQuotationRepository.save(newQuotation);
                     for (QuotationItem item : detail.items) {
                         item.quotationId = newQuotation.id;
-                        updateProductIdForQuotationItem(item);
+                        updateProductIdAndPhotoForQuotationItem(item);
                         item.id = -1;
                     }
                     appQuotationRepository.save(newQuotation);
@@ -893,7 +916,7 @@ public class AppQuotationService extends AbstractService {
     }
 
 
-    private void  updateProductIdForQuotationItem(QuotationItem item)
+    private void updateProductIdAndPhotoForQuotationItem(QuotationItem item)
     {
 
 
@@ -903,6 +926,8 @@ public class AppQuotationService extends AbstractService {
         if(product!=null )
         {
             item.productId=product.id;
+            item.photoUrl=product.url;
+            item.thumbnail=product.thumbnail;
         }
 
 
@@ -938,7 +963,7 @@ public class AppQuotationService extends AbstractService {
         String result = apiManager.getString(url);
 
         RemoteData<Customer> remoteData = GsonUtils.fromJson(result, new RemoteDateParameterizedType(Customer.class));
-        if(!remoteData.isSuccess()) return;
+        if(remoteData==null||!remoteData.isSuccess()) return;
 
         List<Customer> datas = remoteData.datas;
         final int size = datas.size();
@@ -964,7 +989,7 @@ public class AppQuotationService extends AbstractService {
             if (oldCustomer == null) {
                 customer.id = -1;
                 Customer newCustomer = customerRepository.save(customer);
-                appQuotationRepository.replaceCustomerId(newCustomer.id, currentCustomerId);
+
 
 
 
@@ -975,8 +1000,9 @@ public class AppQuotationService extends AbstractService {
 
                     customer.id = oldCustomer.id;
                     customerRepository.save(customer);
-                    appQuotationRepository.replaceCustomerId(customer.id, currentCustomerId);
+
                 }
+
 
 
             }
@@ -988,6 +1014,16 @@ public class AppQuotationService extends AbstractService {
 
 
         }
+
+        //调整所有报价单的客户信息。保证id与code 一致
+        List<Customer> customers=customerRepository.findAll();
+        for (Customer customer:customers)
+        {
+
+            appQuotationRepository.resetCustomerIdByCodeInQuotation(customer.id,customer.code);
+
+        }
+        appQuotationRepository.flush();
 
         appQuotationRepository.flush();
         customerRepository.flush();

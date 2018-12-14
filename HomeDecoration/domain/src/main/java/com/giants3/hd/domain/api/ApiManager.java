@@ -61,6 +61,28 @@ public class ApiManager {
 
 
     /**
+     * 查询产品
+     *
+     * @param key
+     * @param pageIndex
+     * @param pageSize
+     * @param withCopy 是否包含翻单
+     * @return
+     * @throws HdException
+     */
+    public RemoteData<Product> searchProduct(String key, int pageIndex, int pageSize,boolean withCopy) throws HdException {
+
+        String url = HttpUrl.searchProduct(key,  pageIndex, pageSize,withCopy);
+
+        String result = client.getWithStringReturned(url);
+
+        RemoteData<Product> productRemoteData = invokeByReflect(result, Product.class);
+        return productRemoteData;
+
+
+    }
+
+    /**
      * 读取产品列表
      *
      * @param productName

@@ -1,6 +1,6 @@
 package com.giants3.reader.server.noEntity;
 
-import com.giants3.reader.server.service.PushService;
+
 
 /**
  * Created by davidleen29 on 2017/7/21.
@@ -11,7 +11,7 @@ public class UmengPushData {
     /**
      *  // 必填 应用唯一标识
      */
-    public String appkey= PushService.UMENG_APP_KEY;
+    public String appkey= "";
     /**
      * // 必填 时间戳，10位或者13位均可，时间戳有效期为10分钟
      */

@@ -120,18 +120,30 @@ public class CustomerService extends AbstractService {
 
         return list("");
     }
+    /**
+     * 查询用户列表
+     *
+     * @return
+     */
+    public List<Customer> list(String key ) {
 
+        String keyLike = StringUtils.sqlLike(key);
+        return customerRepository.findByCodeLikeOrNameLikeOrderByCodeAsc(keyLike);
+    }
 
     /**
      * 查询用户列表
      *
      * @return
      */
-    public List<Customer> list(String key) {
+    public RemoteData<Customer> list(String key,int pageIndex,int pageSize) {
 
 
         String keyLike = StringUtils.sqlLike(key);
-        return customerRepository.findByCodeLikeOrNameLikeOrderByCodeAsc(keyLike);
+        Pageable pageable=constructPageSpecification(pageIndex,pageSize);
+        Page<Customer> pageValue= customerRepository.findByCodeLikeOrNameLikeOrderByCodeAsc(keyLike,pageable);
+
+        return wrapData(pageIndex,pageValue);
 
     }
 

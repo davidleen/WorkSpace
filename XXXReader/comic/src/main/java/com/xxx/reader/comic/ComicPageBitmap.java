@@ -25,13 +25,13 @@ import com.xxx.reader.download.DownloadListener;
 public class ComicPageBitmap extends PageBitmap<ComicPageInfo, DrawParam> {
 
 
-    private ComicPageInfo pageInfo;
+
     ComicBitmapDrawer comicBitmapDrawer;
-    private DrawParam drawParam;
 
 
-    public ComicPageBitmap(Context context, int screenWidth, int screenHeight, IDrawable iDrawable, DownloadListener downloadListener) {
-        super(screenWidth, screenHeight);
+
+    public ComicPageBitmap(Context context, int screenWidth, int screenHeight ,IDrawable iDrawable, DownloadListener downloadListener) {
+        super(screenWidth, screenHeight,iDrawable);
 
 
         comicBitmapDrawer = new ComicBitmapDrawer(context, this, iDrawable, downloadListener);
@@ -43,10 +43,7 @@ public class ComicPageBitmap extends PageBitmap<ComicPageInfo, DrawParam> {
     @Override
     public void drawPage(ComicPageInfo pageInfo, DrawParam drawParam) {
         comicBitmapDrawer.setBitmapFrame(pageInfo == null ? null : pageInfo.bitmapFrames == null ? null : pageInfo.bitmapFrames.size() < 1 ? null : pageInfo.bitmapFrames.get(0));
-        Canvas canvas=lockCanvas();
 
-        comicBitmapDrawer.draw(canvas,drawParam.width,drawParam.height);
-        unLockCanvas();
 
 
     }
@@ -57,4 +54,9 @@ public class ComicPageBitmap extends PageBitmap<ComicPageInfo, DrawParam> {
     }
 
 
+    @Override
+    public void draw(Canvas canvas) {
+        comicBitmapDrawer.setBitmapFrame(pageInfo == null ? null : pageInfo.bitmapFrames == null ? null : pageInfo.bitmapFrames.size() < 1 ? null : pageInfo.bitmapFrames.get(0));
+        comicBitmapDrawer.draw(canvas,drawParam.width,drawParam.height);
+    }
 }

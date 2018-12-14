@@ -1,6 +1,6 @@
 package com.giants3.reader.server.utils;
 
-import com.giants3.reader.utils.StringUtils;
+import com.giants3.utils.StringUtils;
 import de.greenrobot.common.io.IoUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.web.multipart.MultipartFile;

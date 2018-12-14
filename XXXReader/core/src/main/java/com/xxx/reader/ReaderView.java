@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.xxx.frame.Log;
+import com.giants3.android.frame.util.Log;
 import com.xxx.reader.core.DrawParam;
 import com.xxx.reader.core.IDrawable;
 import com.xxx.reader.prepare.DrawLayer;
@@ -55,6 +55,7 @@ public class ReaderView  extends View implements IDrawable{
 
         return false;
     }
+
 
     @Override
     protected void onDraw(Canvas canvas) {

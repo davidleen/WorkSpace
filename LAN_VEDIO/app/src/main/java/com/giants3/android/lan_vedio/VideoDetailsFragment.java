@@ -17,6 +17,7 @@ package com.giants3.android.lan_vedio;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v17.leanback.app.DetailsFragment;
@@ -45,6 +46,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.giants3.android.player.exo.ExoPlayerActivity;
 import com.giants3.lanvideo.data.Movie;
 
 import java.util.Collections;
@@ -177,9 +179,25 @@ public class VideoDetailsFragment extends DetailsFragment {
             @Override
             public void onActionClicked(Action action) {
                 if (action.getId() == ACTION_WATCH_TRAILER) {
-                    Intent intent = new Intent(getActivity(), PlaybackActivity.class);
-                    intent.putExtra(DetailsActivity.MOVIE, mSelectedMovie);
-                    startActivity(intent);
+
+
+                    boolean useLean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
+
+                    if(useLean) {
+
+
+                        Intent intent = new Intent(getActivity(), PlaybackActivity.class);
+                        intent.putExtra(DetailsActivity.MOVIE, mSelectedMovie);
+                        startActivity(intent);
+                    }else
+                    {
+
+                        Intent intent = new Intent(getActivity(), ExoPlayerActivity.class);
+                        intent.putExtra(ExoPlayerActivity.PARAM_URL, HttpUrl.complteUrl(mSelectedMovie.getVideoUrl()));
+                        startActivity(intent);
+
+
+                    }
                 } else {
                     Toast.makeText(getActivity(), action.toString(), Toast.LENGTH_SHORT).show();
                 }

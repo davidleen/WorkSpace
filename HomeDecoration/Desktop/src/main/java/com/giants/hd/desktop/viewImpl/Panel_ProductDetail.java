@@ -6,7 +6,7 @@ import com.giants.hd.desktop.dialogs.OperationLogDialog;
 import com.giants.hd.desktop.dialogs.ProductQRDialog;
 import com.giants.hd.desktop.dialogs.SearchDialog;
 import com.giants.hd.desktop.filters.PictureFileFilter;
-import com.giants.hd.desktop.interf.ComonSearch;
+import com.giants.hd.desktop.interf.CommonSearchAdapter;
 import com.giants.hd.desktop.interf.DataChangeListener;
 import com.giants.hd.desktop.interf.Iconable;
 import com.giants.hd.desktop.local.*;
@@ -2352,7 +2352,9 @@ public class Panel_ProductDetail extends BasePanel implements ProductDetailViewe
                 } else {
 
 
-                    SearchDialog<Material> dialog = new SearchDialog.Builder().setWindow(getWindow(contentPane)).setTableModel(new MaterialTableModel()).setComonSearch(new ComonSearch<Material>() {
+                    SearchDialog<Material> dialog = new SearchDialog.Builder().setWindow(getWindow(contentPane)).setTableModel(new MaterialTableModel()).setCommonSearch(new CommonSearchAdapter<Material>() {
+
+
                         @Override
                         public RemoteData<Material> search(String value, int pageIndex, int pageCount) throws HdException {
                             return apiManager.loadMaterialByCodeOrName(value, pageIndex, pageCount);
@@ -2375,10 +2377,7 @@ public class Panel_ProductDetail extends BasePanel implements ProductDetailViewe
                             JOptionPane.showMessageDialog(getWindow(contentPane), "材料：【" + material.code + "】  已经被停用，请选择其他材料");
                         }
                     }).setValue(text).setRemoteData(data).createSearchDialog();
-                    dialog.setMinimumSize(new Dimension(800, 600));
-                    dialog.pack();
-                    dialog.setLocationRelativeTo(table);
-                    dialog.setVisible(true);
+                    dialog.show(table);
                     Material material = dialog.getResult();
                     if (material != null) {
                         if (table.getModel() instanceof Materialable) {
@@ -2438,16 +2437,13 @@ public class Panel_ProductDetail extends BasePanel implements ProductDetailViewe
                 } else {
 
 
-                    SearchDialog<ProductProcess> dialog = new SearchDialog.Builder().setWindow(getWindow(contentPane)).setTableModel(new ProductProcessModel(false)).setComonSearch(new ComonSearch<ProductProcess>() {
+                    SearchDialog<ProductProcess> dialog = new SearchDialog.Builder().setWindow(getWindow(contentPane)).setTableModel(new ProductProcessModel(false)).setCommonSearch(new CommonSearchAdapter<ProductProcess>() {
                         @Override
                         public RemoteData<ProductProcess> search(String value, int pageIndex, int pageCount) throws HdException {
                             return apiManager.loadProcessByCodeOrName(value, pageIndex, pageCount);
                         }
                     }).setValue(text).setRemoteData(data).createSearchDialog();
-                    dialog.setMinimumSize(new Dimension(800, 600));
-                    dialog.pack();
-                    dialog.setLocationRelativeTo(table);
-                    dialog.setVisible(true);
+                    dialog.show(table);
                     ProductProcess process = dialog.getResult();
                     if (process != null) {
                         if (table.getModel() instanceof Processable) {

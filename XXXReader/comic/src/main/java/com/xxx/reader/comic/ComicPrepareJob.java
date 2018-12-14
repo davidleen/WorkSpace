@@ -2,7 +2,7 @@ package com.xxx.reader.comic;
 
 
 
-import com.xxx.frame.Log;
+import com.giants3.android.frame.util.Log;
 import com.xxx.reader.Url2FileMapper;
 import com.xxx.reader.book.ChapterMeasureResult;
 import com.xxx.reader.core.DrawParam;

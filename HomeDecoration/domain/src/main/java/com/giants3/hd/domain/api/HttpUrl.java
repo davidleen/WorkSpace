@@ -76,6 +76,17 @@ public class HttpUrl {
     public static String loadProductList(String productName, int viewType, int pageIndex, int pageSize) {
         return additionInfo(BaseUrl + "api/product/search?proName=" + productName + "&pageIndex=" + pageIndex + "&pageSize=" + pageSize + "&viewType=" + viewType);
     }
+    public static String searchProduct(String key,   int pageIndex, int pageSize,boolean withCopy) {
+
+
+        UrlFormatter urlFormatter = new UrlFormatter(BaseUrl + "api/product/query")
+                .append("key",key)
+                .append("pageIndex",pageIndex)
+                .append("pageSize",pageSize)
+                .append("withCopy",withCopy)
+                ;
+        return additionInfo(urlFormatter);
+    }
 
     public static String loadProductListByNameBetween(String startName, String endName, boolean withCopy) {
 

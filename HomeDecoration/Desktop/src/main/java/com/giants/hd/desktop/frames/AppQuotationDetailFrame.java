@@ -1,16 +1,15 @@
 package com.giants.hd.desktop.frames;
 
 import com.giants.hd.desktop.dialogs.SearchDialog;
-import com.giants.hd.desktop.interf.ComonSearch;
-import com.giants.hd.desktop.local.DownloadFileManager;
+import com.giants.hd.desktop.interf.CommonSearchAdapter;
 import com.giants.hd.desktop.model.ProductTableModel;
+import com.giants.hd.desktop.model.TableField;
 import com.giants.hd.desktop.mvp.RemoteDataSubscriber;
 import com.giants.hd.desktop.mvp.presenter.AppQuotationDetailPresenter;
 import com.giants.hd.desktop.mvp.viewer.AppQuotationDetailViewer;
 import com.giants.hd.desktop.reports.ExcelReportTaskUseCase;
-import com.giants.hd.desktop.reports.excels.Report_App_Quotation_XLXS;
+import com.giants.hd.desktop.reports.excels.Report_App_Quotation_XLXS_1;
 import com.giants.hd.desktop.reports.excels.ReporterHelper;
-import com.giants.hd.desktop.reports.excels.TableToExcelReporter;
 import com.giants.hd.desktop.utils.FileChooserHelper;
 import com.giants.hd.desktop.utils.HdSwingUtils;
 import com.giants.hd.desktop.viewImpl.Panel_AppQuotation_Detail;
@@ -25,18 +24,13 @@ import com.giants3.hd.entity.app.Quotation;
 import com.giants3.hd.entity.app.QuotationItem;
 import com.giants3.hd.exception.HdException;
 import com.giants3.hd.logic.AppQuotationAnalytics;
-import com.giants3.hd.logic.QuotationAnalytics;
-import com.giants3.hd.noEntity.BufferData;
 import com.giants3.hd.noEntity.ProductDetail;
 import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.noEntity.app.QuotationDetail;
 import com.giants3.hd.utils.GsonUtils;
 import com.giants3.report.JRReporter;
-import com.giants3.report.Reporter;
-import com.giants3.report.jasper.JRExcelReporter;
 import com.giants3.report.jasper.JRPdfReporter;
 import com.giants3.report.jasper.JRPreviewReporter;
-import com.giants3.report.jasper.quotation.AppQuotationPreviewReport;
 import com.giants3.report.jasper.quotation.AppQuotationReport;
 import com.google.inject.Inject;
 
@@ -44,8 +38,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.InputStream;
-import java.util.*;
-import java.util.List;
 
 /**
  * 订单详情界面
@@ -176,22 +168,36 @@ public class AppQuotationDetailFrame extends BaseMVPFrame<AppQuotationDetailView
     @Override
     public void addItem(int itemIndex) {
 
-        SearchDialog<Product> dialog = new SearchDialog.Builder().setWindow(getWindow()).setTableModel(new ProductTableModel()).setComonSearch(new ComonSearch<Product>() {
+        SearchDialog<Product> dialog = new SearchDialog.Builder().setWindow(getWindow()).setTableModel(new ProductTableModel()).setCommonSearch(new CommonSearchAdapter<Product>() {
+
+
+
             @Override
             public RemoteData<Product> search(String value, int pageIndex, int pageCount) throws HdException {
-                return apiManager.readProductList(value, pageIndex, pageCount);
-            }
-        }).setValue("").setRemoteData(null).setWindow(getWindow()).createSearchDialog();
-        dialog.setMinimumSize(new Dimension(800, 600));
-        dialog.pack();
 
-        dialog.setVisible(true);
+
+                boolean copy=false;
+                if(param!=null)
+                {
+                    copy= (boolean) param.get("withCopy");
+                }
+
+                return apiManager.searchProduct(value, pageIndex, pageCount,copy);
+            }
+        }).setValue("").addParam("withCopy","包含翻单", TableField.FieldType.B)
+
+                .setRemoteData(null).setWindow(getWindow()).createSearchDialog();
+
+
+        dialog.show(AppQuotationDetailFrame.this);
         Product product = dialog.getResult();
         if (product == null) return;
 
 
         AppQuotationAnalytics.addItem(quotationDetail, itemIndex, product);
         getViewer().bindDetail(quotationDetail);
+
+
 //        UseCaseFactory.getInstance().createAddProductToAppQuotationUseCase(quotationDetail.quotation.id,product.id).execute(new RemoteDataSubscriber<QuotationDetail>(getViewer()) {
 //
 //            @Override
@@ -418,11 +424,24 @@ public class AppQuotationDetailFrame extends BaseMVPFrame<AppQuotationDetailView
     @Override
     public void exportExcel() {
 
-
+        boolean exportPicture=false;
+        int option=  JOptionPane.showConfirmDialog(getWindow(),"是否同时导出图片到文件夹？" ,"图片",JOptionPane.YES_NO_OPTION);
+        if(option==JOptionPane.OK_OPTION)
+        {
+            exportPicture=true;
+        }
         //选择excel 文件
         final File file = FileChooserHelper.chooseFile(JFileChooser.DIRECTORIES_ONLY, false,null);
+
         if(file==null) return;
-        String fileName="报价单_"+quotationDetail.quotation.qNumber+".xls";
+
+
+
+
+
+        final String temp = "报价单_" + quotationDetail.quotation.qNumber; 
+
+        String fileName= temp + ".xls";
       File destFile=new File(file,fileName);
 //        JRExcelReporter excelReporter=new JRExcelReporter(destFile.getAbsolutePath());
 //        printFile(excelReporter);
@@ -431,7 +450,7 @@ public class AppQuotationDetailFrame extends BaseMVPFrame<AppQuotationDetailView
 
 
         final String absolutePath = destFile.getAbsolutePath();
-        final Report_App_Quotation_XLXS tableToExcelReporter=new Report_App_Quotation_XLXS(  CacheManager.getInstance().bufferData.company, quotationDetail, fileName);
+        final Report_App_Quotation_XLXS_1 tableToExcelReporter=new Report_App_Quotation_XLXS_1(  CacheManager.getInstance().bufferData.company, quotationDetail, fileName,exportPicture);
         new ExcelReportTaskUseCase<QuotationDetail>(tableToExcelReporter,quotationDetail, file.getAbsolutePath()).execute(new RemoteDataSubscriber<Void>(getViewer()) {
             @Override
             protected void handleRemoteData(RemoteData data) {

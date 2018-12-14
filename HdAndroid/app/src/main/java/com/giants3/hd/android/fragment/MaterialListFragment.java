@@ -1,14 +1,12 @@
 package com.giants3.hd.android.fragment;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.giants3.hd.android.activity.MaterialDetailActivity;
-import com.giants3.hd.android.adapter.AbstractAdapter;
+import com.giants3.android.adapter.AbstractAdapter;
 import com.giants3.hd.android.adapter.MaterialListAdapter;
-import com.giants3.hd.android.events.MaterialUpdateEvent;
 import com.giants3.hd.data.interractor.UseCase;
 import com.giants3.hd.data.interractor.UseCaseFactory;
 import com.giants3.hd.entity.Material;
@@ -33,6 +31,8 @@ public class MaterialListFragment extends ListFragment<Material> {
     private String mParam1;
     private String mParam2;
 
+    public static final int REQUEST_CODE=332;
+
 
     MaterialListAdapter adapter;
 
@@ -46,7 +46,7 @@ public class MaterialListFragment extends ListFragment<Material> {
 
                 Intent intent = new Intent(getContext(), MaterialDetailActivity.class);
                 intent.putExtra(MaterialDetailFragment.ARG_ITEM, GsonUtils.toJson(data));
-                startActivity(intent);
+                startActivityForResult(intent,REQUEST_CODE);
 
 
 
@@ -97,12 +97,6 @@ public class MaterialListFragment extends ListFragment<Material> {
         return UseCaseFactory.getInstance().createMaterialListCase(key,pageIndex,pageSize);
     }
 
-
-
-    public void onEvent(MaterialUpdateEvent event) {
-
-        onLoginRefresh();
-    }
 
 
 
