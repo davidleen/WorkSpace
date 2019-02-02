@@ -1,0 +1,42 @@
+ext{
+
+
+    // ----------fire base ----------
+    FIRE_BASE_CORE_VERSION='15.0.0'
+    FIRE_BASE_ADS_VERSION='15.0.0'
+    FIRE_BASE_ANALYTICS_VERSION='15.0.0'
+    PLAY_SERVICES_AUTH_VERSION='15.0.0'
+    PLAY_SERVICES_ADS_VERSION='15.0.0'
+    PLAY_SERVICES_ANALYTICS_VERSION='15.0.0'
+
+    PLAY_SERVICES_MAPS_VERSION='9.6.1'
+
+
+
+    ANDROID_SUPPORT_V4_VERSION='27.0.2'
+    ANDROID_SUPPORT_V7_VERSION='27.0.2'
+
+
+
+    //编译sdk版本
+    compileSdkVersion=26
+    //最低支持版本
+    minSdkVersion=14
+    //目标版本号
+    targetSdkVersion=26
+
+
+    ANDROID_COMPILE_VERSION=26
+    ANDROID_BUILD_VERSION='27.0.3'
+    ANDROID_TARGET_VERSION=26
+    ANDROID_MIN_VERSION=14
+
+
+
+    BUTTERKNIFE_VERSION="7.0.1"
+
+
+    rxVersion= '1.1.0'
+    gsonVersion='1.7.2'
+    okHttpVersion = '2.3.0'
+}

@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">勘察导航</string>
+    <string name="register">注册</string>
+    <string name="home">首页</string>
+    <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
+
+
+
+
+    <string name="permission_camera_neverask"  >你已经限制应用使用相机功能，请去应用管理授权</string>
+     <string name="permission_camera" >应用需要使用相机功能</string>
+</resources>

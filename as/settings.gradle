@@ -1,0 +1,6 @@
+include ':app', ':dao', ':data'
+include ':frame'
+include ':map_library'
+include ':domain'
+include ':network_okhttp'
+include ':OSMBonusPack'

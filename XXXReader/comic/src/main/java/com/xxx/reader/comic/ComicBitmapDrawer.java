@@ -39,6 +39,7 @@ import java.util.Calendar;
 public class ComicBitmapDrawer {
     private LoadTask loadTask;
     public static final int STATE_DRAWING = 1;
+    public static final int STATE_LOADING = 6;
     public static final int STATE_ERROR = 3;
     public static final int STATE_OK = 2;
     public static final int STATE_CACHE = 4;
@@ -100,7 +101,7 @@ public class ComicBitmapDrawer {
     /**
      * 缩略图是原图的大小倍数
      */
-    private static final int SCALE_SIZE_OF_ORIGIN = 4;
+    private static final int SCALE_SIZE_OF_ORIGIN = 8;
     int reloadTextLength;
 
     //    Bitmap tempBitmap;
@@ -149,8 +150,6 @@ public class ComicBitmapDrawer {
     public void draw(Canvas canvas, int width, int height) {
 
 
-
-
         switch (state) {
 
             case STATE_EMPTY:
@@ -160,7 +159,7 @@ public class ComicBitmapDrawer {
             case STATE_OK:
 
                 sourceRect.set(0, 0, decodeRect.width() / inSampleSize, decodeRect.height() / inSampleSize);
-                Log.e("sourceRect:="+sourceRect+",decodeRect:="+decodeRect+",drawRect:="+drawRect);
+                Log.e("sourceRect:=" + sourceRect + ",decodeRect:=" + decodeRect + ",drawRect:=" + drawRect);
 //                tempCanvas.drawBitmap(bitmap, sourceRect, drawRect, null);
 
                 canvas.drawBitmap(bitmap, sourceRect, drawRect, null);
@@ -171,8 +170,13 @@ public class ComicBitmapDrawer {
 
                 //缩略图------- 目前未启用
 
-//                sourceRect.set(decodeRect.left / (inSampleSize * SCALE_SIZE_OF_ORIGIN), decodeRect.top / (inSampleSize * SCALE_SIZE_OF_ORIGIN), decodeRect.right / (inSampleSize * SCALE_SIZE_OF_ORIGIN), decodeRect.bottom / (inSampleSize * SCALE_SIZE_OF_ORIGIN));
-//
+                sourceRect.set(decodeRect.left / (inSampleSize * SCALE_SIZE_OF_ORIGIN), decodeRect.top / (inSampleSize * SCALE_SIZE_OF_ORIGIN), decodeRect.right / (inSampleSize * SCALE_SIZE_OF_ORIGIN), decodeRect.bottom / (inSampleSize * SCALE_SIZE_OF_ORIGIN));
+                Log.e("sourceRect:=" + sourceRect + ",decodeRect:=" + decodeRect + ",drawRect:=" + drawRect);
+//                tempCanvas.drawBitmap(bitmap, sourceRect, drawRect, null);
+
+                canvas.drawBitmap(bitmap, sourceRect, drawRect, null);
+
+                //
 //                Bitmap scaleBitmap = ComicThumbnailFactory.getInstance().getScaleCache(bitmapFrame.filePath);
 //                if (scaleBitmap != null && !scaleBitmap.isRecycled())
 //                    canvas.drawBitmap(scaleBitmap, sourceRect, drawRect, null);
@@ -219,7 +223,7 @@ public class ComicBitmapDrawer {
                     canvas.restore();
                 }
 
-                    iDrawable.updateView();
+                iDrawable.updateView();
             }
 
             break;
@@ -323,7 +327,7 @@ public class ComicBitmapDrawer {
         this.bitmapFrame = abitmapFrame;
 
 
-        loadTask = new LoadTask(this,  iDrawable, bitmapFrame.filePath, decodeRect,  options);
+        loadTask = new LoadTask(this, iDrawable, bitmapFrame.filePath, decodeRect, options);
         loadTask.executeOnExecutor(ThreadConst.THREAD_POOL_EXECUTOR);
 
 
@@ -400,7 +404,7 @@ public class ComicBitmapDrawer {
                     public void onComplete(String url, String filePath) {
                         if (bitmapFrame != null && url.equals(bitmapFrame.url) && filePath.equals(bitmapFrame.filePath)) {
                             progress = -1;
-                            state=STATE_DRAWING;
+                            state = STATE_DRAWING;
                             update(bitmapFrame);
                         }
                     }
@@ -449,7 +453,7 @@ public class ComicBitmapDrawer {
         public IDrawable iDrawable;
 
 
-        public LoadTask(ComicBitmapDrawer comicBitmapDrawer, IDrawable iDrawable, String filePath, Rect decodeRect,BitmapFactory.Options options) {
+        public LoadTask(ComicBitmapDrawer comicBitmapDrawer, IDrawable iDrawable, String filePath, Rect decodeRect, BitmapFactory.Options options) {
             this.comicBitmapDrawer = comicBitmapDrawer;
 
 
@@ -472,37 +476,72 @@ public class ComicBitmapDrawer {
 //            //缩略图缓存处理。这里执行图片抓取缓存。 会导致大量的内存消耗，造成卡顿。
 //            synchronized (ComicThumbnailFactory.class) {
 //                if (!ComicThumbnailFactory.getInstance().hasScaleCache(filePath)) {
-//                    int orignSampleSize = options.inSampleSize;
-//                    Bitmap inbitmap = options.inBitmap;
-//                    options.inBitmap = null;
-//                    options.inSampleSize *= SCALE_SIZE_OF_ORIGIN;
-//                    Bitmap scaleBitmap = BitmapFactory.decodeFile(filePath, options);
-//
-//                    options.inBitmap = inbitmap;
-//                    options.inSampleSize = orignSampleSize;
-//
-//
-//                    ComicThumbnailFactory.getInstance().setScaleCache(filePath, scaleBitmap);
-//
-//
-//                }
-//            }
-            if (isCancelled()) {
-                return null;
-            }
-
-
-
 
             Bitmap bitmap = null;
             BitmapRegionDecoder bitmapRegionDecoder = null;
             try {
-                long loadTime= Calendar.getInstance().getTimeInMillis();
-                bitmapRegionDecoder = BitmapRegionDecoder.newInstance(filePath, true);
-                bitmap = bitmapRegionDecoder.decodeRegion(decodeRect, options);
-                bitmapRegionDecoder.recycle();
 
-                Log.e("time use in load Bitmap:" +(Calendar.getInstance().getTimeInMillis()-loadTime));
+                bitmapRegionDecoder = BitmapRegionDecoder.newInstance(filePath, true);
+
+                int orignSampleSize = options.inSampleSize;
+                options.inSampleSize *= SCALE_SIZE_OF_ORIGIN;
+                long loadTime = Calendar.getInstance().getTimeInMillis();
+                bitmap = bitmapRegionDecoder.decodeRegion(decodeRect, options);
+                Log.e("time use in load Bitmap:===scaled" + (Calendar.getInstance().getTimeInMillis() - loadTime));
+                options.inSampleSize = orignSampleSize;
+
+
+                if (isCancelled()) {
+                    return null;
+                }
+                comicBitmapDrawer.state = STATE_CACHE;
+                iDrawable.updateView();
+
+
+                String s="一个月之前，一位名叫莱莉-莫里森的9岁小女孩给库里写了一封信，并指出库里代言的UA官网上并没有为女孩设立的球鞋专区。 我希望你能和UA改变这个情况，因为女孩们也希望穿库里5代球鞋。”莫里森在给库里的信中写道。 " +
+                        "\n" +
+                        "　　很快，库里给莫里斯回信，他不仅承诺会改正这个问题，而且还答应莫里森，她将成为第一批收到库里6代球鞋的人。\n" +
+                        "\n" +
+                        " 果然，库里履行了他的承诺，莱莉-莫里森收到了来自库里的圣诞礼物——库里6代球鞋。当看到这双球鞋之后，莱利-莫里森兴奋地叫了起来，并称这双球鞋太酷了。";
+                Canvas canvas=new Canvas(bitmap);
+                Paint paint=new Paint();
+                paint.setColor(Color.RED);
+                paint.setTextSize(9);
+                float y=13;
+                for (int i = 0; i < s.length(); i++) {
+
+
+                   canvas.drawText(String.valueOf(s.charAt(i)), 9*(i%20),y,paint);
+                   if(i%20==19)
+                   {
+                       y+=9;
+                   }
+
+                    iDrawable.updateView();
+                    try {
+                        Thread.sleep(8);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (isCancelled()) {
+                    return null;
+                }
+
+
+
+                loadTime=Calendar.getInstance().getTimeInMillis();
+                bitmap = bitmapRegionDecoder.decodeRegion(decodeRect, options);
+
+
+                Log.e("time use in load Bitmap:" + (Calendar.getInstance().getTimeInMillis() - loadTime));
                 if (isCancelled()) {
                     return null;
                 }
@@ -510,6 +549,12 @@ public class ComicBitmapDrawer {
 
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+
+                if (bitmapRegionDecoder != null) {
+
+                    bitmapRegionDecoder.recycle();
+                }
             }
 
 
@@ -521,7 +566,7 @@ public class ComicBitmapDrawer {
         @Override
         protected void onCancelled() {
             super.onCancelled();
-            Log.e("draw  Cancel  +" + filePath);
+
         }
 
         @Override

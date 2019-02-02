@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary_dark">#000000</color>
+
+
+
+
+    <color name="line">@color/uniform_color_2</color>
+    <color name="uniform_color_2">#AAAAAA</color>
+    <color name="white">#ffffff</color>
+    <color name="read" >#FF0000</color>
+    <color name="uniform_color_1">#676767</color>
+
+
+    <color name="transparent_background">#55000000</color>
+</resources>

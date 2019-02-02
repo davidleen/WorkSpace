@@ -1,0 +1,35 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion project.ANDROID_COMPILE_VERSION
+
+
+    defaultConfig {
+        minSdkVersion project.ANDROID_MIN_VERSION
+        targetSdkVersion  project.ANDROID_TARGET_VERSION
+        versionCode 1
+        versionName "1.0"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    compile "io.reactivex:rxandroid:${rxVersion}"
+    // Because RxAndroid releases are few and far between, it is recommended you also
+    // explicitly depend on RxJava's latest version for bug fixes and new features.
+    compile "io.reactivex:rxjava:${rxVersion}"
+    compile "com.google.code.gson:gson:${gsonVersion}"
+    compile project(':data')
+
+
+    compile project(  ':network_okhttp')
+}

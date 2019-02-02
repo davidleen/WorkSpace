@@ -2,14 +2,22 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion project.ANDROID_COMPILE_VERSION
-    buildToolsVersion project.ANDROID_BUILD_VERSION
+    buildToolsVersion ANDROID_BUILD_VERSION
+
     defaultConfig {
-        applicationId "test.changu.com.customreader"
+        applicationId "com.giants3.android.reader"
         minSdkVersion project.ANDROID_MIN_VERSION
-        targetSdkVersion  project.ANDROID_TARGET_VERSION
+        targetSdkVersion project.ANDROID_TARGET_VERSION
         versionCode 1
         versionName "1.0"
         manifestPlaceholders = [ANDROID_SUPPORT_VERSION: "${ANDROID_SUPPORT_V7_VERSION}"]
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
     }
     buildTypes {
         release {
@@ -21,12 +29,37 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "com.android.support:appcompat-v7:${ANDROID_SUPPORT_V7_VERSION}"
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    api "com.android.support:support-compat:${ANDROID_SUPPORT_V4_VERSION}"
+    api "com.android.support:support-core-utils:${ANDROID_SUPPORT_V4_VERSION}"//
+    api "com.android.support:support-annotations:${ANDROID_SUPPORT_V4_VERSION}"
+     api "com.android.support:appcompat-v7:${ANDROID_SUPPORT_V7_VERSION}"
+    api "com.android.support:recyclerview-v7:${ANDROID_SUPPORT_V7_VERSION}"
+
 
     testCompile 'junit:junit:4.12'
-    compile project(path: ':core')
 
+    compile project(path: ':comic')
+    compile project(path: ':domain')
 
+    compile 'com.jakewharton:butterknife:7.0.1'
+//    compile 'com.google.inject:guice:4.0:no_aop'
+//    provided 'com.google.inject:guice:4.0'
     compile 'com.giants3.reader:data:0.0.0'
+
+
+
+
+
+    api('com.github.hotchemi:permissionsdispatcher:3.2.0') {
+        // if you don't use android.app.Fragment you can exclude support for them
+         exclude module: "support-compat"
+      //  exclude module: "support-compat"
+    }
+    annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:3.2.0"
+
+
 }

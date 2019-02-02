@@ -1,0 +1,27 @@
+ext{
+    getFrameApiVersion='1.4.2'
+
+    getViewLibVersion='1.1.5'
+
+    // ----------fire base ----------
+    FIRE_BASE_CORE_VERSION='15.0.0'
+    FIRE_BASE_ADS_VERSION='15.0.0'
+    FIRE_BASE_ANALYTICS_VERSION='15.0.0'
+    PLAY_SERVICES_AUTH_VERSION='15.0.0'
+    PLAY_SERVICES_ADS_VERSION='15.0.0'
+    PLAY_SERVICES_ANALYTICS_VERSION='15.0.0'
+
+
+
+    ANDROID_SUPPORT_V4_VERSION='27.0.2'
+    ANDROID_SUPPORT_V7_VERSION='27.0.2'
+
+
+
+    //编译sdk版本
+    compileSdkVersion=26
+    //最低支持版本
+    minSdkVersion=14
+    //目标版本号
+    targetSdkVersion=26
+}

@@ -1,0 +1,104 @@
+package com.rnmap_wb.helper;
+
+import android.content.Context;
+import android.util.DisplayMetrics;
+
+
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.core.decode.BaseImageDecoder;
+import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
+import com.nostra13.universalimageloader.utils.L;
+import com.rnmap_wb.MainApplication;
+import com.rnmap_wb.R;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+/**
+ * imageLoader 第三方库包装类
+ * <p>
+ * Created by davidleen29 on 2016/11/3.
+ */
+
+public class ImageLoaderFactory {
+
+    private static ImageLoader imageLoader;
+
+    public static ImageLoader getInstance() {
+        if (imageLoader == null) {
+
+            Context context = MainApplication.baseContext;
+            DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+            int width = metrics.widthPixels;
+            int height = metrics.heightPixels;
+            //默认显示属性。
+            DisplayImageOptions options = new DisplayImageOptions.Builder()
+                    //.showImageForEmptyUri(R.mipmap.icon_image_empty)
+                    .showImageOnFail(R.drawable.icon_image_lost).showImageOnLoading(R.drawable.icon_image_loading).cacheInMemory(true).cacheOnDisk(true)
+                    .build();
+
+
+            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
+                    .denyCacheImageMultipleSizesInMemory()
+                    .memoryCacheExtraOptions(width, height) // default = device screen dimensions
+                    //sd 卡上缓存图片大小无限制。
+                    .diskCacheExtraOptions(Integer.MAX_VALUE, Integer.MAX_VALUE, null)
+                    //  .taskExecutor(...)
+                    // .taskExecutorForCachedImages(...)
+                    .threadPoolSize(5) // default  线程池数
+                    .threadPriority(Thread.NORM_PRIORITY - 2) // default 线程优先级别
+                    .tasksProcessingOrder(QueueProcessingType.FIFO) // default 线程执行顺序
+                    .denyCacheImageMultipleSizesInMemory()
+                    .discCacheExtraOptions(Integer.MAX_VALUE, Integer.MAX_VALUE, null)
+                    // .memoryCache(new LruMemoryCache(2 * 1024 * 1024))  //内存缓存数  2M
+                    //   .memoryCacheSize(10 * 1024 * 1024)
+                    .memoryCacheSizePercentage(13) // default
+
+
+                    // .diskCache(new UnlimitedDiscCache(cacheDir)) // default
+                    .diskCacheFileNameGenerator(new Md5FileNameGenerator())
+                    .imageDownloader(new BaseImageDownloader(context) {
+
+                        @Override
+                        protected InputStream getStreamFromNetwork(String imageUri, Object extra) throws IOException {
+
+                            //设置代理拦截
+
+                            String url = imageUri;
+//                            if(proxiable!=null&& proxiable.isProxyWork())
+//                            {
+//                                url=proxiable.replace(imageUri);
+//                            }
+
+
+                            return super.getStreamFromNetwork(url, extra);
+                        }
+
+                        // 定制其他资源的数据流
+                        protected InputStream getStreamFromOtherSource(String imageUri, Object extra)
+                                throws IOException {
+                            return new FileInputStream(new File(imageUri));
+                        }
+
+
+                    }) // default
+                    .imageDecoder(new BaseImageDecoder(true)) // default
+                    .defaultDisplayImageOptions(options) // default
+                    // .writeDebugLogs()
+
+
+                    .build();
+            L.writeLogs(false);
+            L.writeDebugLogs(false);
+            ImageLoader.getInstance().init(config);
+            imageLoader = imageLoader.getInstance();
+        }
+        return imageLoader;
+    }
+}
