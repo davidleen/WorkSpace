@@ -12,6 +12,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
 import com.giants3.android.frame.util.Log;
+import com.giants3.android.frame.util.Utils;
 import com.giants3.android.reader.domain.GsonUtils;
 import com.rnmap_wb.BuildConfig;
 import com.rnmap_wb.LatLngUtil;
@@ -35,6 +36,8 @@ import org.osmdroid.views.overlay.OverlayWithIW;
 import org.osmdroid.views.overlay.Polygon;
 import org.osmdroid.views.overlay.Polyline;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -165,6 +168,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
         onMapPrepare();
         zoomController.setZoomAvailable(true);
         myLocationHelper.addMyLocation();
+        mapView.getController().animateTo(new GeoPoint(-23d, 33d, 1d), 5d, 3000l);
     }
 
 
@@ -245,12 +249,6 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
                 switch (state) {
                     case STATE_ADD_MARK:
-//                        MarkerOptions markerOptions = new MarkerOptions();
-//                        markerOptions.position(latLng).title("Adelaide")
-//                                .snippet("Population: 1,213,000");
-//                        Marker marker = getMap().addMarker(markerOptions);
-//
-//                        marker.setVisible(true);
                         Intent intent = new Intent(MapWorkActivity.this, AddMarkActivity.class);
                         intent.putExtra(IntentConst.KEY_LATLNG, (Parcelable) p);
                         startActivityForResult(intent, REQUEST_ADD_MARK);
@@ -261,49 +259,49 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                     case STATE_ADD_POLYGON:
 
                     {
-//                        int[] screenWH = Utils.getScreenWH();
-//                        LatLng right = getMap().getProjection().fromScreenLocation(new Point(screenWH[0] * 2 / 3, screenWH[1] / 2));
-//                        LatLng center = getMap().getProjection().fromScreenLocation(new Point(screenWH[0] / 2, screenWH[1] / 2));
-//                        List<LatLng> list = new ArrayList<>();
-//                        list.add(right);
+                        int[] screenWH = Utils.getScreenWH();
+                        GeoPoint right = ProjectionUtils.fromScreenPixel(mapView, screenWH[0] * 2 / 3, screenWH[1] / 2);
+                        GeoPoint center = ProjectionUtils.fromScreenPixel(mapView, screenWH[0] / 2, screenWH[1] / 2);
+                        List<GeoPoint> list = new ArrayList<>();
+                        list.add(right);
 //
-//                        double length = right.longitude - center.longitude;
-//                        for (int i = 0; i < 6; i++) {
-//
-//
-//                            double angle = Math.toRadians(i * 60);
-//                            double lat = Math.sin(angle) * length + center.latitude;
-//                            double lng = Math.cos(angle) * length + center.longitude;
-//                            LatLng item = new LatLng(lat, lng);
-//                            list.add(item);
-//
-//                        }
-//
-//
-//                        getPresenter().addNewRectangle(list);
+                        double length = right.getLongitude() - center.getLongitude();
+                        for (int i = 0; i < 6; i++) {
+
+
+                            double angle = Math.toRadians(i * 60);
+                            double lat = Math.sin(angle) * length + center.getLatitude();
+                            double lng = Math.cos(angle) * length + center.getLongitude();
+                            GeoPoint item = new GeoPoint(lat, lng);
+                            list.add(item);
+
+                        }
+
+
+                        getPresenter().addNewRectangle(list);
                     }
                     break;
 
 
                     case STATE_ADD_RECTANGLE: {
-//                        int[] screenWH = Utils.getScreenWH();
-//                        LatLng left = getMap().getProjection().fromScreenLocation(new Point(screenWH[0] / 3, screenWH[1] / 3));
-//                        LatLng center = getMap().getProjection().fromScreenLocation(new Point(screenWH[0] / 2, screenWH[1] / 2));
-//
-//                        List<LatLng> latLngs = createRectangle(latLng, center.latitude - left.latitude, center.longitude - left.longitude);
-//
-//
-//                        getPresenter().addNewRectangle(latLngs);
+                        int[] screenWH = Utils.getScreenWH();
+                        GeoPoint left = ProjectionUtils.fromScreenPixel(mapView, screenWH[0] / 3, screenWH[1] / 3);
+                        GeoPoint center = ProjectionUtils.fromScreenPixel(mapView, screenWH[0] / 2, screenWH[1] / 2);
+
+                        List<GeoPoint> latLngs = createRectangle(p, center.getLatitude() - left.getLatitude(), center.getLongitude() - left.getLongitude());
+
+
+                        getPresenter().addNewRectangle(latLngs);
                     }
                     break;
 
                     case STATE_ADD_CIRCLE: {
-//                        int[] screenWH = Utils.getScreenWH();
-//                        GeoPoint out = getMap().getProjection().fromScreenLocation(new Point(screenWH[0] / 4, screenWH[1] / 4));
-//                        GeoPoint first = getMap().getProjection().fromScreenLocation(new Point(0, 0));
-//                        double distance = LatLngPixel.distanceInMeter(first.latitude, first.longitude, out.latitude, out.longitude);
-//
-//                        getPresenter().addNewCircle(latLng, distance);
+                        int[] screenWH = Utils.getScreenWH();
+                        GeoPoint out = ProjectionUtils.fromScreenPixel(mapView,screenWH[0] / 4, screenWH[1] / 4);
+                        GeoPoint first = ProjectionUtils.fromScreenPixel(mapView,0, 0);
+                        double distance =screenWH[0]/4  ;
+
+                        getPresenter().addNewCircle(p, distance);
                         break;
                     }
 
@@ -538,20 +536,18 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 //        GeoPoint leftTop = getMap().getProjection().fromScreenLocation(new Point(x / 3, y / 3));
         switch (v.getId()) {
 //
-//            case R.id.addCircle:
-//
-//
-//                state = STATE_ADD_CIRCLE;
-//
-//
-//                //   addCircleToMap(getMap(), latLng);
-//
-//
-//                break;
-//            case R.id.addPolygon:
-//                state = STATE_ADD_POLYGON;
-////                addPolygonToMap(getMap(), latLng);
-//                break;
+            case R.id.addCircle:
+
+
+                state = STATE_ADD_CIRCLE;
+
+
+
+                break;
+            case R.id.addPolygon:
+                state = STATE_ADD_POLYGON;
+
+                break;
             case R.id.close:
                 state = 0;
                 if (tempPolyline != null) mapView.getOverlays().remove(tempPolyline);
@@ -563,10 +559,10 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                 state = STATE_ADD_POLYLINE;
 
                 break;
-//            case R.id.addRect:
-//
-//                state = STATE_ADD_RECTANGLE;
-//                break;
+            case R.id.addRect:
+
+                state = STATE_ADD_RECTANGLE;
+                break;
             case R.id.edit:
 
                 editGroup.setVisibility(View.VISIBLE);
@@ -747,16 +743,16 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
     }
 
 
-//    /**
-//     * Creates a List of LatLngs that form a rectangle with the given dimensions.
-//     */
-//    private List<LatLng> createRectangle(LatLng center, double halfWidth, double halfHeight) {
-//        return Arrays.asList(new LatLng(center.latitude - halfHeight, center.longitude - halfWidth),
-//                new LatLng(center.latitude - halfHeight, center.longitude + halfWidth),
-//                new LatLng(center.latitude + halfHeight, center.longitude + halfWidth),
-//                new LatLng(center.latitude + halfHeight, center.longitude - halfWidth),
-//                new LatLng(center.latitude - halfHeight, center.longitude - halfWidth));
-//    }
+    /**
+     * Creates a List of LatLngs that form a rectangle with the given dimensions.
+     */
+    private List<GeoPoint> createRectangle(GeoPoint center, double halfWidth, double halfHeight) {
+        return Arrays.asList(new GeoPoint(center.getLatitude() - halfHeight, center.getLongitude() - halfWidth),
+                new GeoPoint(center.getLatitude() - halfHeight, center.getLongitude() + halfWidth),
+                new GeoPoint(center.getLatitude() + halfHeight, center.getLongitude() + halfWidth),
+                new GeoPoint(center.getLatitude() + halfHeight, center.getLongitude() - halfWidth),
+                new GeoPoint(center.getLatitude() - halfHeight, center.getLongitude() - halfWidth));
+    }
 
 
     Polyline tempPolyline = null;
@@ -765,11 +761,13 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
     public void showPolyLine(List<GeoPoint> polyLinePositions) {
 
 
+        if (polyLinePositions == null || polyLinePositions.size() <= 1) return;
         if (tempPolyline == null) {
             tempPolyline = new Polyline();
             mapView.getOverlays().add(tempPolyline);
         }
         tempPolyline.setPoints(polyLinePositions);
+        tempPolyline.setVisible(true);
         mapView.invalidate();
 
 
@@ -845,23 +843,12 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                 o = marker;
 
 
-//                LatLng latLng = latLngs.get(0);
-//                MarkerOptions markerOptions = new MarkerOptions();
-//                markerOptions.position(latLng).title(element.name).snippet(element.memo);
-//                Marker marker = getMap().addMarker(markerOptions);
-//                marker.setVisible(true);
-//                o = marker;
+
 
             }
             break;
-            case MapElement.TYPE_POLYLINE:
+            case MapElement.TYPE_POLYLINE: {
 
-//                // A geodesic polyline that goes around the world.
-//                o = getMap().addPolyline(new PolylineOptions().addAll(latLngs)
-//                        .width(10)
-//                        .color(Color.BLUE)
-//                        .geodesic(true)
-//                        .clickable(true));
                 Polyline polyline = new Polyline(mapView);
                 polyline.setTitle(element.name);
                 polyline.setPoints(latLngs);
@@ -871,27 +858,37 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                 mapView.invalidate();
                 o = polyline;
 
+            }
 
                 break;
             case MapElement.TYPE_POLYGON:
 
-//                PolygonOptions polygonOptions = new PolygonOptions();
-//                polygonOptions.addAll(latLngs);
-//                polygonOptions.clickable(true);
-//                o = getMap().addPolygon(polygonOptions);
+
+
+                Polygon polygon = new Polygon(mapView);
+                polygon.setTitle(element.name);
+                polygon.setPoints(latLngs);
+                polygon.setSnippet(element.memo);
+                polygon.setOnClickListener(clickListener);
+                mapView.getOverlays().add(polygon);
+                mapView.invalidate();
+                o = polygon;
 
 
                 break;
             case MapElement.TYPE_CIRCLE:
 
-//                CircleOptions circleOptions = new CircleOptions();
-//                circleOptions.radius(element.radius);
-//                circleOptions.center(latLngs.get(0));
-//                circleOptions.clickable(true);
-//
-//
-//                o = getMap().addCircle(circleOptions);
-//
+
+                Circle circle=new Circle();
+
+
+                circle.setRadius(element.radius);
+                circle.setCenter(latLngs.get(0));
+                 circle.setClickable(true);
+                mapView.getOverlays().add(circle);
+                mapView.invalidate();
+                o = circle;
+
 
                 break;
 
