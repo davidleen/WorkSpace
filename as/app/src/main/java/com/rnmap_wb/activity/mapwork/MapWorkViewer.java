@@ -19,4 +19,6 @@ public interface MapWorkViewer extends Viewer {
     void showMapElement(MapElement element);
 
     void removeMapElement(MapElement replaced);
+
+    void feedBack(MapElement mapElement);
 }

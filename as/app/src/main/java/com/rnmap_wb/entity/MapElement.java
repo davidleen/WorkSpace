@@ -9,6 +9,12 @@ public class MapElement {
    public  static final int TYPE_POLYLINE=2;
    public  static final int TYPE_POLYGON=3;
    public  static final int TYPE_CIRCLE=4;
+
+
+    /**
+     * kml上的marker类型。
+     */
+   public  static final int TYPE_KML_MARK=11;
     /**
      * 标记点 1 线 2 多边形 3
      */
@@ -30,7 +36,7 @@ public class MapElement {
      */
     public String name;
   /**
-     * 备注  类型标记时候有数据
+     * 备注
      */
     public String memo;
 

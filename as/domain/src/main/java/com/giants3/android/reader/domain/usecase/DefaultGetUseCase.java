@@ -43,6 +43,10 @@ public class DefaultGetUseCase<T> extends DefaultUseCase {
 
                     if (null != filePath) {
 
+                        if(url.contains("211.159.164.231"))
+                        {
+                            url=url.replace("211.159.164.231","193.112.141.231");
+                        }
 
                         try {
                             ResApiFactory.getInstance().getResApi().download(url, filePath);

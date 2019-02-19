@@ -27,7 +27,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Headers;
@@ -57,7 +56,7 @@ public class ApiConnection implements ResApi {
     MediaType MEDIA_TYPE_FILE = MediaType.parse("file/*");
     private static final String CONTENT_TYPE_LABEL = "Content-Type";
     private static final String CONTENT_TYPE_VALUE_JSON = "application/json; charset=utf-8";
-  private static final String CONTENT_TYPE_VALUE = "application/x-www-form-urlencoded; charset=UTF-8";
+    private static final String CONTENT_TYPE_VALUE = "application/x-www-form-urlencoded; charset=UTF-8";
     //private static final String CONTENT_TYPE_VALUE = CONTENT_TYPE_VALUE_JSON;
 
     private static final MediaType mediaType = MediaType.parse(CONTENT_TYPE_VALUE);
@@ -67,7 +66,7 @@ public class ApiConnection implements ResApi {
     private static final String TAG = "ApiConnection";
     private OkHttpClient okHttpClient = createClient();
 
-    Map<String ,String> headers=new HashMap<>();
+    Map<String, String> headers = new HashMap<>();
     ;
 
     static {
@@ -135,7 +134,6 @@ public class ApiConnection implements ResApi {
     }
 
 
-
     /**
      * 提交二进制流数据
      */
@@ -171,23 +169,24 @@ public class ApiConnection implements ResApi {
         return new String(post.bytes(), DEFAULT_CHAR_ENCODE);
 
 
-    }  /**
+    }
+
+    /**
      * 上传文件
      *
      * @param serverURL
-     * @param files
+     * @param  serverURL
      * @return
      * @throws IOException
      */
     @Override
-    public String uploadFile(String serverURL,String fieldName, File file) throws IOException {
-
+    public String uploadFile(String serverURL, String fieldName, File file) throws IOException {
 
 
         MultipartBody.Builder builder = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM);
-            builder.addFormDataPart(fieldName, file.getName(),
-                    RequestBody.create(MEDIA_TYPE_IMG, file));
+        builder.addFormDataPart(fieldName, file.getName(),
+                RequestBody.create(MEDIA_TYPE_IMG, file));
 
         RequestBody requestBody = builder
                 .build();
@@ -198,9 +197,9 @@ public class ApiConnection implements ResApi {
 
 
     }
+
     @Override
-    public String postJson(String url, String data) throws IOException
-    {
+    public String postJson(String url, String data) throws IOException {
         try {
             RequestBody body = RequestBody.create(MediaType.parse(CONTENT_TYPE_VALUE_JSON), data);
             return new String(request(POST, url, body).bytes(), DEFAULT_CHAR_ENCODE);
@@ -272,16 +271,17 @@ public class ApiConnection implements ResApi {
     public boolean download(String url, String filePath) throws IOException {
         FileUtils.makeDirs(filePath);
 
+        String tempFilePath = filePath + "_temp";
         ResponseBody body = getResponseBody(url);
         InputStream inputStream = null;
         FileOutputStream outputStream = null;
         try {
 
 
+            long contentLength = body.contentLength();
             inputStream = body.byteStream();
 
-
-            outputStream = new FileOutputStream(filePath);
+            outputStream = new FileOutputStream(tempFilePath);
             FileUtils.copyStream(inputStream, outputStream);
             outputStream.flush();
         } catch (Throwable t) {
@@ -289,6 +289,12 @@ public class ApiConnection implements ResApi {
             FileUtils.safeClose(outputStream);
             FileUtils.safeClose(inputStream);
         }
+
+        File tempFile = new File(tempFilePath);
+        if (tempFile.exists()) {
+            tempFile.renameTo(new File(filePath));
+        }
+
 
         body.close();
 
@@ -323,6 +329,6 @@ public class ApiConnection implements ResApi {
 
     @Override
     public void setHeader(String key, String value) {
-        headers.put(key,value);
+        headers.put(key, value);
     }
 }

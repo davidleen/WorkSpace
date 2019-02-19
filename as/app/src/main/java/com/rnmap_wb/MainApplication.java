@@ -8,6 +8,7 @@ import com.giants3.android.ToastHelper;
 import com.giants3.android.frame.util.Utils;
 import com.giants3.android.network.ApiConnection;
 import com.giants3.android.reader.domain.ResApiFactory;
+import com.rnmap_wb.activity.mapwork.ApplicationContextWrapper;
 import com.rnmap_wb.android.dao.DaoManager;
 import com.rnmap_wb.android.data.LoginResult;
 import com.rnmap_wb.helper.AndroidUtils;
@@ -23,6 +24,12 @@ public class MainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+
+        if (BuildConfig.DEBUG) {// 调试状态下  连接 数据库查看工具
+            //chrome 浏览器下 输入以下地址：	chrome://inspect/#devices
+ 		//com.facebook.stetho.Stetho.initializeWithDefaults(this);
+        }
         baseContext = this;
 
         StorageUtils.setRoot("rnmap_wb");
@@ -34,7 +41,7 @@ public class MainApplication extends Application {
         ToastHelper.init(this);
         HttpUrl.init(this);
         Utils.init(this);
-        DaoManager.getInstance().init(this);
+        DaoManager.getInstance().init(new ApplicationContextWrapper(this));
         AndroidUtils.init(this);
     }
 

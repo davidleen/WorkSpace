@@ -42,4 +42,6 @@ public interface MapWorkPresenter  extends Presenter<MapWorkViewer> {
     void closePaint();
 
     void updateMapElement(MapElement o);
+
+    void requestFeekBack(String pointString);
 }

@@ -27,6 +27,47 @@ public class KmlHelper {
 
     SparseArray<KmlPlacemark> kmlPlacemarkSparseArray = new SparseArray<>();
 
+    public final List<GeoPoint> getAllGeoPoint(KmlDocument document) {
+
+
+
+        ArrayList<GeoPoint> geoPoints = new ArrayList<>();
+        List<KmlGeometry> geometries=getAllKmlGeometry(document);
+        getGeoPint(geoPoints,geometries);
+        return geoPoints;
+
+    }
+
+    private void getGeoPint(List<GeoPoint> geoPoints,List<KmlGeometry> geometries)
+    {
+        for(KmlGeometry geometry:geometries)
+        {
+
+            if(geometry instanceof KmlLineString)
+            {
+                geoPoints.addAll(((KmlLineString) geometry).mCoordinates);
+            }else
+            if(geometry instanceof KmlPolygon)
+            {
+                geoPoints.addAll(((KmlPolygon) geometry).mCoordinates);
+//                            geoPoints.addAll(((KmlPolygon) geometries).mHoles);
+            }else
+            if(geometry instanceof KmlPoint)
+            {
+                geoPoints.addAll(((KmlPoint) geometry).mCoordinates);
+            }
+            else
+            if(geometry instanceof KmlMultiGeometry)
+            {
+                geoPoints.addAll( ((KmlMultiGeometry) geometry).mCoordinates);
+                getGeoPint(geoPoints,((KmlMultiGeometry) geometry).mItems);
+            }
+
+        }
+
+
+    }
+
 
     public final List<KmlGeometry> getAllKmlGeometry(KmlDocument document) {
 

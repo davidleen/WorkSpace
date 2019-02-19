@@ -11,6 +11,7 @@ import com.google.maps.android.clustering.algo.Algorithm;
 import com.google.maps.android.clustering.algo.NonHierarchicalDistanceBasedAlgorithm;
 import com.google.maps.android.clustering.algo.PreCachingAlgorithmDecorator;
 import com.rnmap_wb.activity.mapwork.GeoObjectItem;
+import com.rnmap_wb.activity.mapwork.MapWorkActivity;
 
 import org.osmdroid.bonuspack.kml.KmlDocument;
 import org.osmdroid.bonuspack.kml.KmlGeometry;
@@ -19,8 +20,10 @@ import org.osmdroid.events.MapListener;
 import org.osmdroid.events.ScrollEvent;
 import org.osmdroid.events.ZoomEvent;
 import org.osmdroid.util.BoundingBox;
+import org.osmdroid.util.TileSystem;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.FolderOverlay;
+import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.OverlayWithIW;
 
 import java.util.ArrayList;
@@ -39,6 +42,8 @@ public class CustomClusterManager implements MapListener {
     public static final int MSG_RENDER = 111;
     public static final String CLUSTER = "放大查看";
 
+    private int lastZoom=-100;
+    Set<? extends Cluster<GeoObjectItem>> lastCluster;
 
     private List<GeoObjectItem> geoObjectItems;
 
@@ -46,6 +51,7 @@ public class CustomClusterManager implements MapListener {
     Algorithm mAlgorithm;
     private MapView mapView;
     private KmlDocument kmlDocument;
+    private MapWorkActivity.OverlayWithIWClickListener clickListener;
     ClusterTask mClusterTask;
     private final ReadWriteLock mAlgorithmLock = new ReentrantReadWriteLock();
 
@@ -53,9 +59,10 @@ public class CustomClusterManager implements MapListener {
 
     FolderOverlay folderOverlay;
 
-    public CustomClusterManager(MapView map, KmlDocument kmlDocument) {
+    public CustomClusterManager(MapView map, KmlDocument kmlDocument, MapWorkActivity.OverlayWithIWClickListener clickListener) {
         this.mapView = map;
         this.kmlDocument = kmlDocument;
+        this.clickListener = clickListener;
 
         mapView.addMapListener(this);
         generator = new GeoObjectItemGenerator();
@@ -88,13 +95,19 @@ public class CustomClusterManager implements MapListener {
 
     @Override
     public boolean onZoom(ZoomEvent event) {
+
+        handler.removeMessages(MSG_RENDER);
+        handler.sendEmptyMessageDelayed(MSG_RENDER, 500);
         return false;
+
     }
 
     /**
      * Runs the clustering algorithm in a background thread, then re-paints when results come back.
      */
     private class ClusterTask extends AsyncTask<Object, Void, Set<? extends Cluster<GeoObjectItem>>> {
+
+
         @Override
         protected Set<? extends Cluster<GeoObjectItem>> doInBackground(Object... zoom) {
             mAlgorithmLock.readLock().lock();
@@ -104,11 +117,12 @@ public class CustomClusterManager implements MapListener {
                 BoundingBox bounds = (BoundingBox) zoom[1];
                 //过滤不再显示范围内的集合。
                 List<GeoObjectItem> items = new ArrayList<>();
-                for (GeoObjectItem item : geoObjectItems) {
-                    //   if (item.isInBounds(bounds))
-
-                    items.add(item);
-                }
+//                for (GeoObjectItem item : geoObjectItems) {
+//                      if (item.isInBounds(bounds))
+//
+//                    items.add(item);
+//                }
+                items.addAll(geoObjectItems);
 
                 mAlgorithm.addItems(items);
                 Set clusters = mAlgorithm.getClusters(Float.valueOf(zoom[0].toString()));
@@ -126,25 +140,29 @@ public class CustomClusterManager implements MapListener {
         protected void onPostExecute(Set<? extends Cluster<GeoObjectItem>> clusters) {
 
             if (clusters == null) return;
-
-            long time = Calendar.getInstance().getTimeInMillis();
-            generator.clearUnVisibleItems(getVisibleLatLngBounds());
-            Log.e("tiem use in clear unvisible:" + (Calendar.getInstance().getTimeInMillis() - time));
-            Set visilbeCluster = new HashSet<>();
-            BoundingBox latLngs = getVisibleLatLngBounds();
-            //过滤不再显示范围内的集合。
-            for (Cluster<GeoObjectItem> cluster : clusters) {
-                if (latLngs.contains(cluster.getPosition()))
-                    visilbeCluster.add(cluster);
-            }
+            onNewCluster(clusters);
 
 
-            addNewMapItem(visilbeCluster);
-
-            Log.e("tiem use in generate:" + (Calendar.getInstance().getTimeInMillis() - time));
-
-            // mRenderer.onClustersChanged(clusters);
         }
+    }
+
+
+    private void onNewCluster(Set<? extends Cluster<GeoObjectItem>> clusters)
+    {
+        lastCluster=clusters;
+        long time = Calendar.getInstance().getTimeInMillis();
+        generator.clearUnVisibleItems(getVisibleLatLngBounds());
+        Log.e("tiem use in clear unvisible:" + (Calendar.getInstance().getTimeInMillis() - time));
+        Set visilbeCluster = new HashSet<>();
+        BoundingBox latLngs = getVisibleLatLngBounds();
+        //过滤不再显示范围内的集合。
+        for (Cluster<GeoObjectItem> cluster : clusters) {
+            if (latLngs.contains(cluster.getPosition()))
+                visilbeCluster.add(cluster);
+        }
+        addNewMapItem(visilbeCluster);
+        Log.e("tiem use in generate:" + (Calendar.getInstance().getTimeInMillis() - time));
+
     }
 
     public void addItems(List<GeoObjectItem> geoObjectItems) {
@@ -157,16 +175,18 @@ public class CustomClusterManager implements MapListener {
     private BoundingBox getVisibleLatLngBounds() {
         BoundingBox boundingBox = mapView.getBoundingBox();
 
-//        double centerLat = boundingBox.getCenterLatitude();
-//        double centerLong = boundingBox.getCenterLongitude();
-//
-//        BoundingBox doubleBox = new BoundingBox(boundingBox.getLatNorth() * 2 - centerLat,
-//                boundingBox.getLonEast() * 2 - centerLong,
-//                boundingBox.getLatSouth() * 2 - centerLat,
-//                boundingBox.getLonWest() * 2 - centerLong
-//
-//        );
+        double centerLat = boundingBox.getCenterLatitude();
+        double centerLong = boundingBox.getCenterLongitude();
+        TileSystem tileSystem = mapView.getTileSystem();
 
+
+        BoundingBox doubleBox = new BoundingBox(Math.min(boundingBox.getLatNorth() * 2 - centerLat,tileSystem.getMaxLatitude()),
+                Math.max(boundingBox.getLonEast() * 2 - centerLong,tileSystem.getMinLongitude()),
+                Math.max(boundingBox.getLatSouth() * 2 - centerLat,tileSystem.getMinLatitude()),
+                Math.min(boundingBox.getLonWest() * 2 - centerLong,tileSystem.getMaxLongitude())
+
+        );
+        boundingBox=doubleBox;
         return boundingBox;
     }
 
@@ -201,6 +221,7 @@ public class CustomClusterManager implements MapListener {
             addMapItem(geoObjectItem);
 
         }
+        folderOverlay.setEnabled(true);
         mapView.invalidate();
 
 
@@ -224,7 +245,10 @@ public class CustomClusterManager implements MapListener {
 
         OverlayWithIW generate = generator.generate(geoObjectItem, mapView, null, null, placemark, kmlDocument);
 
-
+        if(generate instanceof Marker)
+        {
+            ((Marker) generate).setOnMarkerClickListener(clickListener);
+        }
         if (generate == null) return;
 
 
@@ -233,7 +257,11 @@ public class CustomClusterManager implements MapListener {
         }
 
 
+
     }
+
+
+
 
 
     private class ModifyViewHandler extends Handler {
@@ -250,9 +278,18 @@ public class CustomClusterManager implements MapListener {
                         } catch (Throwable t) {
                         }
                     }
+                    if(lastZoom==mapView.getZoomLevel()&&lastCluster!=null)
+                    {
+
+                        onNewCluster(lastCluster);
+                        return;
+                    }
+
+
 
                     mClusterTask = new ClusterTask();
-                    mClusterTask.execute(mapView.getZoomLevel(), getVisibleLatLngBounds());
+                    mClusterTask.execute(mapView.getZoomLevel(), getVisibleLatLngBounds(),lastZoom);
+                    lastZoom=mapView.getZoomLevel();
                     break;
             }
 

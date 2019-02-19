@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Random;
 
 import static com.rnmap_wb.entity.MapElement.TYPE_CIRCLE;
+import static com.rnmap_wb.entity.MapElement.TYPE_KML_MARK;
 import static com.rnmap_wb.entity.MapElement.TYPE_POLYGON;
 
 public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkModel> implements MapWorkPresenter {
@@ -133,9 +134,10 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
                     downloadItem.setName("  fromLat:" + fromLat + ", fromLng:" + fromLng + ",   toLat :" + toLat + ",   toLng：" + toLng);
                     downloadItem.setTileX(x);
                     downloadItem.setTileY(y);
+                    downloadItem.setTileZ(z);
 
-                    String url = String.format("http://mts%d.googleapis.com/vt?lyrs=p&x=%d&y=%d&z=%d", random.nextInt(4), x, y, z);
-
+//                    String url = String.format("http://mts%d.googleapis.com/vt?lyrs=p&x=%d&y=%d&z=%d", random.nextInt(4), x, y, z);
+                    String url = TileUrlHelper.getUrl(x,y,z);
                     if (BuildConfig.DEBUG)
                         Log.e(url);
                     downloadItem.setUrl(url);
@@ -295,4 +297,21 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
         getView().showMapElement(o);
     }
 
+    @Override
+    public void requestFeekBack(String pointString) {
+
+
+      MapElement mapElement=  getModel().getMapElementByPoint(pointString);
+      if(mapElement==null)
+      {
+          mapElement=new MapElement();
+          mapElement.type=TYPE_KML_MARK;
+          mapElement.latLngs=pointString;
+
+      }
+
+      getView().feedBack(mapElement);
+
+
+    }
 }

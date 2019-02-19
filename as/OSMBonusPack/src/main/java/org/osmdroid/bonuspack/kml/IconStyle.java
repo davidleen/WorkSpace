@@ -92,6 +92,7 @@ public class IconStyle extends ColorStyle implements Parcelable {
 
 	/** apply all IconStyle attributes to the Marker */
 	public void styleMarker(Marker marker, Context context){
+
 		BitmapDrawable icon = getFinalIcon(context);
 		if (icon != null) {
 			marker.setIcon(icon);

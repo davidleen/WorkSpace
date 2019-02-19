@@ -82,6 +82,19 @@ public class KmlPoint extends KmlGeometry implements Parcelable, Cloneable {
 		marker.setOnMarkerDragListener(new OnKMLMarkerDragListener());
 		marker.setEnabled(kmlPlacemark.mVisibility);
 	}
+
+
+	public IconStyle getIconStyle(Style defaultStyle, KmlPlacemark kmlPlacemark,
+								  KmlDocument kmlDocument)
+	{
+		Style style =kmlDocument==null?null: kmlDocument.getStyle(kmlPlacemark.mStyle);
+		if (style != null && style.mIconStyle != null){
+		  return 	style.mIconStyle ;
+		} else if (defaultStyle!=null && defaultStyle.mIconStyle!=null){
+			return  defaultStyle.mIconStyle ;
+		}
+		return null;
+	}
 	
 	/** Build the corresponding Marker overlay */	
 	@Override public Overlay buildOverlay(MapView map, Style defaultStyle, Styler styler, KmlPlacemark kmlPlacemark, 

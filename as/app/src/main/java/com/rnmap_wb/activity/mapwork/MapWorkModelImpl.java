@@ -116,4 +116,20 @@ public class MapWorkModelImpl implements MapWorkModel {
         elements.add(o);
         return find;
     }
+
+    @Override
+    public MapElement getMapElementByPoint(String pointString) {
+
+        if (elements == null) return null;
+        for (MapElement element : elements) {
+            if (pointString.equals(element.latLngs)) {
+
+                return element;
+            }
+        }
+
+
+        return null;
+
+    }
 }

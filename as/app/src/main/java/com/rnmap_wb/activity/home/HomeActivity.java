@@ -24,6 +24,10 @@ import com.rnmap_wb.android.data.Task;
 import com.rnmap_wb.service.SynchronizeCenter;
 import com.rnmap_wb.url.HttpUrl;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
 import butterknife.Bind;
 
 public class HomeActivity extends BaseMvpActivity<HomePresenter> implements HomeViewer {
@@ -139,8 +143,30 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
             public void onNext(RemoteData<Task> remoteData) {
 
 
-                if (remoteData.isSuccess())
-                    homeTaskAdapter.setDataArray(remoteData.data);
+                if (remoteData.isSuccess()) {
+                    List<Task> data = remoteData.data;
+
+                    Task[] sortlist=new Task[data.size()];
+                    for (int i = 0; i < data.size(); i++) {
+                        sortlist[i]=data.get(i);
+
+                    }
+                    Arrays.sort(sortlist, new Comparator<Task>() {
+                        @Override
+                        public int compare(Task task1, Task task2) {
+
+                            int i = task1.dir_id.compareTo(task2.dir_id);
+                            if(i!=0) return i;
+                            int result=task1.created.compareTo(task2.created);
+                                    return result;
+
+                        }
+                    });
+                    data=Arrays.asList(sortlist);
+
+
+                    homeTaskAdapter.setDataArray(data);
+                }
                 else if (remoteData.errno == RemoteData.CODE_UNLOGIN || remoteData.errno == 9998) {
                     LoginActivity.start(HomeActivity.this, REQUEST_LOGIN);
                 } else

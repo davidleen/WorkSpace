@@ -140,4 +140,27 @@
         android:text="载入KML"
         android:textColor="#ffffff" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:id="@+id/offLine"
+        android:background="@drawable/bg_green_selector"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="下载离线地图"
+        android:textColor="#ffffff" />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:id="@+id/view"
+        android:background="@drawable/bg_green_selector"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="在地图上查看"
+        android:textColor="#ffffff" />
+
 </LinearLayout>

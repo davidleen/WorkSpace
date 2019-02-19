@@ -11,6 +11,7 @@ import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 
 import java.util.List;
+import java.util.Objects;
 
 public class GeoObjectItem implements ClusterItem {
 
@@ -132,4 +133,20 @@ public class GeoObjectItem implements ClusterItem {
     }
 
 
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        GeoObjectItem that = (GeoObjectItem) o;
+//        return Objects.equals(mGeometry, that.mGeometry) &&
+//                Objects.equals(mPosition, that.mPosition) &&
+//                Objects.equals(mTitle, that.mTitle) &&
+//                Objects.equals(mSnippet, that.mSnippet);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//
+//        return Objects.hash(mGeometry, mPosition, mTitle, mSnippet);
+//    }
 }

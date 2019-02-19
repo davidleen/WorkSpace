@@ -89,7 +89,7 @@ public class AddMarkActivity extends SimpleMvpActivity implements View.OnClickLi
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getNavigationController().setTitle("添加标记");
+
         getNavigationController().setLeftView(R.drawable.icon_back, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,7 +98,7 @@ public class AddMarkActivity extends SimpleMvpActivity implements View.OnClickLi
         });
         latLng = getIntent().getParcelableExtra(IntentConst.KEY_LATLNG);
         mapElement = GsonUtils.fromJson(getIntent().getStringExtra(IntentConst.KEY_MAP_ELEMENT), MapElement.class);
-
+        getNavigationController().setTitle(mapElement!=null?"反馈":"添加标记");
         pictures = new ImageView[]{picture1, picture2, picture3};
 
         addImage.setOnClickListener(this);

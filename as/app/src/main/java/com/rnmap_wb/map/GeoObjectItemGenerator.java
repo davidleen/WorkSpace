@@ -3,8 +3,12 @@ package com.rnmap_wb.map;
 import android.support.annotation.NonNull;
 
 import com.rnmap_wb.LatLngUtil;
+import com.rnmap_wb.R;
 import com.rnmap_wb.activity.mapwork.GeoObjectItem;
+import com.rnmap_wb.activity.mapwork.MapWorkActivity;
+import com.rnmap_wb.activity.mapwork.map.CustomMarker;
 
+import org.osmdroid.bonuspack.kml.IconStyle;
 import org.osmdroid.bonuspack.kml.KmlDocument;
 import org.osmdroid.bonuspack.kml.KmlFeature;
 import org.osmdroid.bonuspack.kml.KmlLineString;
@@ -46,38 +50,43 @@ public class GeoObjectItemGenerator {
 
         //标记已经存在界面上 不添加
         if (geoItemToMap.containsKey(item)) return null;
+//        if (item.mGeometry==null ) {
+//            for (OverlayWithIW iw:visibleObjects)
+//            {
+//                if(iw instanceof Marker)
+//                {
+//                    if (((Marker) iw).getPosition().equals(item.getPosition())) {
+//                        return null;
+//                    }
+//                }
+//            }
+//
+//        }
 
 
         OverlayWithIW result = null;
         if (item.mGeometry instanceof KmlLineString) {
             result = buildOverlay((KmlLineString) item.mGeometry, map, defaultStyle, styler, kmlPlacemark, kmlDocument);
 
-        }else
-            if(item.mGeometry instanceof KmlPoint)
-            {
-                ///result=buildOverlay()
-                result =  buildOverlay((KmlPoint) item.mGeometry, map, defaultStyle, styler, kmlPlacemark, kmlDocument);
+        } else if (item.mGeometry instanceof KmlPoint) {
+            ///result=buildOverlay()
+            result = buildOverlay((KmlPoint) item.mGeometry, map, defaultStyle, styler, kmlPlacemark, kmlDocument);
 
-            }
-            else
-                if(item.mGeometry instanceof KmlPolygon)
-                {
-                    ///result=buildOverlay()
-                    result =  buildOverlay((KmlPolygon) item.mGeometry, map, defaultStyle, styler, kmlPlacemark, kmlDocument);
+        } else if (item.mGeometry instanceof KmlPolygon) {
+            ///result=buildOverlay()
+            result = buildOverlay((KmlPolygon) item.mGeometry, map, defaultStyle, styler, kmlPlacemark, kmlDocument);
 
-                }else
-                    if(item.mGeometry==null){
-                        result =buildOverlay(item,map,defaultStyle,styler,kmlPlacemark,kmlDocument);
-                    }
+        } else if (item.mGeometry == null) {
+            result = buildOverlay(item, map, defaultStyle, styler, kmlPlacemark, kmlDocument);
+        }
 
 
-                if(result!=null)
-                {
+        if (result != null) {
 
-                    mapToGeoItem.put(result,item);
-                    geoItemToMap.put(item,result);
-                    visibleObjects.add(result);
-                }
+            mapToGeoItem.put(result, item);
+            geoItemToMap.put(item, result);
+            visibleObjects.add(result);
+        }
 
 
         return result;
@@ -92,8 +101,8 @@ public class GeoObjectItemGenerator {
         Polyline lineStringOverlay = cratePolyLine();
         lineStringOverlay.setGeodesic(true);
         lineStringOverlay.setPoints(kmlLineString.mCoordinates);
-        lineStringOverlay.setTitle(kmlPlacemark==null?"":kmlPlacemark.mName);
-        lineStringOverlay.setSnippet(kmlPlacemark==null?"":kmlPlacemark.mDescription);
+        lineStringOverlay.setTitle(kmlPlacemark == null ? "" : kmlPlacemark.mName);
+        lineStringOverlay.setSnippet(kmlPlacemark == null ? "" : kmlPlacemark.mDescription);
         lineStringOverlay.setSubDescription(kmlPlacemark.getExtendedDataAsText());
         lineStringOverlay.setRelatedObject(kmlLineString);
         lineStringOverlay.setId(kmlLineString.mId);
@@ -105,16 +114,19 @@ public class GeoObjectItemGenerator {
         lineStringOverlay.setVisible(true);
         return lineStringOverlay;
     }
-    /** Build the corresponding Polygon overlay */
-     public OverlayWithIW buildOverlay(KmlPolygon kmlPolygon, MapView map, Style defaultStyle, KmlFeature.Styler styler, KmlPlacemark kmlPlacemark,
-                                       KmlDocument kmlDocument){
+
+    /**
+     * Build the corresponding Polygon overlay
+     */
+    public OverlayWithIW buildOverlay(KmlPolygon kmlPolygon, MapView map, Style defaultStyle, KmlFeature.Styler styler, KmlPlacemark kmlPlacemark,
+                                      KmlDocument kmlDocument) {
         Polygon polygonOverlay = createPolygon();
         polygonOverlay.setPoints(kmlPolygon.mCoordinates);
         if (kmlPolygon.mHoles != null)
             polygonOverlay.setHoles(kmlPolygon.mHoles);
-        polygonOverlay.setTitle(kmlPlacemark==null?"":kmlPlacemark.mName);
-        polygonOverlay.setSnippet(kmlPlacemark==null?"":kmlPlacemark.mDescription);
-        polygonOverlay.setSubDescription(kmlPlacemark==null?"":kmlPlacemark.getExtendedDataAsText());
+        polygonOverlay.setTitle(kmlPlacemark == null ? "" : kmlPlacemark.mName);
+        polygonOverlay.setSnippet(kmlPlacemark == null ? "" : kmlPlacemark.mDescription);
+        polygonOverlay.setSubDescription(kmlPlacemark == null ? "" : kmlPlacemark.getExtendedDataAsText());
         polygonOverlay.setRelatedObject(this);
         polygonOverlay.setId(kmlPolygon.mId);
         if (styler == null)
@@ -125,48 +137,67 @@ public class GeoObjectItemGenerator {
         return polygonOverlay;
     }
 
-    /** Build the corresponding Marker overlay */
+    /**
+     * Build the corresponding Marker overlay
+     */
     public OverlayWithIW buildOverlay(KmlPoint kmlPoint, MapView map, Style defaultStyle, KmlFeature.Styler styler, KmlPlacemark kmlPlacemark,
-                                      KmlDocument kmlDocument){
+                                      KmlDocument kmlDocument) {
         Marker marker = createMarker(map);
-        marker.setTitle(kmlPlacemark==null?"":kmlPlacemark.mName);
-        marker.setSnippet(kmlPlacemark==null?"":kmlPlacemark.mDescription);
-        marker.setSubDescription(kmlPlacemark==null?"":kmlPlacemark.getExtendedDataAsText());
+        marker.setTitle(kmlPlacemark == null ? "" : kmlPlacemark.mName);
+        marker.setSnippet(kmlPlacemark == null ? "" : kmlPlacemark.mDescription);
+        marker.setSubDescription(kmlPlacemark == null ? "" : kmlPlacemark.getExtendedDataAsText());
         marker.setPosition(kmlPoint.getPosition());
         //keep the link from the marker to the KML feature:
         marker.setRelatedObject(this);
         marker.setId(kmlPoint.mId);
-        if (styler == null){
-            kmlPoint.applyDefaultStyling(marker, defaultStyle, kmlPlacemark, kmlDocument, map);
+
+
+        if (styler == null) {
+            if (marker instanceof CustomMarker) {
+                IconStyle iconStyle = kmlPoint.getIconStyle(defaultStyle, kmlPlacemark, kmlDocument);
+                ((CustomMarker) marker).applyIconStyle(iconStyle);
+
+            } else {
+                kmlPoint.applyDefaultStyling(marker, defaultStyle, kmlPlacemark, kmlDocument, map);
+            }
         } else
             styler.onPoint(marker, kmlPlacemark, kmlPoint);
+
         marker.setVisible(true);
         return marker;
-    } /** Build the corresponding Marker overlay */
+    }
+
+    /**
+     * Build the corresponding Marker overlay
+     */
     public OverlayWithIW buildOverlay(GeoObjectItem geoObjectItem, MapView map, Style defaultStyle, KmlFeature.Styler styler, KmlPlacemark kmlPlacemark,
-                                      KmlDocument kmlDocument){
+                                      KmlDocument kmlDocument) {
         Marker marker = createMarker(map);
         marker.setTitle(geoObjectItem.getTitle());
         marker.setSnippet(geoObjectItem.getSnippet());
-        marker.setSubDescription(kmlPlacemark==null?"":kmlPlacemark.getExtendedDataAsText());
+        marker.setSubDescription(kmlPlacemark == null ? "" : kmlPlacemark.getExtendedDataAsText());
         marker.setPosition(geoObjectItem.getPosition());
         //keep the link from the marker to the KML feature:
         marker.setRelatedObject(geoObjectItem);
         marker.setVisible(true);
 
+        if (marker instanceof CustomMarker) {
+            ((CustomMarker) marker).applyIconStyle(null);
+        }
+
+
         return marker;
     }
 
-    private Marker createMarker(MapView mapView)
-    {
-        Marker marker=null;
+    private Marker createMarker(MapView mapView) {
+        Marker marker = null;
 
         int size = markerBin.size();
         if (size > 0) {
             marker = markerBin.remove(size - 1);
         } else
 
-            marker = new Marker(mapView);
+          marker = new CustomMarker(mapView);
         return marker;
 
     }
@@ -226,7 +257,7 @@ public class GeoObjectItemGenerator {
                 GeoObjectItem item = (GeoObjectItem) mapToGeoItem.get(iw);
                 if (iw instanceof Marker) {
 
-                    if (!(item != null && item.getSnippet().equals(CLUSTER)) && visibleLatLngBounds.contains(((Marker) iw).getPosition())) {
+                    if (item!=null&&item.mGeometry!=null&&visibleLatLngBounds.contains(((Marker) iw).getPosition())) {
                         tempList.add(iw);
 
                     } else {
@@ -237,7 +268,7 @@ public class GeoObjectItemGenerator {
                     }
                 } else if (iw instanceof Polyline) {
                     List<GeoPoint> points = ((Polyline) iw).getPoints();
-                    if (!(item != null && item.getSnippet().equals(CLUSTER)) && LatLngUtil.linesIntersectRect(points, visibleLatLngBounds)) {
+                    if (  LatLngUtil.linesIntersectRect(points, visibleLatLngBounds)) {
                         tempList.add(iw);
                     } else {
                         ((Polyline) iw).setVisible(false);
@@ -247,7 +278,7 @@ public class GeoObjectItemGenerator {
                     }
                 } else if (iw instanceof Polygon) {
                     List<GeoPoint> points = ((Polygon) iw).getPoints();
-                    if (!(item != null && item.getSnippet().equals(CLUSTER)) && LatLngUtil.linesIntersectRect(points, visibleLatLngBounds)) {
+                    if (  LatLngUtil.linesIntersectRect(points, visibleLatLngBounds)) {
                         tempList.add(iw);
                     } else {
                         ((Polygon) iw).setVisible(false);
@@ -277,13 +308,14 @@ public class GeoObjectItemGenerator {
 
     /**
      * Build a FolderOverlay, containing (recursively) overlays from all items of this Folder.
+     *
      * @param map
      * @param defaultStyle to apply when an item has no Style defined.
-     * @param styler to apply
-     * @param kmlDocument for Styles
+     * @param styler       to apply
+     * @param kmlDocument  for Styles
      * @return the FolderOverlay built
      */
-    public FolderOverlay buildFolderOverlay(MapView map, Style defaultStyle, KmlFeature.Styler styler, KmlDocument kmlDocument){
+    public FolderOverlay buildFolderOverlay(MapView map, Style defaultStyle, KmlFeature.Styler styler, KmlDocument kmlDocument) {
         FolderOverlay folderOverlay = new FolderOverlay();
         folderOverlay.setName(kmlDocument.mKmlRoot.mName);
         folderOverlay.setDescription(kmlDocument.mKmlRoot.mDescription);
@@ -297,13 +329,13 @@ public class GeoObjectItemGenerator {
 
     public void releaseItems(Collection<GeoObjectItem> items) {
 
-            for (GeoObjectItem geoObjectItem:items)
-            { Object mapItem = geoItemToMap.remove(geoObjectItem);
-                mapToGeoItem.remove(mapItem);
+        for (GeoObjectItem geoObjectItem : items) {
+            Object mapItem = geoItemToMap.remove(geoObjectItem);
+            mapToGeoItem.remove(mapItem);
 
-                releaseOverlayIw((OverlayWithIW) mapItem);
+            releaseOverlayIw((OverlayWithIW) mapItem);
 
-            }
+        }
 
 
     }

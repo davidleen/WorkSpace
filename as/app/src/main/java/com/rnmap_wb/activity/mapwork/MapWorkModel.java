@@ -37,4 +37,6 @@ public interface MapWorkModel extends Model {
     void clearPolyLinePosition();
 
     MapElement updateMapElement(MapElement o);
+
+    MapElement getMapElementByPoint(String pointString);
 }

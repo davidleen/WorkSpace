@@ -6,10 +6,8 @@ import android.widget.TextView;
 
 import com.giants3.android.adapter.AbstractAdapter;
 import com.giants3.android.adapter.AbstractViewHolder;
-
 import com.rnmap_wb.R;
 import com.rnmap_wb.android.data.Task;
-
 
 import butterknife.Bind;
 
@@ -49,6 +47,12 @@ public class HomeTaskAdapter extends AbstractAdapter<Task> {
             dir_name.setText(String.valueOf(data.dir_name));
 
             createTime.setText(String.valueOf(data.created));
+
+            Task last = position == 0 ? null : adapter.getItem(position - 1);
+            if (last == null || !last.dir_id.equals(data.dir_id)) {
+                dir_name.setVisibility(View.VISIBLE);
+            } else
+                dir_name.setVisibility(View.GONE);
 
         }
     }

@@ -52,4 +52,17 @@ public class IDownloadTaskDao {
     public void delete(DownloadTask task) {
         dao.delete(task);
     }
+
+    public List<DownloadTask> findByName(String taskName) {
+
+
+        QueryBuilder<DownloadTask> queryBuilder = dao.queryBuilder();
+        queryBuilder.where(DownloadTaskDao.Properties.Name.eq(taskName));
+
+
+        List<DownloadTask> downloadItems = queryBuilder.list();
+        return downloadItems;
+
+
+    }
 }

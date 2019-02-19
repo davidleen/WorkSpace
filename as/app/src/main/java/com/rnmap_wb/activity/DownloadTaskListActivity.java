@@ -18,6 +18,8 @@ import android.widget.ListView;
 import com.giants3.android.mvp.BasePresenter;
 import com.giants3.android.mvp.Model;
 import com.giants3.android.mvp.Presenter;
+import com.giants3.android.reader.domain.GsonUtils;
+import com.google.gson.reflect.TypeToken;
 import com.rnmap_wb.R;
 import com.rnmap_wb.adapter.DownLoadTaskAdapter;
 import com.rnmap_wb.android.dao.DaoManager;
@@ -72,7 +74,6 @@ public class DownloadTaskListActivity extends BaseMvpActivity implements DownLoa
                 finish();
             }
         });
-        List<DownloadTask> downloadTasks = DaoManager.getInstance().getDownloadTaskDao().loadAll();
 
 
         adapter = new DownLoadTaskAdapter(this);
@@ -98,8 +99,9 @@ public class DownloadTaskListActivity extends BaseMvpActivity implements DownLoa
 
             }
         });
-        adapter.setDataArray(downloadTasks);
+
         listView.setAdapter(adapter);
+        loadData();
 //        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
 //            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -151,6 +153,34 @@ public class DownloadTaskListActivity extends BaseMvpActivity implements DownLoa
 
         });
         bindService();
+    }
+
+
+    private void loadData() {
+
+
+        showWaiting();
+        new AsyncTask<Void, Void, List<DownloadTask>>() {
+            @Override
+            protected List<DownloadTask> doInBackground(Void... voids) {
+
+                List<DownloadTask> downloadTasks = GsonUtils.fromJson(GsonUtils.toJson(DaoManager.getInstance().getDownloadTaskDao().loadAll()), new TypeToken<List<DownloadTask>>() {
+                }.getType());
+
+
+                return downloadTasks;
+            }
+
+            @Override
+            protected void onPostExecute(List<DownloadTask> downloadTasks) {
+                hideWaiting();
+                if (downloadTasks != null)
+                    adapter.setDataArray(downloadTasks);
+            }
+
+        }
+
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void bindService() {

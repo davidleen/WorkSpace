@@ -10,10 +10,13 @@ import android.support.annotation.Nullable;
 
 import com.giants3.android.frame.util.Log;
 import com.giants3.android.network.ApiConnection;
+import com.giants3.android.reader.domain.UseCaseFactory;
 import com.rnmap_wb.android.dao.DaoManager;
 import com.rnmap_wb.android.dao.IDownloadItemDao;
+import com.rnmap_wb.android.dao.IMbTilesDao;
 import com.rnmap_wb.android.entity.DownloadItem;
 import com.rnmap_wb.android.entity.DownloadTask;
+import com.rnmap_wb.android.entity.MbTiles;
 import com.rnmap_wb.utils.IntentConst;
 
 import java.io.File;
@@ -21,6 +24,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import rx.internal.util.ObjectPool;
 
 public class DownloadManagerService extends Service {
 
@@ -125,9 +130,12 @@ public class DownloadManagerService extends Service {
 
             ApiConnection apiConnection = new ApiConnection();
 
-
+          //  IMbTilesDao mapTileDao = DaoManager.getInstance().getMapTileDao();
             DownloadTask downloadTask = DaoManager.getInstance().getDownloadTaskDao().load(taskId);
             IDownloadItemDao downloadItemDao = DaoManager.getInstance().getDownloadItemDao();
+
+
+
             List<DownloadItem> items = null;
             do {
 
@@ -137,18 +145,25 @@ public class DownloadManagerService extends Service {
 
                     if (destroyed) break;
 
-                    String downloadFilePath = downloadItem.getDownloadFilePath();
-                    if (!new File(downloadFilePath).exists()) {
-                        try {
 
-                            Log.e("downloading:" + downloadItem.getUrl() + ",toPath:" + downloadItem.getDownloadFilePath());
-                            apiConnection.download(downloadItem.getUrl(), downloadFilePath);
+                    String downloadFilePath = downloadItem.getDownloadFilePath();
+                    boolean  exist=new File(downloadFilePath).exists();
+                    if(!exist)
+                    {
+                        Log.e("downloading:" + downloadItem.getUrl() + ",toPath:" + downloadItem.getDownloadFilePath());
+                        try {
+                          apiConnection.download(downloadItem.getUrl(), downloadFilePath);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+
                     }
+
                     if (destroyed) break;
-                    if (new File(downloadFilePath).exists() && downloadItem.getState() != 2) {
+
+                    if(new File(downloadFilePath).exists()&&  downloadItem.getState() != 2)
+                    {
+
                         downloadItem.setState(2);
                         DaoManager.getInstance().getDownloadItemDao().save(downloadItem);
                         downloadTask.downloadedCount++;
@@ -162,6 +177,47 @@ public class DownloadManagerService extends Service {
                     }
 
 
+
+
+//
+//                    //查找对应的数据库文件
+//                    boolean exist = mapTileDao.exist(downloadItem.getTileX(), downloadItem.getTileY(), downloadItem.getTileZ());
+//                    if(!exist)
+//                    {
+//
+//                        try {
+//                            byte[] bytes = apiConnection.get(downloadItem.getUrl());
+//
+//                            MbTiles mbTiles=new MbTiles();
+//                            mbTiles.tile_column=downloadItem.getTileX();
+//                            mbTiles.tile_row=downloadItem.getTileY();
+//                            mbTiles.zoom_level=downloadItem.getTileZ();
+//                            mbTiles.tile_data=bytes;
+//                            mapTileDao.save(mbTiles);
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                        catch (Throwable t)
+//                        {
+//                            t.printStackTrace();
+//                        }
+//                    }
+//
+//                    if (destroyed) break;
+//                    if (mapTileDao.exist(downloadItem.getTileX(), downloadItem.getTileY(), downloadItem.getTileZ()) && downloadItem.getState() != 2) {
+//                        downloadItem.setState(2);
+//                        DaoManager.getInstance().getDownloadItemDao().save(downloadItem);
+//                        downloadTask.downloadedCount++;
+//                        downloadTask.percent = (float) downloadTask.downloadedCount / downloadTask.count;
+//                        DaoManager.getInstance().getDownloadTaskDao().save(downloadTask);
+//                        Message message = handler.obtainMessage();
+//                        message.what = MSG_STATE_CHANGE;
+//                        message.obj = downloadTask;
+//                        handler.sendMessage(message);
+//
+//                    }
+//
+//
                 }
 
                 try {
@@ -174,7 +230,7 @@ public class DownloadManagerService extends Service {
             } while (items.size() > 0);
 
 
-            if (items != null && items.size() == 0 || downloadTask.downloadedCount >= downloadTask.count) {
+            if (items != null && items.size() == 0 && downloadTask.downloadedCount >= downloadTask.count) {
                 downloadTask.setState(DownloadTask.STATE_COMPLETE);
                 DaoManager.getInstance().getDownloadTaskDao().save(downloadTask);
                 Message message = handler.obtainMessage();
