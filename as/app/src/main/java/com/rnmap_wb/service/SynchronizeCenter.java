@@ -33,6 +33,7 @@ public class SynchronizeCenter {
 
 
     public static final String MAP_ELEMENTS_JSON = "mapElements.json";
+    public static final String TASK_FEEDBACK = "feedback";
     public static final String UPDATE = "UPDATE";
     public static final String REGEX = ";";
 
@@ -55,6 +56,7 @@ public class SynchronizeCenter {
                         //同步更新文件。
                         String taskId = taskFile.getName();
                         File mapElementsFile = new File(taskFile, MAP_ELEMENTS_JSON);
+                        File feedbackFile=new File(taskFile, TASK_FEEDBACK);
                         if (mapElementsFile.exists()) {
 
                             String mapElementFile = mapElementsFile.getAbsolutePath();
@@ -63,9 +65,11 @@ public class SynchronizeCenter {
                             }.getType());
                             if (mapElements == null) return;
 
+                            String feedback=FileUtils.readStringFromFile(feedbackFile.getAbsolutePath());
 
                             PostElements postElements = new PostElements();
                             postElements.taskId = taskId;
+                            postElements.feedback = feedback;
                             postElements.flags = mapElements;
 
                             synchronizedPictureIfNeed(postElements, mapElementFile, updateFile.getAbsolutePath());
@@ -217,13 +221,45 @@ public class SynchronizeCenter {
     }
 
     public static String getElementsFilePath(Task task) {
+
+
+        return getTaskRelateFilePath(task,MAP_ELEMENTS_JSON);
+
+    }
+
+    public static String getTaskFeedbackFilePath(Task task) {
+
+
+        return getTaskRelateFilePath(task,TASK_FEEDBACK);
+
+    }
+
+    /**
+     * 是否处于待更新状态
+     * @param task
+     * @return
+     */
+    public static String getTaskUpdateStateFilePath(Task task) {
+
+
+        return getTaskRelateFilePath(task,UPDATE);
+    }
+
+    private static String getTaskRelateFilePath(Task task,String fileName)
+    {
         //查找本地文件  是否存在标记文件
         LoginResult loginResult = SessionManager.getLoginUser(MainApplication.baseContext);
         if(loginResult==null) return "";
 
-        String filePath = StorageUtils.getFilePath(loginResult.id + File.separator + task.id + File.separator + MAP_ELEMENTS_JSON);
+        String filePath = StorageUtils.getFilePath(loginResult.id + File.separator + task.id + File.separator +fileName);
 
         return filePath;
+    }
 
+
+    public static boolean waitForFeedBack(Task task)
+    {
+
+        return new File(getTaskUpdateStateFilePath(task)).exists();
     }
 }

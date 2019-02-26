@@ -51,7 +51,6 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
 
         try {
             FileUtils.writeStringToFile(GsonUtils.toJson(elements), filePath);
-            FileUtils.writeStringToFile("", filePath.replace(SynchronizeCenter.MAP_ELEMENTS_JSON, SynchronizeCenter.UPDATE));
         } catch (Exception e) {
             e.printStackTrace();
         }

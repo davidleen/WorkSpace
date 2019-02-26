@@ -28,7 +28,7 @@ public class MainApplication extends Application {
 
         if (BuildConfig.DEBUG) {// 调试状态下  连接 数据库查看工具
             //chrome 浏览器下 输入以下地址：	chrome://inspect/#devices
- 		//com.facebook.stetho.Stetho.initializeWithDefaults(this);
+            //com.facebook.stetho.Stetho.initializeWithDefaults(this);
         }
         baseContext = this;
 
@@ -41,8 +41,9 @@ public class MainApplication extends Application {
         ToastHelper.init(this);
         HttpUrl.init(this);
         Utils.init(this);
-        DaoManager.getInstance().init(new ApplicationContextWrapper(this));
+        DaoManager.getInstance().init(this);
         AndroidUtils.init(this);
+
     }
 
 

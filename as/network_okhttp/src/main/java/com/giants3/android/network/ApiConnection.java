@@ -35,6 +35,7 @@ import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 //import  okhttp3.MultipartBuilder;
@@ -120,7 +121,14 @@ public class ApiConnection implements ResApi {
             throw new IOException("url:" + url + ",is not a valid url");
         }
 
-        return okHttpClient.newCall(request).execute().body();
+        Response res = okHttpClient.newCall(request).execute();
+        if(res.isSuccessful())
+        {
+            return res.body();
+        }
+        throw
+                 new IOException(res.code()+res.message());
+
 
     }
 
@@ -269,6 +277,12 @@ public class ApiConnection implements ResApi {
 
     @Override
     public boolean download(String url, String filePath) throws IOException {
+
+        return download(url,filePath,null);
+
+    }
+    @Override
+    public boolean download(String url, String filePath, final com.giants3.android.network.ProgressListener listener) throws IOException {
         FileUtils.makeDirs(filePath);
 
         String tempFilePath = filePath + "_temp";
@@ -278,11 +292,16 @@ public class ApiConnection implements ResApi {
         try {
 
 
-            long contentLength = body.contentLength();
+            final long contentLength = body.contentLength();
             inputStream = body.byteStream();
 
             outputStream = new FileOutputStream(tempFilePath);
-            FileUtils.copyStream(inputStream, outputStream);
+            FileUtils.copyStream(inputStream, outputStream, new com.giants3.android.network.ProgressListener() {
+                @Override
+                public void onProgressUpdate(long current, long totalLength) {
+                    listener.onProgressUpdate(current,contentLength);
+                }
+            });
             outputStream.flush();
         } catch (Throwable t) {
         } finally {

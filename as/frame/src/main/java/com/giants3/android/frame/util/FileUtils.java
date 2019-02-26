@@ -1,5 +1,7 @@
 package com.giants3.android.frame.util;
 
+import com.giants3.android.network.ProgressListener;
+
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
@@ -136,12 +138,24 @@ public class FileUtils {
 
 
     public static void copyStream(InputStream inputStream, OutputStream outputStream) throws IOException {
+
+        copyStream(inputStream,outputStream,null);
+    }
+    public static void copyStream(InputStream inputStream, OutputStream outputStream, ProgressListener listener) throws IOException {
+
+
+        int copyed=0;
         byte[] buffer = new byte[0];
         try {
             buffer = ByteArrayPool.getInstance().getBuf(1024 * 5);
             int size;
             while ((size = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, size);
+                copyed+=size;
+                if(listener!=null)
+                {
+                    listener.onProgressUpdate(copyed,0);
+                }
                 outputStream.flush();
             }
 

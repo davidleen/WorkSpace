@@ -94,6 +94,11 @@ public abstract class BaseMvpActivity<P extends Presenter> extends BaseActivity 
         drawerLayout.openDrawer(Gravity.START);
     }
 
+    protected  void closeDrawer()
+    {
+        drawerLayout.closeDrawer(Gravity.START);
+    }
+
     protected NavigationBarController getNavigationController() {
         return controller;
     }

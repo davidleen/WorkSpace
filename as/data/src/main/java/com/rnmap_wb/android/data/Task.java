@@ -12,8 +12,10 @@ public class Task {
     public String name;
     public String created;
     public String kml;
+    public String kml_name;
     public String memo;
     public String user_id;
+    public String user_name;
     public String dir_name;
 
 }

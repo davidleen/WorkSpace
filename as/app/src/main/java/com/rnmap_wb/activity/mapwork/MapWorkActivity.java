@@ -10,7 +10,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -25,9 +24,9 @@ import com.rnmap_wb.LatLngUtil;
 import com.rnmap_wb.R;
 import com.rnmap_wb.activity.AddMarkActivity;
 import com.rnmap_wb.activity.BaseMvpActivity;
+import com.rnmap_wb.activity.FeedBackDialog;
 import com.rnmap_wb.activity.home.HomeActivity;
 import com.rnmap_wb.activity.mapwork.map.Circle;
-import com.rnmap_wb.activity.mapwork.map.CustomMarker;
 import com.rnmap_wb.android.data.Task;
 import com.rnmap_wb.entity.MapElement;
 import com.rnmap_wb.immersive.SmartBarUtils;
@@ -43,14 +42,12 @@ import org.osmdroid.events.ZoomEvent;
 import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.FolderOverlay;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayWithIW;
 import org.osmdroid.views.overlay.Polygon;
 import org.osmdroid.views.overlay.Polyline;
-import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow;
 
 import java.io.File;
@@ -75,6 +72,8 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
     View editGroup;
     @Bind(R.id.mylocation)
     View mylocation;
+    @Bind(R.id.feedback)
+    View feedback;
     @Bind(R.id.clear)
     View clear;
     @Bind(R.id.toHome)
@@ -83,6 +82,8 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
     View addMark;
     @Bind(R.id.addCircle)
     View addCircle;
+    @Bind(R.id.addMapping)
+    View addMapping;
     @Bind(R.id.addRect)
     View addRect;
     @Bind(R.id.edit)
@@ -184,6 +185,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
         btnOnline.setOnClickListener(this);
         clear.setOnClickListener(this);
         mylocation.setOnClickListener(this);
+        feedback.setOnClickListener(this);
         clickListener = new OverlayWithIWClickListener();
 
         getNavigationController().setVisible(false);
@@ -194,6 +196,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
         onMapPrepare();
         zoomController.setZoomAvailable(true);
         myLocationHelper.addMyLocation();
+        mapView.setMinZoomLevel((double) getResources().getDisplayMetrics().density);
 //        mapView.getController().animateTo(new GeoPoint(-23d, 33d, 1d), 5d, 3000l);
 
         loadKML(kmlFilePath);
@@ -719,7 +722,14 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 //        GeoPoint latLng = getMap().getProjection().fromScreenLocation(new Point(x, y));
 //        GeoPoint left = getMap().getProjection().fromScreenLocation(new Point(x / 3, y));
 //        GeoPoint leftTop = getMap().getProjection().fromScreenLocation(new Point(x / 3, y / 3));
+        addPolyLine.setSelected(v.getId()==R.id.addPolyLine);
+        addMark.setSelected(v.getId()==R.id.addMark);
+        addPolygon.setSelected(v.getId()==R.id.addPolygon);
+        addCircle.setSelected(v.getId()==R.id.addCircle);
+        addMapping.setSelected(v.getId()==R.id.addMapping);
+
         switch (v.getId()) {
+
 //
             case R.id.addCircle:
 
@@ -737,6 +747,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                 if (tempPolyline != null) mapView.getOverlays().remove(tempPolyline);
                 getPresenter().closePaint();
                 editGroup.setVisibility(View.GONE);
+                edit.setVisibility(View.VISIBLE);
                 break;
             case R.id.addPolyLine:
 
@@ -746,30 +757,26 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
             case R.id.addRect:
 
                 state = STATE_ADD_RECTANGLE;
+
                 break;
             case R.id.edit:
-
+                edit.setVisibility(View.GONE);
                 editGroup.setVisibility(View.VISIBLE);
                 break;
-//            case R.id.switchMap:
-//
-//                if (onLine) {
-//                    getMap().setMapType(GoogleMap.MAP_TYPE_NONE);
-//                    tileOverlay = getMap().addTileOverlay(new TileOverlayOptions()
-//                            .tileProvider(new OfflineTileOverlay())
-//                            .transparency(0.5f));
-//
-//                } else {
-//                    getMap().setMapType(GoogleMap.MAP_TYPE_NORMAL);
-//                    if (tileOverlay != null) {
-//                        tileOverlay.remove();
-//                        tileOverlay = null;
-//                    }
-//                }
-//
-//                onLine = !onLine;
-//
-//                break;
+            case R.id.switchMap:
+
+                if (onLine) {
+                    mapTileHelper.setOnLineMode(false);
+                    mapView.invalidate();
+
+                } else {
+                    setOnlineState();
+                }
+
+                onLine = !onLine;
+                mapView.setSelected(onLine);
+
+                break;
 //
 //            case R.id.download:
 //
@@ -778,13 +785,12 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 //                latLngs.add(latLng);
 //                getPresenter().downloadMap(latLngs, 10, 11);
 //                break;
-//            case R.id.viewDownLoad:
-//
-//
-//                Intent intent = new Intent(this, DownloadTaskListActivity.class);
-//                startActivity(intent);
-//
-//                break;
+            case R.id.feedback:
+
+
+                FeedBackDialog.start(this,task);
+
+                break;
 //
 //
             case R.id.addMark:

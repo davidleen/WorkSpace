@@ -6,20 +6,13 @@
      >
 
 
-    <TextView
-        android:id="@+id/dir_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="15dp"
-        android:textColor="#676767"
-        android:textSize="16sp" />
-
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/root"
         android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:orientation="vertical">
 
         <TextView
@@ -27,7 +20,7 @@
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
+
             android:layout_marginTop="3dp"
             android:textColor="@color/uniform_color_1"
             android:textSize="14sp"
@@ -37,10 +30,62 @@
             android:id="@+id/createTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="5dp"
+
+            android:layout_marginTop="10dp"
             android:textColor="@color/uniform_color_2"
-            android:textSize="12sp" />
+            android:textSize="13sp" />
+
+
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_marginTop="19dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="离线地图"
+            android:id="@+id/download"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:padding="10dp"
+            android:background="#f9c474"
+            android:drawablePadding="7dp"
+            android:drawableLeft="@drawable/icon_download"
+            android:layout_height="wrap_content" />
+
+
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="反馈"
+            android:id="@+id/feedback"
+            android:textColor="@color/uniform_1"
+            android:padding="10dp"
+            android:textSize="14sp"
+            android:background="@drawable/bg_rect_uniform_stroke"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="勘探"
+            android:textColor="@color/white"
+            android:padding="10dp"
+            android:id="@+id/view"
+            android:textSize="14sp"
+            android:background="@drawable/bg_rect_uniform_fill"
+            android:layout_marginLeft="15dp"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
 
     </LinearLayout>
 

@@ -148,4 +148,18 @@ public class HttpUrl {
         return additionInfo(formatter);
 
     }
+
+    public static String getProjectReplyList() {
+        String url = BASE_URL + "api/project/replyList";
+        UrlFormatter formatter = new UrlFormatter(url);
+        return additionInfo(formatter);
+
+    }
+
+    public static String getAppUpdateInfo() {
+        String url = BASE_URL + "api/app/update";
+        UrlFormatter formatter = new UrlFormatter(url);
+        return additionInfo(formatter);
+
+    }
 }

@@ -6,4 +6,5 @@ public class PostElements {
 
     public String taskId;
     public List<MapElement> flags;
+    public String feedback;
 }

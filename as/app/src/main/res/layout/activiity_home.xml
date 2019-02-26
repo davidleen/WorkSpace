@@ -7,16 +7,19 @@
 
 
 
-    <ListView
+    <ExpandableListView
         android:id="@+id/listview"
         style="@style/listview"
 
 
+        android:groupIndicator="@null"
 
+        android:childDivider="@drawable/icon_line"
 
+        android:dividerHeight="2dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"></ListView>
+        android:layout_weight="1"></ExpandableListView>
 
 
 </LinearLayout>

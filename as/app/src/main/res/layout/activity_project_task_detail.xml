@@ -163,4 +163,11 @@
         android:text="在地图上查看"
         android:textColor="#ffffff" />
 
+
+    <ListView
+        android:id="@+id/replyList"
+        style="@style/listview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></ListView>
+
 </LinearLayout>

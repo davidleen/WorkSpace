@@ -1,6 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
-apply from:'projectconfig.gradle'
+apply from: 'projectconfig.gradle'
 buildscript {
     repositories {
         jcenter()
@@ -19,6 +19,5 @@ allprojects {
         mavenLocal()
         jcenter()
         google()
-
     }
 }

@@ -33,5 +33,7 @@ public interface ResApi {
 
     boolean download(String url, String filePath) throws IOException;
 
+    boolean download(String url, String filePath, com.giants3.android.network.ProgressListener listener) throws IOException;
+
     void setHeader(String key, String value);
 }

@@ -48,6 +48,11 @@ public class UseCaseFactory {
 
         return new DefaultPostUseCase<>(url, new RemoteDataParser<T>(tClass));
 
+    }public <T> UseCase<RemoteData<T>> createPostUseCase(String url,String cachePath, Class<T> tClass) {
+
+
+        return new DefaultPostUseCase<>(url,cachePath, new RemoteDataParser<T>(tClass));
+
     }
 
 

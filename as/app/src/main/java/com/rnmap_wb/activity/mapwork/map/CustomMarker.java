@@ -46,14 +46,14 @@ public class CustomMarker extends org.osmdroid.views.overlay.Marker {
 
 
             if (CustomClusterManager.CLUSTER.equals(getSnippet())) {
-                setCustomIcon(mResources.getDrawable(R.mipmap.ic_launcher));
+                setCustomDefaultIcon();
             } else {
-                setDefaultIcon();
+                setCustomDefaultIcon();
             }
 
 
         } else {
-            setDefaultIcon();
+            setCustomDefaultIcon();
             loadIcon(iconStyle);
         }
 
@@ -76,6 +76,13 @@ public class CustomMarker extends org.osmdroid.views.overlay.Marker {
 
     }
 
+
+    public void setCustomDefaultIcon() {
+
+        setIcon(context.getResources().getDrawable(R.drawable.icon_map_mark));
+
+    }
+
     private void loadIcon(final IconStyle iconStyle) {
         ImageLoaderFactory.getInstance().loadImage(iconStyle.mHref, new SimpleImageLoadingListener() {
 
@@ -83,7 +90,8 @@ public class CustomMarker extends org.osmdroid.views.overlay.Marker {
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
 
-                setDefaultIcon();
+
+                setCustomDefaultIcon();
 
             }
 

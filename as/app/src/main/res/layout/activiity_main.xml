@@ -74,6 +74,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="@dimen/default_padding_left"
+            android:layout_marginRight="@dimen/default_padding_left"
             android:gravity="left|center">
 
 
@@ -87,72 +88,19 @@
                 android:src="@drawable/icon_home" />
 
 
-            <LinearLayout
-                android:id="@+id/editGroup"
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"/>
+
+
+            <ImageView
+                android:id="@+id/switchMap"
+                android:padding="10dp"
+                android:src="@drawable/icon_onoffline_selector"
+                android:background="@drawable/bg_black_rect"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:background="@drawable/bg_tab"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/addMark"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableTop="@drawable/icon_mark"
-                    android:gravity="center"
-                    android:padding="7dp"
-                    android:text="标记" />
-
-                <TextView
-
-                    android:id="@+id/addPolyLine"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableTop="@drawable/icon_line"
-                    android:gravity="center"
-                    android:padding="7dp"
-                    android:text="画线" />
-
-                <TextView
-                    android:id="@+id/addPolygon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    android:drawableTop="@drawable/icon_polygon"
-                    android:gravity="center"
-                    android:padding="7dp"
-                    android:text="多边形" />
-
-
-                <TextView
-                    android:id="@+id/addRect"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableTop="@drawable/icon_rectangle"
-                    android:gravity="center"
-                    android:padding="7dp"
-                    android:text="矩形" />
-
-                <TextView
-                    android:id="@+id/addCircle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableTop="@drawable/icon_circle"
-                    android:gravity="center"
-                    android:padding="7dp"
-                    android:text="圆形" />
-
-                <TextView
-                    android:id="@+id/close"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableTop="@android:drawable/ic_menu_close_clear_cancel"
-                    android:gravity="center"
-                    android:padding="7dp"
-                    android:text="关闭" />
-
-            </LinearLayout>
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
@@ -167,14 +115,7 @@
             android:layout_marginBottom="100dp"
             android:src="@drawable/icon_location" />
 
-        <Button
-            android:id="@+id/switchMap"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:text="在线/离线"
-            android:visibility="gone" />
+
 
 
         <LinearLayout
@@ -186,57 +127,6 @@
             android:gravity="center">
 
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="50dp"
-                android:background="@drawable/bg_tab">
-
-                <TextView
-                    android:id="@+id/clear"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="7dp"
-                    android:text="清空"
-                    android:textSize="14sp" />
-
-                <View
-                    android:layout_width="0.5pt"
-                    android:layout_height="match_parent"
-                    android:layout_margin="5dp"
-                    android:background="@color/line" />
-
-                <TextView
-                    android:id="@+id/edit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="7dp"
-                    android:text="编辑"
-
-
-                    android:textSize="14sp" />
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    android:background="@drawable/bg_tab"
-                    android:padding="7dp"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-
-                    android:background="@drawable/bg_tab"
-
-                    android:padding="5dp"
-                    android:visibility="gone" />
-
-            </LinearLayout>
-
             <View
                 android:layout_width="0dp"
                 android:layout_height="1dp"
@@ -245,19 +135,20 @@
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:visibility="gone"
+                android:layout_height="wrap_content"
                 android:padding="3dp"
                 android:src="@drawable/icon_minify"
-                android:layout_height="wrap_content" />
+                android:visibility="gone" />
 
             <ImageView
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:padding="3dp"
-                android:visibility="gone"
                 android:src="@drawable/icon_magnify"
-                android:layout_height="wrap_content" />
+                android:visibility="gone" />
 
             <LinearLayout
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="30dp"
@@ -289,15 +180,152 @@
         </LinearLayout>
 
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="150dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/bg_white_rect"
+            android:gravity="center"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/icon_clear_map"
+                android:drawablePadding="5dp"
+                android:padding="10dp"
+                android:text="清空"
+                android:textColor="@color/uniform_color_1"
+                android:textSize="12sp" />
+
+
+            <View
+                android:layout_width="23dp"
+                android:layout_height="1dp"
+                android:background="#999999" />
+
+            <TextView
+                android:id="@+id/edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/icon_edit_map"
+                android:drawablePadding="5dp"
+                android:padding="10dp"
+                android:text="编辑"
+                android:textColor="@color/uniform_color_1"
+                android:textSize="12sp" />
+
+            <LinearLayout
+                android:id="@+id/editGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/addMark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/icon_mark_selector"
+                    android:gravity="center"
+                    android:padding="7dp"
+                    android:text="标记" />
+
+                <TextView
+
+                    android:id="@+id/addPolyLine"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/icon_line_selector"
+                    android:gravity="center"
+                    android:padding="7dp"
+                    android:text="画线" />
+
+                <TextView
+                    android:id="@+id/addPolygon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:drawableTop="@drawable/icon_polygon_selector"
+                    android:gravity="center"
+                    android:padding="7dp"
+                    android:text="图形" />
+
+
+                <TextView
+                    android:id="@+id/addRect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/icon_rectangle"
+                    android:gravity="center"
+                    android:padding="7dp"
+                    android:text="矩形"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/addCircle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/icon_circle_selector"
+                    android:gravity="center"
+                    android:padding="7dp"
+                    android:text="圆形" />
+
+                <TextView
+                    android:id="@+id/addMapping"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/icon_mapping_selector"
+                    android:gravity="center"
+                    android:padding="7dp"
+                    android:text="测量" />
+
+                <ImageView
+                    android:id="@+id/close"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:scaleType="center"
+                    android:src="@drawable/icon_close_edit" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+        <TextView
+
+            android:id="@+id/feedback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_white_rect"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="30dp"
+            android:drawableTop="@drawable/icon_feedback"
+
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:drawablePadding="3dp"
+            android:padding="10dp"
+            android:text="反馈"
+            android:textColor="@color/uniform_color_1"
+            android:textSize="12sp" />
+
     </RelativeLayout>
 
 
-
     <TextView
-        android:layout_width="100dp"
         android:id="@+id/zoomlevel"
-        android:visibility="gone"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
         android:layout_marginTop="400dp"
-        android:layout_height="40dp" />
+        android:visibility="gone" />
+
+
+
 
 </FrameLayout>

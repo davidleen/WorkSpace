@@ -5,27 +5,36 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.ExpandableListView;
 
 import com.giants3.android.ToastHelper;
-import com.giants3.android.adapter.AbstractAdapter;
 import com.giants3.android.frame.util.Log;
 import com.giants3.android.reader.domain.DefaultUseCaseHandler;
+import com.giants3.android.reader.domain.GsonUtils;
 import com.giants3.android.reader.domain.UseCaseFactory;
+import com.giants3.android.reader.domain.UseCaseHandler;
 import com.rnmap_wb.R;
 import com.rnmap_wb.activity.BaseMvpActivity;
 import com.rnmap_wb.activity.DownloadTaskListActivity;
+import com.rnmap_wb.activity.FeedBackDialog;
 import com.rnmap_wb.activity.LoginActivity;
+import com.rnmap_wb.activity.OffLineHelper;
 import com.rnmap_wb.activity.ProjectTaskDetailActivity;
+import com.rnmap_wb.activity.mapwork.MapWorkActivity;
 import com.rnmap_wb.adapter.HomeTaskAdapter;
+import com.rnmap_wb.android.data.Directory;
 import com.rnmap_wb.android.data.RemoteData;
 import com.rnmap_wb.android.data.Task;
+import com.rnmap_wb.android.data.VersionData;
+import com.rnmap_wb.helper.AndroidUtils;
 import com.rnmap_wb.service.SynchronizeCenter;
 import com.rnmap_wb.url.HttpUrl;
+import com.rnmap_wb.utils.StorageUtils;
+import com.vector.update_app.UpdateAppBean;
+import com.vector.update_app.UpdateAppManager;
+import com.vector.update_app.UpdateCallback;
 
-import java.util.Arrays;
-import java.util.Comparator;
+import java.io.File;
 import java.util.List;
 
 import butterknife.Bind;
@@ -35,12 +44,22 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
 
     private static final int REQUEST_LOGIN = 999;
     private static final int REQUEST_MAP = 998;
+
+
     @Bind(R.id.listview)
-    ListView listView;
+    ExpandableListView listView;
+
+
+    @Bind(R.id.mytask)
+    View mytask;
+
+    @Bind(R.id.update)
+    View update;
+
     @Bind(R.id.downloadtask)
     View downloadtask;
 
-    AbstractAdapter<Task> homeTaskAdapter;
+    HomeTaskAdapter homeTaskAdapter;
 
     public static void start(Activity activity) {
         Intent intent = new Intent(activity, HomeActivity.class);
@@ -71,20 +90,91 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
             }
         });
 
-        homeTaskAdapter = new HomeTaskAdapter(this);
-        listView.setAdapter(homeTaskAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        homeTaskAdapter = new HomeTaskAdapter(this, new HomeTaskAdapter.ItemListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-
-                Task task = (Task) parent.getItemAtPosition(position);
-
-                ProjectTaskDetailActivity.start(HomeActivity.this, task, REQUEST_MAP);
+            public void onFeedBack(final Task task) {
+                if (SynchronizeCenter.waitForFeedBack(task)) return;
+                FeedBackDialog.start(HomeActivity.this, task);
 
 
             }
+
+            @Override
+            public void download(final Task task) {
+                final String filePath = StorageUtils.getFilePath(task.name + ".kml");
+                if (new File(filePath).exists()) {
+
+                    OffLineHelper.showOfflineAlert(HomeActivity.this, task, filePath, false);
+
+
+                } else {
+                    showWaiting();
+                    UseCaseFactory.getInstance().createDownloadUseCase(task.kml, filePath).execute(new UseCaseHandler() {
+                        @Override
+                        public void onError(Throwable e) {
+                            hideWaiting();
+                            ToastHelper.show(e.getMessage());
+                        }
+
+                        @Override
+                        public void onNext(Object object) {
+
+                        }
+
+                        @Override
+                        public void onCompleted() {
+
+                            hideWaiting();
+
+
+                            OffLineHelper.showOfflineAlert(HomeActivity.this, task, filePath, false);
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void view(final Task task) {
+
+                final String filePath = StorageUtils.getFilePath(task.name + ".kml");
+                if (new File(filePath).exists()) {
+                    MapWorkActivity.start(HomeActivity.this, task, filePath, 0);
+                } else {
+                    showWaiting();
+                    UseCaseFactory.getInstance().createDownloadUseCase(task.kml, filePath).execute(new UseCaseHandler() {
+                        @Override
+                        public void onError(Throwable e) {
+                            hideWaiting();
+                            ToastHelper.show(e.getMessage());
+                        }
+
+                        @Override
+                        public void onNext(Object object) {
+
+                        }
+
+                        @Override
+                        public void onCompleted() {
+
+                            hideWaiting();
+                            MapWorkActivity.start(HomeActivity.this, task, filePath, 0);
+
+                        }
+                    });
+
+                }
+
+
+            }
+
+            @Override
+            public void onDetail(Task task) {
+                ProjectTaskDetailActivity.start(HomeActivity.this, task, REQUEST_MAP);
+            }
         });
+        listView.setAdapter(homeTaskAdapter);
+
         downloadtask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,11 +184,75 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
 
             }
         });
+        update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                checkUpdate();
+            }
+        });
+        mytask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                closeDrawer();
+
+
+            }
+        });
         reloadData();
+
+
+        //读取更新数据
+
+        checkUpdate();
 
 //        Intent serviceIntent = new Intent(this, DownloadManagerService.class);
 //        serviceIntent.putExtra(IntentConst.KEY_WAKE_DOWNLOAD,99l);
 //        startService(serviceIntent);
+    }
+
+
+    private void checkUpdate() {
+        UpdateAppManager build = new UpdateAppManager
+                .Builder()
+                //当前Activity
+                .setActivity(this)
+                .setPost(true)
+                //更新地址
+                .setUpdateUrl(HttpUrl.getAppUpdateInfo())
+                //实现httpManager接口的对象
+                .setHttpManager(new UpdateAppHttpUtil()).build();
+        build.checkNewApp(new UpdateCallback() {
+
+
+            @Override
+            protected UpdateAppBean parseJson(String json) {
+                UpdateAppBean updateAppBean = new UpdateAppBean();
+
+                VersionData versionData = GsonUtils.fromJson(json, VersionData.class);
+                updateAppBean
+                        //（必须）是否更新Yes,No
+                        .setUpdate(versionData.version_num > AndroidUtils.getVersionCode() ? "Yes" : "No")
+                        //（必须）新版本号，
+                        .setNewVersion(versionData.version)
+                        //（必须）下载地址
+                        .setApkFileUrl(versionData.down_url)
+                        //（必须）更新内容
+                        .setUpdateLog(versionData.message)
+                        //大小，不设置不显示大小，可以不设置
+                        .setTargetSize("")
+                        //是否强制更新，可以不设置
+                        .setConstraint(false)
+                        //设置md5，可以不设置
+                        .setNewMd5("");
+
+                return updateAppBean;
+
+            }
+        });
+        build.update();
     }
 
     @Override
@@ -130,7 +284,10 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
     }
 
     private void reloadData() {
-        UseCaseFactory.getInstance().createPostUseCase(HttpUrl.getProjectTasks(), Task.class).execute(new DefaultUseCaseHandler<RemoteData<Task>>() {
+
+        String projectTaskUrl = HttpUrl.getProjectTasks();
+        String cacheFile = StorageUtils.getFilePath("cache" + File.separator + String.valueOf(projectTaskUrl.hashCode()));
+        UseCaseFactory.getInstance().createPostUseCase(projectTaskUrl, cacheFile, Directory.class).execute(new DefaultUseCaseHandler<RemoteData<Directory>>() {
 
 
             @Override
@@ -140,34 +297,17 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
             }
 
             @Override
-            public void onNext(RemoteData<Task> remoteData) {
+            public void onNext(RemoteData<Directory> remoteData) {
 
 
                 if (remoteData.isSuccess()) {
-                    List<Task> data = remoteData.data;
-
-                    Task[] sortlist=new Task[data.size()];
-                    for (int i = 0; i < data.size(); i++) {
-                        sortlist[i]=data.get(i);
-
-                    }
-                    Arrays.sort(sortlist, new Comparator<Task>() {
-                        @Override
-                        public int compare(Task task1, Task task2) {
-
-                            int i = task1.dir_id.compareTo(task2.dir_id);
-                            if(i!=0) return i;
-                            int result=task1.created.compareTo(task2.created);
-                                    return result;
-
-                        }
-                    });
-                    data=Arrays.asList(sortlist);
+                    List<Directory> data = remoteData.data;
 
 
-                    homeTaskAdapter.setDataArray(data);
-                }
-                else if (remoteData.errno == RemoteData.CODE_UNLOGIN || remoteData.errno == 9998) {
+                    homeTaskAdapter.setDatas(data);
+                    if (data.size() > 0)
+                        listView.expandGroup(0);
+                } else if (remoteData.errno == RemoteData.CODE_UNLOGIN || remoteData.errno == 9998) {
                     LoginActivity.start(HomeActivity.this, REQUEST_LOGIN);
                 } else
 

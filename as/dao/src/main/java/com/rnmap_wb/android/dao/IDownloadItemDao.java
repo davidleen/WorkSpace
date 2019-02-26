@@ -46,6 +46,8 @@ public class IDownloadItemDao {
     }
 
     public void saveAll(List<DownloadItem> downloadItems) {
+
+         
         dao.saveInTx(downloadItems);
     }
 
