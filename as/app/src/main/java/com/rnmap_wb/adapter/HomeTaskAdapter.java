@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
+import com.giants3.android.frame.util.Utils;
 import com.rnmap_wb.R;
 import com.rnmap_wb.android.data.Directory;
 import com.rnmap_wb.android.data.Task;
@@ -95,7 +96,7 @@ public class HomeTaskAdapter extends BaseExpandableListAdapter {
             convertView = inflate;
 
         }
-        viewHolder.bindData(getGroup(groupPosition),isExpanded);
+        viewHolder.bindData(getGroup(groupPosition), isExpanded);
 
 
         return convertView;
@@ -118,7 +119,7 @@ public class HomeTaskAdapter extends BaseExpandableListAdapter {
             convertView = inflate;
 
         }
-        viewHolder.bindData(getChild(groupPosition, childPosition));
+        viewHolder.bindData(getChild(groupPosition, childPosition),groupPosition,childPosition);
 
         return convertView;
     }
@@ -148,6 +149,8 @@ public class HomeTaskAdapter extends BaseExpandableListAdapter {
 
         @Bind(R.id.feedback)
         TextView feedback;
+        @Bind(R.id.divider)
+        View divider;
 
 //        @Bind(R.id.kml)
 //        TextView kml;
@@ -157,8 +160,7 @@ public class HomeTaskAdapter extends BaseExpandableListAdapter {
             this.itemListener = itemListener;
             try {
                 ButterKnife.bind(this, v);
-            }catch (Throwable t)
-            {
+            } catch (Throwable t) {
                 t.printStackTrace();
             }
 
@@ -170,8 +172,7 @@ public class HomeTaskAdapter extends BaseExpandableListAdapter {
         }
 
 
-        public void bindData(Task data) {
-
+        public void bindData(Task data, int groupIndex, int childIndex) {
 
 
             name.setText(data.name);
@@ -184,7 +185,9 @@ public class HomeTaskAdapter extends BaseExpandableListAdapter {
             feedback.setTag(data);
 
 
-            feedback.setText(!SynchronizeCenter.waitForFeedBack(data)?"反馈":"待同步");
+            feedback.setText(!SynchronizeCenter.waitForFeedBack(data) ? "反馈" : "待同步");
+
+            divider.getLayoutParams().height = Utils.dp2px(childIndex == 0 ? 2 : 10);
 
         }
 
@@ -219,23 +222,20 @@ public class HomeTaskAdapter extends BaseExpandableListAdapter {
         TextView dir_name;
 
 
-        public GroupViewHolder(View v ) {
+        public GroupViewHolder(View v) {
 
 
             try {
                 ButterKnife.bind(this, v);
-            }catch (Throwable t)
-            {
+            } catch (Throwable t) {
                 t.printStackTrace();
             }
-
 
 
         }
 
 
-        public void bindData(Directory data,boolean  isExpand) {
-
+        public void bindData(Directory data, boolean isExpand) {
 
 
             dir_name.setText(data.dir_name);

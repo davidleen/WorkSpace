@@ -24,6 +24,7 @@ import com.rnmap_wb.android.dao.DaoManager;
 import com.rnmap_wb.android.data.ProjectReply;
 import com.rnmap_wb.android.data.RemoteData;
 import com.rnmap_wb.android.data.Task;
+import com.rnmap_wb.service.SynchronizeCenter;
 import com.rnmap_wb.url.HttpUrl;
 import com.rnmap_wb.utils.IntentConst;
 import com.rnmap_wb.utils.StorageUtils;
@@ -88,7 +89,7 @@ public class ProjectTaskDetailActivity extends BaseMvpActivity {
         task = GsonUtils.fromJson(getIntent().getStringExtra(IntentConst.KEY_TASK_DETAIL), Task.class);
 
         showTask(task);
-        final String filePath = StorageUtils.getFilePath(task.name + ".kml");
+        final String filePath =SynchronizeCenter.getKmlFilePath(task); ;
 
         kml.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,7 +146,37 @@ public class ProjectTaskDetailActivity extends BaseMvpActivity {
             public void onClick(View v) {
 
 
-                MapWorkActivity.start(ProjectTaskDetailActivity.this, task, filePath, RQUEST_MAP);
+
+                if (new File(filePath).exists()) {
+
+                    MapWorkActivity.start(ProjectTaskDetailActivity.this, task, filePath, RQUEST_MAP);
+
+                } else {
+                    showWaiting();
+                    UseCaseFactory.getInstance().createDownloadUseCase(task.kml, filePath).execute(new UseCaseHandler() {
+                        @Override
+                        public void onError(Throwable e) {
+                            hideWaiting();
+                            ToastHelper.show(e.getMessage());
+                        }
+
+                        @Override
+                        public void onNext(Object object) {
+
+                        }
+
+                        @Override
+                        public void onCompleted() {
+
+                            hideWaiting();
+
+                            MapWorkActivity.start(ProjectTaskDetailActivity.this, task, filePath, RQUEST_MAP);
+
+                        }
+                    });
+
+                }
+
             }
         });
 
@@ -154,7 +185,7 @@ public class ProjectTaskDetailActivity extends BaseMvpActivity {
         offLine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String filePath = StorageUtils.getFilePath(task.name + ".kml");
+                final String filePath =SynchronizeCenter.getKmlFilePath(task);  ;
 
                 OffLineHelper.showOfflineAlert(ProjectTaskDetailActivity.this, task,filePath,false);
 

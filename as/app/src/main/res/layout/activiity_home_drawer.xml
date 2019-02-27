@@ -141,6 +141,8 @@
             android:background="@color/line" />
 
         <TextView
+
+            android:id="@+id/about"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -160,6 +162,7 @@
 
 
     <TextView
+        android:id="@+id/switchId"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -167,7 +170,7 @@
         android:gravity="center"
 
         android:padding="10dp"
-        android:text="退出登录"
+        android:text="切换登录"
         android:textColor="@color/read" />
 
 

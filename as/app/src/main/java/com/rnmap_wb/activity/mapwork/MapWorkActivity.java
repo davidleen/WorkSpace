@@ -192,7 +192,6 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) topbar.getLayoutParams();
         layoutParams.topMargin = SmartBarUtils.getStatusBarHeight(this);
         topbar.setLayoutParams(layoutParams);
-        zoomlevel.setVisibility(BuildConfig.DEBUG?View.VISIBLE:View.GONE);
         onMapPrepare();
         zoomController.setZoomAvailable(true);
         myLocationHelper.addMyLocation();
@@ -211,14 +210,26 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
             @Override
             public boolean onZoom(ZoomEvent event) {
 
-                zoomlevel.setText("zoom:"+(int)event.getZoomLevel());
+                zoomlevel.setText( ""+(int)event.getZoomLevel());
+
 
                 return super.onZoom(event);
+
 
             }
         });
 
         markerInfoWindow=new MarkerInfoWindow(R.layout.layout_info_view,mapView);
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                zoomlevel.setText(""+mapView.getZoomLevel());
+            }
+        });
+
+
     }
 
 
@@ -228,12 +239,26 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
         return new MapWorkPresenterImpl();
     }
 
+    private void closeMarkerInfoWindow()
+    {
+        try {
+            if(markerInfoWindow.isOpen())
+            {
+
+                markerInfoWindow.close();
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public class OverlayWithIWClickListener implements Polyline.OnClickListener, Marker.OnMarkerClickListener, Polygon.OnClickListener {
 
         @Override
         public boolean onMarkerClick(final Marker marker, MapView mapView) {
 
-
+            closeMarkerInfoWindow();
 
             final MapElement mapElement = objectMapElementHashMap.get(marker);
             if(mapElement!=null) {
@@ -270,6 +295,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                         getPresenter().requestFeekBack(LatLngUtil.convertGeoPointToString(marker.getPosition()));
                     }
                 });
+
 
 //                //kml标记文件
 //                String[] menu=new String[]{"反馈"};
@@ -570,11 +596,11 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                 }
                 Log.e("parse result:" + b+",time:"+(Calendar.getInstance().getTimeInMillis()-time));
 //
-                if (!b) {
-                 b = kmlDocument.parseKMLStream(getResources().openRawResource(R.raw.k00002), null);
-                    //b = kmlDocument.parseKMLStream(getResources().openRawResource(R.raw.campus), null);
-                     //b = kmlDocument.parseKMLStream(getResources().openRawResource(R.raw.kmlgeometrytest), null);
-                }
+//                if (!b) {
+//                 b = kmlDocument.parseKMLStream(getResources().openRawResource(R.raw.k00002), null);
+//                    //b = kmlDocument.parseKMLStream(getResources().openRawResource(R.raw.campus), null);
+//                     //b = kmlDocument.parseKMLStream(getResources().openRawResource(R.raw.kmlgeometrytest), null);
+//                }
 
 
                 parserResult = b;
@@ -824,10 +850,10 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                 setOnlineState();
 
                 break;
-//            case R.id.mylocation:
-//
-//                tryLocation();
-//                break;
+            case R.id.mylocation:
+
+                tryLocation();
+                break;
             case R.id.clear:
 
                 AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage("确定移除当前所有标记？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -865,6 +891,8 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
     private void tryLocation() {
 
 
+
+        myLocationHelper.getLocation(this);
 //        LocationManager service = (LocationManager)
 //
 //                getSystemService(LOCATION_SERVICE);
@@ -1022,6 +1050,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                 Marker marker = new Marker(mapView);
                 marker.setTitle(element.name);
                 marker.setPosition(geoPoint);
+                marker.setIcon(getResources().getDrawable(R.drawable.icon_map_mark));
                 marker.setSnippet(element.memo);
                 marker.setOnMarkerClickListener(clickListener);
                marker.getInfoWindow().getView().setOnClickListener(new View.OnClickListener() {

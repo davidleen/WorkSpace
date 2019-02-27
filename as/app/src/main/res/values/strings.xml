@@ -8,4 +8,5 @@
 
     <string name="permission_camera_neverask">你已经限制应用使用相机功能，请去应用管理授权</string>
     <string name="permission_camera">应用需要使用相机功能</string>
+    <string name="title_activity_about">AboutActivity</string>
 </resources>

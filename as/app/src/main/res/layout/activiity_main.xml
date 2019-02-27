@@ -105,15 +105,7 @@
         </LinearLayout>
 
 
-        <ImageView
-            android:id="@+id/mylocation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginRight="30dp"
-            android:layout_marginBottom="100dp"
-            android:src="@drawable/icon_location" />
+
 
 
 
@@ -304,7 +296,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_white_rect"
             android:layout_marginRight="15dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="45dp"
             android:drawableTop="@drawable/icon_feedback"
 
             android:layout_alignParentBottom="true"
@@ -315,15 +307,68 @@
             android:textColor="@color/uniform_color_1"
             android:textSize="12sp" />
 
+
+
+
+
+
+
+
+
+
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="15dp"
+            android:gravity="center"
+            android:layout_marginBottom="30dp"
+            android:layout_height="wrap_content">
+
+
+
+            <TextView
+                android:id="@+id/zoomlevel"
+
+                android:layout_width="37dp"
+                android:layout_height="20dp"
+                android:textSize="11sp"
+                android:gravity="center"
+                android:background="@color/uniform_1"
+                android:textColor="@color/white"
+                android:layout_marginTop="400dp"
+                  />
+
+
+            <ImageView
+
+                android:id="@+id/play"
+                android:layout_width="37dp"
+                android:src="@drawable/icon_map_play"
+                android:scaleType="center"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/bg_white_rect"
+                android:layout_height="37dp" />
+            <ImageView
+
+                android:id="@+id/mylocation"
+                android:layout_width="37dp"
+                android:layout_marginTop="5dp"
+                android:src="@drawable/icon_map_locate_selector"
+                android:scaleType="center"
+                android:background="@drawable/bg_white_rect"
+                android:layout_height="37dp" />
+
+        </LinearLayout>
+
     </RelativeLayout>
 
 
-    <TextView
-        android:id="@+id/zoomlevel"
-        android:layout_width="100dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="400dp"
-        android:visibility="gone" />
+
 
 
 

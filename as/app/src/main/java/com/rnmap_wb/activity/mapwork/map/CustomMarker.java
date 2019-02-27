@@ -98,7 +98,7 @@ public class CustomMarker extends org.osmdroid.views.overlay.Marker {
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 
-                if (imageUri.equals(getIconUrl())) {
+                if (imageUri!=null&&imageUri.equals(getIconUrl())) {
 //                    int sizeX = Math.round(loadedImage.getWidth() * iconStyle.mScale);
 //                    int sizeY = Math.round(loadedImage.getHeight() * iconStyle.mScale);
 //

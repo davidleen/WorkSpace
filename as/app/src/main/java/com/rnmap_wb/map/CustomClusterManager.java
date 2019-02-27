@@ -197,7 +197,7 @@ public class CustomClusterManager implements MapListener {
         for (Cluster<GeoObjectItem> cluster : clusters) {
 
             Collection<GeoObjectItem> items = cluster.getItems();
-            if (cluster.getSize() <50) {
+            if (cluster.getSize() <50||mapView.getZoomLevel()>15) {
                 geoObjectItems.addAll(items);
             } else {
 

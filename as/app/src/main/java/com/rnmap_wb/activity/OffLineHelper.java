@@ -1,6 +1,5 @@
 package com.rnmap_wb.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
@@ -10,7 +9,6 @@ import com.giants3.android.ToastHelper;
 import com.giants3.android.frame.util.Log;
 import com.rnmap_wb.BuildConfig;
 import com.rnmap_wb.LatLngUtil;
-import com.rnmap_wb.R;
 import com.rnmap_wb.activity.mapwork.MapWorkActivity;
 import com.rnmap_wb.activity.mapwork.TileUrlHelper;
 import com.rnmap_wb.android.dao.DaoManager;
@@ -37,7 +35,7 @@ public class OffLineHelper {
         final String[] s = new String[maxZoom - minzoom];
         for (int i = 0; i < s.length; i++) {
 
-            s[i] = String.valueOf((int) (minzoom + i+1));
+            s[i] = String.valueOf((int) (minzoom + i + 1));
         }
         AlertDialog alertDialog = new AlertDialog.Builder(activity).setTitle("下载kml对应的离线地图？(选择地图层级)")
 
@@ -48,7 +46,7 @@ public class OffLineHelper {
                         Log.e(which);
 
                         Integer fromZoom = Integer.valueOf(s[which]);
-                        startOffLineTask(activity,task, kmlFilePath, Math.max(minzoom, fromZoom - 1), Math.min(fromZoom + 1, maxZoom),viewNow);
+                        startOffLineTask(activity, task, kmlFilePath, Math.max(minzoom, fromZoom - 1), Math.min(fromZoom + 1, maxZoom), viewNow);
 
 
                     }
@@ -70,7 +68,7 @@ public class OffLineHelper {
 
     }
 
-    public  static void startOffLineTask(final BaseMvpActivity activity, final Task task, final String kmlFilePath, final int fromZoom, final int toZoom, final boolean viewNow) {
+    public static void startOffLineTask(final BaseMvpActivity activity, final Task task, final String kmlFilePath, final int fromZoom, final int toZoom, final boolean viewNow) {
         activity.showWaiting();
         new AsyncTask<Void, Void, KmlDocument>() {
 
@@ -88,14 +86,9 @@ public class OffLineHelper {
                 }
 
 //
-                if (!b) {
-                      b = kmlDocument.parseKMLStream(activity.getResources().openRawResource(R.raw.k00002), null);
-                    //b = kmlDocument.parseKMLStream(getResources().openRawResource(R.raw.campus), null);
-                   //  b = kmlDocument.parseKMLStream(getResources().openRawResource(R.raw.kmlgeometrytest), null);
-                }
-
 
                 parserResult = b;
+                if (parserResult) return null;
 
                 Log.e("parse result:" + b);
 
@@ -106,7 +99,7 @@ public class OffLineHelper {
 
                 DownloadTask downloadTask = new DownloadTask();
                 downloadTask.setCreateTime(Calendar.getInstance().getTime().toString());
-                downloadTask.setName(ProjectTaskDetailActivity.DOWNLOADNAME +"-"+ task.name + "，层级：" + fromZoom + "-" + toZoom);
+                downloadTask.setName(ProjectTaskDetailActivity.DOWNLOADNAME + "-" + task.name + "，层级：" + fromZoom + "-" + toZoom);
 
                 downloadTask.setLatLngs("");
 //                int fromZoom = 1;
@@ -164,13 +157,18 @@ public class OffLineHelper {
             @Override
             protected void onPostExecute(KmlDocument kmlDocument) {
 
+                if (parserResult) {
+                    ToastHelper.show("kml文件解析失败");
+                    return;
+                }
+
                 activity.hideWaiting();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     if (activity.isDestroyed()) return;
                 }
 
                 ToastHelper.show("kml离线地图已经加入下载队列。");
-                if(viewNow)
+                if (viewNow)
                     MapWorkActivity.start(activity, task, kmlFilePath, ProjectTaskDetailActivity.RQUEST_MAP);
 
 

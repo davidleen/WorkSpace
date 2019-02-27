@@ -14,6 +14,7 @@ import com.giants3.android.reader.domain.GsonUtils;
 import com.giants3.android.reader.domain.UseCaseFactory;
 import com.giants3.android.reader.domain.UseCaseHandler;
 import com.rnmap_wb.R;
+import com.rnmap_wb.activity.AboutActivity;
 import com.rnmap_wb.activity.BaseMvpActivity;
 import com.rnmap_wb.activity.DownloadTaskListActivity;
 import com.rnmap_wb.activity.FeedBackDialog;
@@ -52,6 +53,12 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
 
     @Bind(R.id.mytask)
     View mytask;
+
+    @Bind(R.id.switchId)
+    View switchId;
+
+    @Bind(R.id.about)
+    View about;
 
     @Bind(R.id.update)
     View update;
@@ -101,7 +108,7 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
 
             @Override
             public void download(final Task task) {
-                final String filePath = StorageUtils.getFilePath(task.name + ".kml");
+                final String filePath = SynchronizeCenter.getKmlFilePath(task);
                 if (new File(filePath).exists()) {
 
                     OffLineHelper.showOfflineAlert(HomeActivity.this, task, filePath, false);
@@ -137,7 +144,8 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
             @Override
             public void view(final Task task) {
 
-                final String filePath = StorageUtils.getFilePath(task.name + ".kml");
+                final String filePath = SynchronizeCenter.getKmlFilePath(task);
+                ;
                 if (new File(filePath).exists()) {
                     MapWorkActivity.start(HomeActivity.this, task, filePath, 0);
                 } else {
@@ -189,7 +197,7 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
             public void onClick(View v) {
 
 
-                checkUpdate();
+                checkUpdate(false);
             }
         });
         mytask.setOnClickListener(new View.OnClickListener() {
@@ -201,12 +209,32 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
 
             }
         });
+
+        switchId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                LoginActivity.start(HomeActivity.this, REQUEST_LOGIN);
+
+            }
+        });
+
+        about.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                AboutActivity.start(HomeActivity.this);
+            }
+        });
+
         reloadData();
 
 
         //读取更新数据
 
-        checkUpdate();
+        checkUpdate(true);
 
 //        Intent serviceIntent = new Intent(this, DownloadManagerService.class);
 //        serviceIntent.putExtra(IntentConst.KEY_WAKE_DOWNLOAD,99l);
@@ -214,7 +242,7 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
     }
 
 
-    private void checkUpdate() {
+    private void checkUpdate(final boolean silence) {
         UpdateAppManager build = new UpdateAppManager
                 .Builder()
                 //当前Activity
@@ -226,6 +254,13 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
                 .setHttpManager(new UpdateAppHttpUtil()).build();
         build.checkNewApp(new UpdateCallback() {
 
+            @Override
+            protected void noNewApp(String error) {
+
+                if (!silence) {
+                    ToastHelper.show(error);
+                }
+            }
 
             @Override
             protected UpdateAppBean parseJson(String json) {
@@ -252,6 +287,8 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
 
             }
         });
+
+
         build.update();
     }
 

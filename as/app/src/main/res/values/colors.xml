@@ -14,4 +14,7 @@
 
     <color name="transparent_background">#55000000</color>
     <color name="uniform_1">#23c7be</color>
+
+
+    <color name="home_adapter_divider">#eeeeee</color>
 </resources>

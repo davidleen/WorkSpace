@@ -262,4 +262,11 @@ public class SynchronizeCenter {
 
         return new File(getTaskUpdateStateFilePath(task)).exists();
     }
+
+
+    public static String getKmlFilePath(Task task)
+    {
+            return      StorageUtils.getFilePath(task.id+task.dir_id + ".kml");
+
+    }
 }

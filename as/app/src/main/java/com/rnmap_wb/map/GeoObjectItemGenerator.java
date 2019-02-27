@@ -198,6 +198,9 @@ public class GeoObjectItemGenerator {
         } else
 
           marker = new CustomMarker(mapView);
+
+
+        marker.setIcon(mapView.getContext().getResources().getDrawable(R.drawable.icon_map_mark));
         return marker;
 
     }

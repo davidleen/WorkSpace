@@ -296,14 +296,17 @@ public class ApiConnection implements ResApi {
             inputStream = body.byteStream();
 
             outputStream = new FileOutputStream(tempFilePath);
-            FileUtils.copyStream(inputStream, outputStream, new com.giants3.android.network.ProgressListener() {
+            com.giants3.android.network.ProgressListener wrapListener =listener==null?null: new com.giants3.android.network.ProgressListener() {
                 @Override
                 public void onProgressUpdate(long current, long totalLength) {
-                    listener.onProgressUpdate(current,contentLength);
+                    if (listener != null)
+                        listener.onProgressUpdate(current, contentLength);
                 }
-            });
+            };
+            FileUtils.copyStream(inputStream, outputStream, wrapListener);
             outputStream.flush();
         } catch (Throwable t) {
+            t.printStackTrace();
         } finally {
             FileUtils.safeClose(outputStream);
             FileUtils.safeClose(inputStream);
