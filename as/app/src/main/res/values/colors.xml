@@ -6,7 +6,8 @@
 
 
     <color name="line">@color/uniform_color_2</color>
-    <color name="uniform_color_2">#999999</color>
+    <color name="uniform_color_2">#666666</color>
+    <color name="uniform_color_3">#999999</color>
     <color name="white">#ffffff</color>
     <color name="read" >#FF0000</color>
     <color name="uniform_color_1">#333333</color>
@@ -14,6 +15,7 @@
 
     <color name="transparent_background">#55000000</color>
     <color name="uniform_1">#23c7be</color>
+    <color name="uniform_2">#99c7be</color>
 
 
     <color name="home_adapter_divider">#eeeeee</color>

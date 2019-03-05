@@ -2,44 +2,54 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingTop="19dp"
+    android:paddingRight="15dp"
+    android:paddingBottom="19dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:gravity="center">
 
-        android:padding="10dp">
-
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:inputType="textEmailAddress"
-            android:text="任务名称"
-            android:textColor="@color/uniform_color_2"
-            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
             android:layout_weight="1"
-            android:inputType="text" />
+            android:textColor="@color/uniform_color_1"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="10dp">
+        android:layout_marginTop="10dp"
+        android:gravity="center">
+
+
+        <TextView
+            android:id="@+id/createTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="#999999"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="27dp"
+        android:gravity="center">
 
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:gravity="right"
             android:inputType="textEmailAddress"
             android:text="发件人"
             android:textColor="@color/uniform_color_2"
@@ -51,44 +61,22 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_weight="1"
-            android:inputType="text" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="10dp">
-
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:inputType="textEmailAddress"
-            android:text="发送时间"
             android:textColor="@color/uniform_color_2"
             android:textSize="14sp" />
 
-        <TextView
-            android:id="@+id/createTime"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_weight="1" />
-
     </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="10dp">
+        android:layout_marginTop="15dp"
+        android:gravity="center">
 
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:gravity="right"
+            android:layout_gravity="top"
             android:text="说明"
             android:textColor="@color/uniform_color_2"
             android:textSize="14sp" />
@@ -99,20 +87,27 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_weight="1"
-            android:inputType="text" />
+            android:minHeight="60dp"
+            android:textColor="@color/uniform_color_2"
+            android:textSize="14sp" />
 
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="15dp"
+        android:background="#cccccc" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="10dp">
+        android:layout_marginTop="20dp"
+        android:gravity="center">
 
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:gravity="right"
             android:text="KML文件"
             android:textColor="@color/uniform_color_2"
             android:textSize="14sp" />
@@ -123,8 +118,10 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_weight="1"
-            android:inputType="text"
-            android:maxLines="3" />
+            android:text=""
+
+            android:textColor="@color/uniform_color_1"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
@@ -133,7 +130,6 @@
         android:id="@+id/kml"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
         android:background="@drawable/bg_green_selector"
         android:gravity="center"
         android:padding="10dp"

@@ -42,7 +42,7 @@ public class IDownloadTaskDao {
 
     public void save(DownloadTask downloadTask) {
 
-         dao.save(downloadTask);
+        dao.save(downloadTask);
     }
 
     public DownloadTask load(long taskId) {
@@ -64,5 +64,11 @@ public class IDownloadTaskDao {
         return downloadItems;
 
 
+    }
+
+    public void removeAll() {
+
+
+        dao.deleteAll();
     }
 }

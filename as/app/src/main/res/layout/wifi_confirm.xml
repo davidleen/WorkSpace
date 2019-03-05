@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="取消"
-            android:textColor="@color/uniform_color_2" />
+            android:textColor="@color/uniform_color_3" />
 
         <TextView
             android:layout_width="0dp"

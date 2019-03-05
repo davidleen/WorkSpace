@@ -287,6 +287,7 @@ public class ApiConnection implements ResApi {
 
         String tempFilePath = filePath + "_temp";
         ResponseBody body = getResponseBody(url);
+
         InputStream inputStream = null;
         FileOutputStream outputStream = null;
         try {

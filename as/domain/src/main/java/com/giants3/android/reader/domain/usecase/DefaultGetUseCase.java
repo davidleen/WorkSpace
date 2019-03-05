@@ -55,6 +55,7 @@ public class DefaultGetUseCase<T> extends DefaultUseCase {
                         } catch (Throwable t) {
 
                             t.printStackTrace();
+                            subscriber.onError(new Exception("download fail :"+t.getLocalizedMessage()));
                         } finally {
 
                         }

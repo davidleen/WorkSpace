@@ -20,13 +20,41 @@ public class DaoManager {
     public void init(Context application) {
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(application, application.getPackageName() + "-db");
         Database db = helper.getWritableDb();
-        daoSession = new DaoMaster(db).newSession();
+        DaoMaster daoMaster = new DaoMaster(db);
+
+        daoSession = daoMaster.newSession();
+
 
 //        DaoMaster.DevOpenHelper temp = new DaoMaster.DevOpenHelper(application, "map.mbtiles");
 //        Database database = temp.getWritableDb();
 //        mapTileDaoSession = new DaoMaster(database).newSession();
     }
 
+
+    public void beginTransaction()
+    {
+
+            daoSession.getDatabase().beginTransaction();
+
+
+    }
+
+    public void endTransaction()
+    {
+
+        daoSession.getDatabase().endTransaction();
+
+
+    }
+
+
+    public void commitTransaction()
+    {
+
+        daoSession.getDatabase().setTransactionSuccessful();
+
+
+    }
 
     public IDownloadTaskDao getDownloadTaskDao() {
 

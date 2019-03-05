@@ -27,6 +27,7 @@ import com.rnmap_wb.activity.BaseMvpActivity;
 import com.rnmap_wb.activity.FeedBackDialog;
 import com.rnmap_wb.activity.home.HomeActivity;
 import com.rnmap_wb.activity.mapwork.map.Circle;
+import com.rnmap_wb.activity.mapwork.map.CustomPolyline;
 import com.rnmap_wb.android.data.Task;
 import com.rnmap_wb.entity.MapElement;
 import com.rnmap_wb.immersive.SmartBarUtils;
@@ -100,6 +101,8 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
     View viewDownLoad;
     @Bind(R.id.switchMap)
     View switchMap;
+    @Bind(R.id.task_name)
+    TextView task_name;
     //    private ClusterManager<GeoObjectItem> mClusterManager;
 //    private TileOverlay tileOverlay;
     String kmlFilePath;
@@ -167,6 +170,8 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
             task.dir_name = "task_dir_name_fffff";
         }
         getPresenter().prepare(task);
+
+        task_name.setText(task.name);
         myLocationHelper = new MyLocationHelper(this, mapView);
         zoomController = new ZoomControllerHelper(this, mapView);
 
@@ -969,7 +974,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
     }
 
 
-    Polyline tempPolyline = null;
+    CustomPolyline tempPolyline = null;
 
     @Override
     public void showPolyLine(List<GeoPoint> polyLinePositions) {
@@ -977,11 +982,10 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
         if (polyLinePositions == null || polyLinePositions.size() <= 1) return;
         if (tempPolyline == null) {
-            tempPolyline = new Polyline();
+            tempPolyline = new CustomPolyline();
             mapView.getOverlays().add(tempPolyline);
         }
-        tempPolyline.setPoints(polyLinePositions);
-        tempPolyline.setVisible(true);
+        tempPolyline.setGeoPoints(polyLinePositions);
         mapView.invalidate();
 
 
@@ -1072,11 +1076,11 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
             break;
             case MapElement.TYPE_POLYLINE: {
 
-                Polyline polyline = new Polyline(mapView);
+                CustomPolyline polyline = new CustomPolyline( );
                 polyline.setTitle(element.name);
-                polyline.setPoints(latLngs);
+                polyline.setGeoPoints(latLngs);
                 polyline.setSnippet(element.memo);
-                polyline.setOnClickListener(clickListener);
+                //polyline.setOnClickListener(clickListener);
                 mapView.getOverlays().add(polyline);
                 mapView.invalidate();
                 o = polyline;

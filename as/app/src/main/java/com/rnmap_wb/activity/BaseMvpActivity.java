@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,6 +21,8 @@ import com.giants3.android.mvp.Viewer;
 import com.rnmap_wb.R;
 import com.rnmap_wb.immersive.SmartBarUtils;
 import com.rnmap_wb.widget.NavigationBarController;
+
+import java.util.Calendar;
 
 public abstract class BaseMvpActivity<P extends Presenter> extends BaseActivity implements Viewer {
     P presenter;
@@ -44,6 +47,7 @@ public abstract class BaseMvpActivity<P extends Presenter> extends BaseActivity 
              drawerLayout=new DrawerLayout(this);
             drawerLayout.addView(contentView);
             View drawer=LayoutInflater.from(this).inflate(getDrawContent(),null);
+            drawer.setClickable(true);
             drawer.findViewById(R.id.drawer_head).setPadding(0,SmartBarUtils.getStatusBarHeight(this),0,0);
             DrawerLayout.LayoutParams  layoutParams=new DrawerLayout.LayoutParams(Utils.dp2px(this,300),DrawerLayout.LayoutParams.MATCH_PARENT);
             layoutParams.gravity=Gravity.START;
@@ -145,4 +149,7 @@ public abstract class BaseMvpActivity<P extends Presenter> extends BaseActivity 
     public Context getContext() {
         return this;
     }
+
+
+
 }

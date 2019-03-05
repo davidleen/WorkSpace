@@ -139,22 +139,22 @@ public class FileUtils {
 
     public static void copyStream(InputStream inputStream, OutputStream outputStream) throws IOException {
 
-        copyStream(inputStream,outputStream,null);
+        copyStream(inputStream, outputStream, null);
     }
+
     public static void copyStream(InputStream inputStream, OutputStream outputStream, ProgressListener listener) throws IOException {
 
 
-        int copyed=0;
+        int copyed = 0;
         byte[] buffer = new byte[0];
         try {
             buffer = ByteArrayPool.getInstance().getBuf(1024 * 5);
             int size;
             while ((size = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, size);
-                copyed+=size;
-                if(listener!=null)
-                {
-                    listener.onProgressUpdate(copyed,0);
+                copyed += size;
+                if (listener != null) {
+                    listener.onProgressUpdate(copyed, 0);
                 }
                 outputStream.flush();
             }
@@ -237,5 +237,24 @@ public class FileUtils {
         }
         ByteArrayPool.getInstance().returnBuf(bytes);
         return byteArrayOutputStream.toByteArray();
+    }
+
+    public static void deleteAllFiles(File file) {
+
+
+        if (file.exists()) {
+
+            if (file.isDirectory()) {
+                for (File child : file.listFiles()) {
+                    deleteAllFiles(child);
+                }
+
+            }
+
+            file.delete();
+
+        }
+
+
     }
 }

@@ -2,56 +2,152 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:paddingLeft="@dimen/default_padding_left"
-    android:paddingRight="@dimen/default_padding_right"
+    android:layout_height="wrap_content"
+    android:focusable="false"
     android:gravity="center"
-    android:layout_height="wrap_content">
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/default_padding_left"
+    android:paddingRight="@dimen/default_padding_right">
+
+
+    <TextView
+        android:id="@+id/type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:text="正在下载"
+        android:textColor="@color/uniform_color_1"
+        android:textSize="15sp"
+        android:visibility="gone" />
+
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/percent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:gravity="center">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
 
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/downloadCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:text="/"
-                android:layout_height="wrap_content" />
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/uniform_color_1"
 
-            <TextView
-                android:id="@+id/totalCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="10dp">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="离线任务级别"
+                    android:textColor="@color/uniform_color_3"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/zoomlevel"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="1dp"
+                    android:text=""
+                    android:textColor="@color/uniform_color_3"
+                    android:textSize="12sp" />
+
+
+                <TextView
+                    android:id="@+id/downloadCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="40dp"
+                    android:textColor="@color/uniform_color_3"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="/"
+                    android:textColor="@color/uniform_color_3"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/totalCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/uniform_color_3"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
 
+        <LinearLayout
+            android:id="@+id/panel_download"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+
+            <RelativeLayout
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+
+                <com.rnmap_wb.widget.RingBar
+                    android:id="@+id/progress"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true" />
+
+                <ImageView
+                    android:id="@+id/switchState"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+
+
+                    android:layout_centerInParent="true"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/icon_state_change_selector" />
+
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/msg_download"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/uniform_color_3"
+                android:textSize="11sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_complete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="下载完成"
+            android:textColor="@color/uniform_1"
+            android:textSize="14sp" />
+
+
     </LinearLayout>
 
-    <Button
-        android:id="@+id/state"
-        android:focusable="false"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="下载" />
+
 </LinearLayout>

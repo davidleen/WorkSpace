@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.giants3.android.ToastHelper;
+import com.giants3.android.frame.util.FileUtils;
 import com.giants3.android.mvp.BasePresenter;
 import com.giants3.android.mvp.Model;
 import com.giants3.android.mvp.Presenter;
@@ -27,14 +29,21 @@ import com.rnmap_wb.android.entity.DownloadTask;
 import com.rnmap_wb.service.DownLoadBinder;
 import com.rnmap_wb.service.DownloadManagerService;
 
+import java.io.File;
 import java.util.List;
 
 import butterknife.Bind;
 
-public class DownloadTaskListActivity extends BaseMvpActivity implements DownLoadBinder.DownLoadListener {
+import static com.rnmap_wb.map.TileUtil.ASSETS_FILE_PATH;
+
+public class DownloadTaskListActivity extends BaseMvpActivity implements DownLoadBinder.DownLoadListener, View.OnClickListener {
 
     @Bind(R.id.listview)
     ListView listView;
+    @Bind(R.id.clear_map)
+    View clear_map;
+    @Bind(R.id.clear_task)
+    View clear_task;
 
     private DownLoadBinder mBinder;
     private boolean mBound;
@@ -45,6 +54,7 @@ public class DownloadTaskListActivity extends BaseMvpActivity implements DownLoa
 
         Intent intent = new Intent(activity, DownloadTaskListActivity.class);
         activity.startActivity(intent);
+
 
     }
 
@@ -100,6 +110,8 @@ public class DownloadTaskListActivity extends BaseMvpActivity implements DownLoa
             }
         });
 
+        clear_map.setOnClickListener(this);
+        clear_task.setOnClickListener(this);
         listView.setAdapter(adapter);
         loadData();
 //        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -201,6 +213,145 @@ public class DownloadTaskListActivity extends BaseMvpActivity implements DownLoa
 
 
         adapter.updateTaskState(taskId, percent, downloadCount, totalCount);
+
+
+    }
+
+    @Override
+    public void onClick(View v) {
+
+
+        switch (v.getId()) {
+            case R.id.clear_map:
+
+            {
+                AlertDialog alertDialog = new AlertDialog.Builder(this).setTitle("提示").setMessage("确定清空本地地图数据(离线地图缓存)?").setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        clearAllMapData();
+
+                    }
+                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dialog.dismiss();
+                    }
+                }).create();
+                alertDialog.show();
+
+
+            }
+            break;
+            case R.id.clear_task:
+
+
+            {
+
+                AlertDialog alertDialog = new AlertDialog.Builder(this).setTitle("提示").setMessage("确定删除所有任务?(正在下载的任务会停止)").setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        clearAllTask();
+
+                    }
+                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dialog.dismiss();
+                    }
+                }).create();
+
+                alertDialog.show();
+
+            }
+            break;
+        }
+
+    }
+
+
+    private void clearAllMapData() {
+
+
+        showWaiting("正在清空本地地图数据");
+
+
+        new AsyncTask<Void, Void, Throwable>() {
+
+
+            @Override
+            protected Throwable doInBackground(Void... voids) {
+
+                try {
+                    String filePath = ASSETS_FILE_PATH;
+                    FileUtils.deleteAllFiles(new File(filePath));
+                    return null;
+                } catch (Throwable e) {
+                    return e;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Throwable throwable) {
+
+
+                hideWaiting();
+                if (throwable == null) {
+                    ToastHelper.show("地图数据已经清空");
+                } else {
+                    ToastHelper.show("地图清空失败:" + throwable.getMessage());
+                }
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+
+    }
+
+    private void clearAllTask() {
+
+
+        showWaiting("正在清空下载任务");
+
+
+        new AsyncTask<Void, Void, Throwable>() {
+
+
+            @Override
+            protected Throwable doInBackground(Void... voids) {
+
+
+                try {
+                    //停止所有任务
+                    for (DownloadTask task : adapter.getDatas()) {
+                        mBinder.stopDownLoad(task.getId());
+                    }
+
+                    DaoManager.getInstance().getDownloadTaskDao().removeAll();
+                    return null;
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                    return e;
+                }
+
+
+            }
+
+            @Override
+            protected void onPostExecute(Throwable throwable) {
+
+
+                hideWaiting();
+                if (throwable == null) {
+                    ToastHelper.show("下载任务已经清空");
+                    loadData();
+                } else {
+                    ToastHelper.show("下载任务清空失败:" + throwable.getMessage());
+                }
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 
     }

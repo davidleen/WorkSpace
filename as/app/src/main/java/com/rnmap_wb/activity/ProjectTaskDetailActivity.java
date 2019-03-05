@@ -105,7 +105,7 @@ public class ProjectTaskDetailActivity extends BaseMvpActivity {
                     MapWorkActivity.start(ProjectTaskDetailActivity.this, task, filePath, RQUEST_MAP);
 
                 } else {
-                    showWaiting();
+                    showWaiting("正在下载KML文件");
                     UseCaseFactory.getInstance().createDownloadUseCase(task.kml, filePath).execute(new UseCaseHandler() {
                         @Override
                         public void onError(Throwable e) {

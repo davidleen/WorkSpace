@@ -65,6 +65,10 @@
             android:layout_height="match_parent" />
 
 
+
+
+
+
         <LinearLayout
 
             android:id="@+id/topbar"
@@ -87,12 +91,24 @@
                 android:padding="5dp"
                 android:src="@drawable/icon_home" />
 
-
             <View
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_weight="1"/>
 
+            <TextView
+                android:id="@+id/task_name"
+                android:layout_width="wrap_content"
+                android:textSize="15sp"
+                android:padding="10dp"
+                android:textColor="@color/uniform_color_1"
+                android:background="@drawable/bg_white_rect"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"/>
 
             <ImageView
                 android:id="@+id/switchMap"

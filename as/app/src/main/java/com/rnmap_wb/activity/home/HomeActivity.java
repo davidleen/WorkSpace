@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.GravityCompat;
 import android.view.View;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
 
 import com.giants3.android.ToastHelper;
 import com.giants3.android.frame.util.Log;
@@ -24,23 +26,26 @@ import com.rnmap_wb.activity.ProjectTaskDetailActivity;
 import com.rnmap_wb.activity.mapwork.MapWorkActivity;
 import com.rnmap_wb.adapter.HomeTaskAdapter;
 import com.rnmap_wb.android.data.Directory;
+import com.rnmap_wb.android.data.LoginResult;
 import com.rnmap_wb.android.data.RemoteData;
 import com.rnmap_wb.android.data.Task;
 import com.rnmap_wb.android.data.VersionData;
 import com.rnmap_wb.helper.AndroidUtils;
 import com.rnmap_wb.service.SynchronizeCenter;
 import com.rnmap_wb.url.HttpUrl;
+import com.rnmap_wb.utils.SessionManager;
 import com.rnmap_wb.utils.StorageUtils;
 import com.vector.update_app.UpdateAppBean;
 import com.vector.update_app.UpdateAppManager;
 import com.vector.update_app.UpdateCallback;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.Bind;
 
-public class HomeActivity extends BaseMvpActivity<HomePresenter> implements HomeViewer {
+public class HomeActivity extends BaseMvpActivity<HomePresenter> implements HomeViewer, View.OnClickListener {
 
 
     private static final int REQUEST_LOGIN = 999;
@@ -62,9 +67,19 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
 
     @Bind(R.id.update)
     View update;
+    @Bind(R.id.changePass)
+    View changePass;
+    @Bind(R.id.myMessage)
+    View myMessage;
+
+    @Bind(R.id.userName)
+    TextView userName;
 
     @Bind(R.id.downloadtask)
     View downloadtask;
+
+    @Bind(R.id.report)
+    View report;
 
     HomeTaskAdapter homeTaskAdapter;
 
@@ -115,7 +130,7 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
 
 
                 } else {
-                    showWaiting();
+                    showWaiting("正在下载KML文件");
                     UseCaseFactory.getInstance().createDownloadUseCase(task.kml, filePath).execute(new UseCaseHandler() {
                         @Override
                         public void onError(Throwable e) {
@@ -210,6 +225,8 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
             }
         });
 
+        myMessage.setOnClickListener(this);
+
         switchId.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -219,6 +236,8 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
 
             }
         });
+        changePass.setOnClickListener(this);
+        report.setOnClickListener(this);
 
         about.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,6 +248,8 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
             }
         });
 
+        LoginResult loginUser = SessionManager.getLoginUser(HomeActivity.this);
+        userName.setText(loginUser == null ? "" : loginUser.name);
         reloadData();
 
 
@@ -314,6 +335,9 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
             switch (requestCode) {
                 case REQUEST_LOGIN:
 
+
+                    LoginResult loginUser = SessionManager.getLoginUser(HomeActivity.this);
+                    userName.setText(loginUser == null ? "" : loginUser.name);
                     reloadData();
                     break;
             }
@@ -321,6 +345,7 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
     }
 
     private void reloadData() {
+
 
         String projectTaskUrl = HttpUrl.getProjectTasks();
         String cacheFile = StorageUtils.getFilePath("cache" + File.separator + String.valueOf(projectTaskUrl.hashCode()));
@@ -353,5 +378,61 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
 
 
         });
+    }
+
+    @Override
+    public void onClick(View v) {
+
+
+        switch (v.getId()) {
+            case R.id.changePass:
+
+                break;
+            case R.id.myMessage:
+
+                break;
+
+            case R.id.report:
+
+                break;
+        }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+
+        if (getDrawerLayout()!=null&&getDrawerLayout().isDrawerOpen(GravityCompat.START)) {
+            getDrawerLayout().closeDrawer(GravityCompat.START);
+        } else {
+
+            if ( checkBack()) {
+                super.onBackPressed();
+
+            } else {
+                ToastHelper.show("再次点击返回键退出应用");
+            }
+
+
+        }
+    }
+
+
+    //上次返回键点击时间
+    long lastBackPressTime;
+
+
+    public boolean checkBack() {
+
+
+        long time = Calendar.getInstance().getTimeInMillis();
+
+        if (time - lastBackPressTime < 2000) {
+            return true;
+        }
+        lastBackPressTime = time;
+        return false;
+
+
     }
 }

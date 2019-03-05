@@ -2,6 +2,7 @@ package com.rnmap_wb.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -10,13 +11,10 @@ import android.support.annotation.Nullable;
 
 import com.giants3.android.frame.util.Log;
 import com.giants3.android.network.ApiConnection;
-import com.giants3.android.reader.domain.UseCaseFactory;
 import com.rnmap_wb.android.dao.DaoManager;
 import com.rnmap_wb.android.dao.IDownloadItemDao;
-import com.rnmap_wb.android.dao.IMbTilesDao;
 import com.rnmap_wb.android.entity.DownloadItem;
 import com.rnmap_wb.android.entity.DownloadTask;
-import com.rnmap_wb.android.entity.MbTiles;
 import com.rnmap_wb.utils.IntentConst;
 
 import java.io.File;
@@ -24,8 +22,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import rx.internal.util.ObjectPool;
 
 public class DownloadManagerService extends Service {
 
@@ -60,16 +56,25 @@ public class DownloadManagerService extends Service {
         };
 
 
-        List<DownloadTask> downloadTasks = DaoManager.getInstance().getDownloadTaskDao().loadAll();
+        AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
 
-        for (DownloadTask downloadTask : downloadTasks) {
-            if (downloadTask.getState() == 0) {
+            @Override
+            public void run() {
 
-                startATask(downloadTask.getId());
+                List<DownloadTask> downloadTasks = DaoManager.getInstance().getDownloadTaskDao().loadAll();
 
+                for (DownloadTask downloadTask : downloadTasks) {
+                    if (downloadTask.getState() == 0) {
+
+                        startATask(downloadTask.getId());
+
+
+                    }
+                }
 
             }
-        }
+        } );
+
 
     }
 
@@ -130,10 +135,9 @@ public class DownloadManagerService extends Service {
 
             ApiConnection apiConnection = new ApiConnection();
 
-          //  IMbTilesDao mapTileDao = DaoManager.getInstance().getMapTileDao();
+            //  IMbTilesDao mapTileDao = DaoManager.getInstance().getMapTileDao();
             DownloadTask downloadTask = DaoManager.getInstance().getDownloadTaskDao().load(taskId);
             IDownloadItemDao downloadItemDao = DaoManager.getInstance().getDownloadItemDao();
-
 
 
             List<DownloadItem> items = null;
@@ -147,12 +151,11 @@ public class DownloadManagerService extends Service {
 
 
                     String downloadFilePath = downloadItem.getDownloadFilePath();
-                    boolean  exist=new File(downloadFilePath).exists();
-                    if(!exist)
-                    {
+                    boolean exist = new File(downloadFilePath).exists();
+                    if (!exist) {
                         Log.e("downloading:" + downloadItem.getUrl() + ",toPath:" + downloadItem.getDownloadFilePath());
                         try {
-                          apiConnection.download(downloadItem.getUrl(), downloadFilePath);
+                            apiConnection.download(downloadItem.getUrl(), downloadFilePath);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -161,8 +164,7 @@ public class DownloadManagerService extends Service {
 
                     if (destroyed) break;
 
-                    if(new File(downloadFilePath).exists()&&  downloadItem.getState() != 2)
-                    {
+                    if (new File(downloadFilePath).exists() && downloadItem.getState() != 2) {
 
                         downloadItem.setState(2);
                         DaoManager.getInstance().getDownloadItemDao().save(downloadItem);
@@ -175,8 +177,6 @@ public class DownloadManagerService extends Service {
                         handler.sendMessage(message);
 
                     }
-
-
 
 
 //

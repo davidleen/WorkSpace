@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="start"
     android:background="#ffffff"
+
     android:choiceMode="singleChoice"
     android:divider="@android:color/transparent"
     android:dividerHeight="0dp"
@@ -13,29 +14,62 @@
         android:id="@+id/drawer_head"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#F7FBF8"
+        android:background="@color/uniform_1"
+
         android:orientation="vertical">
 
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:gravity="center">
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp" />
 
-            <View
+                android:id="@+id/userhead"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/icon_user_head" />
+
+            <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-
-            <ImageView
-                android:id="@+id/setting"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/icon_setting" />
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/userName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:textSize="17sp" />
+
+
+                <TextView
+                    android:id="@+id/changePass"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="9dp"
+                    android:background="@drawable/bg_rect_uniform_fill_light"
+                    android:drawableRight="@drawable/icon_right"
+                    android:drawablePadding="7dp"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="7dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="7dp"
+                    android:text="修改密码"
+
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+
+            </LinearLayout>
+
+
         </LinearLayout>
 
         <LinearLayout
@@ -63,103 +97,146 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
 
         android:orientation="vertical">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/line" />
+            android:background="@color/line"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/mytask"
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:drawableLeft="@drawable/icon_mytask"
             android:drawableRight="@drawable/icon_arrow"
+            android:drawablePadding="18sp"
             android:gravity="left|center"
             android:padding="10dp"
 
             android:text="我的任务"
-            android:textColor="@color/uniform_color_2"
+            android:textColor="@color/uniform_color_1"
             android:textSize="14sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/line" />
+            android:background="@color/line"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/myMessage"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/icon_my_message"
+            android:drawableRight="@drawable/icon_arrow"
+            android:drawablePadding="18sp"
+            android:gravity="left|center"
+            android:padding="10dp"
+
+            android:text="消息"
+            android:textColor="@color/uniform_color_1"
+            android:textSize="14sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/line"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/downloadtask"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:drawableLeft="@drawable/icon_downloadtask"
             android:drawableRight="@drawable/icon_arrow"
+            android:drawablePadding="18sp"
             android:gravity="left|center"
             android:padding="10dp"
             android:text="离线地图管理"
-            android:textColor="@color/uniform_color_2"
+            android:textColor="@color/uniform_color_1"
             android:textSize="14sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/line" />
+            android:background="@color/line"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/update"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:drawableLeft="@drawable/icon_update"
             android:drawableRight="@drawable/icon_arrow"
+            android:drawablePadding="18sp"
+
             android:gravity="left|center"
             android:padding="10dp"
             android:text="检查更新"
-            android:textColor="@color/uniform_color_2"
+            android:textColor="@color/uniform_color_1"
             android:textSize="14sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/line" />
+            android:background="@color/line"
+            android:visibility="gone" />
 
         <TextView
+            android:id="@+id/report"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+
+
+            android:drawableLeft="@drawable/icon_report"
             android:drawableRight="@drawable/icon_arrow"
+            android:drawablePadding="18sp"
             android:gravity="left|center"
             android:padding="10dp"
             android:text="问题反馈"
-            android:textColor="@color/uniform_color_2"
+            android:textColor="@color/uniform_color_1"
             android:textSize="14sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/line" />
+            android:background="@color/line"
+            android:visibility="gone" />
 
         <TextView
 
             android:id="@+id/about"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+
+            android:drawableLeft="@drawable/icon_about"
             android:drawableRight="@drawable/icon_arrow"
+            android:drawablePadding="18sp"
             android:gravity="left|center"
             android:padding="10dp"
             android:text="关于我们"
-            android:textColor="@color/uniform_color_2"
+            android:textColor="@color/uniform_color_1"
             android:textSize="14sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/line" />
+            android:background="@color/line"
+            android:visibility="gone" />
 
     </LinearLayout>
 
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <TextView
         android:id="@+id/switchId"

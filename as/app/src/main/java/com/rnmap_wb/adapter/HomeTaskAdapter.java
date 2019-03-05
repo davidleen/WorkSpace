@@ -119,7 +119,7 @@ public class HomeTaskAdapter extends BaseExpandableListAdapter {
             convertView = inflate;
 
         }
-        viewHolder.bindData(getChild(groupPosition, childPosition),groupPosition,childPosition);
+        viewHolder.bindData(getChild(groupPosition, childPosition), groupPosition, childPosition);
 
         return convertView;
     }
@@ -149,6 +149,8 @@ public class HomeTaskAdapter extends BaseExpandableListAdapter {
 
         @Bind(R.id.feedback)
         TextView feedback;
+        @Bind(R.id.waitSync)
+        View waitSync;
         @Bind(R.id.divider)
         View divider;
 
@@ -185,7 +187,9 @@ public class HomeTaskAdapter extends BaseExpandableListAdapter {
             feedback.setTag(data);
 
 
-            feedback.setText(!SynchronizeCenter.waitForFeedBack(data) ? "反馈" : "待同步");
+            boolean b = SynchronizeCenter.waitForFeedBack(data);
+            feedback.setVisibility(b ? View.GONE : View.VISIBLE);
+            waitSync.setVisibility(b ? View.VISIBLE : View.GONE);
 
             divider.getLayoutParams().height = Utils.dp2px(childIndex == 0 ? 2 : 10);
 

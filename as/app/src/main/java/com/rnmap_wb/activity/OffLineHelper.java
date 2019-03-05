@@ -69,7 +69,7 @@ public class OffLineHelper {
     }
 
     public static void startOffLineTask(final BaseMvpActivity activity, final Task task, final String kmlFilePath, final int fromZoom, final int toZoom, final boolean viewNow) {
-        activity.showWaiting();
+        activity.showWaiting("正在解析KML文件");
         new AsyncTask<Void, Void, KmlDocument>() {
 
             boolean parserResult;
@@ -77,7 +77,7 @@ public class OffLineHelper {
             @Override
             protected KmlDocument doInBackground(Void... voids) {
 
-                KmlDocument kmlDocument = new KmlDocument();
+                final KmlDocument kmlDocument = new KmlDocument();
                 boolean b = false;
                 try {
                     b = kmlDocument.parseKMLFile(new File(kmlFilePath));
@@ -88,81 +88,29 @@ public class OffLineHelper {
 //
 
                 parserResult = b;
-                if (parserResult) return null;
+                if (!parserResult) return null;
 
                 Log.e("parse result:" + b);
+                AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
+                    @Override
+                    public void run() {
 
-
-                KmlHelper kmlHelper = new KmlHelper();
-                List<GeoPoint> geoPoints = kmlHelper.getAllGeoPoint(kmlDocument);
-                int[] xy = new int[2];
-
-                DownloadTask downloadTask = new DownloadTask();
-                downloadTask.setCreateTime(Calendar.getInstance().getTime().toString());
-                downloadTask.setName(ProjectTaskDetailActivity.DOWNLOADNAME + "-" + task.name + "，层级：" + fromZoom + "-" + toZoom);
-
-                downloadTask.setLatLngs("");
-//                int fromZoom = 1;
-//                int toZoom = 29;
-                downloadTask.setFromZoom(fromZoom);
-
-                downloadTask.setToZoom(toZoom);
-                IDownloadTaskDao downloadTaskDao;
-                downloadTaskDao = DaoManager.getInstance().getDownloadTaskDao();
-                Long id = downloadTaskDao.insert(downloadTask);
-                downloadTask.setId(id);
-                List<DownloadItem> downloadItems = new ArrayList<>();
-                int totalCount = 0;
-
-                for (GeoPoint geoPoint : geoPoints) {
-
-                    for (int z = fromZoom; z <= toZoom; z++) {
-
-
-                        LatLngUtil.getTileNumber(geoPoint.getLatitude(), geoPoint.getLongitude(), z, xy);
-
-                        DownloadItem downloadItem = new DownloadItem();
-                        downloadItem.setTaskId(id);
-                        downloadItem.setName(geoPoint.toString());
-                        downloadItem.setTileX(xy[0]);
-                        downloadItem.setTileY(xy[1]);
-                        downloadItem.setTileZ(z);
-                        String url = TileUrlHelper.getUrl(xy[0], xy[1], z);
-
-                        if (BuildConfig.DEBUG)
-                            Log.e(url);
-                        downloadItem.setUrl(url);
-                        downloadItem.setDownloadFilePath(TileUtil.getFilePath(xy[0], xy[1], z));
-                        downloadItems.add(downloadItem);
-
-                        totalCount++;
-                        if (downloadItems.size() > 1000) {
-                            DaoManager.getInstance().getDownloadItemDao().saveAll(downloadItems);
-                            downloadItems.clear();
-                        }
-
+                        initDownloadTask(task, kmlDocument, fromZoom, toZoom);
                     }
-
-                }
-
-                DaoManager.getInstance().getDownloadItemDao().saveAll(downloadItems);
-
-                downloadTask.count = totalCount;
-                downloadTaskDao.save(downloadTask);
-
+                });
 
                 return kmlDocument;
             }
 
             @Override
             protected void onPostExecute(KmlDocument kmlDocument) {
-
-                if (parserResult) {
+                activity.hideWaiting();
+                if (!parserResult) {
                     ToastHelper.show("kml文件解析失败");
                     return;
                 }
 
-                activity.hideWaiting();
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     if (activity.isDestroyed()) return;
                 }
@@ -179,4 +127,86 @@ public class OffLineHelper {
 
 
     }
+
+
+    private static void initDownloadTask(final Task task, final KmlDocument kmlDocument, final int fromZoom, final int toZoom) {
+        DaoManager.getInstance().beginTransaction();
+
+        try {
+
+
+            initDownloadTaskInTransaction(task, kmlDocument, fromZoom, toZoom);
+            DaoManager.getInstance().commitTransaction();
+        } catch (Throwable t) {
+
+
+        } finally {
+
+            DaoManager.getInstance().endTransaction();
+        }
+
+    }
+
+
+    private static void initDownloadTaskInTransaction(final Task task, final KmlDocument kmlDocument, final int fromZoom, final int toZoom) {
+
+
+        KmlHelper kmlHelper = new KmlHelper();
+        List<GeoPoint> geoPoints = kmlHelper.getAllGeoPoint(kmlDocument);
+        int[] xy = new int[2];
+
+
+        DownloadTask downloadTask = new DownloadTask();
+        downloadTask.setCreateTime(Calendar.getInstance().getTime().toString());
+        downloadTask.setName(ProjectTaskDetailActivity.DOWNLOADNAME + "-" + task.name + "，层级：" + fromZoom + "-" + toZoom);
+
+        downloadTask.setLatLngs("");
+        downloadTask.setFromZoom(fromZoom);
+
+        downloadTask.setToZoom(toZoom);
+        IDownloadTaskDao downloadTaskDao;
+        downloadTaskDao = DaoManager.getInstance().getDownloadTaskDao();
+        Long id = downloadTaskDao.insert(downloadTask);
+        downloadTask.setId(id);
+        List<DownloadItem> downloadItems = new ArrayList<>();
+        int totalCount = 0;
+
+        for (GeoPoint geoPoint : geoPoints) {
+
+            for (int z = fromZoom; z <= toZoom; z++) {
+
+
+                LatLngUtil.getTileNumber(geoPoint.getLatitude(), geoPoint.getLongitude(), z, xy);
+
+                DownloadItem downloadItem = new DownloadItem();
+                downloadItem.setTaskId(id);
+                downloadItem.setName(geoPoint.toString());
+                downloadItem.setTileX(xy[0]);
+                downloadItem.setTileY(xy[1]);
+                downloadItem.setTileZ(z);
+                String url = TileUrlHelper.getUrl(xy[0], xy[1], z);
+
+                if (BuildConfig.DEBUG)
+                    Log.e(url);
+                downloadItem.setUrl(url);
+                downloadItem.setDownloadFilePath(TileUtil.getFilePath(xy[0], xy[1], z));
+                downloadItems.add(downloadItem);
+
+                totalCount++;
+                if (downloadItems.size() > 1000) {
+                    DaoManager.getInstance().getDownloadItemDao().saveAll(downloadItems);
+                    downloadItems.clear();
+                }
+
+            }
+
+        }
+
+        DaoManager.getInstance().getDownloadItemDao().saveAll(downloadItems);
+
+        downloadTask.count = totalCount;
+        downloadTaskDao.save(downloadTask);
+    }
+
+
 }

@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import com.giants3.android.ToastHelper;
 import com.giants3.android.frame.util.StringUtil;
 import com.giants3.android.reader.domain.GsonUtils;
-
 import com.rnmap_wb.LatLngUtil;
 import com.rnmap_wb.R;
 import com.rnmap_wb.activity.mapwork.SimpleMvpActivity;
@@ -41,7 +40,7 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
-public class AddMarkActivity extends SimpleMvpActivity implements View.OnClickListener,AndroidRouter {
+public class AddMarkActivity extends SimpleMvpActivity implements View.OnClickListener, AndroidRouter {
 
     public static final String REGEX = ";";
     @Bind(R.id.name)
@@ -54,6 +53,8 @@ public class AddMarkActivity extends SimpleMvpActivity implements View.OnClickLi
     EditText memo;
     @Bind(R.id.confirm)
     View confirm;
+    @Bind(R.id.cancel)
+    View cancel;
 
     @Bind(R.id.picture1)
     ImageView picture1;
@@ -70,13 +71,14 @@ public class AddMarkActivity extends SimpleMvpActivity implements View.OnClickLi
     ImageView[] pictures;
 
 
-    public List<String> urls=new ArrayList<>();
-    public List<String> localFilePaths=new ArrayList<>();
+    public List<String> urls = new ArrayList<>();
+    public List<String> localFilePaths = new ArrayList<>();
 
     GeoPoint latLng;
 
     MapElement mapElement;
     CapturePictureHelper capturePictureHelper;
+
     public static void start(Activity activity, MapElement mapElement, int requestCode) {
 
 
@@ -98,7 +100,7 @@ public class AddMarkActivity extends SimpleMvpActivity implements View.OnClickLi
         });
         latLng = getIntent().getParcelableExtra(IntentConst.KEY_LATLNG);
         mapElement = GsonUtils.fromJson(getIntent().getStringExtra(IntentConst.KEY_MAP_ELEMENT), MapElement.class);
-        getNavigationController().setTitle(mapElement!=null?"反馈":"添加标记");
+        getNavigationController().setTitle(mapElement != null ? "反馈" : "添加标记");
         pictures = new ImageView[]{picture1, picture2, picture3};
 
         addImage.setOnClickListener(this);
@@ -115,16 +117,15 @@ public class AddMarkActivity extends SimpleMvpActivity implements View.OnClickLi
             name.setText(mapElement.name);
             memo.setText(mapElement.memo);
 
-            String[] pics=mapElement.picture==null?null:mapElement.picture.split(REGEX);
-            if(pics!=null)
-                for(String url:pics)
-                    if(!StringUtil.isEmpty(url))
+            String[] pics = mapElement.picture == null ? null : mapElement.picture.split(REGEX);
+            if (pics != null)
+                for (String url : pics)
+                    if (!StringUtil.isEmpty(url))
                         urls.add(url);
-            String[] paths=mapElement.filePath==null?null:mapElement.filePath.split(REGEX);
-            if(paths!=null)
-                for(String path:paths)
-                {
-                    if(!StringUtil.isEmpty(path))
+            String[] paths = mapElement.filePath == null ? null : mapElement.filePath.split(REGEX);
+            if (paths != null)
+                for (String path : paths) {
+                    if (!StringUtil.isEmpty(path))
                         localFilePaths.add(path);
                 }
 
@@ -132,6 +133,12 @@ public class AddMarkActivity extends SimpleMvpActivity implements View.OnClickLi
         }
 
         handleImageLayouts();
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,8 +149,8 @@ public class AddMarkActivity extends SimpleMvpActivity implements View.OnClickLi
                     mapElement.type = MapElement.TYPE_MARKER;
                 }
 
-                mapElement.picture=StringUtil.toString(REGEX,urls);
-                mapElement.filePath=StringUtil.toString(REGEX,localFilePaths);
+                mapElement.picture = StringUtil.toString(REGEX, urls);
+                mapElement.filePath = StringUtil.toString(REGEX, localFilePaths);
                 mapElement.name = name.getText().toString();
                 mapElement.latLngs = lat.getText().toString().trim() + "," + lng.getText().toString().trim();
 
@@ -178,38 +185,30 @@ public class AddMarkActivity extends SimpleMvpActivity implements View.OnClickLi
     private void handleImageLayouts() {
 
 
-        int urlSize=urls.size();
-        int filePathSize=localFilePaths.size();
+        int urlSize = urls.size();
+        int filePathSize = localFilePaths.size();
         for (int i = 0; i < pictures.length; i++) {
             ImageView picture = pictures[i];
 
-            String url=i<urlSize?urls.get(i):null;
-            String filePath=i<filePathSize?localFilePaths.get(i):null;
+            String url = i < urlSize ? urls.get(i) : null;
+            String filePath = i < filePathSize ? localFilePaths.get(i) : null;
 
             picture.setVisibility(View.VISIBLE);
-           if(!StringUtil.isEmpty(url))
-           {
+            if (!StringUtil.isEmpty(url)) {
 
-               ImageLoaderFactory.getInstance().displayImage(url, picture);
-           }else
-               if(!StringUtil.isEmpty(filePath))
-               {
+                ImageLoaderFactory.getInstance().displayImage(url, picture);
+            } else if (!StringUtil.isEmpty(filePath)) {
 
-                   ImageLoaderFactory.getInstance().displayImage(filePath, picture);
-               }else
-               {
-                   picture.setVisibility(View.GONE);
-               }
+                ImageLoaderFactory.getInstance().displayImage(filePath, picture);
+            } else {
+                picture.setVisibility(View.GONE);
+            }
 
 
         }
 
 
-            addImage.setVisibility(urlSize>=3||filePathSize>=3?View.GONE:View.VISIBLE);
-
-
-
-
+        addImage.setVisibility(urlSize >= 3 || filePathSize >= 3 ? View.GONE : View.VISIBLE);
 
 
     }
@@ -222,8 +221,7 @@ public class AddMarkActivity extends SimpleMvpActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
 
-        switch (v.getId())
-        {
+        switch (v.getId()) {
             case R.id.addImage:
 
                 AddMarkActivityPermissionsDispatcher.openCameraWithPermissionCheck(this);
@@ -234,15 +232,14 @@ public class AddMarkActivity extends SimpleMvpActivity implements View.OnClickLi
     }
 
 
-    @NeedsPermission( {Manifest.permission.CAMERA})
-    public void openCamera()
-    {
+    @NeedsPermission({Manifest.permission.CAMERA})
+    public void openCamera() {
         capturePictureHelper.pickFromCamera(true);
 
     }
 
 
-    @OnShowRationale( {Manifest.permission.CAMERA})
+    @OnShowRationale({Manifest.permission.CAMERA})
     void showRationaleForCamera(final PermissionRequest request) {
         new AlertDialog.Builder(this)
                 .setMessage(R.string.permission_camera)
@@ -261,13 +258,14 @@ public class AddMarkActivity extends SimpleMvpActivity implements View.OnClickLi
                 })
                 .show();
     }
-    @OnNeverAskAgain(value = {Manifest.permission.CAMERA })
+
+    @OnNeverAskAgain(value = {Manifest.permission.CAMERA})
     void showNeverAskForCamera() {
-        ToastHelper.show(  R.string.permission_camera_neverask );
+        ToastHelper.show(R.string.permission_camera_neverask);
 
     }
 
-    @OnPermissionDenied( {Manifest.permission.CAMERA})
+    @OnPermissionDenied({Manifest.permission.CAMERA})
     void showDeniedForCamera() {
         AddMarkActivityPermissionsDispatcher.openCameraWithPermissionCheck(this);
     }
