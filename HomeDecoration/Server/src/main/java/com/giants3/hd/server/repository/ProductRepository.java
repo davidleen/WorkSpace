@@ -17,17 +17,16 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product,Long> {
 
 
-    @Query(value = "select p from  T_Product  p where  p.name like :key  and (p.pVersion is null or p.pVersion='')   order by p.name desc "
+    @Query(value = "select p from  T_Product  p where  p.name like :key  and (p.pVersion is null or p.pVersion='')   order by p.sortName desc,p.name asc "
             , countQuery = "select count(p.id) from  T_Product  p where  p.name like :key  and (p.pVersion is null or p.pVersion='') "
     )
     Page<Product> findByKeyWithoutCopy(@Param("key") String key, Pageable pageable);
 
-    Page<Product> findByNameLikeOrPVersionLikeOrderByNameDesc(String proName,String pVersion, Pageable pageable);
-    Page<Product> findByNameLikeOrPVersionLikeOrderByNameAsc(String proName,String pVersion, Pageable pageable);
-    Page<Product> findByNameLikeAndConceptusCostEqualsOrderByNameAsc(String proName, float value, Pageable pageable);
-    Page<Product> findByNameLikeAndAssembleCostEqualsOrderByNameAsc(String likeValue, float value, Pageable pageable);
-    Page<Product> findByNameLikeAndPaintCostEqualsOrderByNameAsc(String likeValue, float value, Pageable pageable);
-    Page<Product> findByNameLikeAndPackCostEqualsOrderByNameAsc(String likeValue, float value, Pageable pageable);
+    Page<Product> findByNameLikeOrPVersionLikeOrderBySortNameDescNameAsc(String proName,String pVersion, Pageable pageable);
+    Page<Product> findByNameLikeAndConceptusCostEqualsOrderBySortNameDescNameAsc(String proName, float value, Pageable pageable);
+    Page<Product> findByNameLikeAndAssembleCostEqualsOrderBySortNameDescNameAsc(String likeValue, float value, Pageable pageable);
+    Page<Product> findByNameLikeAndPaintCostEqualsOrderBySortNameDescNameAsc(String likeValue, float value, Pageable pageable);
+    Page<Product> findByNameLikeAndPackCostEqualsOrderBySortNameDescNameAsc(String likeValue, float value, Pageable pageable);
 
 
     /**
@@ -76,4 +75,9 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
 
 
     List<Product> findByIdIn(long[] productIdArray);
+
+    @Modifying
+    @Query(value = " update    [yunfei].[dbo].[T_Product]   set sortname =  case   when SUBSTRING(name,1,1)>='0' and  SUBSTRING(name,1,1)<='9'  and SUBSTRING(name,2,1)>='0' and  SUBSTRING(name,2,1)<='9'  then SUBSTRING(name,1,3) else '000'  end    ",nativeQuery = true)
+    void updateSortFieldValueNative();
+
 }

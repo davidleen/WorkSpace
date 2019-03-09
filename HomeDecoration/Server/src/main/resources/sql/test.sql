@@ -37,7 +37,7 @@ and  os_dd >'2017-01-01' and (os_no like ? or prd_no like ?)
    left outer join
    (
        --排厂单
-      select   0 as producetype, so_no,est_itm ,'' as po_no from  mf_mo    where   bil_Id = upper('MP') and  so_no like upper('%yf%') and so_no like ?
+      select   0 as producetype, so_no,est_itm ,'' as po_no from  mf_mo    where   bil_Id = upper('MP') and  so_no like upper('%yf%') and so_no like ?  and     mrp_no=MO_NO_ADD
        union
        --外购单
       select distinct 1 as producetype,oth_no as so_no,oth_itm1 as est_itm,os_no as po_no from  tf_pos   where  os_id=upper('po') and oth_no like upper('%yf%')  and oth_no like ? and  os_dd >'2017-01-01'

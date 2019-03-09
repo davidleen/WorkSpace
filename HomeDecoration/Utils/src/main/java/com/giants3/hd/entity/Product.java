@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * 产品表
  */
-@Entity(name="T_Product")
+@Entity(name="T_Product" )
 public class Product implements Serializable {
 
 	/**
@@ -112,6 +112,12 @@ public class Product implements Serializable {
 	 */
 	@Basic
 	public String  name="";
+
+	/**
+	 * 名称字段排序
+	 */
+	@Basic
+	public String  sortName="";
 	/**
 	 * 登记日期
 	 */

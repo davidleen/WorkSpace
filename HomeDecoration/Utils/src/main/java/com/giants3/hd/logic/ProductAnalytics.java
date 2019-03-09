@@ -1110,4 +1110,25 @@ public class ProductAnalytics {
         }
 
     }
+
+
+    public static  String getProductSortName(String productName)
+    {
+
+
+
+
+
+
+
+        //xx 年份开头排序， 其他00 填充在前头
+        try {
+            Integer.valueOf(productName.substring(0,2));
+            return productName.substring(0,3) ;
+        }catch (Throwable t)
+        {
+
+            return "000";
+        }
+    }
 }

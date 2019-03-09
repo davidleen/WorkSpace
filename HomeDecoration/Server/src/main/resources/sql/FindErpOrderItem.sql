@@ -26,8 +26,8 @@ and  os_dd >'2017-01-01' and (os_no = :os_no and itm= :itm)
  --生产方式判断
   left outer join
    (
-       --排厂单
-      select  distinct  0 as produceType, SO_NO,EST_ITM ,'' as po_no from  MF_MO    where    bil_Id = upper('MP') and  so_no like upper('%YF%') and so_no like :os_no
+       --排厂单 内厂制令单 含有成品数据，才能认为是排给内厂的。（ and mrp_no=MO_NO_ADD  成品数据判断）
+      select  distinct  0 as produceType, SO_NO,EST_ITM ,'' as po_no from  MF_MO    where    bil_Id = upper('MP') and  so_no like upper('%YF%') and so_no like :os_no and mrp_no=MO_NO_ADD
 
        union
        --外购单

@@ -42,6 +42,8 @@ public class InitData implements ApplicationListener<ContextRefreshedEvent> {
 
     @Autowired
     ScheduleService scheduleService;
+    @Autowired
+    ProductService productService;
 
 
     @Autowired
@@ -111,8 +113,14 @@ public class InitData implements ApplicationListener<ContextRefreshedEvent> {
              authorityService.initAppQuoteAuths();
             authorityService.initQuoteAuths();
 
+
+
+//            productService.updateSortFieldValue();
+
+
+
 //            erpWorkService.updateWorkFlowReportSendingQty();
-            //erpWorkService.correctAllWorkFlowReportData();
+            // erpWorkService.correctAllWorkFlowReportData();
 //          erpWorkService.updateAllProducingWorkFlowReports();
 
 

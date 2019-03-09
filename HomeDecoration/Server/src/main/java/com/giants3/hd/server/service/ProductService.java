@@ -3,6 +3,7 @@ package com.giants3.hd.server.service;
 import com.giants3.hd.domain.api.ApiManager;
 import com.giants3.hd.entity.*;
 import com.giants3.hd.exception.HdException;
+import com.giants3.hd.logic.ProductAnalytics;
 import com.giants3.hd.noEntity.*;
 import com.giants3.hd.server.entity.ProductEquationUpdateTemp;
 import com.giants3.hd.server.repository.*;
@@ -11,7 +12,6 @@ import com.giants3.hd.server.utils.AttachFileUtils;
 import com.giants3.hd.server.utils.BackDataHelper;
 import com.giants3.hd.server.utils.FileUtils;
 import com.giants3.hd.server.utils.HttpUrl;
-import com.giants3.hd.utils.DigestUtils;
 import com.giants3.hd.utils.GsonUtils;
 import com.giants3.hd.utils.ObjectUtils;
 import com.giants3.hd.utils.StringUtils;
@@ -36,7 +36,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.rmi.Remote;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -143,7 +142,7 @@ public class ProductService extends AbstractService implements InitializingBean,
         String likeValue = "%" + name.trim() + "%";
         Page<Product> pageValue;
 
-        pageValue = productRepository.findByNameLikeOrPVersionLikeOrderByNameAsc(likeValue, likeValue, pageable);
+        pageValue = productRepository.findByNameLikeOrPVersionLikeOrderBySortNameDescNameAsc(likeValue, likeValue, pageable);
 
         List<Product> products = pageValue.getContent();
 
@@ -163,7 +162,7 @@ public class ProductService extends AbstractService implements InitializingBean,
 
 
         } else {
-            pageValue = productRepository.findByNameLikeOrPVersionLikeOrderByNameDesc(likeValue, likeValue, pageable);
+            pageValue = productRepository.findByNameLikeOrPVersionLikeOrderBySortNameDescNameAsc(likeValue, likeValue, pageable);
         }
 
         List<Product> products = pageValue.getContent();
@@ -184,17 +183,17 @@ public class ProductService extends AbstractService implements InitializingBean,
 
 
             case ProductListViewType.VIEWTYPE_PEITI_UNSET:
-                pageValue = productRepository.findByNameLikeAndConceptusCostEqualsOrderByNameAsc(likeValue, 0, pageable);
+                pageValue = productRepository.findByNameLikeAndConceptusCostEqualsOrderBySortNameDescNameAsc(likeValue, 0, pageable);
                 break;
             case ProductListViewType.VIEWTYPE_ZUZHUANG_UNSET:
-                pageValue = productRepository.findByNameLikeAndAssembleCostEqualsOrderByNameAsc(likeValue, 0, pageable);
+                pageValue = productRepository.findByNameLikeAndAssembleCostEqualsOrderBySortNameDescNameAsc(likeValue, 0, pageable);
                 break;
             case ProductListViewType.VIEWTYPE_YOUQI_UNSETE:
 
-                pageValue = productRepository.findByNameLikeAndPaintCostEqualsOrderByNameAsc(likeValue, 0, pageable);
+                pageValue = productRepository.findByNameLikeAndPaintCostEqualsOrderBySortNameDescNameAsc(likeValue, 0, pageable);
                 break;
             case ProductListViewType.VIEWTYPE_BAOZHUANG_UNSETE:
-                pageValue = productRepository.findByNameLikeAndPackCostEqualsOrderByNameAsc(likeValue, 0, pageable);
+                pageValue = productRepository.findByNameLikeAndPackCostEqualsOrderBySortNameDescNameAsc(likeValue, 0, pageable);
                 break;
 
 
@@ -674,6 +673,7 @@ public class ProductService extends AbstractService implements InitializingBean,
         }
         newProduct.id = -1;
         newProduct.name = newProductName;
+        newProduct.sortName = ProductAnalytics.getProductSortName(newProductName);
         newProduct.pVersion = version;
         newProduct.thumbnail = "";
 
@@ -914,6 +914,7 @@ public class ProductService extends AbstractService implements InitializingBean,
         newProduct.lastUpdateTime = Calendar.getInstance().getTimeInMillis();
 
 
+        newProduct.sortName=ProductAnalytics.getProductSortName(newProduct.name);
         //最新product 数据
         Product product = productRepository.save(newProduct);
 
@@ -1593,4 +1594,22 @@ public class ProductService extends AbstractService implements InitializingBean,
         return productRemoteData;
     }
 
+
+    /**
+     * 更新排序字段。
+     */
+    public void updateSortFieldValue() {
+
+
+
+
+        productRepository.updateSortFieldValueNative();
+
+
+
+
+
+
+
+    }
 }
