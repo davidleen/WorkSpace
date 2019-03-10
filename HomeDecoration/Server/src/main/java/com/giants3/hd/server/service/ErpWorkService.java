@@ -1656,4 +1656,73 @@ public class ErpWorkService extends AbstractErpService {
 
         }
     }
+
+    /**
+     * 撤销任务交接
+     * @param user
+     * @param messageId 任务消息id
+     * @param memo  理由
+     * @return
+     */
+    public RemoteData<Void> rollBackOrderItemWorkFlow(User user, long messageId, String memo) {
+
+
+        WorkFlowMessage message = workFlowMessageRepository.findOne(messageId);
+        if (message == null) {
+            return wrapError("消息不存在：" + messageId);
+        }
+
+        if (message.state != WorkFlowMessage.STATE_SEND) {
+            return wrapError("异常，消息未正常被处理：" + messageId);
+        }
+
+        if (message.receiverId!=user.id) {
+
+            return wrapError("只有当前消息的接收人:"+message.receiverName+"，才能撤销交接=" + messageId);
+        }
+
+        ErpOrderItemProcess erpOrderItemProcess = erpOrderItemProcessRepository.findFirstByOsNoEqualsAndItmEqualsAndCurrentWorkFlowStepEquals(message.orderName,message.itm,message.toFlowStep);
+
+
+        if (erpOrderItemProcess == null) {
+            return wrapError("未找到对应的流程状态信息");
+        }
+
+        if(erpOrderItemProcess.unSendQty<message.transportQty)
+        {
+
+            return wrapError("当前接受的流程，未发送的数量："+erpOrderItemProcess.unSendQty+",不够进行撤回处理。");
+        }
+
+
+        //扣除接收流程的 当前未发送数量。
+        erpOrderItemProcess.unSendQty-=message.transportQty;
+
+        erpOrderItemProcessRepository.save(erpOrderItemProcess);
+        ErpOrderItemProcess fromErpOrderItemProcess = erpOrderItemProcessRepository.findFirstByOsNoEqualsAndItmEqualsAndCurrentWorkFlowStepEquals(message.orderName,message.itm,message.fromFlowStep);
+
+
+
+        //发起流程数量调整。
+        fromErpOrderItemProcess.unSendQty+=message.transportQty;
+        fromErpOrderItemProcess.sentQty-=message.transportQty;
+        erpOrderItemProcessRepository.save(erpOrderItemProcess);
+
+
+
+        //发起流程的状态调整。
+        ErpWorkFlowReport workFlowReport = erpWorkFlowReportRepository.findFirstByOsNoEqualsAndItmEqualsAndWorkFlowStepEquals(message.orderName, message.itm, message.fromFlowStep);
+        //扣除发起方生产进度
+        workFlowReport.percentage -= (float) message.transportQty / erpOrderItemProcess.orderQty / (workFlowReport.typeCount == 0 ? 1 : workFlowReport.typeCount);
+
+        //消息状态改未撤销
+        message.state = WorkFlowMessage.STATE_ROLL_BACK;
+        message.memo+="\n 撤销： 原因："+memo;
+
+        workFlowReport = erpWorkFlowReportRepository.save(workFlowReport);
+
+
+
+        return null;
+    }
 }

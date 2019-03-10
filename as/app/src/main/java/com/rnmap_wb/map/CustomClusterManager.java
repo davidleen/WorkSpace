@@ -245,10 +245,10 @@ public class CustomClusterManager implements MapListener {
 
         OverlayWithIW generate = generator.generate(geoObjectItem, mapView, null, null, placemark, kmlDocument);
 
-        if(generate instanceof Marker)
-        {
-            ((Marker) generate).setOnMarkerClickListener(clickListener);
-        }
+//        if(generate instanceof Marker)
+//        {
+//            ((Marker) generate).setOnMarkerClickListener(clickListener);
+//        }
         if (generate == null) return;
 
 

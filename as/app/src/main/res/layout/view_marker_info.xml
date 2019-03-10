@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_white_rect"
+
+    android:orientation="vertical"
+    android:padding="10dp">
+
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/uniform_color_1"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/memo"
+        android:layout_width="match_parent"
+        android:layout_marginTop="3dp"
+
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/uniform_color_2"
+        android:textSize="12sp" />
+
+
+    <LinearLayout
+        android:id="@+id/images"
+        android:layout_marginTop="3dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+
+        <ImageView
+            android:id="@+id/img1"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
+            android:scaleType="centerInside" />
+
+        <ImageView
+            android:id="@+id/img2"
+            android:layout_width="33dp"
+            android:layout_marginLeft="3dp"
+            android:layout_height="33dp"
+            android:scaleType="centerInside" />
+
+        <ImageView
+            android:id="@+id/img3"
+            android:layout_width="33dp"
+            android:layout_marginLeft="3dp"
+            android:layout_height="33dp"
+            android:scaleType="centerInside" />
+
+
+    </LinearLayout>
+</LinearLayout>

@@ -42,7 +42,7 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class AddMarkActivity extends SimpleMvpActivity implements View.OnClickListener, AndroidRouter {
 
-    public static final String REGEX = ";";
+
     @Bind(R.id.name)
     EditText name;
     @Bind(R.id.lat)
@@ -64,11 +64,29 @@ public class AddMarkActivity extends SimpleMvpActivity implements View.OnClickLi
 
     @Bind(R.id.picture3)
     ImageView picture3;
+    @Bind(R.id.pictureGroup1)
+    View pictureGroup1;
+
+    @Bind(R.id.pictureGroup2)
+    View pictureGroup2;
+
+    @Bind(R.id.pictureGroup3)
+    View pictureGroup3;
+    @Bind(R.id.delete1)
+    ImageView delete1;
+
+    @Bind(R.id.delete2)
+    ImageView delete2;
+
+    @Bind(R.id.delete3)
+    ImageView delete3;
     @Bind(R.id.addImage)
     View addImage;
 
 
     ImageView[] pictures;
+    ImageView[] deletes;
+    View[] pictureGroups;
 
 
     public List<String> urls = new ArrayList<>();
@@ -102,6 +120,8 @@ public class AddMarkActivity extends SimpleMvpActivity implements View.OnClickLi
         mapElement = GsonUtils.fromJson(getIntent().getStringExtra(IntentConst.KEY_MAP_ELEMENT), MapElement.class);
         getNavigationController().setTitle(mapElement != null ? "反馈" : "添加标记");
         pictures = new ImageView[]{picture1, picture2, picture3};
+        pictureGroups = new View[]{pictureGroup1, pictureGroup2, pictureGroup3};
+        deletes = new ImageView[]{delete1, delete2, delete3};
 
         addImage.setOnClickListener(this);
         if (latLng != null) {
@@ -117,12 +137,12 @@ public class AddMarkActivity extends SimpleMvpActivity implements View.OnClickLi
             name.setText(mapElement.name);
             memo.setText(mapElement.memo);
 
-            String[] pics = mapElement.picture == null ? null : mapElement.picture.split(REGEX);
+            String[] pics = mapElement.picture == null ? null : mapElement.picture.split(MapElement.PICTURE_REGEX);
             if (pics != null)
                 for (String url : pics)
                     if (!StringUtil.isEmpty(url))
                         urls.add(url);
-            String[] paths = mapElement.filePath == null ? null : mapElement.filePath.split(REGEX);
+            String[] paths = mapElement.filePath == null ? null : mapElement.filePath.split(MapElement.PICTURE_REGEX);
             if (paths != null)
                 for (String path : paths) {
                     if (!StringUtil.isEmpty(path))
@@ -149,8 +169,8 @@ public class AddMarkActivity extends SimpleMvpActivity implements View.OnClickLi
                     mapElement.type = MapElement.TYPE_MARKER;
                 }
 
-                mapElement.picture = StringUtil.toString(REGEX, urls);
-                mapElement.filePath = StringUtil.toString(REGEX, localFilePaths);
+                mapElement.picture = StringUtil.toString(MapElement.PICTURE_REGEX, urls);
+                mapElement.filePath = StringUtil.toString(MapElement.PICTURE_REGEX, localFilePaths);
                 mapElement.name = name.getText().toString();
                 mapElement.latLngs = lat.getText().toString().trim() + "," + lng.getText().toString().trim();
 
@@ -180,6 +200,42 @@ public class AddMarkActivity extends SimpleMvpActivity implements View.OnClickLi
             }
         });
 
+        View.OnClickListener deleteOnclickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                int removeIndex = -1;
+
+                switch (v.getId()) {
+                    case R.id.delete1:
+                        removeIndex = 0;
+
+
+                        break;
+                    case R.id.delete2:
+                        removeIndex = 1;
+                        break;
+                    case R.id.delete3:
+                        removeIndex = 2;
+                        break;
+                }
+
+
+                if (removeIndex > -1) {
+                    if (urls.size() > removeIndex )
+                        urls.remove(removeIndex);
+                    if (localFilePaths.size() > removeIndex)
+                        localFilePaths.remove(removeIndex);
+                }
+                handleImageLayouts();
+
+            }
+        };
+        for (View delete : deletes) {
+            delete.setOnClickListener(deleteOnclickListener);
+        }
+
     }
 
     private void handleImageLayouts() {
@@ -187,13 +243,14 @@ public class AddMarkActivity extends SimpleMvpActivity implements View.OnClickLi
 
         int urlSize = urls.size();
         int filePathSize = localFilePaths.size();
-        for (int i = 0; i < pictures.length; i++) {
+        for (int i = 0; i < pictureGroups.length; i++) {
+            View pictureGroup = pictureGroups[i];
             ImageView picture = pictures[i];
 
             String url = i < urlSize ? urls.get(i) : null;
             String filePath = i < filePathSize ? localFilePaths.get(i) : null;
 
-            picture.setVisibility(View.VISIBLE);
+            pictureGroup.setVisibility(View.VISIBLE);
             if (!StringUtil.isEmpty(url)) {
 
                 ImageLoaderFactory.getInstance().displayImage(url, picture);
@@ -201,7 +258,7 @@ public class AddMarkActivity extends SimpleMvpActivity implements View.OnClickLi
 
                 ImageLoaderFactory.getInstance().displayImage(filePath, picture);
             } else {
-                picture.setVisibility(View.GONE);
+                pictureGroup.setVisibility(View.GONE);
             }
 
 

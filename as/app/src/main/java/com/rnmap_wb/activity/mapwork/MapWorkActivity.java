@@ -27,7 +27,10 @@ import com.rnmap_wb.activity.BaseMvpActivity;
 import com.rnmap_wb.activity.FeedBackDialog;
 import com.rnmap_wb.activity.home.HomeActivity;
 import com.rnmap_wb.activity.mapwork.map.Circle;
+import com.rnmap_wb.activity.mapwork.map.CustomMarker;
+import com.rnmap_wb.activity.mapwork.map.CustomPolygon;
 import com.rnmap_wb.activity.mapwork.map.CustomPolyline;
+import com.rnmap_wb.activity.mapwork.map.MappingPolyline;
 import com.rnmap_wb.android.data.Task;
 import com.rnmap_wb.entity.MapElement;
 import com.rnmap_wb.immersive.SmartBarUtils;
@@ -77,8 +80,8 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
     View feedback;
     @Bind(R.id.clear)
     View clear;
-    @Bind(R.id.toHome)
-    View toHome;
+    @Bind(R.id.back)
+    View back;
     @Bind(R.id.addMark)
     View addMark;
     @Bind(R.id.addCircle)
@@ -128,6 +131,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
     private static final int STATE_ADD_RECTANGLE = 4;
 
     private final static int STATE_ADD_POLYGON = 5;
+    private final static int STATE_ADD_MAPPING_LINE = 6;
 
     Map<MapElement, Object> elementObjectMap = new HashMap<>();
     Map<Object, MapElement> objectMapElementHashMap = new HashMap<>();
@@ -181,11 +185,12 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
         addCircle.setOnClickListener(this);
         addPolygon.setOnClickListener(this);
         addPolyLine.setOnClickListener(this);
+        addMapping.setOnClickListener(this);
         addRect.setOnClickListener(this);
         download.setOnClickListener(this);
         switchMap.setOnClickListener(this);
         viewDownLoad.setOnClickListener(this);
-        toHome.setOnClickListener(this);
+        back.setOnClickListener(this);
         btnOffLine.setOnClickListener(this);
         btnOnline.setOnClickListener(this);
         clear.setOnClickListener(this);
@@ -215,7 +220,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
             @Override
             public boolean onZoom(ZoomEvent event) {
 
-                zoomlevel.setText( ""+(int)event.getZoomLevel());
+                zoomlevel.setText("" + (int) event.getZoomLevel());
 
 
                 return super.onZoom(event);
@@ -224,13 +229,13 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
             }
         });
 
-        markerInfoWindow=new MarkerInfoWindow(R.layout.layout_info_view,mapView);
+        markerInfoWindow = new MarkerInfoWindow(R.layout.layout_info_view, mapView);
 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
 
-                zoomlevel.setText(""+mapView.getZoomLevel());
+                zoomlevel.setText("" + mapView.getZoomLevel());
             }
         });
 
@@ -244,11 +249,9 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
         return new MapWorkPresenterImpl();
     }
 
-    private void closeMarkerInfoWindow()
-    {
+    private void closeMarkerInfoWindow() {
         try {
-            if(markerInfoWindow.isOpen())
-            {
+            if (markerInfoWindow.isOpen()) {
 
                 markerInfoWindow.close();
 
@@ -262,75 +265,70 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
         @Override
         public boolean onMarkerClick(final Marker marker, MapView mapView) {
-
-            closeMarkerInfoWindow();
-
+            if(!(marker instanceof CustomMarker)) return   false;
             final MapElement mapElement = objectMapElementHashMap.get(marker);
-            if(mapElement!=null) {
-                final int markerWidth = marker.getIcon().getIntrinsicWidth();
-                final int markerHeight = marker.getIcon().getIntrinsicHeight();
-                final int offsetX = (int)(markerWidth );//* (marker.mIWAnchorU - marker.mAnchorU));
-                final int offsetY = (int)(markerHeight );//* (marker.mIWAnchorV - marker.mAnchorV));
-
-                markerInfoWindow.open(marker,marker.getPosition(),offsetX*2,offsetY*2);
-                markerInfoWindow.getView().findViewById(R.id.feedback).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        markerInfoWindow.close();
-                        AddMarkActivity.start(MapWorkActivity.this, mapElement, REQUEST_UPDATE_MARK);
-                    }
-                });
-              //
-            }else
-            if(CustomClusterManager.CLUSTER.equals(marker.getSnippet()))
-            {
-                marker.showInfoWindow();
-            }else
-            {
-                final int markerWidth = marker.getIcon().getIntrinsicWidth();
-                final int markerHeight = marker.getIcon().getIntrinsicHeight();
-                final int offsetX = (int)(markerWidth );//* (marker.mIWAnchorU - marker.mAnchorU));
-                final int offsetY = (int)(markerHeight );//* (marker.mIWAnchorV - marker.mAnchorV));
-
-                markerInfoWindow.open(marker,marker.getPosition(),offsetX*2,offsetY*2);
-                markerInfoWindow.getView().findViewById(R.id.feedback).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        markerInfoWindow.close();
-                        getPresenter().requestFeekBack(LatLngUtil.convertGeoPointToString(marker.getPosition()));
-                    }
-                });
+            AddMarkActivity.start(MapWorkActivity.this, mapElement, REQUEST_UPDATE_MARK);
 
 
-//                //kml标记文件
-//                String[] menu=new String[]{"反馈"};
-//                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).setTitle(marker.getSnippet()).setItems(menu, new DialogInterface.OnClickListener() {
+//            if (mapElement != null) {
+//                final int markerWidth = marker.getIcon().getIntrinsicWidth();
+//                final int markerHeight = marker.getIcon().getIntrinsicHeight();
+//                final int offsetX = (int) (markerWidth);//* (marker.mIWAnchorU - marker.mAnchorU));
+//                final int offsetY = (int) (markerHeight);//* (marker.mIWAnchorV - marker.mAnchorV));
+//
+//                markerInfoWindow.open(marker, marker.getPosition(), offsetX * 2, offsetY * 2);
+//                markerInfoWindow.getView().findViewById(R.id.feedback).setOnClickListener(new View.OnClickListener() {
 //                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//
-//                        switch (which) {
-//                            case 0:
-//                                      getPresenter().requestFeekBack(LatLngUtil.convertGeoPointToString(marker.getPosition()));
-//
-//
-//                                break;
-//
-//                        }
-//
+//                    public void onClick(View v) {
+//                        markerInfoWindow.close();
 //
 //                    }
-//                }).create();
-//                alertDialog.show();
-
-
-
-
-            }
-
-
-
+//                });
+//                //
+//            } else if (CustomClusterManager.CLUSTER.equals(marker.getSnippet())) {
+//                marker.showInfoWindow();
+//            } else {
+//                final int markerWidth = marker.getIcon().getIntrinsicWidth();
+//                final int markerHeight = marker.getIcon().getIntrinsicHeight();
+//                final int offsetX = (int) (markerWidth);//* (marker.mIWAnchorU - marker.mAnchorU));
+//                final int offsetY = (int) (markerHeight);//* (marker.mIWAnchorV - marker.mAnchorV));
 //
-//            Log.e("marker info windwo click");
+//                markerInfoWindow.open(marker, marker.getPosition(), offsetX * 2, offsetY * 2);
+//                markerInfoWindow.getView().findViewById(R.id.feedback).setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        markerInfoWindow.close();
+//                        getPresenter().requestFeekBack(LatLngUtil.convertGeoPointToString(marker.getPosition()));
+//                    }
+//                });
+//
+//
+////                //kml标记文件
+////                String[] menu=new String[]{"反馈"};
+////                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).setTitle(marker.getSnippet()).setItems(menu, new DialogInterface.OnClickListener() {
+////                    @Override
+////                    public void onClick(DialogInterface dialog, int which) {
+////
+////                        switch (which) {
+////                            case 0:
+////                                      getPresenter().requestFeekBack(LatLngUtil.convertGeoPointToString(marker.getPosition()));
+////
+////
+////                                break;
+////
+////                        }
+////
+////
+////                    }
+////                }).create();
+////                alertDialog.show();
+//
+//
+//            }
+//
+//
+////
+////            Log.e("marker info windwo click");
 //
 
 
@@ -400,6 +398,11 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                     case STATE_ADD_POLYLINE:
                         getPresenter().addNewPolylinePoint(p);
                         break;
+                    case STATE_ADD_MAPPING_LINE:
+
+
+                        getPresenter().addMappingLine(p);
+                        break;
                     case STATE_ADD_POLYGON:
 
                     {
@@ -446,7 +449,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                         ProjectionUtils.toScreenPixel(mapView, p, point);
                         point.x += screenWH[0] / 4;
                         GeoPoint geoPoint = ProjectionUtils.fromScreenPixel(mapView, point.x, point.y);
-                        double distanceInMeter = LatLngUtil.distanceInMeter(p.getLongitude(), p.getLatitude(), geoPoint.getLongitude(), geoPoint.getLatitude());
+                        double distanceInMeter = LatLngUtil.distanceInMeter(p , geoPoint );
 
 
                         getPresenter().addNewCircle(p, distanceInMeter);
@@ -478,7 +481,6 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
         mapView.getOverlays().add(eventsOverlay);
 
 
-
 //        //比例尺配置
 //        final DisplayMetrics dm = getResources().getDisplayMetrics();
 //        ScaleBarOverlay  mScaleBarOverlay = new ScaleBarOverlay(mapView);
@@ -486,7 +488,6 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 //        mScaleBarOverlay.setAlignRight(true); //右边
 //        mScaleBarOverlay.setScaleBarOffset(dm.widthPixels , 80);
 //        mapView.getOverlays().add(mScaleBarOverlay);
-
 
 
 ////your items
@@ -593,13 +594,13 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
                 KmlDocument kmlDocument = new KmlDocument();
                 boolean b = false;
-                long time=Calendar.getInstance().getTimeInMillis();
+                long time = Calendar.getInstance().getTimeInMillis();
                 try {
                     b = kmlDocument.parseKMLFile(new File(kmlFilePath));
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }
-                Log.e("parse result:" + b+",time:"+(Calendar.getInstance().getTimeInMillis()-time));
+                Log.e("parse result:" + b + ",time:" + (Calendar.getInstance().getTimeInMillis() - time));
 //
 //                if (!b) {
 //                 b = kmlDocument.parseKMLStream(getResources().openRawResource(R.raw.k00002), null);
@@ -626,7 +627,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                     return;
                 }
 
-                CustomClusterManager customClusterManager=new CustomClusterManager(mapView,kmlDocument,clickListener);
+                CustomClusterManager customClusterManager = new CustomClusterManager(mapView, kmlDocument, clickListener);
                 mapView.invalidate();
 
 //                FolderOverlay kmlOverlay = (FolderOverlay) kmlDocument.mKmlRoot.buildOverlay(mapView, null, null, kmlDocument);
@@ -705,40 +706,6 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
     }
 
-//    private List<GeoObjectItem> kmlhandle() {
-//        if (!StringUtil.isEmpty(kmlFilePath)) {
-//
-//
-//            InputStream inputStream = null;
-//            try {
-//                inputStream = new FileInputStream(kmlFilePath);
-////                inputStream = getContext().getResources().openRawResource(R.raw.k00002);
-//
-//                List<Geometry> addGeometry = KmlHelper.getAllPlacemark(inputStream);
-//
-//                List<GeoObjectItem> geoObjectItems = new ArrayList<>();
-//                for (Geometry geometry : addGeometry) {
-//
-//                    GeoObjectItem geoObjectItem = new GeoObjectItem(geometry, String.valueOf(geometry.hashCode()), "");
-//                    geoObjectItems.add(geoObjectItem);
-//
-//                }
-//
-//
-//                return geoObjectItems;
-////
-////                createClusterManager(geoObjectItems);
-//
-//            } catch (FileNotFoundException e) {
-//                e.printStackTrace();
-//            } finally {
-//                FileUtils.safeClose(inputStream);
-//            }
-//
-//        }
-//        return null;
-//    }
-
 
     private boolean onLine = true;
 
@@ -753,11 +720,11 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 //        GeoPoint latLng = getMap().getProjection().fromScreenLocation(new Point(x, y));
 //        GeoPoint left = getMap().getProjection().fromScreenLocation(new Point(x / 3, y));
 //        GeoPoint leftTop = getMap().getProjection().fromScreenLocation(new Point(x / 3, y / 3));
-        addPolyLine.setSelected(v.getId()==R.id.addPolyLine);
-        addMark.setSelected(v.getId()==R.id.addMark);
-        addPolygon.setSelected(v.getId()==R.id.addPolygon);
-        addCircle.setSelected(v.getId()==R.id.addCircle);
-        addMapping.setSelected(v.getId()==R.id.addMapping);
+        addPolyLine.setSelected(v.getId() == R.id.addPolyLine);
+        addMark.setSelected(v.getId() == R.id.addMark);
+        addPolygon.setSelected(v.getId() == R.id.addPolygon);
+        addCircle.setSelected(v.getId() == R.id.addCircle);
+        addMapping.setSelected(v.getId() == R.id.addMapping);
 
         switch (v.getId()) {
 
@@ -775,10 +742,14 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                 break;
             case R.id.close:
                 state = 0;
-                if (tempPolyline != null) mapView.getOverlays().remove(tempPolyline);
-                getPresenter().closePaint();
+
                 editGroup.setVisibility(View.GONE);
                 edit.setVisibility(View.VISIBLE);
+                break;
+            case R.id.addMapping:
+
+                state = STATE_ADD_MAPPING_LINE;
+
                 break;
             case R.id.addPolyLine:
 
@@ -819,7 +790,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
             case R.id.feedback:
 
 
-                FeedBackDialog.start(this,task);
+                FeedBackDialog.start(this, task);
 
                 break;
 //
@@ -829,10 +800,11 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
                 state = STATE_ADD_MARK;
                 break;
-            case R.id.toHome:
+            case R.id.back:
 
 
-                HomeActivity.start(MapWorkActivity.this);
+                finish();
+
                 break;
 //
             case R.id.offline:
@@ -867,7 +839,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
 
                         List<Overlay> overlays = mapView.getOverlays();
-                        overlays.remove(tempPolyline);
+
 
                         Set<Object> objects = objectMapElementHashMap.keySet();
                         for (Object o : objects) {
@@ -894,7 +866,6 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
      * 尝试定位当前位置
      */
     private void tryLocation() {
-
 
 
         myLocationHelper.getLocation(this);
@@ -974,19 +945,11 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
     }
 
 
-    CustomPolyline tempPolyline = null;
 
     @Override
     public void showPolyLine(List<GeoPoint> polyLinePositions) {
 
 
-        if (polyLinePositions == null || polyLinePositions.size() <= 1) return;
-        if (tempPolyline == null) {
-            tempPolyline = new CustomPolyline();
-            mapView.getOverlays().add(tempPolyline);
-        }
-        tempPolyline.setGeoPoints(polyLinePositions);
-        mapView.invalidate();
 
 
     }
@@ -1008,7 +971,6 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
     }
 
-    private Polygon tempRectangle;
 
     @Override
     public void showRectangle(List<GeoPoint> rectangle) {
@@ -1051,22 +1013,23 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
             case MapElement.TYPE_MARKER: {
 
                 GeoPoint geoPoint = latLngs.get(0);
-                Marker marker = new Marker(mapView);
+                Marker marker = new CustomMarker(mapView);
                 marker.setTitle(element.name);
                 marker.setPosition(geoPoint);
                 marker.setIcon(getResources().getDrawable(R.drawable.icon_map_mark));
                 marker.setSnippet(element.memo);
                 marker.setOnMarkerClickListener(clickListener);
-               marker.getInfoWindow().getView().setOnClickListener(new View.OnClickListener() {
-                   @Override
-                   public void onClick(View v) {
+                ((CustomMarker) marker).bindData(element);
+                marker.getInfoWindow().getView().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
 
-                       Log.e("infoWindow click!!!!!");
+                        Log.e("infoWindow click!!!!!");
 
 
-                   }
-               });
+                    }
+                });
                 mapView.getOverlays().add(marker);
                 mapView.invalidate();
                 o = marker;
@@ -1076,7 +1039,21 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
             break;
             case MapElement.TYPE_POLYLINE: {
 
-                CustomPolyline polyline = new CustomPolyline( );
+                CustomPolyline polyline = new CustomPolyline();
+                polyline.setTitle(element.name);
+                polyline.setGeoPoints(latLngs);
+                polyline.setSnippet(element.memo);
+                //polyline.setOnClickListener(clickListener);
+                mapView.getOverlays().add(polyline);
+                mapView.invalidate();
+                o = polyline;
+
+            }
+
+            break;
+            case MapElement.TYPE_MAPPING_LINE: {
+
+                MappingPolyline polyline = new MappingPolyline();
                 polyline.setTitle(element.name);
                 polyline.setGeoPoints(latLngs);
                 polyline.setSnippet(element.memo);
@@ -1091,7 +1068,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
             case MapElement.TYPE_POLYGON:
 
 
-                Polygon polygon = new Polygon(mapView);
+                Polygon polygon = new CustomPolygon();
                 polygon.setTitle(element.name);
                 polygon.setPoints(latLngs);
                 polygon.setSnippet(element.memo);

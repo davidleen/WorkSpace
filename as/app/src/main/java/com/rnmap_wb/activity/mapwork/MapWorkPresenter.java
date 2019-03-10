@@ -44,4 +44,6 @@ public interface MapWorkPresenter  extends Presenter<MapWorkViewer> {
     void updateMapElement(MapElement o);
 
     void requestFeekBack(String pointString);
+
+    void addMappingLine(GeoPoint p);
 }

@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 
 import com.giants3.android.frame.util.Utils;
+import com.rnmap_wb.MainApplication;
 import com.rnmap_wb.R;
 
 import org.osmdroid.util.GeoPoint;
@@ -27,30 +28,35 @@ public class CustomPolyline extends OverlayWithIW {
 
     private Paint paint;
 
-    public CustomPolyline( )
-    {
-        paint=new Paint();
+    protected  Drawable drawable_point;
+    protected  Drawable point_end;
+    public CustomPolyline() {
+          drawable_point = ContextCompat.getDrawable(MainApplication.baseContext, R.drawable.icon_map_point);
+          point_end = ContextCompat.getDrawable(MainApplication.baseContext, R.drawable.icon_map_point_end);
+        paint = new Paint();
         paint.setColor(Color.YELLOW);
         paint.setStrokeWidth(Utils.dp2px(2));
         paint.setAntiAlias(true);
 
     }
-    Point point =new Point();
+
+    private Point point = new Point();
+
     @Override
     public void draw(Canvas c, MapView osmv, boolean shadow) {
 
-        if(geoPoints==null) return;
-        Drawable drawable_point=  ContextCompat.getDrawable(osmv.getContext(),R.drawable.icon_map_point);
-        Drawable point_end=  ContextCompat.getDrawable(osmv.getContext(),R.drawable.icon_map_point_end);
-        drawable_point.setBounds(0,0,drawable_point.getIntrinsicWidth(),drawable_point.getIntrinsicHeight());
-        point_end.setBounds(0,0,point_end.getIntrinsicWidth(),point_end.getIntrinsicHeight());
-        int lastX=0,lastY=0;
+        if (geoPoints == null) return;
+
+
+        drawable_point.setBounds(0, 0, drawable_point.getIntrinsicWidth(), drawable_point.getIntrinsicHeight());
+        point_end.setBounds(0, 0, point_end.getIntrinsicWidth(), point_end.getIntrinsicHeight());
+        int lastX = 0, lastY = 0;
         Drawable temp;
         int size = geoPoints.size();
         for (int i = 0; i < size; i++) {
             GeoPoint geoPoint = geoPoints.get(i);
             osmv.getProjection().toPixels(geoPoint, point);
-            temp=   (i< size -1?drawable_point:point_end);
+            temp = (i < size - 1 ? drawable_point : point_end);
             c.save();
             c.translate(point.x - temp.getIntrinsicWidth() / 2, point.y - temp.getIntrinsicHeight() / 2);
 
@@ -58,9 +64,9 @@ public class CustomPolyline extends OverlayWithIW {
 
             c.restore();
 
-            if (i>0) {
+            if (i > 0) {
 
-                c.drawLine(lastX, lastY, point.x, point.y, paint);
+                drawLine(c,lastX, lastY, point.x, point.y, paint,i);
 
             }
 
@@ -72,10 +78,12 @@ public class CustomPolyline extends OverlayWithIW {
         }
 
 
+    }
 
 
+    protected  void drawLine(Canvas c,float startX, float startY,float endX,float endY,Paint paint,int index)
+    {
 
-
-
+        c.drawLine(startX, startY, endX, endY, paint);
     }
 }

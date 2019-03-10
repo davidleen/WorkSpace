@@ -27,7 +27,9 @@ import java.util.Random;
 
 import static com.rnmap_wb.entity.MapElement.TYPE_CIRCLE;
 import static com.rnmap_wb.entity.MapElement.TYPE_KML_MARK;
+import static com.rnmap_wb.entity.MapElement.TYPE_MAPPING_LINE;
 import static com.rnmap_wb.entity.MapElement.TYPE_POLYGON;
+import static com.rnmap_wb.entity.MapElement.TYPE_POLYLINE;
 
 public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkModel> implements MapWorkPresenter {
 
@@ -38,9 +40,8 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
     public void addNewMapElement(MapElement element) {
 
         getModel().addNewMapElement(element);
-
+        getModel().setEditElement(element);
         updateMapElementCache();
-
         getView().showMapElement(element);
     }
 
@@ -49,8 +50,20 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
         String filePath = SynchronizeCenter.getElementsFilePath(task);
         List<MapElement> elements = getModel().getMapElements();
 
+        List<MapElement> elementToSave=new ArrayList<>()
+                ;
+        for (MapElement mapElement:elements)
+        {
+
+            if((mapElement.type==MapElement.TYPE_MAPPING_LINE||mapElement.type==MapElement.TYPE_POLYLINE)&&LatLngUtil.convertStringToGeoPoints(mapElement.latLngs).size()<=1)
+            {
+                continue;
+            }
+            elementToSave.add(mapElement);
+        }
+
         try {
-            FileUtils.writeStringToFile(GsonUtils.toJson(elements), filePath);
+            FileUtils.writeStringToFile(GsonUtils.toJson(elementToSave), filePath);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -164,15 +177,31 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
 
 
     @Override
-    public void addNewPolylinePoint(GeoPoint latLng) {
+    public void addNewPolylinePoint(GeoPoint p) {
 
 
 //        MapElement mapElement=new MapElement();
 //        mapElement.type=3;
 //        mapElement.latLngs=LatLngUtil.convertLatLngToString(latLng)
 
-        getModel().addNewPolylinePoint(latLng);
-        getView().showPolyLine(getModel().getPolyLinePositions());
+
+
+        MapElement mapElement=getModel().getEdittingMapElement();
+
+        if(mapElement==null||mapElement.type!=TYPE_POLYLINE)
+        {
+            mapElement = new MapElement();
+            mapElement.type = TYPE_POLYLINE;
+            getModel().addNewMapElement(mapElement);
+            getModel().setEditElement(mapElement);
+        }
+
+        List<GeoPoint> geoPoints=LatLngUtil.convertStringToGeoPoints(mapElement.latLngs);
+        geoPoints.add(p);
+        String s = LatLngUtil.convertGeoPointToString(geoPoints);
+        mapElement.latLngs = s;
+        updateMapElementCache();
+        getView().showMapElement(mapElement);
 
 
     }
@@ -188,6 +217,7 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
         mapElement.latLngs = LatLngUtil.convertGeoPointToString(latLngs);
         mapElement.radius = radius;
 
+        getModel().setEditElement(mapElement);
         getModel().addNewMapElement(mapElement);
         updateMapElementCache();
         getView().showMapElement(mapElement);
@@ -202,6 +232,7 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
         mapElement.latLngs = s;
         mapElement.type = TYPE_POLYGON;
         getModel().addNewMapElement(mapElement);
+        getModel().setEditElement(mapElement);
         updateMapElementCache();
         getView().showMapElement(mapElement);
     }
@@ -212,7 +243,10 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
 
 
         getModel().clearEmelemnts();
+        getModel().setEditElement(null);
         updateMapElementCache();
+
+
 
     }
 
@@ -275,7 +309,7 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
 
         String s = LatLngUtil.convertGeoPointToString(positions);
         MapElement mapElement = new MapElement();
-        mapElement.type = MapElement.TYPE_POLYLINE;
+        mapElement.type = TYPE_POLYLINE;
         mapElement.latLngs = s;
         getModel().addNewMapElement(mapElement);
         getModel().clearPolyLinePosition();
@@ -310,6 +344,37 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
       }
 
       getView().feedBack(mapElement);
+
+
+    }
+
+    @Override
+    public void addMappingLine(GeoPoint p) {
+
+
+
+        MapElement mapElement=getModel().getEdittingMapElement();
+
+        if(mapElement==null||mapElement.type!=MapElement.TYPE_MAPPING_LINE)
+        {
+            mapElement = new MapElement();
+            mapElement.type = TYPE_MAPPING_LINE;
+            getModel().addNewMapElement(mapElement);
+            getModel().setEditElement(mapElement);
+        }
+
+        List<GeoPoint> geoPoints=LatLngUtil.convertStringToGeoPoints(mapElement.latLngs);
+        geoPoints.add(p);
+        String s = LatLngUtil.convertGeoPointToString(geoPoints);
+        mapElement.latLngs = s;
+        updateMapElementCache();
+        getView().showMapElement(mapElement);
+
+
+
+
+
+
 
 
     }

@@ -65,10 +65,6 @@
             android:layout_height="match_parent" />
 
 
-
-
-
-
         <LinearLayout
 
             android:id="@+id/topbar"
@@ -83,47 +79,44 @@
 
 
             <ImageView
-                android:id="@+id/toHome"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/back"
+                android:layout_width="37dp"
+                android:layout_height="37dp"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/bg_cirlcle"
+
                 android:padding="5dp"
-                android:src="@drawable/icon_home" />
+                android:scaleType="centerInside"
+                android:src="@drawable/icon_back_map" />
 
             <View
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <TextView
                 android:id="@+id/task_name"
                 android:layout_width="wrap_content"
-                android:textSize="15sp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_white_rect"
                 android:padding="10dp"
                 android:textColor="@color/uniform_color_1"
-                android:background="@drawable/bg_white_rect"
-                android:layout_height="wrap_content" />
+                android:textSize="15sp" />
 
             <View
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <ImageView
                 android:id="@+id/switchMap"
-                android:padding="10dp"
-                android:src="@drawable/icon_onoffline_selector"
-                android:background="@drawable/bg_black_rect"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_black_rect"
+                android:padding="10dp"
+                android:src="@drawable/icon_onoffline_selector" />
 
         </LinearLayout>
-
-
-
-
-
 
 
         <LinearLayout
@@ -156,11 +149,11 @@
                 android:visibility="gone" />
 
             <LinearLayout
-                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="30dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="10dp"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/online"
@@ -205,6 +198,7 @@
                 android:layout_height="wrap_content"
                 android:drawableTop="@drawable/icon_clear_map"
                 android:drawablePadding="5dp"
+                android:visibility="gone"
                 android:padding="10dp"
                 android:text="清空"
                 android:textColor="@color/uniform_color_1"
@@ -214,7 +208,9 @@
             <View
                 android:layout_width="23dp"
                 android:layout_height="1dp"
-                android:background="#999999" />
+
+                android:visibility="gone"
+                android:background="#999999"  />
 
             <TextView
                 android:id="@+id/edit"
@@ -305,18 +301,19 @@
             </LinearLayout>
 
         </LinearLayout>
+
         <TextView
 
             android:id="@+id/feedback"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_white_rect"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
             android:layout_marginRight="15dp"
             android:layout_marginBottom="45dp"
-            android:drawableTop="@drawable/icon_feedback"
 
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
+            android:background="@drawable/bg_white_rect"
+            android:drawableTop="@drawable/icon_feedback"
             android:drawablePadding="3dp"
             android:padding="10dp"
             android:text="反馈"
@@ -324,69 +321,61 @@
             android:textSize="12sp" />
 
 
-
-
-
-
-
-
-
-
-
-
         <LinearLayout
             android:layout_width="wrap_content"
-            android:orientation="vertical"
+            android:layout_height="wrap_content"
 
             android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="15dp"
-            android:gravity="center"
             android:layout_marginBottom="30dp"
-            android:layout_height="wrap_content">
+            android:gravity="center"
+            android:orientation="vertical">
 
 
+            <!--<View-->
+
+                <!--android:layout_width="180dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="350dp"-->
+                <!--android:background="@drawable/icon_line_mapping_tint"-->
+                <!--android:textSize="11sp" />-->
 
             <TextView
                 android:id="@+id/zoomlevel"
 
                 android:layout_width="37dp"
                 android:layout_height="20dp"
-                android:textSize="11sp"
-                android:gravity="center"
-                android:background="@color/uniform_1"
-                android:textColor="@color/white"
                 android:layout_marginTop="400dp"
-                  />
+                android:background="@color/uniform_1"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="11sp" />
 
 
             <ImageView
 
                 android:id="@+id/play"
                 android:layout_width="37dp"
-                android:src="@drawable/icon_map_play"
-                android:scaleType="center"
+                android:layout_height="37dp"
                 android:layout_marginTop="5dp"
                 android:background="@drawable/bg_white_rect"
-                android:layout_height="37dp" />
+                android:scaleType="center"
+                android:src="@drawable/icon_map_play" />
+
             <ImageView
 
                 android:id="@+id/mylocation"
                 android:layout_width="37dp"
+                android:layout_height="37dp"
                 android:layout_marginTop="5dp"
-                android:src="@drawable/icon_map_locate_selector"
-                android:scaleType="center"
                 android:background="@drawable/bg_white_rect"
-                android:layout_height="37dp" />
+                android:scaleType="center"
+                android:src="@drawable/icon_map_locate_selector" />
 
         </LinearLayout>
 
     </RelativeLayout>
-
-
-
-
-
 
 
 </FrameLayout>

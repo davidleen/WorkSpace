@@ -1,5 +1,7 @@
 package com.rnmap_wb;
 
+import com.giants3.android.frame.util.StringUtil;
+
 import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 
@@ -239,11 +241,14 @@ public class LatLngUtil {
 
 
     public static List<GeoPoint> convertStringToGeoPoints(String string) {
+        List<GeoPoint> latLngs = new ArrayList<>();
+
+        if (StringUtil.isEmpty(string)) return latLngs;
 
 
         String[] split = string.split(";");
         int len = split.length;
-        List<GeoPoint> latLngs = new ArrayList<>();
+
         for (int i = 0; i < len; i++) {
             String[] split1 = split[i].split(",");
             GeoPoint latLng = null;
@@ -301,6 +306,12 @@ public class LatLngUtil {
         double distance = distance(latLng1, latLng2) * (256 * (2 << zoom)) / 360;
         return distance;
     }
+
+    public static final double distanceInMeter(GeoPoint start, GeoPoint end) {
+        return
+                LatLngUtil.distanceInMeter(start.getLongitude(), start.getLatitude(), end.getLongitude(), end.getLatitude());
+    }
+
 
     public static double distanceInMeter(double longitude1, double latitude1, double longitude2, double latitude2) {
 

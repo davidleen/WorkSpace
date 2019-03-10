@@ -12,6 +12,7 @@ public class MapWorkModelImpl implements MapWorkModel {
     List<GeoPoint> polylines = new ArrayList<>();
 
     List<MapElement> elements = new ArrayList<>();
+    private MapElement mapElementEditting;
 
     @Override
     public void addNewPolylinePoint(GeoPoint latLng) {
@@ -131,5 +132,16 @@ public class MapWorkModelImpl implements MapWorkModel {
 
         return null;
 
+    }
+
+    @Override
+    public void setEditElement(MapElement mapElement) {
+
+        mapElementEditting = mapElement;
+    }
+
+    @Override
+    public MapElement getEdittingMapElement() {
+        return mapElementEditting;
     }
 }

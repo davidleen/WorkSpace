@@ -129,6 +129,10 @@ public class WorkFlowMessage {
 
 
     /**
+     * 撤销
+     */
+    public static final int STATE_ROLL_BACK = 5;
+    /**
      * 返工
      */
     public static final int STATE_REWORK = 4;

@@ -102,25 +102,82 @@
             android:text="图片" />
 
 
-        <ImageView
-            android:id="@+id/picture1"
-            android:layout_width="67dp"
-            android:layout_height="67dp" />
+        <RelativeLayout
+            android:id="@+id/pictureGroup1"
+            android:layout_width="70dp"
+            android:layout_height="70dp">
 
-        <ImageView
-            android:id="@+id/picture2"
-            android:layout_width="67dp"
-            android:layout_height="67dp" />
 
-        <ImageView
-            android:id="@+id/picture3"
-            android:layout_width="67dp"
-            android:layout_height="67dp" />
+            <ImageView
+                android:id="@+id/picture1"
+
+                android:layout_width="67dp"
+                android:layout_height="67dp"
+                android:layout_centerInParent="true"
+                android:scaleType="centerInside" />
+
+            <ImageView
+                android:id="@+id/delete1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/icon_delete_picture" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/pictureGroup2"
+            android:layout_width="70dp"
+            android:layout_height="70dp">
+
+            <ImageView
+                android:id="@+id/picture2"
+
+                android:layout_width="67dp"
+                android:layout_height="67dp"
+
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="5dp"
+                android:scaleType="centerInside" />
+
+            <ImageView
+                android:id="@+id/delete2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/icon_delete_picture" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/pictureGroup3"
+            android:layout_width="70dp"
+            android:layout_height="70dp">
+
+            <ImageView
+                android:id="@+id/picture3"
+
+                android:layout_width="67dp"
+                android:layout_height="67dp"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="5dp"
+                android:scaleType="centerInside" />
+
+            <ImageView
+                android:id="@+id/delete3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/icon_delete_picture" />
+        </RelativeLayout>
 
         <ImageView
             android:id="@+id/addImage"
             android:layout_width="67dp"
             android:layout_height="67dp"
+            android:layout_marginLeft="5dp"
             android:scaleType="fitXY"
             android:src="@drawable/icon_add_picture" />
 

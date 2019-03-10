@@ -16,9 +16,17 @@ public class Circle extends OverlayWithIW {
     private GeoPoint center;
     private boolean clickable;
     private double radiusInMeter;
-
+    int fillColor=Color.parseColor("#33ffff00");
+    int innerCircleColor=Color.parseColor("#ec6941");
     Point  point =new Point();
     Paint paint=new Paint();
+   public  Circle()
+   {
+
+       paint.setAntiAlias(true);
+       paint.setDither(true);
+   }
+
     @Override
     public void draw(Canvas c, MapView osmv, boolean shadow) {
 
@@ -27,12 +35,20 @@ public class Circle extends OverlayWithIW {
 
 
        // int  v = ((int )radiusInMeter) >> (int )(osmv.getMaxZoomLevel()-osmv.getZoomLevel()) * 256;
-        int  v = Utils.dp2px(( int)(  radiusInMeter  /Math.pow(2,(osmv.getMaxZoomLevel()-osmv.getZoomLevel()-1 ) ) * 256));
+        int  v = Utils.dp2px(( int)(  radiusInMeter  /Math.pow(2,(osmv.getMaxZoomLevel()-osmv.getZoomLevel()-2 ) ) * 256));
         paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(Color.RED);
-        paint.setStrokeWidth(3);
+        paint.setColor(Color.YELLOW);
+        paint.setStrokeWidth(Utils.dp2px(2));
 
         c.drawCircle(point.x,point.y, v,paint);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(fillColor);
+        c.drawCircle(point.x,point.y, v,paint);
+
+         paint.setColor(innerCircleColor);
+        c.drawCircle(point.x,point.y, Math.min(Utils.dp2px(4),v/10),paint);
+
+
 
     }
 

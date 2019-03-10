@@ -127,6 +127,21 @@ public class ErpWorkController extends BaseController {
         return erpWorkService.receiveOrderItemWorkFlow(user, workFlowMsgId, files, "测试区域");
 
     }
+    /**
+     * 撤销生产流程交接(交接已经完成然后撤销)
+     *
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/rollBackWorkFlowMessage", method = {RequestMethod.GET, RequestMethod.POST})
+    public
+    @ResponseBody
+    RemoteData<Void> rollBackWorkFlow(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam(value = "workFlowMsgId") long workFlowMsgId, @RequestParam("memo") String memo) {
+
+
+        return erpWorkService.rollBackOrderItemWorkFlow(user, workFlowMsgId,memo);
+
+    }
 
     /**
      *  查詢所有排產未完工

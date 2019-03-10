@@ -39,4 +39,8 @@ public interface MapWorkModel extends Model {
     MapElement updateMapElement(MapElement o);
 
     MapElement getMapElementByPoint(String pointString);
+
+    void setEditElement(MapElement mapElement);
+
+    MapElement getEdittingMapElement();
 }

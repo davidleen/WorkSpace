@@ -1,8 +1,10 @@
 package com.rnmap_wb.map;
 
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 
 import com.rnmap_wb.LatLngUtil;
+import com.rnmap_wb.MainApplication;
 import com.rnmap_wb.R;
 import com.rnmap_wb.activity.mapwork.GeoObjectItem;
 import com.rnmap_wb.activity.mapwork.MapWorkActivity;
@@ -195,12 +197,14 @@ public class GeoObjectItemGenerator {
         int size = markerBin.size();
         if (size > 0) {
             marker = markerBin.remove(size - 1);
-        } else
+        } else {
 
-          marker = new CustomMarker(mapView);
+            marker = new Marker(mapView);
+
+        }
 
 
-        marker.setIcon(mapView.getContext().getResources().getDrawable(R.drawable.icon_map_mark));
+        marker.setIcon(mapView.getContext().getResources().getDrawable(R.drawable.icon_map_point));
         return marker;
 
     }

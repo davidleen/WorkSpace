@@ -9,6 +9,8 @@ public class MapElement {
    public  static final int TYPE_POLYLINE=2;
    public  static final int TYPE_POLYGON=3;
    public  static final int TYPE_CIRCLE=4;
+   public  static final int TYPE_MAPPING_LINE=5;
+    public static final String PICTURE_REGEX = ";";
 
 
     /**

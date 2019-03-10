@@ -116,6 +116,8 @@ public class WorkFlowMessageReceiveActivity extends BaseHeadViewerActivity<Prese
     public View panel_sender;
     @Bind(R.id.sender)
     public TextView sender;
+    @Bind(R.id.rollback)
+    public View rollback;
 
 
 
@@ -223,6 +225,7 @@ public class WorkFlowMessageReceiveActivity extends BaseHeadViewerActivity<Prese
         picture2.setOnClickListener(this);
         picture3.setOnClickListener(this);
         picture.setOnClickListener(this);
+        rollback.setOnClickListener(this);
 
     }
 
@@ -391,6 +394,8 @@ public class WorkFlowMessageReceiveActivity extends BaseHeadViewerActivity<Prese
 
         }
 
+
+        rollback.setVisibility(data.state== WorkFlowMessage.STATE_PASS?View.VISIBLE:View.GONE);
         state.setText(stateText);
         createTime.setText(data.createTimeString.substring(0, 10));
         String[] pictures = StringUtils.split(data.pictures);
