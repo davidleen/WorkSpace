@@ -330,6 +330,7 @@ public class DownloadTaskListActivity extends BaseMvpActivity implements DownLoa
                     }
 
                     DaoManager.getInstance().getDownloadTaskDao().removeAll();
+                    DaoManager.getInstance().getDownloadItemDao().removeAll();
                     return null;
                 } catch (Throwable e) {
                     e.printStackTrace();

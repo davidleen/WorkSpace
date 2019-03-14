@@ -116,9 +116,11 @@ public class DownLoadTaskAdapter extends AbstractAdapter<DownloadTask> implement
 
             name.setText(data.getName());
 
-            downloadCount.setText(String.valueOf(data.downloadedCount));
+            downloadCount.setText(String.valueOf(Math.min(data.downloadedCount,data.count)));
             totalCount.setText(String.valueOf(data.count));
-            zoomlevel.setText(data.getFromZoom() + "~" + data.getToZoom());
+
+            String zoomString=data.getFromZoom()==data.getToZoom()?String.valueOf(data.getFromZoom()):(data.getFromZoom() + "~" + data.getToZoom());
+            zoomlevel.setText(zoomString);
 //            state.setText(data.getState() == 0 ? "正在下载" : data.getState() == 1 ? "已经暂停" : "已完成");
 //            state.setTag(data);
             // state.setOnClickListener((View.OnClickListener) adapter);

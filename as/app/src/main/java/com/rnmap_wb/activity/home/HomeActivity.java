@@ -75,6 +75,9 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
     @Bind(R.id.userName)
     TextView userName;
 
+    @Bind(R.id.email)
+    TextView email;
+
     @Bind(R.id.downloadtask)
     View downloadtask;
 
@@ -250,6 +253,7 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
 
         LoginResult loginUser = SessionManager.getLoginUser(HomeActivity.this);
         userName.setText(loginUser == null ? "" : loginUser.name);
+        email.setText(loginUser == null ? "" : loginUser.email);
         reloadData();
 
 
@@ -402,11 +406,11 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
     @Override
     public void onBackPressed() {
 
-        if (getDrawerLayout()!=null&&getDrawerLayout().isDrawerOpen(GravityCompat.START)) {
+        if (getDrawerLayout() != null && getDrawerLayout().isDrawerOpen(GravityCompat.START)) {
             getDrawerLayout().closeDrawer(GravityCompat.START);
         } else {
 
-            if ( checkBack()) {
+            if (checkBack()) {
                 super.onBackPressed();
 
             } else {

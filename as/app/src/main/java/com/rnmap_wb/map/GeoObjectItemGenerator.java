@@ -9,6 +9,7 @@ import com.rnmap_wb.R;
 import com.rnmap_wb.activity.mapwork.GeoObjectItem;
 import com.rnmap_wb.activity.mapwork.MapWorkActivity;
 import com.rnmap_wb.activity.mapwork.map.CustomMarker;
+import com.rnmap_wb.activity.mapwork.map.KMlMarker;
 
 import org.osmdroid.bonuspack.kml.IconStyle;
 import org.osmdroid.bonuspack.kml.KmlDocument;
@@ -38,32 +39,18 @@ import static com.rnmap_wb.map.CustomClusterManager.CLUSTER;
 public class GeoObjectItemGenerator {
 
 
-    Map<Object, Object> geoItemToMap = new HashMap<>();
-    Map<Object, Object> mapToGeoItem = new HashMap<>();
+    Map<GeoObjectItem, OverlayWithIW> geoItemToMap = new HashMap<>();
+    Map<OverlayWithIW, GeoObjectItem> mapToGeoItem = new HashMap<>();
 
     private List<OverlayWithIW> visibleObjects = new ArrayList<>();
     private List<Marker> markerBin = new ArrayList<>();
     private List<Polyline> polylineBin = new ArrayList<>();
     private List<Polygon> polygonBin = new ArrayList<>();
 
+
     public OverlayWithIW generate(GeoObjectItem item, MapView map, Style defaultStyle, KmlFeature.Styler styler, KmlPlacemark kmlPlacemark,
                                   KmlDocument kmlDocument) {
 
-
-        //标记已经存在界面上 不添加
-        if (geoItemToMap.containsKey(item)) return null;
-//        if (item.mGeometry==null ) {
-//            for (OverlayWithIW iw:visibleObjects)
-//            {
-//                if(iw instanceof Marker)
-//                {
-//                    if (((Marker) iw).getPosition().equals(item.getPosition())) {
-//                        return null;
-//                    }
-//                }
-//            }
-//
-//        }
 
 
         OverlayWithIW result = null;
@@ -155,16 +142,18 @@ public class GeoObjectItemGenerator {
 
 
         if (styler == null) {
-            if (marker instanceof CustomMarker) {
+            if (marker instanceof KMlMarker) {
                 IconStyle iconStyle = kmlPoint.getIconStyle(defaultStyle, kmlPlacemark, kmlDocument);
-                ((CustomMarker) marker).applyIconStyle(iconStyle);
+                ((KMlMarker) marker).applyIconStyle(iconStyle);
 
             } else {
                 kmlPoint.applyDefaultStyling(marker, defaultStyle, kmlPlacemark, kmlDocument, map);
             }
         } else
             styler.onPoint(marker, kmlPlacemark, kmlPoint);
-
+        if (marker instanceof KMlMarker) {
+            ((KMlMarker) marker).bindData();
+        }
         marker.setVisible(true);
         return marker;
     }
@@ -186,7 +175,9 @@ public class GeoObjectItemGenerator {
         if (marker instanceof CustomMarker) {
             ((CustomMarker) marker).applyIconStyle(null);
         }
-
+        if (marker instanceof KMlMarker) {
+            ((KMlMarker) marker).bindData();
+        }
 
         return marker;
     }
@@ -199,7 +190,7 @@ public class GeoObjectItemGenerator {
             marker = markerBin.remove(size - 1);
         } else {
 
-            marker = new Marker(mapView);
+            marker = new KMlMarker(mapView);
 
         }
 
@@ -256,6 +247,52 @@ public class GeoObjectItemGenerator {
 
     private List<OverlayWithIW> tempList = new ArrayList<>();
 
+
+    public List<OverlayWithIW> updateItems(List<GeoObjectItem> items, MapView map, Style defaultStyle, KmlFeature.Styler styler,
+                                           KmlDocument kmlDocument,KmlHelper kmlHelper)
+    {
+
+        List<OverlayWithIW> result=new ArrayList<>();
+
+        List<OverlayWithIW>  willUnVisibleItems=new ArrayList<>();
+        willUnVisibleItems.addAll(visibleObjects);
+        for (GeoObjectItem item:items)
+        {
+
+
+            OverlayWithIW iw = geoItemToMap.get(item);
+            if(iw==null)
+            {
+                KmlPlacemark placemark = item.mGeometry == null ? null : kmlHelper.kmlPlacemarkSparseArray.get(item.mGeometry.hashCode());
+                iw=generate(item,map,defaultStyle,styler,placemark,kmlDocument);
+                geoItemToMap.put(item,iw);
+                mapToGeoItem.put(iw,item);
+
+            }else
+            {
+                willUnVisibleItems.remove(iw);
+            }
+
+            result.add(iw);
+
+        }
+
+        visibleObjects.clear();
+        visibleObjects.addAll(result);
+        for(OverlayWithIW iw:willUnVisibleItems)
+        {
+            clearMapItem(iw);
+            releaseOverlayIw(iw);
+        }
+
+
+        return result;
+
+
+
+    }
+
+
     public void clearUnVisibleItems(BoundingBox visibleLatLngBounds) {
 
         {
@@ -307,11 +344,12 @@ public class GeoObjectItemGenerator {
 
     }
 
-    private void clearMapItem(Object mapItem) {
-        Object geoItem = mapToGeoItem.remove(mapItem);
+    private void clearMapItem(OverlayWithIW mapItem) {
+        GeoObjectItem geoItem = mapToGeoItem.remove(mapItem);
         geoItemToMap.remove(geoItem);
 
     }
+
 
     /**
      * Build a FolderOverlay, containing (recursively) overlays from all items of this Folder.

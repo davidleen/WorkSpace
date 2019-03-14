@@ -50,13 +50,10 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
         String filePath = SynchronizeCenter.getElementsFilePath(task);
         List<MapElement> elements = getModel().getMapElements();
 
-        List<MapElement> elementToSave=new ArrayList<>()
-                ;
-        for (MapElement mapElement:elements)
-        {
+        List<MapElement> elementToSave = new ArrayList<>();
+        for (MapElement mapElement : elements) {
 
-            if((mapElement.type==MapElement.TYPE_MAPPING_LINE||mapElement.type==MapElement.TYPE_POLYLINE)&&LatLngUtil.convertStringToGeoPoints(mapElement.latLngs).size()<=1)
-            {
+            if ((mapElement.type == MapElement.TYPE_MAPPING_LINE || mapElement.type == MapElement.TYPE_POLYLINE) && LatLngUtil.convertStringToGeoPoints(mapElement.latLngs).size() <= 1) {
                 continue;
             }
             elementToSave.add(mapElement);
@@ -75,19 +72,25 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
     public void downloadMap(final List<GeoPoint> latLngs, final int fromZoom, final int toZoom) {
 
 
-        String area = LatLngUtil.convertGeoPointToString(latLngs);
 
-        List<DownloadTask> byLatLngs = DaoManager.getInstance().getDownloadTaskDao().findByLatLngs(area);
-        if (byLatLngs.size() > 0) {
-            getView().showMessage("当前区域已经在下载队列中");
-            return;
-        }
+
+
 
         new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
+                DaoManager.getInstance().beginTransaction();
+                try {
 
-                beginDownLoadTask(latLngs, fromZoom, toZoom);
+
+                    beginDownLoadTask(latLngs, fromZoom, toZoom);
+                    DaoManager.getInstance().commitTransaction();
+                } catch (Throwable t) {
+                    Log.e(t);
+                } finally {
+
+                    DaoManager.getInstance().endTransaction();
+                }
                 return null;
 
             }
@@ -101,7 +104,7 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
     private void beginDownLoadTask(List<GeoPoint> latLngs, int fromZoom, int toZoom) {
         DownloadTask downloadTask = new DownloadTask();
         downloadTask.setCreateTime(Calendar.getInstance().getTime().toString());
-        downloadTask.setName("地图区域下载");
+        downloadTask.setName("地图区域下载" );
 
         downloadTask.setLatLngs(LatLngUtil.convertGeoPointToString(latLngs));
         downloadTask.setFromZoom(fromZoom);
@@ -149,7 +152,7 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
                     downloadItem.setTileZ(z);
 
 //                    String url = String.format("http://mts%d.googleapis.com/vt?lyrs=p&x=%d&y=%d&z=%d", random.nextInt(4), x, y, z);
-                    String url = TileUrlHelper.getUrl(x,y,z);
+                    String url = TileUrlHelper.getUrl(x, y, z);
                     if (BuildConfig.DEBUG)
                         Log.e(url);
                     downloadItem.setUrl(url);
@@ -185,18 +188,16 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
 //        mapElement.latLngs=LatLngUtil.convertLatLngToString(latLng)
 
 
+        MapElement mapElement = getModel().getEdittingMapElement();
 
-        MapElement mapElement=getModel().getEdittingMapElement();
-
-        if(mapElement==null||mapElement.type!=TYPE_POLYLINE)
-        {
+        if (mapElement == null || mapElement.type != TYPE_POLYLINE) {
             mapElement = new MapElement();
             mapElement.type = TYPE_POLYLINE;
             getModel().addNewMapElement(mapElement);
             getModel().setEditElement(mapElement);
         }
 
-        List<GeoPoint> geoPoints=LatLngUtil.convertStringToGeoPoints(mapElement.latLngs);
+        List<GeoPoint> geoPoints = LatLngUtil.convertStringToGeoPoints(mapElement.latLngs);
         geoPoints.add(p);
         String s = LatLngUtil.convertGeoPointToString(geoPoints);
         mapElement.latLngs = s;
@@ -247,7 +248,6 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
         updateMapElementCache();
 
 
-
     }
 
     @Override
@@ -275,7 +275,7 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
     @Override
     public void prepare(Task task) {
         this.task = task;
-        if(task==null) return;
+        if (task == null) return;
 
         //查找本地文件  是否存在标记文件
         String filePath = SynchronizeCenter.getElementsFilePath(task);
@@ -334,16 +334,15 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
     public void requestFeekBack(String pointString) {
 
 
-      MapElement mapElement=  getModel().getMapElementByPoint(pointString);
-      if(mapElement==null)
-      {
-          mapElement=new MapElement();
-          mapElement.type=TYPE_KML_MARK;
-          mapElement.latLngs=pointString;
+        MapElement mapElement = getModel().getMapElementByPoint(pointString);
+        if (mapElement == null) {
+            mapElement = new MapElement();
+            mapElement.type = TYPE_KML_MARK;
+            mapElement.latLngs = pointString;
 
-      }
+        }
 
-      getView().feedBack(mapElement);
+        getView().feedBack(mapElement);
 
 
     }
@@ -352,29 +351,21 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
     public void addMappingLine(GeoPoint p) {
 
 
+        MapElement mapElement = getModel().getEdittingMapElement();
 
-        MapElement mapElement=getModel().getEdittingMapElement();
-
-        if(mapElement==null||mapElement.type!=MapElement.TYPE_MAPPING_LINE)
-        {
+        if (mapElement == null || mapElement.type != MapElement.TYPE_MAPPING_LINE) {
             mapElement = new MapElement();
             mapElement.type = TYPE_MAPPING_LINE;
             getModel().addNewMapElement(mapElement);
             getModel().setEditElement(mapElement);
         }
 
-        List<GeoPoint> geoPoints=LatLngUtil.convertStringToGeoPoints(mapElement.latLngs);
+        List<GeoPoint> geoPoints = LatLngUtil.convertStringToGeoPoints(mapElement.latLngs);
         geoPoints.add(p);
         String s = LatLngUtil.convertGeoPointToString(geoPoints);
         mapElement.latLngs = s;
         updateMapElementCache();
         getView().showMapElement(mapElement);
-
-
-
-
-
-
 
 
     }

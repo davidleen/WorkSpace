@@ -265,9 +265,20 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
         @Override
         public boolean onMarkerClick(final Marker marker, MapView mapView) {
-            if(!(marker instanceof CustomMarker)) return   false;
-            final MapElement mapElement = objectMapElementHashMap.get(marker);
-            AddMarkActivity.start(MapWorkActivity.this, mapElement, REQUEST_UPDATE_MARK);
+            if(marker instanceof CustomMarker) {
+
+                if(((CustomMarker) marker).isShowPopup())
+                {
+                    final MapElement mapElement = objectMapElementHashMap.get(marker);
+                    AddMarkActivity.start(MapWorkActivity.this, mapElement, REQUEST_UPDATE_MARK);
+                }else
+                {
+                    ((CustomMarker)marker).setShowPopup(true);
+                }
+
+                return false;
+            }
+
 
 
 //            if (mapElement != null) {
@@ -356,10 +367,9 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                             list.add(points.get(0));
                             list.add(points.get(2));
 
-                            float maxZoomLevel = (float) Math.min(mapView.getZoomLevelDouble() + 5, mapView.getMaxZoomLevel());
-                            float minZoomLevel = (float) Math.max(mapView.getZoomLevelDouble() - 5, mapView.getMinZoomLevel());
-
-                            pickZoom(list, maxZoomLevel, minZoomLevel);
+//                            float maxZoomLevel = (float) Math.min(mapView.getZoomLevelDouble() + 5, mapView.getMaxZoomLevel());
+//                            float minZoomLevel = (float) Math.max(mapView.getZoomLevelDouble() - 5, mapView.getMinZoomLevel());
+                            pickZoom(list, TileUrlHelper.MAX_OFFLINE_ZOOM, TileUrlHelper.MIN_OFFLINE_ZOOM);
                             break;
                     }
 
@@ -683,7 +693,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle("选择地图级别");
-        final String[] s = new String[(int) maxZoom - (int) minzoom];
+        final String[] s = new String[(int) maxZoom - (int) minzoom+1];
         for (int i = 0; i < s.length; i++) {
 
             s[i] = String.valueOf((int) (minzoom + i));
@@ -694,7 +704,8 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                 Log.e(which);
 
                 Integer fromZoom = Integer.valueOf(s[which]);
-                getPresenter().downloadMap(latLngs, fromZoom - 1, fromZoom + 1);
+                //getPresenter().downloadMap(latLngs, fromZoom - 1, fromZoom + 1);
+                getPresenter().downloadMap(latLngs, fromZoom  , fromZoom  );
 
 
             }

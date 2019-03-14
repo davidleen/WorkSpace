@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DownloadManagerService extends Service {
 
@@ -126,8 +127,7 @@ public class DownloadManagerService extends Service {
 
             this.taskId = taskId;
         }
-
-        boolean destroyed = false;
+        public AtomicBoolean destroy = new AtomicBoolean();
 
         @Override
         public void run() {
@@ -143,11 +143,11 @@ public class DownloadManagerService extends Service {
             List<DownloadItem> items = null;
             do {
 
-                if (destroyed) break;
+                if (destroy.get()) break;
                 items = downloadItemDao.findUnCompleteByTaskId(taskId, 50);
                 for (DownloadItem downloadItem : items) {
 
-                    if (destroyed) break;
+                    if (destroy.get()) break;
 
 
                     String downloadFilePath = downloadItem.getDownloadFilePath();
@@ -162,11 +162,11 @@ public class DownloadManagerService extends Service {
 
                     }
 
-                    if (destroyed) break;
+                    if (destroy.get()) break;
 
-                    if (new File(downloadFilePath).exists() && downloadItem.getState() != 2) {
+                    if (new File(downloadFilePath).exists() && downloadItem.getState() != DownloadItem.STATE_DONE) {
 
-                        downloadItem.setState(2);
+                        downloadItem.setState(DownloadItem.STATE_DONE);
                         DaoManager.getInstance().getDownloadItemDao().save(downloadItem);
                         downloadTask.downloadedCount++;
                         downloadTask.percent = (float) downloadTask.downloadedCount / downloadTask.count;
@@ -242,17 +242,14 @@ public class DownloadManagerService extends Service {
 
         }
 
-        public void setDestroy(boolean b) {
+        public void setDestroy( ) {
 
-            try {
-                interrupt();
-            } catch (Throwable t) {
-            }
-            try {
 
-                destroyed = true;
+            destroy.set(true);
+            interrupt();
+            try {
                 join();
-            } catch (Throwable e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
@@ -286,7 +283,7 @@ public class DownloadManagerService extends Service {
 
             MapTileDownloadThread thread = downloadingThread.get(downLoadTaskId);
             if (thread != null) {
-                thread.setDestroy(true);
+                thread.setDestroy( );
                 downloadingThread.remove(downLoadTaskId);
             }
 

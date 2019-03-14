@@ -8,137 +8,70 @@ import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.giants3.android.frame.util.StringUtil;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.rnmap_wb.R;
-import com.rnmap_wb.entity.MapElement;
 import com.rnmap_wb.helper.ImageLoaderFactory;
 import com.rnmap_wb.map.CustomClusterManager;
 
 import org.osmdroid.bonuspack.kml.IconStyle;
 import org.osmdroid.views.MapView;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.osmdroid.views.overlay.Marker;
 
 import butterknife.Bind;
 
-public class CustomMarker extends org.osmdroid.views.overlay.Marker {
+public class KMlMarker extends org.osmdroid.views.overlay.Marker {
 
     public IconStyle iconStyle;
     ViewHolder holder;
 
-    public void setShowPopup(boolean showPopup) {
-        this.showPopup = showPopup;
-    }
 
-    public boolean isShowPopup() {
-        return showPopup;
-    }
-
-    boolean showPopup=false;
     private Context context;
 
-    public CustomMarker(MapView mapView) {
+    public KMlMarker(MapView mapView) {
         super(mapView);
         context = mapView.getContext();
-        holder = new ViewHolder(LayoutInflater.from(context).inflate(R.layout.view_marker_info, null));
+        holder = new ViewHolder(LayoutInflater.from(context).inflate(R.layout.view_kml_marker_info, null));
     }
 
-    public CustomMarker(MapView mapView, Context resourceProxy) {
+    public KMlMarker(MapView mapView, Context resourceProxy) {
         super(mapView, resourceProxy);
         context = resourceProxy;
     }
 
 
-
-
-
-   public static class ViewHolder extends AbsViewHolder<MapElement> {
+    public static class ViewHolder extends AbsViewHolder<Marker> {
 
         @Bind(R.id.name)
         TextView name;
         @Bind(R.id.memo)
         TextView memo;
-        @Bind(R.id.images)
-        View images;
 
-
-        @Bind(R.id.img1)
-        ImageView img1;
-        @Bind(R.id.img2)
-        ImageView img2;
-        @Bind(R.id.img3)
-        ImageView img3;
-        private ImageView[] imageViews;
 
         public ViewHolder(View v) {
             super(v);
-            imageViews = new ImageView[]{img1, img2, img3};
+
         }
 
-        public void bindData(MapElement mapElement) {
+        public void bindData(Marker marker) {
 
-            name.setText(mapElement.name);
+            name.setText(marker.getTitle());
 
-            boolean empty = StringUtil.isEmpty(mapElement.memo);
+            boolean empty = StringUtil.isEmpty(marker.getSnippet());
             memo.setVisibility(!empty ? View.VISIBLE : View.GONE);
             if (!empty) {
-                memo.setText(mapElement.memo);
+                memo.setText(marker.getSnippet());
             }
-            handleImageLayouts(mapElement);
+            memo.setVisibility(View.GONE);
 
 
         }
 
-        private void handleImageLayouts(MapElement mapElement) {
-
-
-            List<String> urls = new ArrayList<>();
-            List<String> localFilePaths = new ArrayList<>();
-            String[] pics = mapElement.picture == null ? null : mapElement.picture.split(MapElement.PICTURE_REGEX);
-            if (pics != null)
-                for (String url : pics)
-                    if (!StringUtil.isEmpty(url))
-                        urls.add(url);
-            String[] paths = mapElement.filePath == null ? null : mapElement.filePath.split(MapElement.PICTURE_REGEX);
-            if (paths != null)
-                for (String path : paths) {
-                    if (!StringUtil.isEmpty(path))
-                        localFilePaths.add(path);
-                }
-
-            int urlSize = urls.size();
-            int filePathSize = localFilePaths.size();
-            for (int i = 0; i < imageViews.length; i++) {
-                ImageView picture = imageViews[i];
-
-                String url = i < urlSize ? urls.get(i) : null;
-                String filePath = i < filePathSize ? localFilePaths.get(i) : null;
-
-                picture.setVisibility(View.VISIBLE);
-                if (!StringUtil.isEmpty(url)) {
-
-                    ImageLoaderFactory.getInstance().displayImage(url, picture);
-                } else if (!StringUtil.isEmpty(filePath)) {
-
-                    ImageLoaderFactory.getInstance().displayImage(filePath, picture);
-                } else {
-                    picture.setVisibility(View.GONE);
-                }
-
-
-            }
-
-
-        }
 
     }
-
 
     public void applyIconStyle(IconStyle iconStyle) {
 
@@ -164,10 +97,9 @@ public class CustomMarker extends org.osmdroid.views.overlay.Marker {
 
 
     }
+    public void bindData() {
 
-    public void bindData(MapElement mapElement) {
-
-        holder.bindData(mapElement);
+        holder.bindData(this);
         //绘制
 
         View v = holder.getRoot();
@@ -180,10 +112,12 @@ public class CustomMarker extends org.osmdroid.views.overlay.Marker {
 
     @Override
     public void draw(Canvas canvas, MapView mapView, boolean shadow) {
-        super.draw(canvas, mapView, shadow);
 
 
-        if(showPopup) {
+
+        if ( isDisplayed()&&!shadow&&mIcon!=null&&mAlpha!=0) {
+
+
             canvas.save();
             int left = mPositionPixels.x;
             int y = mPositionPixels.y;
@@ -192,9 +126,10 @@ public class CustomMarker extends org.osmdroid.views.overlay.Marker {
 
             holder.getRoot().draw(canvas);
             canvas.restore();
+
         }
 
-
+        super.draw(canvas, mapView, shadow);
     }
 
     private void setCustomIcon(Drawable drawable) {
@@ -215,7 +150,7 @@ public class CustomMarker extends org.osmdroid.views.overlay.Marker {
 
     public void setCustomDefaultIcon() {
 
-        setIcon(context.getResources().getDrawable(R.drawable.icon_map_mark));
+        setIcon(context.getResources().getDrawable(R.drawable.icon_map_point));
 
     }
 

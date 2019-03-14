@@ -14,6 +14,9 @@ import org.greenrobot.greendao.annotation.Generated;
 public class DownloadItem {
 
 
+    public static final int STATE_NONE=0;
+    public static final int STATE_DONE=2;
+
     @Id
     private Long id;
 
@@ -30,7 +33,7 @@ public class DownloadItem {
     private String downloadFilePath;
 
     /**
-     * 状态 0 未下载  1 下载中  2 下载完成
+     * 状态 0 未下载    2 下载完成
      */
     private int state;
 

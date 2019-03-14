@@ -46,7 +46,8 @@ public class OffLineHelper {
                         Log.e(which);
 
                         Integer fromZoom = Integer.valueOf(s[which]);
-                        startOffLineTask(activity, task, kmlFilePath, Math.max(minzoom, fromZoom - 1), Math.min(fromZoom + 1, maxZoom), viewNow);
+                        // startOffLineTask(activity, task, kmlFilePath, Math.max(minzoom, fromZoom - 1), Math.min(fromZoom + 1, maxZoom), viewNow);
+                        startOffLineTask(activity, task, kmlFilePath, fromZoom, fromZoom, viewNow);
 
 
                     }
@@ -171,12 +172,16 @@ public class OffLineHelper {
         List<DownloadItem> downloadItems = new ArrayList<>();
         int totalCount = 0;
 
-        for (GeoPoint geoPoint : geoPoints) {
-
-            for (int z = fromZoom; z <= toZoom; z++) {
-
-
+        int[] lastXY = new int[2];
+        for (int z = fromZoom; z <= toZoom; z++) {
+            for (GeoPoint geoPoint : geoPoints) {
                 LatLngUtil.getTileNumber(geoPoint.getLatitude(), geoPoint.getLongitude(), z, xy);
+                boolean sameTile = lastXY[0] == xy[0] && lastXY[1] == xy[1];
+                lastXY[0] = xy[0];
+                lastXY[1] = xy[1];
+                if (sameTile) {
+                    continue;
+                }
 
                 DownloadItem downloadItem = new DownloadItem();
                 downloadItem.setTaskId(id);

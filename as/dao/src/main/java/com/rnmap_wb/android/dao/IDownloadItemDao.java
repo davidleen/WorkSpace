@@ -32,14 +32,15 @@ public class IDownloadItemDao {
 
     public List<DownloadItem> findUnCompleteByTaskId(long taskId) {
 
-       return findUnCompleteByTaskId(taskId,0);
+        return findUnCompleteByTaskId(taskId, 0);
     }
-    public List<DownloadItem> findUnCompleteByTaskId(long taskId,int limit) {
+
+    public List<DownloadItem> findUnCompleteByTaskId(long taskId, int limit) {
 
         QueryBuilder<DownloadItem> downloadItemQueryBuilder = dao.queryBuilder();
-        downloadItemQueryBuilder.where(DownloadItemDao.Properties.TaskId.eq(taskId),DownloadItemDao.Properties.State.eq(0));
-        if(limit>0)
-        downloadItemQueryBuilder.limit(limit);
+        downloadItemQueryBuilder.where(DownloadItemDao.Properties.TaskId.eq(taskId), DownloadItemDao.Properties.State.eq(DownloadItem.STATE_NONE));
+        if (limit > 0)
+            downloadItemQueryBuilder.limit(limit);
 
         List<DownloadItem> downloadItems = downloadItemQueryBuilder.list();
         return downloadItems;
@@ -47,7 +48,7 @@ public class IDownloadItemDao {
 
     public void saveAll(List<DownloadItem> downloadItems) {
 
-         
+
         dao.saveInTx(downloadItems);
     }
 
@@ -67,9 +68,13 @@ public class IDownloadItemDao {
 
 
     }
-    public DownloadItem findById(long itemId)
-    {
+
+    public DownloadItem findById(long itemId) {
         return dao.load(itemId);
 
+    }
+
+    public void removeAll() {
+        dao.deleteAll();
     }
 }

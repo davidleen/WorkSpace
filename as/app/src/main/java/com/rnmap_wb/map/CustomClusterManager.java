@@ -4,6 +4,7 @@ package com.rnmap_wb.map;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
+import android.util.SparseArray;
 
 import com.giants3.android.frame.util.Log;
 import com.google.maps.android.clustering.Cluster;
@@ -12,10 +13,11 @@ import com.google.maps.android.clustering.algo.NonHierarchicalDistanceBasedAlgor
 import com.google.maps.android.clustering.algo.PreCachingAlgorithmDecorator;
 import com.rnmap_wb.activity.mapwork.GeoObjectItem;
 import com.rnmap_wb.activity.mapwork.MapWorkActivity;
+import com.rnmap_wb.activity.mapwork.map.KMlMarker;
 
 import org.osmdroid.bonuspack.kml.KmlDocument;
 import org.osmdroid.bonuspack.kml.KmlGeometry;
-import org.osmdroid.bonuspack.kml.KmlPlacemark;
+import org.osmdroid.bonuspack.kml.KmlPoint;
 import org.osmdroid.events.MapListener;
 import org.osmdroid.events.ScrollEvent;
 import org.osmdroid.events.ZoomEvent;
@@ -23,7 +25,6 @@ import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.TileSystem;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.FolderOverlay;
-import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.OverlayWithIW;
 
 import java.util.ArrayList;
@@ -40,12 +41,13 @@ public class CustomClusterManager implements MapListener {
 
     KmlHelper kmlHelper;
     public static final int MSG_RENDER = 111;
+    public static final int MSG_FILTER = 112;
     public static final String CLUSTER = "放大查看";
 
-    private int lastZoom=-100;
-    Set<? extends Cluster<GeoObjectItem>> lastCluster;
+    private int lastZoom = -100;
 
     private List<GeoObjectItem> geoObjectItems;
+    SparseArray<List<GeoObjectItem>> objectItemSparseArray;
 
     Handler handler;
     Algorithm mAlgorithm;
@@ -53,6 +55,7 @@ public class CustomClusterManager implements MapListener {
     private KmlDocument kmlDocument;
     private MapWorkActivity.OverlayWithIWClickListener clickListener;
     ClusterTask mClusterTask;
+    AsyncTask<Void, Void, List<GeoObjectItem>> filterTask;
     private final ReadWriteLock mAlgorithmLock = new ReentrantReadWriteLock();
 
     private GeoObjectItemGenerator generator;
@@ -63,12 +66,13 @@ public class CustomClusterManager implements MapListener {
         this.mapView = map;
         this.kmlDocument = kmlDocument;
         this.clickListener = clickListener;
+        objectItemSparseArray = new SparseArray<>();
 
         mapView.addMapListener(this);
         generator = new GeoObjectItemGenerator();
         mAlgorithm = new PreCachingAlgorithmDecorator<GeoObjectItem>(new NonHierarchicalDistanceBasedAlgorithm<GeoObjectItem>());
         handler = new ModifyViewHandler();
-        mClusterTask = new ClusterTask();
+
 
         folderOverlay = generator.buildFolderOverlay(map, null, null, kmlDocument);
         mapView.getOverlays().add(folderOverlay);
@@ -105,51 +109,126 @@ public class CustomClusterManager implements MapListener {
     /**
      * Runs the clustering algorithm in a background thread, then re-paints when results come back.
      */
-    private class ClusterTask extends AsyncTask<Object, Void, Set<? extends Cluster<GeoObjectItem>>> {
+    private class ClusterTask extends AsyncTask<Object, Void, List<GeoObjectItem>> {
 
+        private int zoomLevel;
+
+        public ClusterTask(int zoomLevel) {
+
+            this.zoomLevel = zoomLevel;
+        }
 
         @Override
-        protected Set<? extends Cluster<GeoObjectItem>> doInBackground(Object... zoom) {
+        protected List<GeoObjectItem> doInBackground(Object... zoom) {
             mAlgorithmLock.readLock().lock();
             try {
                 if (isCancelled()) return null;
                 mAlgorithm.clearItems();
-                BoundingBox bounds = (BoundingBox) zoom[1];
+
                 //过滤不再显示范围内的集合。
                 List<GeoObjectItem> items = new ArrayList<>();
-//                for (GeoObjectItem item : geoObjectItems) {
-//                      if (item.isInBounds(bounds))
-//
-//                    items.add(item);
-//                }
+
                 items.addAll(geoObjectItems);
 
                 mAlgorithm.addItems(items);
-                Set clusters = mAlgorithm.getClusters(Float.valueOf(zoom[0].toString()));
+
+                Set<Cluster<GeoObjectItem>> clusters = mAlgorithm.getClusters(zoomLevel);
 
                 if (isCancelled()) return null;
 
 
-                return clusters;
+                List<GeoObjectItem> result = new ArrayList<>();
+                for (Cluster<GeoObjectItem> cluster : clusters) {
+
+                    Collection<GeoObjectItem> clusterItems = cluster.getItems();
+                    if (cluster.getSize() < 50 || mapView.getZoomLevel() > 15) {
+                        result.addAll(clusterItems);
+                    } else {
+
+                        int index = 0;
+                        for (GeoObjectItem item : clusterItems) {
+                            if (index < 1 && item.mGeometry instanceof KmlPoint) {
+                                result.add(item);
+                                index++;
+
+                            }
+
+                        }
+                    }
+
+
+                }
+
+
+                return result;
             } finally {
                 mAlgorithmLock.readLock().unlock();
             }
         }
 
         @Override
-        protected void onPostExecute(Set<? extends Cluster<GeoObjectItem>> clusters) {
+        protected void onPostExecute(List<GeoObjectItem> items) {
 
-            if (clusters == null) return;
-            onNewCluster(clusters);
+            if (items == null) return;
+            objectItemSparseArray.put(zoomLevel, items);
+            handler.removeMessages(MSG_FILTER);
+            handler.sendEmptyMessageDelayed(MSG_FILTER,500);
 
 
         }
     }
 
 
-    private void onNewCluster(Set<? extends Cluster<GeoObjectItem>> clusters)
-    {
-        lastCluster=clusters;
+    private void filterItems(final List<GeoObjectItem> items) {
+
+        if (items == null) return;
+
+        if (filterTask != null && !filterTask.isCancelled()) {
+            try {
+                filterTask.cancel(true);
+            } catch (Throwable t) {
+            }
+        }
+
+
+        final BoundingBox boundingBox = getVisibleLatLngBounds();
+
+        filterTask = new AsyncTask<Void, Void, List<GeoObjectItem>>() {
+            @Override
+            protected List<GeoObjectItem> doInBackground(Void... voids) {
+
+
+                List<GeoObjectItem> result = new ArrayList<>();
+
+                for (GeoObjectItem geoObjectItem : items) {
+
+                    if(isCancelled()) return null;
+                    if (geoObjectItem.isInBounds(boundingBox))
+                        result.add(geoObjectItem);
+                }
+
+
+                return result;
+            }
+
+            @Override
+            protected void onPostExecute(List<GeoObjectItem> geoObjectItems) {
+                super.onPostExecute(geoObjectItems);
+                if(geoObjectItems==null)return ;
+                if (isCancelled()) {
+                    return;
+                }
+                addNewMapItem(geoObjectItems);
+
+            }
+        };
+        filterTask.execute();
+
+
+    }
+
+    private void onNewCluster(Set<? extends Cluster<GeoObjectItem>> clusters) {
+
         long time = Calendar.getInstance().getTimeInMillis();
         generator.clearUnVisibleItems(getVisibleLatLngBounds());
         Log.e("tiem use in clear unvisible:" + (Calendar.getInstance().getTimeInMillis() - time));
@@ -180,13 +259,13 @@ public class CustomClusterManager implements MapListener {
         TileSystem tileSystem = mapView.getTileSystem();
 
 
-        BoundingBox doubleBox = new BoundingBox(Math.min(boundingBox.getLatNorth() * 2 - centerLat,tileSystem.getMaxLatitude()),
-                Math.max(boundingBox.getLonEast() * 2 - centerLong,tileSystem.getMinLongitude()),
-                Math.max(boundingBox.getLatSouth() * 2 - centerLat,tileSystem.getMinLatitude()),
-                Math.min(boundingBox.getLonWest() * 2 - centerLong,tileSystem.getMaxLongitude())
+        BoundingBox doubleBox = new BoundingBox(Math.min(boundingBox.getLatNorth() * 2 - centerLat, tileSystem.getMaxLatitude()),
+                Math.max(boundingBox.getLonEast() * 2 - centerLong, tileSystem.getMinLongitude()),
+                Math.max(boundingBox.getLatSouth() * 2 - centerLat, tileSystem.getMinLatitude()),
+                Math.min(boundingBox.getLonWest() * 2 - centerLong, tileSystem.getMaxLongitude())
 
         );
-        boundingBox=doubleBox;
+        boundingBox = doubleBox;
         return boundingBox;
     }
 
@@ -197,30 +276,77 @@ public class CustomClusterManager implements MapListener {
         for (Cluster<GeoObjectItem> cluster : clusters) {
 
             Collection<GeoObjectItem> items = cluster.getItems();
-            if (cluster.getSize() <50||mapView.getZoomLevel()>15) {
+            if (cluster.getSize() < 50 || mapView.getZoomLevel() > 15) {
                 geoObjectItems.addAll(items);
             } else {
 
 
+//                releaseClustedItems(cluster.getItems());
+////                List<GeoObjectItem> list = (List<GeoObjectItem>) cluster.getItems();
+////                for(geo)
+////                List<GeoPoint> latLngs = new ArrayList<>();
+////                latLngs.add(list.get(0).getPosition());
+////                latLngs.add(list.get(list.size() - 1).getPosition());
+////
+////                geoObjectItems.add(new GeoObjectItem(new KmlLineString(latLngs), String.valueOf(cluster.getSize()), CLUSTER));
+//                geoObjectItems.add(new GeoObjectItem(cluster.getPosition(), String.valueOf(cluster.getSize()), CLUSTER));
 
-                releaseClustedItems(cluster.getItems());
-//                List<GeoObjectItem> list = (List<GeoObjectItem>) cluster.getItems();
-//                List<GeoPoint> latLngs = new ArrayList<>();
-//                latLngs.add(list.get(0).getPosition());
-//                latLngs.add(list.get(list.size() - 1).getPosition());
-//
-//                geoObjectItems.add(new GeoObjectItem(new KmlLineString(latLngs), String.valueOf(cluster.getSize()), CLUSTER));
-                geoObjectItems.add(new GeoObjectItem(cluster.getPosition(), String.valueOf(cluster.getSize()), CLUSTER));
+                ;
+                List<GeoObjectItem> others = new ArrayList<>();
+                others.addAll(items);
+                GeoObjectItem first = null;
+                for (GeoObjectItem item : others) {
+                    if (item.mGeometry instanceof KmlPoint) {
+                        first = item;
+                        break;
+                    }
+                }
+                if (first != null) {
+                    others.remove(first);
+                    geoObjectItems.add(first);
+                }
+
+                releaseClustedItems(others);
+
+
             }
 
 
         }
 
-        for (GeoObjectItem geoObjectItem : geoObjectItems) {
 
-            addMapItem(geoObjectItem);
+        List<OverlayWithIW> generate = generator.updateItems(geoObjectItems, mapView, null, null, kmlDocument, kmlHelper);
 
+        for (OverlayWithIW iw : generate) {
+
+            if (iw instanceof KMlMarker) {
+                ((KMlMarker) iw).bindData();
+            }
+            if (!folderOverlay.getItems().contains(iw)) {
+                folderOverlay.add(iw);
+            }
         }
+
+
+        folderOverlay.setEnabled(true);
+        mapView.invalidate();
+
+
+    }
+
+    private void addNewMapItem(List<GeoObjectItem> items) {
+
+
+        List<OverlayWithIW> generate = generator.updateItems(items, mapView, null, null, kmlDocument, kmlHelper);
+
+        for (OverlayWithIW iw : generate) {
+
+            if (!folderOverlay.getItems().contains(iw)) {
+                folderOverlay.add(iw);
+            }
+        }
+
+
         folderOverlay.setEnabled(true);
         mapView.invalidate();
 
@@ -233,35 +359,7 @@ public class CustomClusterManager implements MapListener {
         generator.releaseItems(items);
 
 
-
-
     }
-
-    private void addMapItem(GeoObjectItem geoObjectItem) {
-
-
-        KmlPlacemark placemark = geoObjectItem.mGeometry == null ? null : kmlHelper.kmlPlacemarkSparseArray.get(geoObjectItem.mGeometry.hashCode());
-
-
-        OverlayWithIW generate = generator.generate(geoObjectItem, mapView, null, null, placemark, kmlDocument);
-
-//        if(generate instanceof Marker)
-//        {
-//            ((Marker) generate).setOnMarkerClickListener(clickListener);
-//        }
-        if (generate == null) return;
-
-
-        if (!folderOverlay.getItems().contains(generate)) {
-            folderOverlay.add(generate);
-        }
-
-
-
-    }
-
-
-
 
 
     private class ModifyViewHandler extends Handler {
@@ -270,26 +368,43 @@ public class CustomClusterManager implements MapListener {
         @Override
         public void handleMessage(Message msg) {
 
+            int zoomLevel = mapView.getZoomLevel();
             switch (msg.what) {
+
+
+                case MSG_FILTER:
+
+
+                    filterItems(objectItemSparseArray.get(zoomLevel));
+
+
+                    break;
                 case MSG_RENDER:
+
+                    removeMessages(MSG_FILTER);
+                    if (filterTask != null && !filterTask.isCancelled()) {
+                        try {
+                            filterTask.cancel(true);
+                        } catch (Throwable t) {
+                        }
+                    }
+
                     if (mClusterTask != null && !mClusterTask.isCancelled()) {
                         try {
                             mClusterTask.cancel(true);
                         } catch (Throwable t) {
                         }
                     }
-                    if(lastZoom==mapView.getZoomLevel()&&lastCluster!=null)
-                    {
 
-                        onNewCluster(lastCluster);
+                    if (objectItemSparseArray.get(zoomLevel) != null) {
+
+                        sendEmptyMessageDelayed(MSG_FILTER, 500);
                         return;
                     }
 
-
-
-                    mClusterTask = new ClusterTask();
-                    mClusterTask.execute(mapView.getZoomLevel(), getVisibleLatLngBounds(),lastZoom);
-                    lastZoom=mapView.getZoomLevel();
+                    mClusterTask = new ClusterTask(zoomLevel);
+                    mClusterTask.execute();
+                    lastZoom = zoomLevel;
                     break;
             }
 
