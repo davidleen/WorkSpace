@@ -20,7 +20,7 @@ public class CustomPolygon extends Polygon {
 
     public CustomPolygon() {
         super();
-        setFillColor(Color.parseColor("#994754fd"));
+        setFillColor(Color.parseColor("#224754fd"));
 
         setStrokeColor(Color.YELLOW);
     }
