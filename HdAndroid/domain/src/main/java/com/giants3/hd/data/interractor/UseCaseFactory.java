@@ -56,21 +56,22 @@ public class UseCaseFactory {
         return new GetLoginData(Schedulers.newThread(), AndroidSchedulers.mainThread(), map, restApi);
     }
 
-    public UseCase createLoginUseCase(long userId,String passwordMd5,String deviceToken) {
+    public UseCase createLoginUseCase(long userId, String passwordMd5, String deviceToken) {
 
 
-        return new LoginUseCase(    userId,  passwordMd5,deviceToken, restApi );
+        return new LoginUseCase(userId, passwordMd5, deviceToken, restApi);
     }
+
     public UseCase createProductListCase(String name, int pageIndex, int pageSize) {
 
-      return   createProductListCase(name,pageIndex,pageSize,true);
+        return createProductListCase(name, pageIndex, pageSize, true);
 
     }
 
-    public UseCase createProductListCase(String name, int pageIndex, int pageSize,boolean withCopy) {
+    public UseCase createProductListCase(String name, int pageIndex, int pageSize, boolean withCopy) {
 
 
-        return new GetProductListCase(Schedulers.newThread(), AndroidSchedulers.mainThread(), name, pageIndex, pageSize, withCopy,restApi);
+        return new GetProductListCase(Schedulers.newThread(), AndroidSchedulers.mainThread(), name, pageIndex, pageSize, withCopy, restApi);
     }
 
     public UseCase createOrderListCase(String name, int pageIndex, int pageSize) {
@@ -98,6 +99,7 @@ public class UseCaseFactory {
     public UseCase createGetProductDetailCase(long productId) {
         return new GetProductDetailCase(Schedulers.newThread(), AndroidSchedulers.mainThread(), productId, restApi);
     }
+
     /***
      * 产品基本信息
      *
@@ -105,17 +107,18 @@ public class UseCaseFactory {
      * @return
      */
     public UseCase createGetProductByIdCase(long productId) {
-        return new FindProductByIdUseCase( productId, restApi);
+        return new FindProductByIdUseCase(productId, restApi);
     }
- /***
+
+    /***
      * 产品基本信息
      *
      * @param pName
      * @param pVersion
      * @return
      */
-    public UseCase createGetProductByNameAndVersionUseCase(String pName,String pVersion  ) {
-        return new FindProductByNameAndVersionUseCase( pName,pVersion, restApi);
+    public UseCase createGetProductByNameAndVersionUseCase(String pName, String pVersion) {
+        return new FindProductByNameAndVersionUseCase(pName, pVersion, restApi);
     }
 
     public UseCase createGetQuotationList(String name, int pageIndex, int pageSize) {
@@ -159,18 +162,18 @@ public class UseCaseFactory {
 
     public UseCase createGetUnHandleWorkFlowMessageCase(String key) {
 
-        return new GetUnHandleWorkFlowMessageCase(Schedulers.newThread(), AndroidSchedulers.mainThread(),key, restApi);
+        return new GetUnHandleWorkFlowMessageCase(Schedulers.newThread(), AndroidSchedulers.mainThread(), key, restApi);
     }
 
-   public UseCase createGetUnHandleWorkFlowMessageReportCase(int hourLimit) {
+    public UseCase createGetUnHandleWorkFlowMessageReportCase(int hourLimit) {
 
-        return new GetUnHandleWorkFlowMessageReportCase( hourLimit, restApi);
+        return new GetUnHandleWorkFlowMessageReportCase(hourLimit, restApi);
     }
 
 
-    public UseCase createGetMyWorkFlowMessageCase(String key,int pageIndex,int pageSize) {
+    public UseCase createGetMyWorkFlowMessageCase(String key, int pageIndex, int pageSize) {
 
-        return new GetMyWorkFlowMessageCase(key, restApi ,  pageIndex,  pageSize);
+        return new GetMyWorkFlowMessageCase(key, restApi, pageIndex, pageSize);
     }
 
     /**
@@ -212,7 +215,6 @@ public class UseCaseFactory {
     public UseCase createReceiveWorkFlow(long workFlowMessageId, File[] file, String memo) {
         return new ReceiveWorkFlowMessageCase(workFlowMessageId, file, memo, restApi);
     }
-
 
 
     /**
@@ -296,75 +298,76 @@ public class UseCaseFactory {
 
     public UseCase createGetUnCompleteWorkFlowOrderItemsUseCase(String key, int workFlowStep, int pageIndex, int pageSize) {
 
-        return new GetUnCompleteWorkFlowOrderItemsUseCase(key, restApi,   workFlowStep,   pageIndex,   pageSize);
+        return new GetUnCompleteWorkFlowOrderItemsUseCase(key, restApi, workFlowStep, pageIndex, pageSize);
     }
-    public UseCase createGetCompleteWorkFlowOrderItemsUseCase(String key,int pageIndex,int pageSize) {
 
-        return new GetCompleteWorkFlowOrderItemsUseCase(key, restApi,  pageIndex,  pageSize);
+    public UseCase createGetCompleteWorkFlowOrderItemsUseCase(String key, int pageIndex, int pageSize) {
+
+        return new GetCompleteWorkFlowOrderItemsUseCase(key, restApi, pageIndex, pageSize);
     }
 
     public UseCase createGetProductWorkMemoUseCase(String prd_name, String pversion) {
 
-        return new GetProductWorkMemoUseCase(prd_name,pversion, restApi);
+        return new GetProductWorkMemoUseCase(prd_name, pversion, restApi);
 
     }
 
     public UseCase createGetOrderItemWorkMemoUseCase(String os_no, int itm) {
-        return new  GetOrderItemWorkMemoUseCase(os_no,itm,restApi);
+        return new GetOrderItemWorkMemoUseCase(os_no, itm, restApi);
     }
 
-    public UseCase createSaveWorkMemoUseCase(int workFlowStep,String os_no, int itm, String orderItemWorkMemo, String prd_name, String pversion, String productWorkMemo) {
+    public UseCase createSaveWorkMemoUseCase(int workFlowStep, String os_no, int itm, String orderItemWorkMemo, String prd_name, String pversion, String productWorkMemo) {
 
 
-            return new SaveWorkMemoUseCase( workFlowStep, os_no,   itm,   orderItemWorkMemo,   prd_name,   pversion,   productWorkMemo,restApi);
+        return new SaveWorkMemoUseCase(workFlowStep, os_no, itm, orderItemWorkMemo, prd_name, pversion, productWorkMemo, restApi);
     }
 
     public UseCase createGetWorkFlowAreaListUseCase() {
-        return new GetWorkFlowAreaListUseCase( restApi);
+        return new GetWorkFlowAreaListUseCase(restApi);
     }
 
     public UseCase createGetNewMessageInfoUseCase() {
-        return new GetNewMessageInfoUseCase( restApi);
+        return new GetNewMessageInfoUseCase(restApi);
     }
 
     public UseCase createGetWorkFlowMaterialsUseCase(String osNo, int itm, String workFlowCode) {
-        return new GetWorkFlowMaterialsUseCase(osNo,itm,workFlowCode, restApi);
+        return new GetWorkFlowMaterialsUseCase(osNo, itm, workFlowCode, restApi);
     }
 
     public UseCase createGetWorkFlowMessageByOrderItemUseCase(String osNO, int itm) {
 
 
-        return new GetWorkFlowMessageByOrderItemUseCase(osNO,itm, restApi);
+        return new GetWorkFlowMessageByOrderItemUseCase(osNO, itm, restApi);
     }
 
 
     public UseCase createGetWorkFlowMemoAuthUseCase() {
 
 
-        return new GetWorkFlowMemoAuthUseCase( restApi);
+        return new GetWorkFlowMemoAuthUseCase(restApi);
     }
 
     public UseCase createCheckWorkFlowMemoUseCase(long orderItemWorkMemoId, boolean check) {
 
-        return new CheckWorkFlowMemoUseCase( orderItemWorkMemoId,check,restApi);
+        return new CheckWorkFlowMemoUseCase(orderItemWorkMemoId, check, restApi);
     }
 
-    public UseCase createUpdatePasswordUseCase(String oldPasswordMd5,String newPasswordMd5) {
+    public UseCase createUpdatePasswordUseCase(String oldPasswordMd5, String newPasswordMd5) {
 
-        return new UpdatePasswordUseCase(  oldPasswordMd5,  newPasswordMd5, restApi);
+        return new UpdatePasswordUseCase(oldPasswordMd5, newPasswordMd5, restApi);
     }
 
     public UseCase createSearchSampleData(String prd_name, String pVersion) {
-        return new SearchSampleDataUseCase(  prd_name,  pVersion, restApi);
+        return new SearchSampleDataUseCase(prd_name, pVersion, restApi);
     }
 
     public UseCase createGetClearWorkFlowUseCase(String os_no, int itm) {
-        return new ClearWorkFlowUseCase(  os_no,  itm, restApi);
+        return new ClearWorkFlowUseCase(os_no, itm, restApi);
     }
 
     public UseCase createGetAppQuotationsUseCase(String key, int pageIndex, int pageSize) {
 
-        return new GetAppQuotationsUseCase(key,pageIndex,pageSize,restApi);
+        return new GetAppQuotationsUseCase(key, pageIndex, pageSize, restApi);
 
     }
 
@@ -375,105 +378,111 @@ public class UseCaseFactory {
     public UseCase getAppQuotationDetailCase(long quotationId) {
 
 
-        return new GetAppQuotationDetailCase(quotationId,restApi);
+        return new GetAppQuotationDetailCase(quotationId, restApi);
     }
 
     public UseCase createAddProductToQuotationUseCase(long quotationId, long productId) {
 
-        return new AddProductToQuotationUseCase(quotationId,productId,restApi);
+        return new AddProductToQuotationUseCase(quotationId, productId, restApi);
     }
 
     public UseCase createRemoveItemFromQuotationUseCase(long quotationId, int item) {
-        return new RemoveItemFromQuotationUseCase(quotationId,item,restApi);
+        return new RemoveItemFromQuotationUseCase(quotationId, item, restApi);
     }
 
     public UseCase createUpdateQuotationItemPriceUseCase(long quotationId, int itm, float price) {
-        return new UpdateQuotationItemPriceUseCase(quotationId,itm,price,restApi);
+        return new UpdateQuotationItemPriceUseCase(quotationId, itm, price, restApi);
     }
 
     public UseCase createUpdateQuotationItemQtyUseCase(long quotationId, int itm, int newQty) {
-        return new UpdateQuotationItemQtyUseCase(quotationId,itm,newQty,restApi);
+        return new UpdateQuotationItemQtyUseCase(quotationId, itm, newQty, restApi);
     }
 
     public UseCase createUpdateQuotationItemDiscountUseCase(long quotationId, int itm, float newDisCount) {
 
 
-        return new UpdateQuotationItemDiscountUseCase(quotationId,itm,newDisCount,restApi);
+        return new UpdateQuotationItemDiscountUseCase(quotationId, itm, newDisCount, restApi);
 
     }
 
     public UseCase createUpdateQuotationDiscountUseCase(long quotationId, float newDisCount) {
-        return new UpdateQuotationDiscountUseCase(quotationId,newDisCount,restApi);
+        return new UpdateQuotationDiscountUseCase(quotationId, newDisCount, restApi);
 
     }
 
     public UseCase createSaveQuotationUseCase(QuotationDetail quotationDetail) {
 
-        return new SaveQuotationUseCase(quotationDetail,restApi);
+        return new SaveQuotationUseCase(quotationDetail, restApi);
     }
 
-    public UseCase createPrintQuotationUseCase(long quotationId,String filePath) {
-        return new PrintQuotationUseCase(quotationId,  filePath,restApi);
+    public UseCase createPrintQuotationUseCase(long quotationId, String filePath) {
+        return new PrintQuotationUseCase(quotationId, filePath, restApi);
 
     }
 
     public UseCase createGetCustomerListUseCase() {
-        return createGetCustomerListUseCase("",0,999);
+        return createGetCustomerListUseCase("", 0, 999);
     }
 
 
-    public UseCase createGetCustomerListUseCase(String key,int pageIndex,int pageSize) {
-        return new GetCustomerListUseCase( key,   pageIndex,  pageSize,restApi);
+    public UseCase createGetCustomerListUseCase(String key, int pageIndex, int pageSize) {
+        return new GetCustomerListUseCase(key, pageIndex, pageSize, restApi);
     }
 
     public UseCase createUpdateQuotationCustomerUseCase(long quotationId, long customerId) {
 
-        return new UpdateQuotationCustomerUseCase(quotationId, customerId,restApi);
+        return new UpdateQuotationCustomerUseCase(quotationId, customerId, restApi);
 
     }
 
     public UseCase createSaveCustomerUseCase(Customer customer) {
 
-        return new SaveCustomerUseCase( customer,restApi);
+        return new SaveCustomerUseCase(customer, restApi);
     }
+
     public UseCase createGenerateCustomerCodeUseCase() {
 
-        return new GenerateCustomerCodeUseCase(  restApi);
+        return new GenerateCustomerCodeUseCase(restApi);
 
 
     }
+
     public UseCase createDeleteCustomerUseCase(long customerId) {
-        return new DeleteCustomerUseCase( customerId, restApi);
+        return new DeleteCustomerUseCase(customerId, restApi);
     }
 
 
     public UseCase createUpdateQuotationItemMemoUseCase(long quotationId, int itm, String memo) {
-        return  new UpdateQuotationItemMemoUseCase(quotationId,itm,memo,restApi);
+        return new UpdateQuotationItemMemoUseCase(quotationId, itm, memo, restApi);
     }
 
     public UseCase createDeleteQuotationUseCase(long quotationId) {
-        return new DeleteQuotationUseCase(quotationId,restApi);
+        return new DeleteQuotationUseCase(quotationId, restApi);
     }
 
     public UseCase createUpdateQuotationFieldUseCase(long quotationId, String field, String data) {
-        return new UpdateQuotationFieldUseCase(quotationId,field,data,restApi);
+        return new UpdateQuotationFieldUseCase(quotationId, field, data, restApi);
     }
 
     public UseCase createGetWorkFlowMessageUseCase(long workflowMessageId) {
-        return new GetWorkFlowMessageUseCase(workflowMessageId,restApi);
+        return new GetWorkFlowMessageUseCase(workflowMessageId, restApi);
     }
 
 
     public UseCase createScanNameCardUseCase(File newPath) {
 
 
-        return new  ScanNameCardUseCase(  newPath,restApi);
+        return new ScanNameCardUseCase(newPath, restApi);
 
     }
 
     public UseCase createScanResourceUrlUseCase(String pictureUrl) {
-        return new  ScanResourceUrlUseCase(  pictureUrl,restApi);
+        return new ScanResourceUrlUseCase(pictureUrl, restApi);
     }
 
 
+    public UseCase createRollbackWorkFlowMessageUseCase(long messageId, String memeo) {
+        return
+                new RollbackWorkFlowMessageCase(messageId, memeo, restApi);
+    }
 }

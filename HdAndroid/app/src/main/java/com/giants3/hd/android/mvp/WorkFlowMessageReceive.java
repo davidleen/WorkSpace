@@ -41,6 +41,9 @@ public interface WorkFlowMessageReceive {
         void rejectWorkFlow();
 
         void setWorkFlowMessageId(long workflowMessageId);
+
+        void rollbackWorkFlow(String memo);
+
     }
 
     interface Viewer extends NewViewer {

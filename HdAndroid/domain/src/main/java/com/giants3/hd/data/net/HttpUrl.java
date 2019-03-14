@@ -52,6 +52,7 @@ public class HttpUrl {
 
     public static final String API_URL_SEND_WORK_FLOW_MESSAGE = "api/erpWork/sendWorkFlowMessage?&tranQty=%d&areaId=%d&memo=%s";
     public static final String API_URL_REJECT_WORK_FLOW_MESSAGE = "api/erpWork/rejectWorkFlowMessage?workFlowMsgId=%d&&memo=%s";
+    public static final String API_URL_ROLLBACK_WORK_FLOW_MESSAGE = "api/erpWork/rollbackWorkFlowMessage?workFlowMsgId=%d&&memo=%s";
     public static final String API_URL_MY_SEND_WORK_FLOW_MESSAGE = "api/order/getSendWorkFlowMessageList";
 
 
@@ -321,7 +322,7 @@ public class HttpUrl {
     }
 
     public static String sendWorkFlowMessage(int tranQty, long area, String memo) {
-        return completeUrl(String.format(API_URL_SEND_WORK_FLOW_MESSAGE, tranQty, area, memo == null ? "" : memo));
+        return completeUrl(String.format(API_URL_SEND_WORK_FLOW_MESSAGE, tranQty, area,UrlFormatter.encode( memo == null ? "" : memo)));
     }
 
     public static String mySendWorkFlowMessage() {
@@ -333,6 +334,9 @@ public class HttpUrl {
         return completeUrl(String.format(API_URL_REJECT_WORK_FLOW_MESSAGE, workFlowMessageId, reason));
     }
 
+    public static String rollbackWorkFlowMessage(long workFlowMessageId, String memo) {
+        return completeUrl(String.format(API_URL_ROLLBACK_WORK_FLOW_MESSAGE, workFlowMessageId, UrlFormatter.encode(memo)));
+    }
     /**
      * 读取未出库订单货款列表
      *

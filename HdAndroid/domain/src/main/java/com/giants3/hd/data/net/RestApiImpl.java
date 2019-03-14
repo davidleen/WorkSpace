@@ -439,6 +439,17 @@ public class RestApiImpl implements RestApi {
             }
         });
     }
+    @Override
+    public Observable rollbackWorkFlowMessage(final long workFlowMessageId,  final String memo) {
+        return create(new ApiInvoker<Void>() {
+            @Override
+            public RemoteData<Void> invoker() throws HdException {
+
+
+                return apiManager.rollbackWorkFlowMessage( workFlowMessageId,     memo);
+            }
+        });
+    }
 
 
     @Override

@@ -932,8 +932,16 @@ public class ErpService extends AbstractErpService {
 
     public RemoteData<WorkFlowMessage> getMyWorkFlowMessage(User user, String key, int pageIndex, int pageSize) {
 
+
+
         Pageable pageable=constructPageSpecification(pageIndex,pageSize,null);
-        final Page<WorkFlowMessage> page = workFlowMessageRepository.findMyWorkFlowMessages(user.id, StringUtils.sqlLike(key), pageable);
+        final Page<WorkFlowMessage> page;
+        if(user.name.equals(User.ADMIN))
+        {
+            page=workFlowMessageRepository.findAll(pageable);
+        }else {
+            page = workFlowMessageRepository.findMyWorkFlowMessages(user.id, StringUtils.sqlLike(key), pageable);
+        }
         return wrapData(pageIndex,page);
 
     }

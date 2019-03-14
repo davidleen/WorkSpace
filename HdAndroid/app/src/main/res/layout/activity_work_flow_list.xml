@@ -15,7 +15,7 @@
     <Button
             android:id="@+id/clear"
         android:layout_width="wrap_content"
-        android:text="清除流程数据"
+        android:text="清除流程数据(系统管理员)"
         android:visibility="gone"
         android:layout_height="wrap_content" />
     <com.wefika.flowlayout.FlowLayout

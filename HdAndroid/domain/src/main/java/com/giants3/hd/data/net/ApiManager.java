@@ -360,6 +360,15 @@ public class ApiManager {
         return remoteData;
     }
 
+
+    public RemoteData<Void> rollbackWorkFlowMessage(long workFlowMessageId, String memo) throws HdException {
+
+        String url = HttpUrl.rollbackWorkFlowMessage(workFlowMessageId, memo);
+        String result = apiConnection.getString(url);
+        RemoteData<Void> remoteData = invokeByReflect(result, Void.class);
+
+        return remoteData;
+    }
     /**
      * 读取未出库订单货款列表
      *

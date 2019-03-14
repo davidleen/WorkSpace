@@ -681,7 +681,7 @@ public class ErpWorkService extends AbstractErpService {
         //增加数据小验证
 
         ErpOrderItemProcess findErpOrderitemProcess = erpOrderItemProcessRepository.findFirstByMoNoEqualsAndMrpNoEquals(erpOrderItemProcess.moNo, erpOrderItemProcess.mrpNo);
-        if (findErpOrderitemProcess != null && findErpOrderitemProcess.unSendQty > tranQty) {
+        if (findErpOrderitemProcess != null && findErpOrderitemProcess.unSendQty < tranQty) {
 
             return wrapError("当前流程数量已经有发送记录了。 现有未发送数量" + findErpOrderitemProcess.unSendQty + ",不足以发送" + tranQty);
         }
@@ -1302,7 +1302,7 @@ public class ErpWorkService extends AbstractErpService {
         final List<WorkFlowMessage> currentWorkFlowMessage = workFlowMessageRepository.findByFromFlowStepEqualsAndOrderNameEqualsAndItmEqualsOrderByCreateTimeDesc(workFlowReport.workFlowStep, workFlowReport.osNo, workFlowReport.itm);
         int sendingQty = 0;
         for (WorkFlowMessage tem : currentWorkFlowMessage) {
-            if (tem.receiverId == 0) {
+            if (tem.receiverId == 0&&tem.id!=message.id) {
                 sendingQty += tem.transportQty;
             }
         }
@@ -1578,9 +1578,13 @@ public class ErpWorkService extends AbstractErpService {
 
 
     @Transactional(rollbackFor = {HdException.class})
-    public RemoteData<Void> clearWorkFLow(String osNo, int itm) throws HdException {
+    public RemoteData<Void> clearWorkFLow(User user,String osNo, int itm) throws HdException {
 
 
+        if(!user.name.equals(User.ADMIN))
+        {
+            return wrapError("只有系统管理员才能清除流程数据");
+        }
         try {
             int count = workFlowMessageRepository.deleteByOsNoAndItm(osNo, itm);
             final int reportCount = erpWorkFlowReportRepository.deleteByOsNoAndItm(osNo, itm);
@@ -1672,33 +1676,32 @@ public class ErpWorkService extends AbstractErpService {
             return wrapError("消息不存在：" + messageId);
         }
 
-        if (message.state != WorkFlowMessage.STATE_SEND) {
+        if (message.state != WorkFlowMessage.STATE_PASS) {
             return wrapError("异常，消息未正常被处理：" + messageId);
         }
 
-        if (message.receiverId!=user.id) {
+        if (!user.name.equals(User.ADMIN)) {
 
-            return wrapError("只有当前消息的接收人:"+message.receiverName+"，才能撤销交接=" + messageId);
+            return wrapError("只有系统管理员 ，才能撤销交接=" + messageId);
         }
 
-        ErpOrderItemProcess erpOrderItemProcess = erpOrderItemProcessRepository.findFirstByOsNoEqualsAndItmEqualsAndCurrentWorkFlowStepEquals(message.orderName,message.itm,message.toFlowStep);
-
-
-        if (erpOrderItemProcess == null) {
-            return wrapError("未找到对应的流程状态信息");
-        }
-
-        if(erpOrderItemProcess.unSendQty<message.transportQty)
-        {
-
-            return wrapError("当前接受的流程，未发送的数量："+erpOrderItemProcess.unSendQty+",不够进行撤回处理。");
-        }
-
-
-        //扣除接收流程的 当前未发送数量。
-        erpOrderItemProcess.unSendQty-=message.transportQty;
-
-        erpOrderItemProcessRepository.save(erpOrderItemProcess);
+//        {  暂时不处理下一道关联数量问题。
+//            ErpOrderItemProcess erpOrderItemProcess = erpOrderItemProcessRepository.findFirstByOsNoEqualsAndItmEqualsAndCurrentWorkFlowStepEquals(message.orderName, message.itm, message.toFlowStep);
+//
+//
+//            if (erpOrderItemProcess != null) {
+//                if (erpOrderItemProcess.unSendQty < message.transportQty) {
+//
+//                    return wrapError("接受的流程 " + erpOrderItemProcess.currentWorkFlowName + "，未发送的数量：" + erpOrderItemProcess.unSendQty + ",不够进行撤回处理。");
+//                }
+//
+//
+//                //扣除接收流程的 当前未发送数量。
+//                erpOrderItemProcess.unSendQty -= message.transportQty;
+//
+//                erpOrderItemProcessRepository.save(erpOrderItemProcess);
+//            }
+//        }
         ErpOrderItemProcess fromErpOrderItemProcess = erpOrderItemProcessRepository.findFirstByOsNoEqualsAndItmEqualsAndCurrentWorkFlowStepEquals(message.orderName,message.itm,message.fromFlowStep);
 
 
@@ -1706,23 +1709,37 @@ public class ErpWorkService extends AbstractErpService {
         //发起流程数量调整。
         fromErpOrderItemProcess.unSendQty+=message.transportQty;
         fromErpOrderItemProcess.sentQty-=message.transportQty;
-        erpOrderItemProcessRepository.save(erpOrderItemProcess);
+        erpOrderItemProcessRepository.save(fromErpOrderItemProcess);
 
 
 
         //发起流程的状态调整。
         ErpWorkFlowReport workFlowReport = erpWorkFlowReportRepository.findFirstByOsNoEqualsAndItmEqualsAndWorkFlowStepEquals(message.orderName, message.itm, message.fromFlowStep);
         //扣除发起方生产进度
-        workFlowReport.percentage -= (float) message.transportQty / erpOrderItemProcess.orderQty / (workFlowReport.typeCount == 0 ? 1 : workFlowReport.typeCount);
+        workFlowReport.percentage -= (float) message.transportQty / fromErpOrderItemProcess.orderQty / (workFlowReport.typeCount == 0 ? 1 : workFlowReport.typeCount);
 
-        //消息状态改未撤销
+
+        //统计发送未处理数量
+        final List<WorkFlowMessage> currentWorkFlowMessage = workFlowMessageRepository.findByFromFlowStepEqualsAndOrderNameEqualsAndItmEqualsOrderByCreateTimeDesc(workFlowReport.workFlowStep, workFlowReport.osNo, workFlowReport.itm);
+        int sendingQty = 0;
+        for (WorkFlowMessage tem : currentWorkFlowMessage) {
+            if (tem.receiverId == 0) {
+                sendingQty += tem.transportQty;
+            }
+        }
+
+        workFlowReport.sendingQty = sendingQty;
+
+
+        //消息状态改 撤销
         message.state = WorkFlowMessage.STATE_ROLL_BACK;
-        message.memo+="\n 撤销： 原因："+memo;
+        message.memo+="\n 撤销原因："+memo;
+        message.memo+="\n 撤销时间："+DateFormats.FORMAT_YYYY_MM_DD_HH_MM.format(Calendar.getInstance().getTime());
 
         workFlowReport = erpWorkFlowReportRepository.save(workFlowReport);
 
 
 
-        return null;
+        return wrapData();
     }
 }

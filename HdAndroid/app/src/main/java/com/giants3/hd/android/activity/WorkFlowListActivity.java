@@ -14,6 +14,7 @@ import com.giants3.hd.android.BuildConfig;
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.adapter.WorkFlowReportItemAdapter;
 import com.giants3.hd.android.fragment.SendWorkFlowFragment;
+import com.giants3.hd.android.helper.SharedPreferencesHelper;
 import com.giants3.hd.android.mvp.workFlow.WorkFlowListMvp;
 import com.giants3.hd.android.widget.ExpandableGridView;
 import com.giants3.hd.data.utils.GsonUtils;
@@ -23,6 +24,7 @@ import com.giants3.hd.entity.ErpWorkFlow;
 import com.giants3.hd.entity.ErpWorkFlowReport;
 import com.giants3.hd.entity.OrderItemWorkMemo;
 import com.giants3.hd.entity.ProductWorkMemo;
+import com.giants3.hd.entity.User;
 import com.giants3.hd.entity.WorkFlowMessage;
 import com.giants3.hd.entity_erp.SampleState;
 import com.giants3.hd.exception.HdException;
@@ -89,7 +91,7 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
 
 
 
-        clear.setVisibility(BuildConfig.DEBUG?View.VISIBLE:View.GONE);
+        clear.setVisibility(SharedPreferencesHelper.getLoginUser().name.equals(User.ADMIN)?View.VISIBLE:View.GONE);
         clear.setOnClickListener(this);
     }
 
@@ -392,7 +394,7 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
               public void onClick(DialogInterface dialog, int which) {
 
                   dialog.dismiss();
-                  //getPresenter().clearWorkFlow();
+                   getPresenter().clearWorkFlow();
               }
           }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
               @Override

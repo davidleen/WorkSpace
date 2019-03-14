@@ -567,7 +567,7 @@
             android:id="@+id/rollback"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="退回"
+            android:text="撤销(系统管理员)"
             />
 
 

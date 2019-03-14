@@ -126,6 +126,46 @@ public class PresenterImpl extends BasePresenter<Viewer, Model> implements Prese
        /// setWorkFlowMessage();
     }
 
+    @Override
+    public void rollbackWorkFlow(String memo) {
+
+
+
+        WorkFlowMessage workFlowMessage=getModel().getWorkFlowMessage();
+
+
+        UseCaseFactory.getInstance().createRollbackWorkFlowMessageUseCase(workFlowMessage.id,memo).execute(new Subscriber<RemoteData<Void>>() {
+            @Override
+            public void onCompleted() {
+
+                getView().hideWaiting();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().hideWaiting();
+                getView().showMessage(e.getMessage());
+            }
+
+            @Override
+            public void onNext(RemoteData<Void> remoteData) {
+                if (remoteData.isSuccess()) {
+
+
+                    getView().showMessage("撤銷成功");
+                    getView().finishOk();
+
+                }else
+                {
+                    getView().showMessage(remoteData.message);
+                }
+
+            }
+        });
+
+        getView().showWaiting();
+    }
+
     //流程拒绝
     @Override
     public void rejectWorkFlow() {

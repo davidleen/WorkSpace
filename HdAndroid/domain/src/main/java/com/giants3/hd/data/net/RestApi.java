@@ -229,4 +229,6 @@ public interface RestApi {
     Observable deleteCutomer(long customerId);
 
     Observable findProductByNameAndVersion(String pName, String pVersion);
+
+  Observable rollbackWorkFlowMessage(long workFlowMessageId, String memo);
 }

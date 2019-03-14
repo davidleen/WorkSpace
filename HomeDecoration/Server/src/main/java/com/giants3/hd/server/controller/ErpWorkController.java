@@ -133,7 +133,7 @@ public class ErpWorkController extends BaseController {
      * @param
      * @return
      */
-    @RequestMapping(value = "/rollBackWorkFlowMessage", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/rollbackWorkFlowMessage", method = {RequestMethod.GET, RequestMethod.POST})
     public
     @ResponseBody
     RemoteData<Void> rollBackWorkFlow(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam(value = "workFlowMsgId") long workFlowMsgId, @RequestParam("memo") String memo) {
@@ -329,11 +329,11 @@ public class ErpWorkController extends BaseController {
      */
     @RequestMapping(value = "/clear", method = RequestMethod.GET)
     @ResponseBody
-    public RemoteData<Void> clearWorkFlow(@RequestParam("osNO") String osNo, @RequestParam(value = "itm" ) int itm){
+    public RemoteData<Void> clearWorkFlow(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user,@RequestParam("osNO") String osNo, @RequestParam(value = "itm" ) int itm){
 
         RemoteData<Void> result= null;
         try {
-            result = erpWorkService.clearWorkFLow(osNo,itm);
+            result = erpWorkService.clearWorkFLow(user,osNo,itm);
         } catch (HdException e) {
             e.printStackTrace();
 

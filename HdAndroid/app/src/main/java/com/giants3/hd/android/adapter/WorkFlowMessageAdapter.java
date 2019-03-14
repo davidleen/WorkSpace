@@ -173,6 +173,10 @@ public class WorkFlowMessageAdapter
                     stateText = "已通过";
                     break;
 
+                case WorkFlowMessage.STATE_ROLL_BACK:
+                    stateText = "已撤销";
+                    break;
+
             }
             boolean showReason = !StringUtils.isEmpty(data.sendMemo);
             panel_reason.setVisibility(showReason ? View.VISIBLE : View.GONE);

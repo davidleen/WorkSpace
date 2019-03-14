@@ -1,6 +1,8 @@
 package com.giants3.hd.android.activity;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,6 +23,7 @@ import com.giants3.hd.android.mvp.AndroidRouter;
 import com.giants3.hd.android.mvp.workflowmessagereceive.PresenterImpl;
 import com.giants3.hd.data.net.HttpUrl;
 import com.giants3.hd.data.utils.GsonUtils;
+import com.giants3.hd.entity.User;
 import com.giants3.hd.entity.WorkFlowMessage;
 import com.giants3.hd.entity.WorkFlowWorker;
 import com.giants3.hd.exception.HdException;
@@ -295,6 +298,25 @@ public class WorkFlowMessageReceiveActivity extends BaseHeadViewerActivity<Prese
                 String url = (String) v.getTag();
                 ImageViewerHelper.view(this, url);
             }
+             case R.id.rollback: {
+
+
+                 View layout=LayoutInflater.from(this).inflate(R.layout.view_roll_back,null);
+               final TextView memo=  layout.findViewById(R.id.memo);
+                 new AlertDialog.Builder(this).setTitle("确定撤销该消息提交操作？").setView(layout).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                     @Override
+                     public void onClick(DialogInterface dialog, int which) {
+
+                         getPresenter().rollbackWorkFlow(memo.getText().toString().trim());
+                     }
+                 }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                     @Override
+                     public void onClick(DialogInterface dialog, int which) {
+                         dialog.dismiss();;
+                     }
+                 }).create().show();
+
+            }
 
 
             break;
@@ -391,11 +413,15 @@ public class WorkFlowMessageReceiveActivity extends BaseHeadViewerActivity<Prese
             case WorkFlowMessage.STATE_PASS:
                 stateText = "已通过";
                 break;
+            case WorkFlowMessage.STATE_ROLL_BACK:
+                stateText = "已撤销";
+                break;
 
         }
 
 
-        rollback.setVisibility(data.state== WorkFlowMessage.STATE_PASS?View.VISIBLE:View.GONE);
+        //流程完成，并且用戶是系統管理員， 才能撤銷
+        rollback.setVisibility(data.state== WorkFlowMessage.STATE_PASS&&SharedPreferencesHelper.getLoginUser().name.equals(User.ADMIN)?View.VISIBLE:View.GONE);
         state.setText(stateText);
         createTime.setText(data.createTimeString.substring(0, 10));
         String[] pictures = StringUtils.split(data.pictures);
