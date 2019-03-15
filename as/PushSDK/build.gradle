@@ -1,0 +1,59 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion project.ANDROID_COMPILE_VERSION
+    buildToolsVersion project.ANDROID_BUILD_VERSION
+
+    defaultConfig {
+        minSdkVersion project.ANDROID_MIN_VERSION
+        targetSdkVersion project.ANDROID_TARGET_VERSION
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+        debug {
+
+        }
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+            jniLibs.srcDirs = ['libs']
+        }
+
+ 
+    }
+
+    android {
+        lintOptions {
+            abortOnError false
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+}
+
+dependencies {
+
+
+    //PushSDK必须依赖基础组件库，所以需要加入对应依赖
+    compile 'com.umeng.sdk:common:1.5.3'
+//PushSDK必须依赖utdid库，所以需要加入对应依赖
+    compile 'com.umeng.sdk:utdid:1.1.5.3'
+//PushSDK
+    compile 'com.umeng.sdk:push:4.2.0'
+
+    compileOnly project(':api')
+}

@@ -1108,11 +1108,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                 marker.getInfoWindow().getView().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-
                         Log.e("infoWindow click!!!!!");
-
-
                     }
                 });
                 mapView.getOverlays().add(marker);
@@ -1126,9 +1122,9 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
                 CustomPolyline polyline = new CustomPolyline();
                 polyline.setTitle(element.name);
-                polyline.setGeoPoints(latLngs);
+                polyline.setPoints(latLngs);
                 polyline.setSnippet(element.memo);
-                //polyline.setOnClickListener(clickListener);
+                polyline.setOnClickListener(clickListener);
                 mapView.getOverlays().add(polyline);
                 mapView.invalidate();
                 o = polyline;
@@ -1140,9 +1136,9 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
                 MappingPolyline polyline = new MappingPolyline();
                 polyline.setTitle(element.name);
-                polyline.setGeoPoints(latLngs);
+                polyline.setPoints(latLngs);
                 polyline.setSnippet(element.memo);
-                //polyline.setOnClickListener(clickListener);
+                 polyline.setOnClickListener(clickListener);
                 mapView.getOverlays().add(polyline);
                 mapView.invalidate();
                 o = polyline;

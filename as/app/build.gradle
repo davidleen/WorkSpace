@@ -16,7 +16,7 @@ android {
         minSdkVersion project.ANDROID_MIN_VERSION
         targetSdkVersion project.ANDROID_TARGET_VERSION
         manifestPlaceholders = [ANDROID_SUPPORT_VERSION: "${ANDROID_SUPPORT_V7_VERSION}"]
-        versionCode 5
+        versionCode 6
         versionName "1.0.5"
         multiDexEnabled true
 
@@ -25,6 +25,13 @@ android {
                 includeCompileClasspath true
             }
         }
+
+        manifestPlaceholders = [
+                                  UMENG_APPKEY:"5c8bcaca3fc195f7ad00012a"
+                                 ,UMENG_MESSAGE_SECRET:"4db0986ced832111592b8a6eed5f9262"
+                                 ,UMENG_CHANNEL:"rnmap_wb"
+                                  ,ANDROID_SUPPORT_VERSION: "${ANDROID_SUPPORT_V7_VERSION}"
+                                ]
     }
 
     signingConfigs {
@@ -98,6 +105,12 @@ dependencies {
     }
     compile 'org.osmdroid:osmdroid-android:6.0.3'
     api project(':OSMBonusPack')
+
+   // api project(':PushSDK_no_op')
+
+    api project(':PushSDK')
+    api project(':umenganalysis')
+    api project(':api')
 
     //数据库查看工具
     debugCompile 'com.facebook.stetho:stetho:1.5.0'

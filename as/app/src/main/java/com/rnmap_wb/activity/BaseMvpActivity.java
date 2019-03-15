@@ -18,7 +18,9 @@ import com.giants3.android.frame.util.StringUtil;
 import com.giants3.android.frame.util.Utils;
 import com.giants3.android.mvp.Presenter;
 import com.giants3.android.mvp.Viewer;
+import com.giants3.android.push.PushProxy;
 import com.rnmap_wb.R;
+import com.rnmap_wb.analytics.AnalysisFactory;
 import com.rnmap_wb.immersive.SmartBarUtils;
 import com.rnmap_wb.widget.NavigationBarController;
 
@@ -31,6 +33,8 @@ public abstract class BaseMvpActivity<P extends Presenter> extends BaseActivity 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        PushProxy.onAppStart();
         SmartBarUtils.setTranslucentStatus(this, true);
         if (SmartBarUtils.hasSmartBar())
             SmartBarUtils.hideActionBarByActivity(this);
@@ -67,6 +71,18 @@ public abstract class BaseMvpActivity<P extends Presenter> extends BaseActivity 
         presenter.attachView(this);
     }
 
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        AnalysisFactory.getInstance().onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AnalysisFactory.getInstance().onPause(this);
+    }
 
     protected abstract @LayoutRes   int getContentLayoutId();
 

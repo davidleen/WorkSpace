@@ -2,6 +2,8 @@ package com.rnmap_wb.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.wifi.p2p.nsd.WifiP2pUpnpServiceInfo;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Handler;
@@ -13,9 +15,12 @@ import com.giants3.android.frame.util.Log;
 import com.giants3.android.network.ApiConnection;
 import com.rnmap_wb.android.dao.DaoManager;
 import com.rnmap_wb.android.dao.IDownloadItemDao;
+import com.rnmap_wb.android.data.LoginResult;
 import com.rnmap_wb.android.entity.DownloadItem;
 import com.rnmap_wb.android.entity.DownloadTask;
 import com.rnmap_wb.utils.IntentConst;
+import com.rnmap_wb.utils.SettingContent;
+import com.rnmap_wb.utils.TelephoneUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,24 +62,27 @@ public class DownloadManagerService extends Service {
         };
 
 
-        AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
 
-            @Override
-            public void run() {
+        if (TelephoneUtil.isWifiEnable()&&SettingContent.getInstance().autoDownloadOnWifi()) {
+            AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
 
-                List<DownloadTask> downloadTasks = DaoManager.getInstance().getDownloadTaskDao().loadAll();
+                @Override
+                public void run() {
 
-                for (DownloadTask downloadTask : downloadTasks) {
-                    if (downloadTask.getState() == 0) {
+                    List<DownloadTask> downloadTasks = DaoManager.getInstance().getDownloadTaskDao().loadAll();
 
-                        startATask(downloadTask.getId());
+                    for (DownloadTask downloadTask : downloadTasks) {
+                        if (downloadTask.getState() == 0) {
+
+                            startATask(downloadTask.getId());
 
 
+                        }
                     }
-                }
 
-            }
-        } );
+                }
+            });
+        }
 
 
     }

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.giants3.android.ToastHelper;
 import com.giants3.android.frame.util.Log;
+import com.giants3.android.push.PushProxy;
 import com.giants3.android.reader.domain.DefaultUseCaseHandler;
 import com.giants3.android.reader.domain.GsonUtils;
 import com.giants3.android.reader.domain.UseCaseFactory;

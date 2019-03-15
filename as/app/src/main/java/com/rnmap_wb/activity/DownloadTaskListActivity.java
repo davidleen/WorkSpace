@@ -366,7 +366,6 @@ public class DownloadTaskListActivity extends BaseMvpActivity implements DownLoa
 
             mBinder = (DownLoadBinder) binder;
             mBinder.setListener(DownloadTaskListActivity.this);
-
             mBound = true;
         }
 

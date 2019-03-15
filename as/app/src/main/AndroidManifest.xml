@@ -80,11 +80,17 @@
             android:value="${ANDROID_SUPPORT_VERSION}"
             tools:replace="android:value" />
 
-        <activity android:name=".activity.FeedBackDialog" />
+
         <activity
             android:name=".activity.AboutActivity"
             android:label="@string/title_activity_about"
             android:theme="@style/AppTheme"></activity>
+
+
+
+
+
+
     </application>
 
 </manifest>

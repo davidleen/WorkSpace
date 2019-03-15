@@ -43,8 +43,9 @@ public class MappingPolyline extends CustomPolyline {
     }
 
     @Override
-    public void setGeoPoints(List<GeoPoint> geoPoints) {
-        super.setGeoPoints(geoPoints);
+    public void setPoints(List<GeoPoint> geoPoints) {
+        super.setPoints(geoPoints);
+
         distanceStrings.clear();
 
         for (int i = 0; i < geoPoints.size(); i++) {

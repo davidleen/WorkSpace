@@ -1,0 +1,22 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion project.ANDROID_COMPILE_VERSION
+    buildToolsVersion project.ANDROID_BUILD_VERSION
+    defaultConfig {
+        minSdkVersion project.ANDROID_MIN_VERSION
+        targetSdkVersion project.ANDROID_TARGET_VERSION
+    }
+
+
+
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+}
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compileOnly project(':api')
+}

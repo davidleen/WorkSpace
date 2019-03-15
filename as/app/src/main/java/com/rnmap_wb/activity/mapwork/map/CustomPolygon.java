@@ -54,8 +54,11 @@ public class CustomPolygon extends Polygon {
         }
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event, MapView mapView) {
-        return super.onTouchEvent(event, mapView);
+
+
+
+    public interface OnClickListener {
+
+        boolean onCircleClick(final CustomPolyline polyline, MapView mapView);
     }
 }
