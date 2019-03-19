@@ -364,6 +364,9 @@ public class UseCaseFactory {
     public UseCase createGetClearWorkFlowUseCase(String os_no, int itm) {
         return new ClearWorkFlowUseCase(os_no, itm, restApi);
     }
+    public UseCase createGetAdjustWorkFlowUseCase(String os_no, String prd_no,int itm) {
+        return new AdjustWorkFlowItemUseCase(os_no, prd_no,itm, restApi);
+    }
 
     public UseCase createGetAppQuotationsUseCase(String key, int pageIndex, int pageSize) {
 

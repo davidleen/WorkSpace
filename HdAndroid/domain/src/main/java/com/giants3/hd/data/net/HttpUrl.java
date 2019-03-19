@@ -517,6 +517,14 @@ public class HttpUrl {
         return completeUrl(String.format("/api/erpWork/clear?osNO=%s&itm=%d", UrlFormatter.encode(os_no), itm));
     }
 
+
+
+
+
+    public static String adjustWorkFlowItem(String os_no, String prd_no,int itm) {
+        return completeUrl(String.format("/api/erpWork/adjustItem?osNo=%s&prdNo=%s&itm=%d", UrlFormatter.encode(os_no), UrlFormatter.encode(prd_no),itm));
+    }
+
     public static String getAppQotations(String key, int pageIndex, int pageSize) {
         return completeUrl(String.format("/api/app/quotation/search?searchValue=%s&pageIndex=%d&pageSize=%d", UrlFormatter.encode(key), pageIndex, pageSize));
     }
@@ -658,6 +666,4 @@ public class HttpUrl {
         return additionInfo(formatter);
 
     }
-
-
 }

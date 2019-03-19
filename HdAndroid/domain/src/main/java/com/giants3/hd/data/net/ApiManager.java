@@ -615,6 +615,15 @@ public class ApiManager {
         return remoteData;
     }
 
+
+    public RemoteData<Void> adjustWorkFlowItem(String os_no, String prd_no,int itm) throws HdException {
+        String url = HttpUrl.adjustWorkFlowItem(os_no, prd_no,itm);
+        String result = apiConnection.getString(url);
+        RemoteData<Void> remoteData = invokeByReflect(result, Void.class);
+        return remoteData;
+    }
+
+
     public RemoteData<com.giants3.hd.entity.app.Quotation> getAppQotations(String key, int pageIndex, int pageSize) throws HdException {
 
         String url = HttpUrl.getAppQotations(key, pageIndex, pageSize);
@@ -824,6 +833,5 @@ public class ApiManager {
         return remoteData;
 
     }
-
 
 }

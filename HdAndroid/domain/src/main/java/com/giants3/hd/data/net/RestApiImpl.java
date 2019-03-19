@@ -739,6 +739,17 @@ public class RestApiImpl implements RestApi {
         });
     }
     @Override
+    public Observable adjustWorkFlowItem(final String os_no, final String prd_no,final  int itm) {
+        return create(new ApiInvoker<Void>() {
+            @Override
+            public RemoteData<Void> invoker() throws HdException {
+
+
+                return apiManager.adjustWorkFlowItem( os_no,prd_no,itm)  ;
+            }
+        });
+    }
+    @Override
     public Observable getAppQuotations(final String key, final int pageIndex, final int pageSize) {
         return create(new ApiInvoker<com.giants3.hd.entity.app.Quotation>() {
             @Override

@@ -23,9 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
-import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -1302,7 +1300,7 @@ public class ErpWorkService extends AbstractErpService {
         final List<WorkFlowMessage> currentWorkFlowMessage = workFlowMessageRepository.findByFromFlowStepEqualsAndOrderNameEqualsAndItmEqualsOrderByCreateTimeDesc(workFlowReport.workFlowStep, workFlowReport.osNo, workFlowReport.itm);
         int sendingQty = 0;
         for (WorkFlowMessage tem : currentWorkFlowMessage) {
-            if (tem.receiverId == 0&&tem.id!=message.id) {
+            if (tem.receiverId == 0 && tem.id != message.id) {
                 sendingQty += tem.transportQty;
             }
         }
@@ -1578,11 +1576,10 @@ public class ErpWorkService extends AbstractErpService {
 
 
     @Transactional(rollbackFor = {HdException.class})
-    public RemoteData<Void> clearWorkFLow(User user,String osNo, int itm) throws HdException {
+    public RemoteData<Void> clearWorkFLow(User user, String osNo, int itm) throws HdException {
 
 
-        if(!user.name.equals(User.ADMIN))
-        {
+        if (!user.name.equals(User.ADMIN)) {
             return wrapError("只有系统管理员才能清除流程数据");
         }
         try {
@@ -1663,9 +1660,10 @@ public class ErpWorkService extends AbstractErpService {
 
     /**
      * 撤销任务交接
+     *
      * @param user
      * @param messageId 任务消息id
-     * @param memo  理由
+     * @param memo      理由
      * @return
      */
     public RemoteData<Void> rollBackOrderItemWorkFlow(User user, long messageId, String memo) {
@@ -1702,15 +1700,13 @@ public class ErpWorkService extends AbstractErpService {
 //                erpOrderItemProcessRepository.save(erpOrderItemProcess);
 //            }
 //        }
-        ErpOrderItemProcess fromErpOrderItemProcess = erpOrderItemProcessRepository.findFirstByOsNoEqualsAndItmEqualsAndCurrentWorkFlowStepEquals(message.orderName,message.itm,message.fromFlowStep);
-
+        ErpOrderItemProcess fromErpOrderItemProcess = erpOrderItemProcessRepository.findFirstByOsNoEqualsAndItmEqualsAndCurrentWorkFlowStepEquals(message.orderName, message.itm, message.fromFlowStep);
 
 
         //发起流程数量调整。
-        fromErpOrderItemProcess.unSendQty+=message.transportQty;
-        fromErpOrderItemProcess.sentQty-=message.transportQty;
+        fromErpOrderItemProcess.unSendQty += message.transportQty;
+        fromErpOrderItemProcess.sentQty -= message.transportQty;
         erpOrderItemProcessRepository.save(fromErpOrderItemProcess);
-
 
 
         //发起流程的状态调整。
@@ -1733,12 +1729,63 @@ public class ErpWorkService extends AbstractErpService {
 
         //消息状态改 撤销
         message.state = WorkFlowMessage.STATE_ROLL_BACK;
-        message.memo+="\n 撤销原因："+memo;
-        message.memo+="\n 撤销时间："+DateFormats.FORMAT_YYYY_MM_DD_HH_MM.format(Calendar.getInstance().getTime());
+        message.memo += "\n 撤销原因：" + memo;
+        message.memo += "\n 撤销时间：" + DateFormats.FORMAT_YYYY_MM_DD_HH_MM.format(Calendar.getInstance().getTime());
 
         workFlowReport = erpWorkFlowReportRepository.save(workFlowReport);
 
 
+        return wrapData();
+    }
+
+    /**
+     * 校正流程相关数据的item值，保证一致性。
+     *
+     * @param user
+     * @param osNo
+     * @param prdNo
+     * @return
+     */
+    @Transactional(rollbackFor = {HdException.class})
+    public RemoteData<Void> adjustWorkFlowItem(User user, String osNo, String prdNo, int itm) throws HdException {
+
+        if (!user.name.equals(User.ADMIN)) {
+            return wrapError("只有系统管理员才能 校正流程相关数据的item值");
+        }
+
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        int count = erpWorkFlowReportRepository.updateItmByOsNoAndPrdNo(osNo, prdNo, itm);
+//        if (count > 1) {
+//            throw HdException.create("WorkFlowReport 更新超过一条记录");
+//        }
+        stringBuilder.append("WorkFlowReport 更新" + count + "条记录\n");
+        count = erpOrderItemProcessRepository.updateItmByOsNoAndPrdNo(osNo, prdNo, itm);
+//        if (count > 1) {
+//            throw HdException.create("erpOrderItemProcess 更新超过一条记录");
+//        }
+        stringBuilder.append("erpOrderItemProcess 更新" + count + "条记录\n");
+
+        count = orderItemWorkStateRepository.updateItmByOsNoAndPrdNo(osNo, prdNo, itm);
+//        if (count > 1) {
+//            throw HdException.create("orderItemWorkState 更新超过一条记录");
+//        }
+
+        stringBuilder.append("orderItemWorkState 更新" + count + "条记录\n");
+
+        count = orderItemWorkMemoRepository.updateItmByOsNoAndPrdNo(osNo, prdNo, itm);
+//        if (count > 1) {
+//            throw HdException.create("orderItemWorkMemo 更新超过一条记录");
+//        }
+        stringBuilder.append("orderItemWorkMemo 更新" + count + "条记录\n");
+
+        count = workFlowMessageRepository.updateItmByOsNoAndPrdNo(osNo, prdNo, itm);
+//        if (count > 1) {
+//            throw HdException.create("workFlowMessage 更新超过一条记录");
+//        }
+        stringBuilder.append("workFlowMessage 更新" + count + "条记录\n");
+        //throw HdException.create(stringBuilder.toString());
 
         return wrapData();
     }

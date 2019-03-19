@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2019-03-09T20:33:38 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="qrcode" printOrder="Horizontal" pageWidth="183" pageHeight="124" columnWidth="183" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="bfda6e99-1a3b-45c8-b5c2-d4f3524ff91d">
+<!-- 2019-03-17T20:42:18 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="qrcode" printOrder="Horizontal" pageWidth="155" pageHeight="96" columnWidth="155" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="bfda6e99-1a3b-45c8-b5c2-d4f3524ff91d">
 	<property name="com.jaspersoft.studio.unit." value="mm"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<queryString>
@@ -23,14 +23,13 @@
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
-		<band height="124" splitType="Stretch">
+		<band height="96" splitType="Stretch">
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
-			<property name="com.jaspersoft.studio.unit.height" value="mm"/>
 			<frame>
-				<reportElement positionType="Float" x="0" y="2" width="181" height="119" uuid="95f57b6b-220d-4c68-8630-2ca1772f4d06">
+				<reportElement positionType="Float" x="0" y="2" width="153" height="93" uuid="95f57b6b-220d-4c68-8630-2ca1772f4d06">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
-					<property name="com.jaspersoft.studio.unit.height" value="mm"/>
 					<property name="com.jaspersoft.studio.unit.y" value="mm"/>
+					<property name="com.jaspersoft.studio.unit.width" value="mm"/>
 				</reportElement>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -39,7 +38,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement x="101" y="31" width="80" height="39" uuid="134901aa-88fd-43a1-bce1-1fd5a4f86146">
+					<reportElement x="71" y="16" width="82" height="39" uuid="134901aa-88fd-43a1-bce1-1fd5a4f86146">
 						<property name="com.jaspersoft.studio.unit.height" value="mm"/>
 					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -48,13 +47,14 @@
 					<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 				</textField>
 				<image onErrorType="Blank">
-					<reportElement positionType="FixRelativeToBottom" x="1" y="11" width="99" height="99" uuid="3174c022-6c0d-46ff-b514-43aa0b67a310">
+					<reportElement positionType="FixRelativeToBottom" x="1" y="11" width="70" height="69" uuid="3174c022-6c0d-46ff-b514-43aa0b67a310">
 						<property name="com.jaspersoft.studio.unit.x" value="mm"/>
+						<property name="com.jaspersoft.studio.unit.width" value="mm"/>
 					</reportElement>
 					<imageExpression><![CDATA[$F{url}]]></imageExpression>
 				</image>
 				<textField>
-					<reportElement x="101" y="71" width="80" height="29" uuid="34961fee-e758-4c98-9d24-98223eb4214f"/>
+					<reportElement x="71" y="50" width="82" height="29" uuid="34961fee-e758-4c98-9d24-98223eb4214f"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Song" size="12"/>
 					</textElement>

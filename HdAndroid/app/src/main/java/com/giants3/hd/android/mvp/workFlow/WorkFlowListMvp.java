@@ -64,6 +64,8 @@ public interface WorkFlowListMvp {
 
 
         void clearWorkFlow();
+
+        void adjustWorkFlow();
     }
 
     interface Viewer extends NewViewer {

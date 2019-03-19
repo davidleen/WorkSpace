@@ -12,18 +12,35 @@
     tools:context=".activity.WorkFlowListActivity"
     tools:ignore="MergeRootFrame">
 
-    <Button
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <Button
             android:id="@+id/clear"
-        android:layout_width="wrap_content"
-        android:text="清除流程数据(系统管理员)"
-        android:visibility="gone"
-        android:layout_height="wrap_content" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="清除流程数据(系统管理员)"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/adjust"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="校正关联参数(系统管理员)"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+
     <com.wefika.flowlayout.FlowLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        android:gravity="start|top"
-        >
+        android:gravity="start|top">
 
 
         <TextView
@@ -80,8 +97,6 @@
 
 
     </android.support.v4.widget.SwipeRefreshLayout>
-
-
 
 
 </LinearLayout>

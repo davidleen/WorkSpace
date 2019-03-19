@@ -67,6 +67,11 @@ public interface WorkFlowMessageRepository extends JpaRepository<WorkFlowMessage
     )
     Page<WorkFlowMessage> findMyWorkFlowMessages(@Param("userId") long userId, @Param("key") String key , Pageable pageable );
 
+    @Query(value="select p from  T_WorkFlowMessage  p where   (p.orderName like :key or p.productName like :key )  order by p.receiveTime desc "
+    ,countQuery = "select count(p.id) from  T_WorkFlowMessage  p where    (p.orderName like :key or p.productName like :key ) "
+    )
+    Page<WorkFlowMessage> findAllWorkFlowMessages(  @Param("key") String key , Pageable pageable );
+
 
     @Modifying
     @Query("delete T_WorkFlowMessage p where   p.orderName=:os_no and p.itm=:itm   ")
@@ -116,4 +121,8 @@ public interface WorkFlowMessageRepository extends JpaRepository<WorkFlowMessage
 
                     " order by p.orderName desc,p.itm asc " )
     List<WorkFlowMessage> queryWorkFlowMessageReport(@Param("dateStart") String dateStart,@Param("dateEnd")  String dateEnd, @Param("unhandle") boolean unhandle, @Param("overDue") boolean overDue, @Param("currentTimeMillis") long currentTimeMillis,@Param("limitMillis") long limitMillis);//, boolean overDue, long currentTime
+
+    @Modifying
+    @Query("update T_WorkFlowMessage p set p.itm=:itm where   p.orderName=:os_no and p.productName=:prd_no   ")
+    int  updateItmByOsNoAndPrdNo(@Param("os_no") String osNo, @Param("prd_no") String prdNo, @Param("itm") int itm);
 }

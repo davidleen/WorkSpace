@@ -58,6 +58,8 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
 
     @Bind(R.id.clear)
     View clear;
+    @Bind(R.id.adjust)
+    View adjust;
 
 
     @Bind(R.id.workFlowReport)
@@ -93,6 +95,8 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
 
         clear.setVisibility(SharedPreferencesHelper.getLoginUser().name.equals(User.ADMIN)?View.VISIBLE:View.GONE);
         clear.setOnClickListener(this);
+        adjust.setVisibility(SharedPreferencesHelper.getLoginUser().name.equals(User.ADMIN)?View.VISIBLE:View.GONE);
+        adjust.setOnClickListener(this);
     }
 
 
@@ -404,7 +408,27 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
           }).create().show();
 
 
+                break;  case R.id.adjust:
+
+                  new      AlertDialog.Builder(this).setTitle("是否校正相关流程数据itm值？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                      @Override
+                      public void onClick(DialogInterface dialog, int which) {
+
+                          dialog.dismiss();
+                           getPresenter().adjustWorkFlow();
+                      }
+                  }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                      @Override
+                      public void onClick(DialogInterface dialog, int which) {
+                          dialog.dismiss();
+                      }
+                  }).create().show();
+
+
                 break;
+
+
+
         }
     }
 }

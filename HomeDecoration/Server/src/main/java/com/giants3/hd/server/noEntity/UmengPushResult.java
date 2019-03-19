@@ -11,8 +11,9 @@ public class UmengPushResult {
 
     public String ret;
     public PushResult data;
+    public String message;
 
-    private class PushResult {
+    public  class PushResult {
 
         public String msg_id;
         public String task_id;

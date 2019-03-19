@@ -323,7 +323,7 @@ public class ErpWorkController extends BaseController {
 
 
     /**
-     * 查询样品的状态
+     * 清除流程
      *
      * @return
      */
@@ -337,6 +337,25 @@ public class ErpWorkController extends BaseController {
         } catch (HdException e) {
             e.printStackTrace();
 
+            return wrapError(e.getMessage());
+        }
+
+        return  result;
+    }
+    /**
+     * 校正流程的item字段信息
+     *
+     * @return
+     */
+    @RequestMapping(value = "/adjustItem", method = RequestMethod.GET)
+    @ResponseBody
+    public RemoteData<Void> adjustItem(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user,@RequestParam("osNo") String osNo, @RequestParam(value = "prdNo" ) String prdNo, @RequestParam(value = "itm" )  int itm){
+
+        RemoteData<Void> result= null;
+        try {
+            result = erpWorkService.adjustWorkFlowItem(user,osNo,prdNo,itm);
+        } catch (HdException e) {
+            e.printStackTrace();
             return wrapError(e.getMessage());
         }
 
