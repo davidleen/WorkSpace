@@ -758,6 +758,7 @@ public class ErpWorkService extends AbstractErpService {
             orderItem.itm = erpOrderItemProcess.itm;
             orderItem.url = erpOrderItemProcess.photoUrl;
             orderItem.prdNo = erpOrderItemProcess.prdNo;
+            orderItem.pVersion = erpOrderItemProcess.pVersion;
             orderItem.maxWorkFlowStep = erpOrderItemProcess.currentWorkFlowStep;
             orderItem.maxWorkFlowCode = erpOrderItemProcess.currentWorkFlowCode;
             orderItem.maxWorkFlowName = erpOrderItemProcess.currentWorkFlowName;
@@ -1747,7 +1748,7 @@ public class ErpWorkService extends AbstractErpService {
      * @return
      */
     @Transactional(rollbackFor = {HdException.class})
-    public RemoteData<Void> adjustWorkFlowItem(User user, String osNo, String prdNo, int itm) throws HdException {
+    public RemoteData<Void> adjustWorkFlowItem(User user, String osNo, String prdNo,String pVersion, int itm) throws HdException {
 
         if (!user.name.equals(User.ADMIN)) {
             return wrapError("只有系统管理员才能 校正流程相关数据的item值");
@@ -1756,37 +1757,51 @@ public class ErpWorkService extends AbstractErpService {
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        int count = erpWorkFlowReportRepository.updateItmByOsNoAndPrdNo(osNo, prdNo, itm);
+        int count = erpWorkFlowReportRepository.updateItmByOsNoAndPrdNo(osNo, prdNo,pVersion, itm);
 //        if (count > 1) {
 //            throw HdException.create("WorkFlowReport 更新超过一条记录");
 //        }
         stringBuilder.append("WorkFlowReport 更新" + count + "条记录\n");
-        count = erpOrderItemProcessRepository.updateItmByOsNoAndPrdNo(osNo, prdNo, itm);
+        count = erpOrderItemProcessRepository.updateItmByOsNoAndPrdNo(osNo, prdNo,pVersion, itm);
 //        if (count > 1) {
 //            throw HdException.create("erpOrderItemProcess 更新超过一条记录");
 //        }
         stringBuilder.append("erpOrderItemProcess 更新" + count + "条记录\n");
 
-        count = orderItemWorkStateRepository.updateItmByOsNoAndPrdNo(osNo, prdNo, itm);
-//        if (count > 1) {
-//            throw HdException.create("orderItemWorkState 更新超过一条记录");
-//        }
+//        count = orderItemWorkStateRepository.updateItmByOsNoAndPrdNo(osNo, prdNo, pVersion,itm);
+////        if (count > 1) {
+////            throw HdException.create("orderItemWorkState 更新超过一条记录");
+////        }
+//
+//        stringBuilder.append("orderItemWorkState 更新" + count + "条记录\n");
 
-        stringBuilder.append("orderItemWorkState 更新" + count + "条记录\n");
-
-        count = orderItemWorkMemoRepository.updateItmByOsNoAndPrdNo(osNo, prdNo, itm);
+        count = orderItemWorkMemoRepository.updateItmByOsNoAndPrdNo(osNo, prdNo,pVersion, itm);
 //        if (count > 1) {
 //            throw HdException.create("orderItemWorkMemo 更新超过一条记录");
 //        }
         stringBuilder.append("orderItemWorkMemo 更新" + count + "条记录\n");
 
-        count = workFlowMessageRepository.updateItmByOsNoAndPrdNo(osNo, prdNo, itm);
+        count = workFlowMessageRepository.updateItmByOsNoAndPrdNo(osNo, prdNo,pVersion, itm);
 //        if (count > 1) {
 //            throw HdException.create("workFlowMessage 更新超过一条记录");
 //        }
         stringBuilder.append("workFlowMessage 更新" + count + "条记录\n");
-        //throw HdException.create(stringBuilder.toString());
+       // throw HdException.create(stringBuilder.toString());
 
-        return wrapData();
+
+
+//       List<ErpOrderItemProcess> processes=erpOrderItemProcessRepository.findFirstByOsNoEqualsAndPrdNoEqualsAndPVersionEquals(osNo,prdNo,pVersion);
+//        for(ErpOrderItemProcess itemProcess:processes)
+//        {
+//            if(itemProcess.sentQty>=itemProcess.qty)
+//        }
+
+
+
+
+        final RemoteData<Void> voidRemoteData = wrapMessageData(stringBuilder.toString());
+        return voidRemoteData;
+
+
     }
 }

@@ -11,13 +11,15 @@ import rx.Observable;
 class AdjustWorkFlowItemUseCase extends DefaultUseCase {
     private final String os_no;
     private final String prd_no;
+    private String pVersion;
     private final int  itm;
     private final RestApi restApi;
 
-    public AdjustWorkFlowItemUseCase(String os_no, String prd_no, int itm,RestApi restApi) {
+    public AdjustWorkFlowItemUseCase(String os_no, String prd_no, String pVersion,int itm,RestApi restApi) {
         super();
         this.os_no = os_no;
         this.prd_no = prd_no;
+        this.pVersion = pVersion;
         this.itm = itm;
         this.restApi = restApi;
     }
@@ -25,6 +27,6 @@ class AdjustWorkFlowItemUseCase extends DefaultUseCase {
     @Override
     protected Observable buildUseCaseObservable() {
 
-        return restApi.adjustWorkFlowItem(os_no,prd_no,itm);
+        return restApi.adjustWorkFlowItem(os_no,prd_no,pVersion,itm);
     }
 }

@@ -21,6 +21,6 @@ public interface OrderItemWorkMemoRepository extends JpaRepository<OrderItemWork
     OrderItemWorkMemo findFirstByOsNoEqualsAndItmEqualsAndWorkFlowStepEquals(String os_no, int itm, int workFlowStep);
 
     @Modifying
-    @Query("update T_OrderItemWorkMemo p set p.itm=:itm where   p.osNo=:os_no and p.productName=:prd_no   ")
-    int  updateItmByOsNoAndPrdNo(@Param("os_no") String osNo, @Param("prd_no") String prdNo, @Param("itm") int itm);
+    @Query("update T_OrderItemWorkMemo p set p.itm=:itm where   p.osNo=:os_no and p.productName=:prd_no    and p.pVersion=:pVersion  ")
+    int  updateItmByOsNoAndPrdNo(@Param("os_no") String osNo, @Param("prd_no") String prdNo,@Param("pVersion") String pVersion, @Param("itm") int itm);
 }

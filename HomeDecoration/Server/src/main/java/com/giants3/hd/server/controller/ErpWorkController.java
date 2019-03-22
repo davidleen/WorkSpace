@@ -349,11 +349,11 @@ public class ErpWorkController extends BaseController {
      */
     @RequestMapping(value = "/adjustItem", method = RequestMethod.GET)
     @ResponseBody
-    public RemoteData<Void> adjustItem(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user,@RequestParam("osNo") String osNo, @RequestParam(value = "prdNo" ) String prdNo, @RequestParam(value = "itm" )  int itm){
+    public RemoteData<Void> adjustItem(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user,@RequestParam("osNo") String osNo, @RequestParam(value = "prdNo" ) String prdNo,  @RequestParam(value = "pVersion" ) String pVersion, @RequestParam(value = "itm" )  int itm){
 
         RemoteData<Void> result= null;
         try {
-            result = erpWorkService.adjustWorkFlowItem(user,osNo,prdNo,itm);
+            result = erpWorkService.adjustWorkFlowItem(user,osNo,prdNo,pVersion,itm);
         } catch (HdException e) {
             e.printStackTrace();
             return wrapError(e.getMessage());

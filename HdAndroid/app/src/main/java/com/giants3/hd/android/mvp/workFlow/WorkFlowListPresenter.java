@@ -260,7 +260,7 @@ public class WorkFlowListPresenter extends BasePresenter<WorkFlowListMvp.Viewer,
         //获取关联的流程信息
         ErpOrderItem selectOrderItem = getModel().getSelectOrderItem();
         if (selectOrderItem == null) return;
-        UseCaseFactory.getInstance().createGetAdjustWorkFlowUseCase(selectOrderItem.os_no, selectOrderItem.prd_no, selectOrderItem.itm).execute(new RemoteDataSubscriber<Void>(this) {
+        UseCaseFactory.getInstance().createGetAdjustWorkFlowUseCase(selectOrderItem.os_no, selectOrderItem.prd_name,selectOrderItem.pVersion, selectOrderItem.itm).execute(new RemoteDataSubscriber<Void>(this) {
 
             @Override
             protected void handleRemoteData(RemoteData<Void> data) {

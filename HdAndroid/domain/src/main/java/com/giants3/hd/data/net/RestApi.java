@@ -232,5 +232,5 @@ public interface RestApi {
 
   Observable rollbackWorkFlowMessage(long workFlowMessageId, String memo);
 
-    Observable adjustWorkFlowItem(String os_no, String prd_no,int itm);
+    Observable adjustWorkFlowItem(String os_no, String prd_no,String pVersion,int itm);
 }

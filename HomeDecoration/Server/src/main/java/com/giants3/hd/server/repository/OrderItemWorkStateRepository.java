@@ -23,7 +23,7 @@ public interface OrderItemWorkStateRepository extends JpaRepository<OrderItemWor
     @Query("delete T_OrderItemWorkState p where   p.osNo=:os_no and p.itm=:itm   ")
     int deleteByOsNoAndItm(@Param("os_no") String os_no, @Param("itm") int itm);
 
-    @Modifying
-    @Query("update T_OrderItemWorkState p set p.itm=:itm where   p.osNo=:os_no and p.prdNo=:prd_no   ")
-    int  updateItmByOsNoAndPrdNo(@Param("os_no") String osNo, @Param("prd_no") String prdNo, @Param("itm") int itm);
+//    @Modifying
+//    @Query("update T_OrderItemWorkState p set p.itm=:itm where   p.osNo=:os_no and p.prdNo=:prd_no     and p.=:pVersion   ")
+//    int  updateItmByOsNoAndPrdNo(@Param("os_no") String osNo, @Param("prd_no") String prdNo, @Param("itm") int itm);
 }

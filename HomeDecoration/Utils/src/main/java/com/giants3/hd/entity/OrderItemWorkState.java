@@ -51,6 +51,9 @@ public class OrderItemWorkState {
     public String url;
 
     public String prdNo;
+
+
+    public String   pVersion;
     /**
      * 预计流程总计提前或者 超期完成时间  负数表示提前  正数表示超期
      */
@@ -65,10 +68,11 @@ public class OrderItemWorkState {
     public int currentAlertDay;
 
 
+
     /**
      * 1当前订单流程
      * 2当前流程开始日期
-     * 3当前流程工期
+     *String 3当前流程工期
      * 4 当前预警日期
      * 5是否已经进入预警期
      * 6结束日期

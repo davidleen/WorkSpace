@@ -123,6 +123,6 @@ public interface WorkFlowMessageRepository extends JpaRepository<WorkFlowMessage
     List<WorkFlowMessage> queryWorkFlowMessageReport(@Param("dateStart") String dateStart,@Param("dateEnd")  String dateEnd, @Param("unhandle") boolean unhandle, @Param("overDue") boolean overDue, @Param("currentTimeMillis") long currentTimeMillis,@Param("limitMillis") long limitMillis);//, boolean overDue, long currentTime
 
     @Modifying
-    @Query("update T_WorkFlowMessage p set p.itm=:itm where   p.orderName=:os_no and p.productName=:prd_no   ")
-    int  updateItmByOsNoAndPrdNo(@Param("os_no") String osNo, @Param("prd_no") String prdNo, @Param("itm") int itm);
+    @Query("update T_WorkFlowMessage p set p.itm=:itm where   p.orderName=:os_no and p.productName=:prd_no  and p.pVersion=:pVersion  ")
+    int  updateItmByOsNoAndPrdNo(@Param("os_no") String osNo, @Param("prd_no") String prdNo, @Param("pVersion") String pVersion, @Param("itm") int itm);
 }

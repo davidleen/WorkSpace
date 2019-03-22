@@ -739,13 +739,13 @@ public class RestApiImpl implements RestApi {
         });
     }
     @Override
-    public Observable adjustWorkFlowItem(final String os_no, final String prd_no,final  int itm) {
+    public Observable adjustWorkFlowItem(final String os_no, final String prd_no,final String pVersion,final  int itm) {
         return create(new ApiInvoker<Void>() {
             @Override
             public RemoteData<Void> invoker() throws HdException {
 
 
-                return apiManager.adjustWorkFlowItem( os_no,prd_no,itm)  ;
+                return apiManager.adjustWorkFlowItem( os_no,prd_no,pVersion,itm)  ;
             }
         });
     }

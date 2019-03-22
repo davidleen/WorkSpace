@@ -31,9 +31,13 @@ public interface ErpOrderItemProcessRepository extends JpaRepository<ErpOrderIte
     int deleteByOsNoAndItm(@Param("os_no") String os_no, @Param("itm") int itm);
 
     @Modifying
-    @Query("update T_ErpOrderItemProcess p set p.itm=:itm where   p.osNo=:os_no and p.prdNo=:prd_no   ")
-    int  updateItmByOsNoAndPrdNo(@Param("os_no") String osNo, @Param("prd_no") String prdNo, @Param("itm") int itm);
+    @Query("update T_ErpOrderItemProcess p set p.itm=:itm where   p.osNo=:os_no and p.prdNo=:prd_no     and p.pVersion=:pVersion   ")
+    int  updateItmByOsNoAndPrdNo(@Param("os_no") String osNo, @Param("prd_no") String prdNo,@Param("pVersion") String pVersion, @Param("itm") int itm);
 
+
+
+
+    List<ErpOrderItemProcess> findFirstByOsNoEqualsAndPrdNoEqualsAndPVersionEquals(String osNo, String prdNo,String pVersion);
 
 //
 //   // @Query(" select distinct o from T_ErpOrderItemProcess  p , T_OrderItem o where   o.osNo=p.osNo and o.itm=p.itm  and o.workFlowState!="+ ErpWorkFlow.STATE_COMPLETE +" ")

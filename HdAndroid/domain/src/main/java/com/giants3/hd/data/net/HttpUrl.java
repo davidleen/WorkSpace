@@ -521,8 +521,8 @@ public class HttpUrl {
 
 
 
-    public static String adjustWorkFlowItem(String os_no, String prd_no,int itm) {
-        return completeUrl(String.format("/api/erpWork/adjustItem?osNo=%s&prdNo=%s&itm=%d", UrlFormatter.encode(os_no), UrlFormatter.encode(prd_no),itm));
+    public static String adjustWorkFlowItem(String os_no, String prd_no,String pVersion,int itm) {
+        return completeUrl(String.format("/api/erpWork/adjustItem?osNo=%s&prdNo=%s&pVersion=%s&itm=%d", UrlFormatter.encode(os_no), UrlFormatter.encode(prd_no), UrlFormatter.encode(pVersion),itm));
     }
 
     public static String getAppQotations(String key, int pageIndex, int pageSize) {
