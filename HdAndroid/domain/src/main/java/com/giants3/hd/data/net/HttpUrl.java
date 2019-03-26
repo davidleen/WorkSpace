@@ -666,4 +666,12 @@ public class HttpUrl {
         return additionInfo(formatter);
 
     }
+
+    public static String findWorkFlowItemsUseCase(String osNo, int itm, String flowCode) {
+
+        String apiUrl=BASE_URL + "api/erpWork/findErpWorkFlowItems";
+        UrlFormatter formatter=new UrlFormatter(apiUrl).append("osNo",osNo)  .append("itm",itm)  .append("flowCode",flowCode)  ;
+        return additionInfo(formatter);
+
+    }
 }

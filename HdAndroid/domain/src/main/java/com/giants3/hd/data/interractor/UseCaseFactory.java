@@ -488,4 +488,8 @@ public class UseCaseFactory {
         return
                 new RollbackWorkFlowMessageCase(messageId, memeo, restApi);
     }
+
+    public UseCase createFindWorkFlowItemsUseCase(String osNo, int itm, String code) {
+        return new FindWorkFlowItemsUseCase(osNo, itm,code, restApi);
+    }
 }

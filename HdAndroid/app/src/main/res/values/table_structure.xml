@@ -397,4 +397,17 @@
 
     </string-array>
 
+    <string-array name="erp_work_flow_item">
+
+        <item>单号||tz_no||1||120</item>
+        <item>日期||tz_dd||1||120</item>
+        <item>指令单号||mrpNo||1||120</item>
+        <item>工序编号||zc_no||1||80</item>
+        <item>工序名称||zc_name||1||80</item>
+        <item>数量||qty||1||80</item>
+        <item>加工户||jgh||1||80</item>
+
+
+    </string-array>
+
 </resources>

@@ -15,7 +15,7 @@ import butterknife.Bind;
  * Created by davidleen29 on 2017/6/23.
  */
 
-public class WorkFLowMainMenuAdapter extends AbstractAdapter<String> {
+public class WorkFLowMainMenuAdapter extends AbstractAdapter<WorkFLowMainMenuAdapter.MenuItem> {
 
 
     public WorkFLowMainMenuAdapter(Context context) {
@@ -23,7 +23,7 @@ public class WorkFLowMainMenuAdapter extends AbstractAdapter<String> {
     }
 
     @Override
-    protected Bindable<String> createViewHolder(int itemViewType) {
+    protected Bindable<MenuItem> createViewHolder(int itemViewType) {
 
         View view = LayoutInflater.from(getContext())
                 .inflate(R.layout.list_item_main_menu, null, false);
@@ -34,7 +34,7 @@ public class WorkFLowMainMenuAdapter extends AbstractAdapter<String> {
 
 
 
-    public static class ViewHolder extends AbstractViewHolder<String> {
+    public static class ViewHolder extends AbstractViewHolder<MenuItem> {
 
         @Bind(R.id.text)
         public TextView text;
@@ -49,8 +49,11 @@ public class WorkFLowMainMenuAdapter extends AbstractAdapter<String> {
 
 
         @Override
-        public void bindData(AbstractAdapter<String> adapter, String data, int position) {
-            text.setText(data);
+        public void bindData(AbstractAdapter<MenuItem> adapter, MenuItem data, int position) {
+            text.setText(data.title);
+
+            countText.setVisibility(data.msgCount>0?View.VISIBLE:View.GONE);
+            countText.setText(String.valueOf(data.msgCount));
 
         }
 
@@ -62,4 +65,13 @@ public class WorkFLowMainMenuAdapter extends AbstractAdapter<String> {
             countText.setVisibility(count>0?View.VISIBLE:View.GONE);
         }
     }
+
+    public static class MenuItem
+    {
+
+        public String title;
+        public int msgCount;
+        public String fragmentClass;
+    }
 }
+

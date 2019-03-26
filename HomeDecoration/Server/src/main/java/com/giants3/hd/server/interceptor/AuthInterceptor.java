@@ -100,7 +100,17 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
             Session session = authorityService.checkSessionForToken(token);
             // Session session = sessionRepository.findFirstByTokenEquals(token);
 
+
             if (session != null) {
+
+//                String ip=request.getRemoteAddr();
+//                if(!session.user.internet&&!ip.startsWith("192.168."))
+//                {
+//                    //当前用户无外网访问权限
+//
+//
+//                }
+
 
                 long currentTime = Calendar.getInstance().getTimeInMillis();
                 if (currentTime - session.loginTime < VALIDATE_TIME) {

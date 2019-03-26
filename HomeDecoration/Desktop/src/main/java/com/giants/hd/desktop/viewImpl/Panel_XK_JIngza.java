@@ -26,6 +26,7 @@ public class Panel_XK_JIngza {
     private JTextField huaxinbianhao;
     private JTextField huaxinchangshang;
     private JTextField huaxinxiaoguo;
+    private JTextField beikuanchicun;
 
 
     public void setData(Xiankang_Jingza  data) {
@@ -52,6 +53,7 @@ public class Panel_XK_JIngza {
         caizhi.setText(data.getCaizhi());
         biankuang.setText(data.getBiankuang());
         mobian.setText(data.getMobian());
+        beikuanchicun.setText(data.getBeikuanchicun());
 
         huaxinbianhao.setText(data.getHuaxinbianhao());
         huaxinchangshang.setText(data.getHuaxinchangshang());
@@ -77,6 +79,7 @@ public class Panel_XK_JIngza {
         data.setCaizhi(caizhi.getText());
         data.setBiankuang(biankuang.getText());
         data.setMobian(mobian.getText());
+        data.setBeikuanchicun(beikuanchicun.getText());
 
         data.setHuaxinbianhao(huaxinbianhao.getText());
         data.setHuaxinchangshang(huaxinchangshang.getText());

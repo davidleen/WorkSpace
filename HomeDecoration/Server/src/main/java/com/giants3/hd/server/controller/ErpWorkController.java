@@ -1,19 +1,15 @@
 package com.giants3.hd.server.controller;
 
-import com.giants3.hd.entity_erp.SampleState;
-import com.giants3.hd.entity_erp.Sub_workflow_state;
+import com.giants3.hd.entity.*;
+import com.giants3.hd.entity_erp.*;
 import com.giants3.hd.exception.HdException;
+import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.server.service.ErpSampleService;
 import com.giants3.hd.server.service.ErpWorkService;
 import com.giants3.hd.server.service.UserService;
 import com.giants3.hd.server.utils.Constraints;
-import com.giants3.hd.noEntity.RemoteData;
-import com.giants3.hd.entity.*;
-import com.giants3.hd.entity_erp.WorkFlowMaterial;
-import com.giants3.hd.entity_erp.Zhilingdan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -87,9 +83,13 @@ public class ErpWorkController extends BaseController {
     ) {
 
 
-        final RemoteData<Void> remoteData = erpWorkService.sendWorkFlowMessage(user, orderItemProcess, tranQty, areaId, memo);
-
-
+        RemoteData<Void> remoteData = null;
+        try {
+            remoteData = erpWorkService.sendWorkFlowMessage(user, orderItemProcess, tranQty, areaId, memo);
+        } catch (HdException e) {
+            e.printStackTrace();
+            return wrapError(e.getMessage());
+        }
 
 
         return remoteData;
@@ -124,9 +124,15 @@ public class ErpWorkController extends BaseController {
     RemoteData<Void> receiveWorkFlow(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam(value = "workFlowMsgId") long workFlowMsgId, @RequestParam("image") MultipartFile[] files) {
 
 
-        return erpWorkService.receiveOrderItemWorkFlow(user, workFlowMsgId, files, "测试区域");
+        try {
+            return erpWorkService.receiveOrderItemWorkFlow(user, workFlowMsgId, files, "测试区域");
+        } catch (HdException e) {
+
+            return wrapError(e.getMessage());
+        }
 
     }
+
     /**
      * 撤销生产流程交接(交接已经完成然后撤销)
      *
@@ -139,12 +145,12 @@ public class ErpWorkController extends BaseController {
     RemoteData<Void> rollBackWorkFlow(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam(value = "workFlowMsgId") long workFlowMsgId, @RequestParam("memo") String memo) {
 
 
-        return erpWorkService.rollBackOrderItemWorkFlow(user, workFlowMsgId,memo);
+        return erpWorkService.rollBackOrderItemWorkFlow(user, workFlowMsgId, memo);
 
     }
 
     /**
-     *  查詢所有排產未完工
+     * 查詢所有排產未完工
      *
      * @param
      * @return
@@ -154,13 +160,13 @@ public class ErpWorkController extends BaseController {
     @ResponseBody
     RemoteData<ErpOrderItem> searchUnCompleteOrderItems(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam(value = "key") String key
 
-            , @RequestParam(value = "workFlowStep" ,defaultValue = "-1",required = false) int workFlowStep
-            , @RequestParam(value = "pageIndex" ,defaultValue = "0",required = false) int pageIndex
-            , @RequestParam(value = "pageSize",defaultValue = "20",required = false) int pageSize
+            , @RequestParam(value = "workFlowStep", defaultValue = "-1", required = false) int workFlowStep
+            , @RequestParam(value = "pageIndex", defaultValue = "0", required = false) int pageIndex
+            , @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize
     ) {
 
 
-        return erpWorkService.searchUnCompleteOrderItems(key,workFlowStep,pageIndex,pageSize);
+        return erpWorkService.searchUnCompleteOrderItems(key, workFlowStep, pageIndex, pageSize);
 
     }
 
@@ -173,14 +179,14 @@ public class ErpWorkController extends BaseController {
     @RequestMapping(value = "/searchCompleteOrderItems", method = {RequestMethod.GET})
     public
     @ResponseBody
-    RemoteData<ErpOrderItem> searchCompleteOrderItems(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam(value = "key",required = false) String key
+    RemoteData<ErpOrderItem> searchCompleteOrderItems(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam(value = "key", required = false) String key
 
-            , @RequestParam(value = "pageIndex" ,defaultValue = "0",required = false) int pageIndex
-            , @RequestParam(value = "pageSize",defaultValue = "20",required = false) int pageSize
+            , @RequestParam(value = "pageIndex", defaultValue = "0", required = false) int pageIndex
+            , @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize
     ) {
 
 
-        return erpWorkService.searchCompleteOrderItems(key,pageIndex,pageSize);
+        return erpWorkService.searchCompleteOrderItems(key, pageIndex, pageSize);
 
     }
 
@@ -194,9 +200,6 @@ public class ErpWorkController extends BaseController {
     public RemoteData<ErpWorkFlowReport> findOrderItemReport(@RequestParam("os_no") String os_no, @RequestParam("itm") int itm
 
     ) {
-
-
-
 
 
         return erpWorkService.findErpWorkFlowReport(os_no, itm);
@@ -257,7 +260,7 @@ public class ErpWorkController extends BaseController {
      */
     @RequestMapping(value = "/saveWorkMemo", method = RequestMethod.POST)
     @ResponseBody
-    public RemoteData<Void> saveWorkMemo(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user,@RequestBody Map<String, String> data
+    public RemoteData<Void> saveWorkMemo(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestBody Map<String, String> data
 
     ) {
 
@@ -270,7 +273,7 @@ public class ErpWorkController extends BaseController {
         String pVersion = (String) data.get("pVersion");
         String productWorkMemo = (String) data.get("productWorkMemo");
 
-        return erpWorkService.saveWorkMemo(user,workFlowStep, os_no, itm, orderItemWorkMemo, prd_name, pVersion, productWorkMemo);
+        return erpWorkService.saveWorkMemo(user, workFlowStep, os_no, itm, orderItemWorkMemo, prd_name, pVersion, productWorkMemo);
     }
 
     /**
@@ -296,30 +299,27 @@ public class ErpWorkController extends BaseController {
      */
     @RequestMapping(value = "/findSampleState", method = RequestMethod.GET)
     @ResponseBody
-    public RemoteData<SampleState> getSampleState(@RequestParam("prdNo") String prdNo, @RequestParam(value = "pVersion",required = false,defaultValue = "") String pVersion){
+    public RemoteData<SampleState> getSampleState(@RequestParam("prdNo") String prdNo, @RequestParam(value = "pVersion", required = false, defaultValue = "") String pVersion) {
 
-        SampleState sampleState= erpSampleService.getSampleState(prdNo, pVersion);
-        if(sampleState==null) return wrapData();
-        return  wrapData(sampleState);
+        SampleState sampleState = erpSampleService.getSampleState(prdNo, pVersion);
+        if (sampleState == null) return wrapData();
+        return wrapData(sampleState);
     }
 
 
     /**
-     *  查询指定期间，流程已经结束，小工序未完工的单据。
+     * 查询指定期间，流程已经结束，小工序未完工的单据。
      */
     @RequestMapping(value = "/searchErpSubWorkFlow", method = RequestMethod.GET)
     @ResponseBody
 
 
+    public RemoteData<Sub_workflow_state> searchErpSubWorkFlow(@RequestParam("key") String key, @RequestParam("dateStart") String dateStart, @RequestParam("dateEnd") String dateEnd) {
 
-    public RemoteData<Sub_workflow_state>  searchErpSubWorkFlow(@RequestParam("key")  String key,@RequestParam("dateStart")   String  dateStart,@RequestParam("dateEnd")  String dateEnd)
-    {
-
-       List<Sub_workflow_state> sampleState= erpWorkService.searchErpSubWorkFlow(key,dateStart,dateEnd);
-        if(sampleState==null) return wrapData();
-        return  wrapData(sampleState);
+        List<Sub_workflow_state> sampleState = erpWorkService.searchErpSubWorkFlow(key, dateStart, dateEnd);
+        if (sampleState == null) return wrapData();
+        return wrapData(sampleState);
     }
-
 
 
     /**
@@ -329,19 +329,20 @@ public class ErpWorkController extends BaseController {
      */
     @RequestMapping(value = "/clear", method = RequestMethod.GET)
     @ResponseBody
-    public RemoteData<Void> clearWorkFlow(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user,@RequestParam("osNO") String osNo, @RequestParam(value = "itm" ) int itm){
+    public RemoteData<Void> clearWorkFlow(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam("osNO") String osNo, @RequestParam(value = "itm") int itm) {
 
-        RemoteData<Void> result= null;
+        RemoteData<Void> result = null;
         try {
-            result = erpWorkService.clearWorkFLow(user,osNo,itm);
+            result = erpWorkService.clearWorkFLow(user, osNo, itm);
         } catch (HdException e) {
             e.printStackTrace();
 
             return wrapError(e.getMessage());
         }
 
-        return  result;
+        return result;
     }
+
     /**
      * 校正流程的item字段信息
      *
@@ -349,16 +350,28 @@ public class ErpWorkController extends BaseController {
      */
     @RequestMapping(value = "/adjustItem", method = RequestMethod.GET)
     @ResponseBody
-    public RemoteData<Void> adjustItem(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user,@RequestParam("osNo") String osNo, @RequestParam(value = "prdNo" ) String prdNo,  @RequestParam(value = "pVersion" ) String pVersion, @RequestParam(value = "itm" )  int itm){
+    public RemoteData<Void> adjustItem(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam("osNo") String osNo, @RequestParam(value = "prdNo") String prdNo, @RequestParam(value = "pVersion") String pVersion, @RequestParam(value = "itm") int itm) {
 
-        RemoteData<Void> result= null;
+        RemoteData<Void> result = null;
         try {
-            result = erpWorkService.adjustWorkFlowItem(user,osNo,prdNo,pVersion,itm);
+            result = erpWorkService.adjustWorkFlowItem(user, osNo, prdNo, pVersion, itm);
         } catch (HdException e) {
             e.printStackTrace();
             return wrapError(e.getMessage());
         }
 
-        return  result;
+        return result;
+    }
+
+    /**
+     * 校正流程的item字段信息
+     *
+     * @return
+     */
+    @RequestMapping(value = "/findErpWorkFlowItems", method = RequestMethod.GET)
+    @ResponseBody
+    public RemoteData<ErpWorkFlowItem> findErpWorkFlowItems(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam("osNo") String osNo, @RequestParam(value = "itm") int itm, @RequestParam(value = "flowCode") String flowCode) {
+        return erpWorkService.findErpWorkFlowItems(user, osNo, itm, flowCode);
+
     }
 }

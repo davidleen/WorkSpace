@@ -63,6 +63,11 @@ public class User implements Serializable,Valuable {
      */
     public String  positionName;
 
+    /**
+     * 是否支持外网连接服务。
+     */
+    public boolean internet;
+
 
     @Override
     public boolean equals(Object o) {
@@ -73,6 +78,7 @@ public class User implements Serializable,Valuable {
 
         if (id != user.id) return false;
         if (isSalesman != user.isSalesman) return false;
+        if (internet != user.internet) return false;
         if (code != null ? !code.equals(user.code) : user.code != null) return false;
         if (name != null ? !name.equals(user.name) : user.name != null) return false;
         if (chineseName != null ? !chineseName.equals(user.chineseName) : user.chineseName != null) return false;

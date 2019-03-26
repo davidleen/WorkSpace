@@ -84,8 +84,9 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
     View view;
 
 
-    List<String> menuTitleList = null;
-    List<String> menuFragmentClassList;
+    //    List<String> menuTitleList = null;
+//    List<String> menuFragmentClassList;
+    List<WorkFLowMainMenuAdapter.MenuItem> menuItems=new ArrayList<>();
     WorkFLowMainMenuAdapter adapter;
 
     @Override
@@ -172,23 +173,12 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                String title = (String) parent.getItemAtPosition(position);
+                WorkFLowMainMenuAdapter.MenuItem item = (WorkFLowMainMenuAdapter.MenuItem) parent.getItemAtPosition(position);
 
 
-                int index = -1;
-                int length = menuTitleList.size();
-                for (int i = 0; i < length; i++) {
-                    String temp = menuTitleList.get(i);
-                    if (temp.equalsIgnoreCase(title)) {
-                        index = i;
-                        break;
-                    }
-                }
-
-
-                String className = menuFragmentClassList.get(index);
+                String className = item.fragmentClass;
                 showNewListFragment(className);
-                setActTitle(title);
+                setActTitle(item.title);
 
             }
         });
@@ -246,14 +236,18 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
     private void updateMenu(AUser loginUser)
 
     {
-        menuTitleList = new ArrayList<>();
-        menuFragmentClassList = new ArrayList<>();
+
+        menuItems.clear();
+
         if (loginUser.isSalesman || BuildConfig.DEBUG) {
             String[] menuTitles = getResources().getStringArray(R.array.quotation_menu_title);
             String[] menuFragmentClass = getResources().getStringArray(R.array.quotation_menu_fragemnt_class);
             for (int i = 0; i < menuTitles.length; i++) {
-                menuTitleList.add(menuTitles[i]);
-                menuFragmentClassList.add(menuFragmentClass[i]);
+                WorkFLowMainMenuAdapter.MenuItem item = new WorkFLowMainMenuAdapter.MenuItem();
+                item.title = menuTitles[i];
+                item.fragmentClass = menuFragmentClass[i];
+                menuItems.add(item);
+
             }
 
         }
@@ -264,8 +258,11 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
             String[] menuFragmentClass = getResources().getStringArray(R.array.menu_fragemnt_class);
 
             for (int i = 0; i < menuTitles.length; i++) {
-                menuTitleList.add(menuTitles[i]);
-                menuFragmentClassList.add(menuFragmentClass[i]);
+                WorkFLowMainMenuAdapter.MenuItem item = new WorkFLowMainMenuAdapter.MenuItem();
+                item.title = menuTitles[i];
+                item.fragmentClass = menuFragmentClass[i];
+                menuItems.add(item);
+
             }
         }
 
@@ -274,11 +271,14 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
             String[] menuFragmentClass = getResources().getStringArray(R.array.product_menu_fragemnt_class);
 
             for (int i = 0; i < menuTitles.length; i++) {
-                menuTitleList.add(menuTitles[i]);
-                menuFragmentClassList.add(menuFragmentClass[i]);
+                WorkFLowMainMenuAdapter.MenuItem item = new WorkFLowMainMenuAdapter.MenuItem();
+                item.title = menuTitles[i];
+                item.fragmentClass = menuFragmentClass[i];
+                menuItems.add(item);
+
             }
         }
-        adapter.setDataArray(menuTitleList);
+        adapter.setDataArray(menuItems);
 
     }
 
@@ -456,21 +456,19 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
     public void setNewWorkFlowMessageCount(int count) {
 
 
-        int childCount = menu.getChildCount();
-        int index = menuTitleList.indexOf(getResources().getString(R.string.work_need_finish));
-        for (int i = 0; i < childCount; i++) {
+        String destTitle=getResources().getString(R.string.work_need_finish);
+        for (WorkFLowMainMenuAdapter.MenuItem item:menuItems)
+        {
 
-            View child = menu.getChildAt(i);
-            if (child.getTag() instanceof WorkFLowMainMenuAdapter.ViewHolder) {
-                WorkFLowMainMenuAdapter.ViewHolder tag = (WorkFLowMainMenuAdapter.ViewHolder) child.getTag();
-
-                if (i == index)
-                    tag.setMessageCount(count);
-                else
-                    tag.setMessageCount(0);
-
+            if(destTitle.equals(item.title))
+            {
+                item.msgCount=count;
+                break;
             }
+
         }
+        adapter.notifyDataSetChanged();
+
 
 
     }

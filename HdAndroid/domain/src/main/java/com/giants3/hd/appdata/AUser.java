@@ -47,6 +47,11 @@ public class AUser   implements Serializable {
     public List<Authority> authorities;
     public QuoteAuth quoteAuth;
 
+    /**
+     *  是否可以外网连接
+     */
+    public boolean internet;
+
     @Override
     public String toString() {
         return "AUser{" +

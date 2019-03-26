@@ -22,7 +22,7 @@ public interface ErpOrderItemProcessRepository extends JpaRepository<ErpOrderIte
     ErpOrderItemProcess findFirstByOsNoEqualsAndItmEqualsAndCurrentWorkFlowStepEquals(String osNo, int itm,int flowStep);
     ErpOrderItemProcess findFirstByOsNoEqualsAndItmEqualsAndMrpNoEquals(String osNo, int itm,String mrpNo);
     ErpOrderItemProcess findFirstByMrpNoEquals(String mrpNo );
-    ErpOrderItemProcess findFirstByMoNoEqualsAndMrpNoEquals(String mono ,String mrpNo);
+    ErpOrderItemProcess findFirstByOsNoEqualsAndItmEqualsAndMoNoEqualsAndMrpNoEquals(String osNo,int itm,String mono ,String mrpNo);
 //    List<ErpOrderItemProcess> findBySentQtyLessThanQty(    );
         @Query(" select p from T_ErpOrderItemProcess  p where  sentQty< qty")
     List<ErpOrderItemProcess> findUnCompleteProcesses(    );

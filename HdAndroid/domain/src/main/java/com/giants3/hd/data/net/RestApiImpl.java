@@ -28,6 +28,7 @@ import com.giants3.hd.entity.Material;
 import com.giants3.hd.entity.OrderItemWorkFlowState;
 import com.giants3.hd.entity.OrderItemWorkMemo;
 import com.giants3.hd.entity.Product;
+import com.giants3.hd.entity_erp.ErpWorkFlowItem;
 import com.giants3.hd.entity_erp.SampleState;
 import com.giants3.hd.noEntity.NameCard;
 import com.giants3.hd.noEntity.ProductDetail;
@@ -749,6 +750,23 @@ public class RestApiImpl implements RestApi {
             }
         });
     }
+
+
+    @Override
+    public Observable findWorkFlowItemsUseCase(final String osNo,final  int itm, final String code) {
+        return create(new ApiInvoker<ErpWorkFlowItem>() {
+            @Override
+            public RemoteData<ErpWorkFlowItem> invoker() throws HdException {
+
+
+                return apiManager.findWorkFlowItemsUseCase( osNo,itm,code)  ;
+            }
+        });
+
+
+
+    }
+
     @Override
     public Observable getAppQuotations(final String key, final int pageIndex, final int pageSize) {
         return create(new ApiInvoker<com.giants3.hd.entity.app.Quotation>() {

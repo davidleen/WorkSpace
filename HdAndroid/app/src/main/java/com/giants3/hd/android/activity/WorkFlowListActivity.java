@@ -236,6 +236,7 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
         productMemoView.setText(productWorkMemo == null ? "" : productWorkMemo.memo);
         TextView orderItemMemoView = (TextView) inflate.findViewById(R.id.orderItemMemo);
         TextView viewMaterial = (TextView) inflate.findViewById(R.id.viewMaterial);
+        TextView items = (TextView) inflate.findViewById(R.id.items);
         TextView title_orderItemMemoView = (TextView) inflate.findViewById(R.id.title_order_item_memo);
         orderItemMemoView.setText(orderItemWorkMemo == null ? "" : orderItemWorkMemo.memo);
 
@@ -307,6 +308,18 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
 
 
                     OrderItemWorkFlowMaterialActivity.start(WorkFlowListActivity.this, workFlowReport.osNo, workFlowReport.itm, workFlowReport.workFlowCode, 0);
+
+
+            }
+        });
+
+
+        items.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ErpWorkFlowItemActivity.start(WorkFlowListActivity.this,workFlowReport.osNo,workFlowReport.itm,workFlowReport.workFlowCode);
+
 
 
             }

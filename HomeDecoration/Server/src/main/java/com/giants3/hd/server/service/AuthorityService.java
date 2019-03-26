@@ -324,6 +324,7 @@ public class AuthorityService extends AbstractService {
             QuoteAuth quoteAuth = getQuoteAuthForUser(loginUser.id);
             loginUser.authorities = authorities;
             loginUser.quoteAuth = quoteAuth;
+
         }
         return result;
     }

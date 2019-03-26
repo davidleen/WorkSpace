@@ -20,6 +20,7 @@ import com.giants3.hd.entity.Quotation;
 import com.giants3.hd.entity.User;
 import com.giants3.hd.entity.WorkFlowArea;
 import com.giants3.hd.entity.WorkFlowMessage;
+import com.giants3.hd.entity_erp.ErpWorkFlowItem;
 import com.giants3.hd.entity_erp.SampleState;
 import com.giants3.hd.entity_erp.WorkFlowMaterial;
 import com.giants3.hd.exception.HdException;
@@ -834,4 +835,10 @@ public class ApiManager {
 
     }
 
+    public RemoteData<ErpWorkFlowItem> findWorkFlowItemsUseCase(String osNo, int itm, String code) throws HdException {
+        String url = HttpUrl.findWorkFlowItemsUseCase(osNo,itm,code);
+        String result = apiConnection.getString(url );
+        RemoteData<ErpWorkFlowItem> remoteData = invokeByReflect(result, ErpWorkFlowItem.class);
+        return remoteData;
+    }
 }
