@@ -218,7 +218,12 @@ public class CustomClusterManager implements MapListener {
                 if (isCancelled()) {
                     return;
                 }
-                addNewMapItem(geoObjectItems);
+
+                try {
+                    addNewMapItem(geoObjectItems);
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
 
             }
         };
@@ -336,12 +341,13 @@ public class CustomClusterManager implements MapListener {
 
     private void addNewMapItem(List<GeoObjectItem> items) {
 
+        if(mapView==null) return;
 
         List<OverlayWithIW> generate = generator.updateItems(items, mapView, null, null, kmlDocument, kmlHelper);
 
         for (OverlayWithIW iw : generate) {
 
-            if (!folderOverlay.getItems().contains(iw)) {
+            if (folderOverlay.getItems()==null||!folderOverlay.getItems().contains(iw)) {
                 folderOverlay.add(iw);
             }
         }

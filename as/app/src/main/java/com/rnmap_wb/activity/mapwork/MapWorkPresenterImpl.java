@@ -208,6 +208,30 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
     }
 
     @Override
+    public void addNewPolyline(GeoPoint start, GeoPoint end) {
+        MapElement
+
+
+            mapElement = new MapElement();
+            mapElement.type = TYPE_POLYLINE;
+            getModel().addNewMapElement(mapElement);
+            getModel().setEditElement(mapElement);
+
+
+        List<GeoPoint> geoPoints =new ArrayList<>();
+        geoPoints.add(start);
+        geoPoints.add(end);
+        String s = LatLngUtil.convertGeoPointToString(geoPoints);
+        mapElement.latLngs = s;
+        updateMapElementCache();
+        getView().showMapElement(mapElement);
+
+
+
+
+    }
+
+    @Override
     public void addNewCircle(GeoPoint latLng, double radius) {
 
 
@@ -367,6 +391,18 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
         updateMapElementCache();
         getView().showMapElement(mapElement);
 
+
+    }
+
+    @Override
+    public void addTracking(List<GeoPoint> points) {
+        MapElement    mapElement = new MapElement();
+        mapElement.type = MapElement.TYPE_TRACK_LINE;
+        String s = LatLngUtil.convertGeoPointToString(points);
+        mapElement.latLngs = s;
+        getModel().addNewMapElement(mapElement);
+        updateMapElementCache();
+        getView().showMapElement(mapElement);
 
     }
 }

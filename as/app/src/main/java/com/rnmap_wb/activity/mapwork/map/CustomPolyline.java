@@ -6,15 +6,18 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.view.MotionEvent;
 
 import com.giants3.android.frame.util.Utils;
 import com.rnmap_wb.MainApplication;
 import com.rnmap_wb.R;
 
+import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Polyline;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomPolyline extends Polyline {
@@ -24,6 +27,8 @@ public class CustomPolyline extends Polyline {
 
     protected Drawable drawable_point;
     protected Drawable point_end;
+    private OnMapItemLongClickListener listener;
+    private BoundingBox boundingBox;
 
     public CustomPolyline() {
         drawable_point = ContextCompat.getDrawable(MainApplication.baseContext, R.drawable.icon_map_point);
@@ -32,6 +37,7 @@ public class CustomPolyline extends Polyline {
         paint.setColor(Color.YELLOW);
         paint.setStrokeWidth(Utils.dp2px(2));
         paint.setAntiAlias(true);
+
 
     }
 
@@ -76,6 +82,11 @@ public class CustomPolyline extends Polyline {
 
     }
 
+    @Override
+    public void setPoints(List<GeoPoint> points) {
+        super.setPoints(points);
+       boundingBox= BoundingBox.fromGeoPoints(points);
+    }
 
     protected void drawLine(Canvas c, float startX, float startY, float endX, float endY, Paint paint, int index) {
 
@@ -83,4 +94,23 @@ public class CustomPolyline extends Polyline {
     }
 
 
+    @Override
+    public boolean onLongPress(MotionEvent e, MapView mapView) {
+
+
+
+        GeoPoint geoPoint= (GeoPoint) mapView.getProjection().fromPixels((int)e.getX(),(int )e.getY());
+        if(listener!=null&&boundingBox!=null&&boundingBox.contains(geoPoint))
+        {
+            listener.onLongClick(this);
+            return true;
+        }
+        return super.onLongPress(e, mapView);
+    }
+
+
+    public void setOnLongClickListener(OnMapItemLongClickListener listener)
+    {
+        this.listener = listener;
+    }
 }

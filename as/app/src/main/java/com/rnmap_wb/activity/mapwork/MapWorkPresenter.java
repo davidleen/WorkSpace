@@ -25,6 +25,7 @@ public interface MapWorkPresenter  extends Presenter<MapWorkViewer> {
      ,int toZoom);
 
     void addNewPolylinePoint(GeoPoint latLng);
+    void addNewPolyline(GeoPoint start,GeoPoint end);
 
     void addNewCircle(GeoPoint latLng, double radia);
 
@@ -46,4 +47,6 @@ public interface MapWorkPresenter  extends Presenter<MapWorkViewer> {
     void requestFeekBack(String pointString);
 
     void addMappingLine(GeoPoint p);
+
+    void addTracking(List<GeoPoint> points);
 }

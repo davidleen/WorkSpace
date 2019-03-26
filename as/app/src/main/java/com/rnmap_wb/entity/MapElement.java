@@ -5,11 +5,36 @@ import java.util.UUID;
 public class MapElement {
    public  String uuid=UUID.randomUUID().toString();
 
+    /**
+     * 标注
+     */
    public  static final int TYPE_MARKER=1;
+    /**
+     * 线段
+     */
    public  static final int TYPE_POLYLINE=2;
+    /**
+     * 多边形(n>=3)
+     */
    public  static final int TYPE_POLYGON=3;
+    /**
+     * 圆形
+     */
    public  static final int TYPE_CIRCLE=4;
+    /**
+     * 测量线段距离。 每个线段点上显示跟上一个点的距离
+     */
    public  static final int TYPE_MAPPING_LINE=5;
+    /**
+     * 测量角度线条  线段上的夹角显示度数
+     */
+   public  static final int TYPE_MAPPING_LINE_DEGREE=6;
+    /**
+     * 轨迹
+     */
+   public  static final int TYPE_TRACK_LINE=7;
+
+
     public static final String PICTURE_REGEX = ";";
 
 

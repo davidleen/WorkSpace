@@ -3,9 +3,11 @@ package com.rnmap_wb.activity.mapwork.map;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -40,7 +42,7 @@ public class CustomMarker extends org.osmdroid.views.overlay.Marker {
         return showPopup;
     }
 
-    boolean showPopup=false;
+    boolean showPopup = false;
     private Context context;
 
     public CustomMarker(MapView mapView) {
@@ -55,10 +57,7 @@ public class CustomMarker extends org.osmdroid.views.overlay.Marker {
     }
 
 
-
-
-
-   public static class ViewHolder extends AbsViewHolder<MapElement> {
+    public static class ViewHolder extends AbsViewHolder<MapElement> {
 
         @Bind(R.id.name)
         TextView name;
@@ -165,6 +164,22 @@ public class CustomMarker extends org.osmdroid.views.overlay.Marker {
 
     }
 
+
+    private Rect rect=new Rect();
+    @Override
+    public boolean onSingleTapConfirmed(MotionEvent event, MapView mapView) {
+
+        int width = holder.getRoot().getWidth();
+        int height = holder.getRoot().getHeight();
+        holder.getRoot().getHitRect(rect);
+
+        if (showPopup && rect.contains((int)event.getX() - mPositionPixels.x,(int)event.getY() - mPositionPixels.y)) {
+            showPopup = false;
+            mapView.invalidate();
+        }
+        return super.onSingleTapConfirmed(event, mapView);
+    }
+
     public void bindData(MapElement mapElement) {
 
         holder.bindData(mapElement);
@@ -183,7 +198,7 @@ public class CustomMarker extends org.osmdroid.views.overlay.Marker {
         super.draw(canvas, mapView, shadow);
 
 
-        if(showPopup) {
+        if (showPopup) {
             canvas.save();
             int left = mPositionPixels.x;
             int y = mPositionPixels.y;
@@ -254,6 +269,11 @@ public class CustomMarker extends org.osmdroid.views.overlay.Marker {
 
     }
 
+
+    @Override
+    public boolean onLongPress(MotionEvent event, MapView mapView) {
+        return super.onLongPress(event, mapView);
+    }
 
     private String getIconUrl() {
         if (iconStyle == null) return null;

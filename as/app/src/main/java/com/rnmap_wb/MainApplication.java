@@ -52,7 +52,11 @@ public class MainApplication extends Application {
         AndroidUtils.init(this);
 
 
-        startService(new Intent(this, DownloadManagerService.class));
+        try {
+            startService(new Intent(this, DownloadManagerService.class));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         initPush();
     }

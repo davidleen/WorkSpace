@@ -13,6 +13,7 @@ import android.support.v13.app.ActivityCompat;
 import android.util.Log;
 
 import com.giants3.android.ToastHelper;
+//import com.giants3.android.amaplocation.AMapImpl;
 
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
@@ -42,6 +43,10 @@ public class MyLocationHelper {
 
     public  void getLocation(Activity activity ) {
         ToastHelper.show("定位中...");
+
+       // new AMapImpl().startLocation(activity);
+
+
         GeoUpdateListener myGeoUpdateListener = new GeoUpdateListener(mapView.getController());
         LocationManager    myLocationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
 /**     * A class indicating the application criteria for selecting a location provider. Providers maybe ordered according to accuracy, power usage, ability to report altitude, speed, and bearing, and monetary cost.     */
@@ -66,4 +71,8 @@ public class MyLocationHelper {
             }
         }
     }
+
+
+
+
 }

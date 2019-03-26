@@ -237,7 +237,7 @@ public class CapturePictureHelper implements View.OnClickListener {
 
         this.clip = clip;
         fromCamera = true;
-        fromAlbum = BuildConfig.DEBUG;
+        fromAlbum = true;
         doPick();
 
     }

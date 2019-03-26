@@ -259,7 +259,7 @@
                     android:drawableTop="@drawable/icon_polygon_selector"
                     android:gravity="center"
                     android:padding="7dp"
-                    android:text="图形" />
+                    android:text="方型" />
 
 
                 <TextView

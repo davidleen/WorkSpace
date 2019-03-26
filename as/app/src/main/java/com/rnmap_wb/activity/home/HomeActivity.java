@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
@@ -55,7 +56,8 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
 
     @Bind(R.id.listview)
     ExpandableListView listView;
-
+    @Bind(R.id.swipeLayout)
+    SwipeRefreshLayout swipeLayout;
 
     @Bind(R.id.mytask)
     View mytask;
@@ -256,10 +258,14 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
         userName.setText(loginUser == null ? "" : loginUser.name);
         email.setText(loginUser == null ? "" : loginUser.email);
         reloadData();
-
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                reloadData();
+            }
+        });
 
         //读取更新数据
-
         checkUpdate(true);
 
 //        Intent serviceIntent = new Intent(this, DownloadManagerService.class);
@@ -359,13 +365,13 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
 
             @Override
             public void onError(Throwable e) {
-
+                swipeLayout.setRefreshing(false);
                 Log.e(e);
             }
 
             @Override
             public void onNext(RemoteData<Directory> remoteData) {
-
+                swipeLayout.setRefreshing(false);
 
                 if (remoteData.isSuccess()) {
                     List<Directory> data = remoteData.data;

@@ -611,6 +611,12 @@ public class KmlDocument implements Parcelable {
 						}
 						break;
 					}
+
+					case description: {
+
+						if (1==1){}
+						break;
+					}
 					case Data:
 					case SimpleData: {
 						mDataName = attributes.getValue("name");

@@ -16,8 +16,8 @@ android {
         minSdkVersion project.ANDROID_MIN_VERSION
         targetSdkVersion project.ANDROID_TARGET_VERSION
         manifestPlaceholders = [ANDROID_SUPPORT_VERSION: "${ANDROID_SUPPORT_V7_VERSION}"]
-        versionCode 6
-        versionName "1.0.5"
+        versionCode 9
+        versionName "1.0.9"
         multiDexEnabled true
 
         javaCompileOptions {
@@ -83,7 +83,8 @@ dependencies {
     api "com.android.support:appcompat-v7:${ANDROID_SUPPORT_V7_VERSION}"
     api "com.android.support:recyclerview-v7:${ANDROID_SUPPORT_V7_VERSION}"
 
-//    compile "com.google.android.gms:play-services-maps:${PLAY_SERVICES_MAPS_VERSION}"
+ //  compile "com.google.android.gms:play-services-maps:${PLAY_SERVICES_MAPS_VERSION}"
+    compile "com.google.android.gms:play-services-location:${PLAY_SERVICES_MAPS_VERSION}"
     api project(':frame')
     api project(':dao')
     api project(':domain')
@@ -111,6 +112,7 @@ dependencies {
     api project(':PushSDK')
     api project(':umenganalysis')
     api project(':api')
+//    api project(':amaplocation')
 
     //数据库查看工具
     debugCompile 'com.facebook.stetho:stetho:1.5.0'

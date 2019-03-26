@@ -108,6 +108,7 @@ public class DownloadManagerService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         int result = super.onStartCommand(intent, flags, startId);
 
+        if (intent==null) return result;
         long taskId = intent.getLongExtra(IntentConst.KEY_TASK_ID, 0);
         if (taskId > 0) {
 
