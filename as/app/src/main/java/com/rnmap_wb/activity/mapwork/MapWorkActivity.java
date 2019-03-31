@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -89,6 +90,10 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
     View addCircle;
     @Bind(R.id.addMapping)
     View addMapping;
+    @Bind(R.id.addMappingRadius)
+    View addMappingRadius;
+    @Bind(R.id.clearMapping)
+    View clearMapping;
     @Bind(R.id.addRect)
     View addRect;
     @Bind(R.id.edit)
@@ -102,7 +107,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
     @Bind(R.id.download)
     View download;
     @Bind(R.id.play)
-    View play;
+    ImageView play;
     @Bind(R.id.viewDownLoad)
     View viewDownLoad;
     @Bind(R.id.switchMap)
@@ -138,6 +143,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
     private final static int STATE_ADD_POLYGON = 5;
     private final static int STATE_ADD_MAPPING_LINE = 6;
+    private final static int STATE_ADD_MAPPING_RADIUS = 7;
 
     Map<MapElement, Object> elementObjectMap = new HashMap<>();
     Map<Object, MapElement> objectMapElementHashMap = new HashMap<>();
@@ -152,7 +158,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
     MarkerInfoWindow markerInfoWindow;
     private MapTileHelper mapTileHelper;
 
-    private CustomPolyline tempPolyline=new CustomPolyline();
+    private CustomPolyline tempPolyline = new CustomPolyline();
 
     public static void start(Activity activity, Task task, String kmlFilePath, int requestCode) {
 
@@ -190,18 +196,23 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
             @Override
             public void onNewTrack(double lat, double lng) {
 
-                if(mapView==null)return;
-                if(tempPolyline==null)
-                {
-                    tempPolyline=new CustomPolyline();
+                if (mapView == null) return;
+                play.setImageResource(R.drawable.icon_map_recording);
+                if (tempPolyline == null) {
+                    tempPolyline = new CustomPolyline();
                 }
 
-                tempPolyline.addPoint(new GeoPoint(lat,lng));
-                if(!mapView.getOverlays().contains(tempPolyline))
-                {
+                tempPolyline.addPoint(new GeoPoint(lat, lng));
+                if (!mapView.getOverlays().contains(tempPolyline)) {
                     mapView.getOverlays().add(tempPolyline);
                 }
                 mapView.postInvalidate();
+                mapView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastHelper.show("正在轨迹记录中...");
+                    }
+                });
 
 
             }
@@ -215,6 +226,8 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
         addPolygon.setOnClickListener(this);
         addPolyLine.setOnClickListener(this);
         addMapping.setOnClickListener(this);
+        addMappingRadius.setOnClickListener(this);
+        clearMapping.setOnClickListener(this);
         addRect.setOnClickListener(this);
         download.setOnClickListener(this);
         switchMap.setOnClickListener(this);
@@ -293,9 +306,8 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
     @Override
     public void onLongClick(OverlayWithIW iw) {
 
-        if(iw instanceof CustomPolyline)
-        {
-            final Polyline polyline= (Polyline) iw;
+        if (iw instanceof CustomPolyline) {
+            final Polyline polyline = (Polyline) iw;
             String[] menu = new String[]{"删除线条"};
             AlertDialog alertDialog = new AlertDialog.Builder(getContext()).setTitle("操作选择").setItems(menu, new DialogInterface.OnClickListener() {
                 @Override
@@ -533,6 +545,11 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
 
                         getPresenter().addMappingLine(p);
+                        break;
+                    case STATE_ADD_MAPPING_RADIUS:
+
+
+                        getPresenter().addMappingRadius(p);
                         break;
                     case STATE_ADD_POLYGON:
 
@@ -888,6 +905,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
         addPolygon.setSelected(v.getId() == R.id.addPolygon);
         addCircle.setSelected(v.getId() == R.id.addCircle);
         addMapping.setSelected(v.getId() == R.id.addMapping);
+        addMappingRadius.setSelected(v.getId() == R.id.addMappingRadius);
 
         switch (v.getId()) {
 
@@ -918,6 +936,18 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
             case R.id.addMapping:
 
                 state = STATE_ADD_MAPPING_LINE;
+
+                break;
+            case R.id.addMappingRadius:
+
+                state = STATE_ADD_MAPPING_RADIUS;
+
+                break;
+            case R.id.clearMapping:
+
+                state = -1;
+
+                getPresenter().clearMappingElements();
 
                 break;
             case R.id.addPolyLine:
@@ -968,15 +998,16 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
             case R.id.play:
 
-                if(!trackingHelper.isTracking()) {
+                if (!trackingHelper.isTracking()) {
                     trackingHelper.showDialog();
-                }else
-                {   ToastHelper.show("停止记录");
+                } else {
+                    ToastHelper.show("停止记录");
                     trackingHelper.stop();
                     tempPolyline.setVisible(false);
-                   List<GeoPoint> points= tempPolyline.getPoints();
-                   getPresenter().addTracking(points);
-                    tempPolyline=null;
+                    List<GeoPoint> points = tempPolyline.getPoints();
+                    getPresenter().addTracking(points);
+                    tempPolyline = null;
+                    play.setImageResource(R.drawable.icon_map_play);
 
                 }
 
@@ -1069,7 +1100,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
     private void tryLocation() {
 
 
-        myLocationHelper.getLocation(this);
+        myLocationHelper.requestLocation(this);
 //        LocationManager service = (LocationManager)
 //
 //                getSystemService(LOCATION_SERVICE);
@@ -1218,9 +1249,9 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                 marker.setSnippet(element.memo);
                 marker.setOnMarkerClickListener(clickListener);
                 ((CustomMarker) marker).bindData(element);
-                if(newElement!=null&&element==newElement) {
+                if (newElement != null && element == newElement) {
                     ((CustomMarker) marker).setShowPopup(true);
-                    newElement=null;
+                    newElement = null;
                 }
 
                 marker.getInfoWindow().getView().setOnClickListener(new View.OnClickListener() {
@@ -1269,6 +1300,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
             case MapElement.TYPE_MAPPING_LINE: {
 
                 MappingPolyline polyline = new MappingPolyline();
+                polyline.setInfoType(MapElement.TYPE_MAPPING_LINE);
                 polyline.setTitle(element.name);
                 polyline.setPoints(latLngs);
                 polyline.setSnippet(element.memo);
@@ -1277,6 +1309,20 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                 mapView.invalidate();
                 o = polyline;
 
+            }
+
+            break;
+            case MapElement.TYPE_MAPPING_LINE_DEGREE: {
+
+                MappingPolyline polyline = new MappingPolyline();
+                polyline.setInfoType(MapElement.TYPE_MAPPING_LINE_DEGREE);
+                polyline.setTitle(element.name);
+                polyline.setPoints(latLngs);
+                polyline.setSnippet(element.memo);
+                polyline.setOnClickListener(clickListener);
+                mapView.getOverlays().add(polyline);
+                mapView.invalidate();
+                o = polyline;
             }
 
             break;
@@ -1325,13 +1371,13 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
         switch (requestCode) {
             case REQUEST_ADD_MARK: {
                 MapElement o = GsonUtils.fromJson(data.getStringExtra(IntentConst.KEY_MAP_ELEMENT), MapElement.class);
-                newElement=o;
+                newElement = o;
                 getPresenter().addNewMapElement(o);
             }
             break;
             case REQUEST_UPDATE_MARK: {
                 MapElement o = GsonUtils.fromJson(data.getStringExtra(IntentConst.KEY_MAP_ELEMENT), MapElement.class);
-                newElement=o;
+                newElement = o;
                 getPresenter().updateMapElement(o);
 
 

@@ -27,7 +27,6 @@ import java.util.Random;
 
 import static com.rnmap_wb.entity.MapElement.TYPE_CIRCLE;
 import static com.rnmap_wb.entity.MapElement.TYPE_KML_MARK;
-import static com.rnmap_wb.entity.MapElement.TYPE_MAPPING_LINE;
 import static com.rnmap_wb.entity.MapElement.TYPE_POLYGON;
 import static com.rnmap_wb.entity.MapElement.TYPE_POLYLINE;
 
@@ -72,10 +71,6 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
     public void downloadMap(final List<GeoPoint> latLngs, final int fromZoom, final int toZoom) {
 
 
-
-
-
-
         new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
@@ -104,7 +99,7 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
     private void beginDownLoadTask(List<GeoPoint> latLngs, int fromZoom, int toZoom) {
         DownloadTask downloadTask = new DownloadTask();
         downloadTask.setCreateTime(Calendar.getInstance().getTime().toString());
-        downloadTask.setName("地图区域下载" );
+        downloadTask.setName("地图区域下载");
 
         downloadTask.setLatLngs(LatLngUtil.convertGeoPointToString(latLngs));
         downloadTask.setFromZoom(fromZoom);
@@ -212,21 +207,19 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
         MapElement
 
 
-            mapElement = new MapElement();
-            mapElement.type = TYPE_POLYLINE;
-            getModel().addNewMapElement(mapElement);
-            getModel().setEditElement(mapElement);
+                mapElement = new MapElement();
+        mapElement.type = TYPE_POLYLINE;
+        getModel().addNewMapElement(mapElement);
+        getModel().setEditElement(mapElement);
 
 
-        List<GeoPoint> geoPoints =new ArrayList<>();
+        List<GeoPoint> geoPoints = new ArrayList<>();
         geoPoints.add(start);
         geoPoints.add(end);
         String s = LatLngUtil.convertGeoPointToString(geoPoints);
         mapElement.latLngs = s;
         updateMapElementCache();
         getView().showMapElement(mapElement);
-
-
 
 
     }
@@ -270,6 +263,32 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
         getModel().clearEmelemnts();
         getModel().setEditElement(null);
         updateMapElementCache();
+
+
+    }
+
+    @Override
+    public void clearMappingElements() {
+
+
+        MapElement edittingMapElement = getModel().getEdittingMapElement();
+        getView().removeMapElement(edittingMapElement);
+
+        List<MapElement> mapElements = getModel().getMapElements();
+        List<MapElement> mappings = new ArrayList<>();
+        for (MapElement mapElement : mapElements) {
+            if (mapElement.type == MapElement.TYPE_MAPPING_LINE_DEGREE || mapElement.type == MapElement.TYPE_MAPPING_LINE) {
+                mappings.add(mapElement);
+            }
+        }
+
+        mapElements.removeAll(mappings);
+        getModel().setEditElement(null);
+        updateMapElementCache();
+
+        for (MapElement mapElement : mappings) {
+            getView().removeMapElement(mapElement);
+        }
 
 
     }
@@ -375,11 +394,17 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
     public void addMappingLine(GeoPoint p) {
 
 
+        addMappingTypeLine(p, MapElement.TYPE_MAPPING_LINE);
+
+
+    }
+
+    private void addMappingTypeLine(GeoPoint p, int elementType) {
         MapElement mapElement = getModel().getEdittingMapElement();
 
-        if (mapElement == null || mapElement.type != MapElement.TYPE_MAPPING_LINE) {
+        if (mapElement == null || mapElement.type != elementType) {
             mapElement = new MapElement();
-            mapElement.type = TYPE_MAPPING_LINE;
+            mapElement.type = elementType;
             getModel().addNewMapElement(mapElement);
             getModel().setEditElement(mapElement);
         }
@@ -390,13 +415,19 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
         mapElement.latLngs = s;
         updateMapElementCache();
         getView().showMapElement(mapElement);
+    }
+
+    @Override
+    public void addMappingRadius(GeoPoint p) {
+
+        addMappingTypeLine(p, MapElement.TYPE_MAPPING_LINE_DEGREE);
 
 
     }
 
     @Override
     public void addTracking(List<GeoPoint> points) {
-        MapElement    mapElement = new MapElement();
+        MapElement mapElement = new MapElement();
         mapElement.type = MapElement.TYPE_TRACK_LINE;
         String s = LatLngUtil.convertGeoPointToString(points);
         mapElement.latLngs = s;

@@ -172,7 +172,7 @@ public class CustomClusterManager implements MapListener {
             if (items == null) return;
             objectItemSparseArray.put(zoomLevel, items);
             handler.removeMessages(MSG_FILTER);
-            handler.sendEmptyMessageDelayed(MSG_FILTER,500);
+            handler.sendEmptyMessageDelayed(MSG_FILTER, 500);
 
 
         }
@@ -202,7 +202,7 @@ public class CustomClusterManager implements MapListener {
 
                 for (GeoObjectItem geoObjectItem : items) {
 
-                    if(isCancelled()) return null;
+                    if (isCancelled()) return null;
                     if (geoObjectItem.isInBounds(boundingBox))
                         result.add(geoObjectItem);
                 }
@@ -214,7 +214,7 @@ public class CustomClusterManager implements MapListener {
             @Override
             protected void onPostExecute(List<GeoObjectItem> geoObjectItems) {
                 super.onPostExecute(geoObjectItems);
-                if(geoObjectItems==null)return ;
+                if (geoObjectItems == null) return;
                 if (isCancelled()) {
                     return;
                 }
@@ -261,19 +261,32 @@ public class CustomClusterManager implements MapListener {
 
         double centerLat = boundingBox.getCenterLatitude();
         double centerLong = boundingBox.getCenterLongitude();
-        TileSystem tileSystem = mapView.getTileSystem();
 
 
-        BoundingBox doubleBox = new BoundingBox(Math.min(boundingBox.getLatNorth() * 2 - centerLat, tileSystem.getMaxLatitude()),
-                Math.max(boundingBox.getLonEast() * 2 - centerLong, tileSystem.getMinLongitude()),
-                Math.max(boundingBox.getLatSouth() * 2 - centerLat, tileSystem.getMinLatitude()),
-                Math.min(boundingBox.getLonWest() * 2 - centerLong, tileSystem.getMaxLongitude())
+        BoundingBox doubleBox = new BoundingBox(correctLat(boundingBox.getLatNorth() * 2 - centerLat),
+                correctLng(boundingBox.getLonEast() * 2 - centerLong),
+                correctLat(boundingBox.getLatSouth() * 2 - centerLat),
+                correctLng(boundingBox.getLonWest() * 2 - centerLong)
 
         );
         boundingBox = doubleBox;
         return boundingBox;
     }
 
+
+    private double correctLat(double value) {
+        TileSystem tileSystem = mapView.getTileSystem();
+        return between(tileSystem.getMinLatitude(), tileSystem.getMaxLatitude(), value);
+    }
+
+    private double correctLng(double value) {
+        TileSystem tileSystem = mapView.getTileSystem();
+        return between(tileSystem.getMinLongitude(), tileSystem.getMaxLongitude(), value);
+    }
+
+    private double between(double min, double max, double value) {
+        return Math.min(Math.max(min, value), max);
+    }
 
     private void addNewMapItem(Set<? extends Cluster<GeoObjectItem>> clusters) {
 
@@ -341,13 +354,13 @@ public class CustomClusterManager implements MapListener {
 
     private void addNewMapItem(List<GeoObjectItem> items) {
 
-        if(mapView==null) return;
+        if (mapView == null) return;
 
         List<OverlayWithIW> generate = generator.updateItems(items, mapView, null, null, kmlDocument, kmlHelper);
 
         for (OverlayWithIW iw : generate) {
 
-            if (folderOverlay.getItems()==null||!folderOverlay.getItems().contains(iw)) {
+            if (folderOverlay.getItems() == null || !folderOverlay.getItems().contains(iw)) {
                 folderOverlay.add(iw);
             }
         }

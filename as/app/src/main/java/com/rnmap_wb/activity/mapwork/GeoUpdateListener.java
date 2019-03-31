@@ -24,7 +24,7 @@ class GeoUpdateListener  implements LocationListener {
 
         Log.e("onLocationChanged:"+location );
 
-        pMapController.animateTo(new GeoPoint(location.getLatitude(),(int )location.getLongitude()),10d,3000l);
+        pMapController.animateTo(new GeoPoint(location.getLatitude(),(int )location.getLongitude()));
 
     }
 

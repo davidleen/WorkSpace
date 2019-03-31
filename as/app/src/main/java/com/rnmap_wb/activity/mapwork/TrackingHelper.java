@@ -14,7 +14,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 
-import com.giants3.android.ToastHelper;
 import com.giants3.android.frame.util.Log;
 import com.rnmap_wb.R;
 
@@ -29,12 +28,13 @@ public class TrackingHelper {
 
     private long tickTimeInSeconds;
     LocationListener locationListener;
-    LocationManager myLocationManager ;
+    LocationManager myLocationManager;
+
     public TrackingHelper(final Activity activity, TrackingListener listener) {
         this.activity = activity;
         this.listener = listener;
-          myLocationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
-          locationListener = new LocationListener() {
+        myLocationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
 
@@ -65,11 +65,10 @@ public class TrackingHelper {
             @Override
             public void handleMessage(Message msg) {
 
-                switch (msg.what)
-                {
+                switch (msg.what) {
                     case MSG_REQUEST_LOCATION:
                         requestLocation(TrackingHelper.this.activity);
-                        sendEmptyMessageDelayed(MSG_REQUEST_LOCATION, tickTimeInSeconds*1000);
+                        sendEmptyMessageDelayed(MSG_REQUEST_LOCATION, tickTimeInSeconds * 1000);
 
 
                         break;
@@ -93,23 +92,27 @@ public class TrackingHelper {
         builder.setView(view);
         final AlertDialog alertDialog = builder.create();
 
-        View[] choices = new View[]{view.findViewById(R.id.choice1), view.findViewById(R.id.choice2), view.findViewById(R.id.choice1)};
+        View[] choices = new View[]{view.findViewById(R.id.choice1), view.findViewById(R.id.choice2), view.findViewById(R.id.choice3), view.findViewById(R.id.choice4)};
 
         View.OnClickListener itemListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.choice1:
-                        tickTimeInSeconds=30;
-                        startTracking( );
+                        tickTimeInSeconds = 30;
+                        startTracking();
                         break;
                     case R.id.choice2:
-                        tickTimeInSeconds=60;
-                        startTracking( );
+                        tickTimeInSeconds = 60;
+                        startTracking();
                         break;
                     case R.id.choice3:
-                        tickTimeInSeconds=90;
-                        startTracking( );
+                        tickTimeInSeconds = 180;
+                        startTracking();
+                        break;
+                    case R.id.choice4:
+                        tickTimeInSeconds = 600;
+                        startTracking();
                         break;
 
 
@@ -130,11 +133,11 @@ public class TrackingHelper {
     }
 
 
-    public void startTracking( ) {
+    public void startTracking() {
 
         tracking = true;
         requestLocation(activity);
-        handler.sendEmptyMessageDelayed(MSG_REQUEST_LOCATION, tickTimeInSeconds*1000);
+        handler.sendEmptyMessageDelayed(MSG_REQUEST_LOCATION, tickTimeInSeconds * 1000);
 
     }
 
@@ -163,7 +166,7 @@ public class TrackingHelper {
                     return;
                 }
 
-                myLocationManager.requestLocationUpdates(provider, 5000, 1, locationListener);
+                myLocationManager.requestLocationUpdates(provider, 500, 1, locationListener);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -175,8 +178,7 @@ public class TrackingHelper {
         void onNewTrack(double lat, double lng);
     }
 
-    public boolean isTracking()
-    {
+    public boolean isTracking() {
         return tracking;
     }
 }

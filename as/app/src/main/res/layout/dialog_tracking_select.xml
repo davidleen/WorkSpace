@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="5dp">
+    android:padding="10dp">
 
 
     <TextView
@@ -22,7 +22,7 @@
         android:layout_gravity="left|center"
         android:layout_marginTop="5dp"
         android:text="请选择轨迹更新时间"
-        android:textColor="@color/uniform_color_2"
+        android:textColor="@color/uniform_color_3"
         android:textSize="14sp" />
 
 
@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:padding="5dp"
+        android:padding="10dp"
         android:text="30秒"
         android:textColor="@color/uniform_color_2"
         android:textSize="14sp"></TextView>
@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:padding="5dp"
+        android:padding="10dp"
         android:text="1分钟"
         android:textColor="@color/uniform_color_2"
         android:textSize="14sp"></TextView>
@@ -51,8 +51,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:padding="5dp"
+        android:padding="10dp"
         android:text="3分钟"
+        android:textColor="@color/uniform_color_2"
+        android:textSize="14sp"></TextView>
+  <TextView
+        android:id="@+id/choice4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="10分钟"
         android:textColor="@color/uniform_color_2"
         android:textSize="14sp"></TextView>
 

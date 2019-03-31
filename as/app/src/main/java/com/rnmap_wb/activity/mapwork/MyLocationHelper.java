@@ -23,11 +23,12 @@ public class MyLocationHelper {
     private Context context;
     private MapView mapView;
     private MyLocationNewOverlay mLocationOverlay;
-
+    GeoUpdateListener myGeoUpdateListener;
     public MyLocationHelper(Context context,MapView mapView) {
         this.context = context;
 
         this.mapView = mapView;
+          myGeoUpdateListener = new GeoUpdateListener(mapView.getController());
     }
 
 
@@ -41,17 +42,18 @@ public class MyLocationHelper {
     }
 
 
-    public  void getLocation(Activity activity ) {
+    public  void requestLocation(Activity activity ) {
         ToastHelper.show("定位中...");
 
        // new AMapImpl().startLocation(activity);
 
 
-        GeoUpdateListener myGeoUpdateListener = new GeoUpdateListener(mapView.getController());
+
         LocationManager    myLocationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+        myLocationManager.removeUpdates(myGeoUpdateListener);
 /**     * A class indicating the application criteria for selecting a location provider. Providers maybe ordered according to accuracy, power usage, ability to report altitude, speed, and bearing, and monetary cost.     */
         Criteria myCriteria = new Criteria();
-        myCriteria.setAccuracy(Criteria.ACCURACY_COARSE);
+        myCriteria.setAccuracy(Criteria.ACCURACY_FINE);
         String provider = myLocationManager.getBestProvider(myCriteria, true);
         if (provider == null) {
             Log.e(TAG, "ERROR: No location provider found!");

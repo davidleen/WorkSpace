@@ -48,5 +48,11 @@ public interface MapWorkPresenter  extends Presenter<MapWorkViewer> {
 
     void addMappingLine(GeoPoint p);
 
+
+    void addMappingRadius(GeoPoint p);
+
     void addTracking(List<GeoPoint> points);
+
+
+    void clearMappingElements();
 }
