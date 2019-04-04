@@ -1,4 +1,4 @@
-apply plugin: 'java'
+apply plugin: 'java-library'
 
 
 apply from: 'publish.gradle'
@@ -8,7 +8,15 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 
+version='1.1.1'
+description='xxxxxxxxxxxxxxxxxxxxxxxxxxx'
+ext{
 
+    PROJ_WEBSITEURL='https://github.com/davidleen/AnnotationAdapter'
+    PROJ_ISSUETRACKERURL='https://github.com/davidleen/AnnotationAdapter'
+    PROJ_VCSURL='https://github.com/davidleen/AnnotationAdapter.git'
+
+}
 
 
 dependencies {
@@ -24,3 +32,4 @@ dependencies {
 
 }
 
+apply from: '../bintray/publish.gradle'
