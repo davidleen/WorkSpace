@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,12 +26,12 @@ import com.rnmap_wb.R;
 import com.rnmap_wb.activity.AddMarkActivity;
 import com.rnmap_wb.activity.BaseMvpActivity;
 import com.rnmap_wb.activity.FeedBackDialog;
-import com.rnmap_wb.activity.home.HomeActivity;
 import com.rnmap_wb.activity.mapwork.map.Circle;
 import com.rnmap_wb.activity.mapwork.map.CustomMarker;
 import com.rnmap_wb.activity.mapwork.map.CustomPolygon;
 import com.rnmap_wb.activity.mapwork.map.CustomPolyline;
 import com.rnmap_wb.activity.mapwork.map.MappingPolyline;
+import com.rnmap_wb.activity.mapwork.map.OnMapItemLongClickListener;
 import com.rnmap_wb.android.data.Task;
 import com.rnmap_wb.entity.MapElement;
 import com.rnmap_wb.immersive.SmartBarUtils;
@@ -46,6 +47,7 @@ import org.osmdroid.events.ZoomEvent;
 import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.Projection;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
@@ -65,7 +67,7 @@ import java.util.Set;
 
 import butterknife.Bind;
 
-public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implements View.OnClickListener, MapWorkViewer {
+public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implements View.OnClickListener, MapWorkViewer, OnMapItemLongClickListener {
 
 
     private static final int REQUEST_ADD_MARK = 88;
@@ -88,6 +90,10 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
     View addCircle;
     @Bind(R.id.addMapping)
     View addMapping;
+    @Bind(R.id.addMappingRadius)
+    View addMappingRadius;
+    @Bind(R.id.clearMapping)
+    View clearMapping;
     @Bind(R.id.addRect)
     View addRect;
     @Bind(R.id.edit)
@@ -100,6 +106,8 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
     View addPolyLine;
     @Bind(R.id.download)
     View download;
+    @Bind(R.id.play)
+    ImageView play;
     @Bind(R.id.viewDownLoad)
     View viewDownLoad;
     @Bind(R.id.switchMap)
@@ -122,7 +130,10 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
     @Bind(R.id.zoomlevel)
     TextView zoomlevel;
 
+    private GeoPoint lastClickPoint;
+
     private MyLocationHelper myLocationHelper;
+    private TrackingHelper trackingHelper;
 
     private final static int STATE_ADD_MARK = 1;
     private final static int STATE_ADD_POLYLINE = 2;
@@ -132,6 +143,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
     private final static int STATE_ADD_POLYGON = 5;
     private final static int STATE_ADD_MAPPING_LINE = 6;
+    private final static int STATE_ADD_MAPPING_RADIUS = 7;
 
     Map<MapElement, Object> elementObjectMap = new HashMap<>();
     Map<Object, MapElement> objectMapElementHashMap = new HashMap<>();
@@ -145,6 +157,8 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
     MarkerInfoWindow markerInfoWindow;
     private MapTileHelper mapTileHelper;
+
+    private CustomPolyline tempPolyline = new CustomPolyline();
 
     public static void start(Activity activity, Task task, String kmlFilePath, int requestCode) {
 
@@ -166,6 +180,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         kmlFilePath = getIntent().getStringExtra(IntentConst.PARAM_KML_PATH);
+//        kmlFilePath = StorageUtils.getFilePath("1.KMZ");
         task = GsonUtils.fromJson(getIntent().getStringExtra(IntentConst.KEY_TASK_DETAIL), Task.class);
         if (task == null && BuildConfig.DEBUG) {
             task = new Task();
@@ -177,6 +192,31 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
         task_name.setText(task.name);
         myLocationHelper = new MyLocationHelper(this, mapView);
+        trackingHelper = new TrackingHelper(this, new TrackingHelper.TrackingListener() {
+            @Override
+            public void onNewTrack(double lat, double lng) {
+
+                if (mapView == null) return;
+                play.setImageResource(R.drawable.icon_map_recording);
+                if (tempPolyline == null) {
+                    tempPolyline = new CustomPolyline();
+                }
+
+                tempPolyline.addPoint(new GeoPoint(lat, lng));
+                if (!mapView.getOverlays().contains(tempPolyline)) {
+                    mapView.getOverlays().add(tempPolyline);
+                }
+                mapView.postInvalidate();
+                mapView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastHelper.show("正在轨迹记录中...");
+                    }
+                });
+
+
+            }
+        });
         zoomController = new ZoomControllerHelper(this, mapView);
 
         addMark.setOnClickListener(this);
@@ -186,6 +226,8 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
         addPolygon.setOnClickListener(this);
         addPolyLine.setOnClickListener(this);
         addMapping.setOnClickListener(this);
+        addMappingRadius.setOnClickListener(this);
+        clearMapping.setOnClickListener(this);
         addRect.setOnClickListener(this);
         download.setOnClickListener(this);
         switchMap.setOnClickListener(this);
@@ -196,8 +238,8 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
         clear.setOnClickListener(this);
         mylocation.setOnClickListener(this);
         feedback.setOnClickListener(this);
+        play.setOnClickListener(this);
         clickListener = new OverlayWithIWClickListener();
-
         getNavigationController().setVisible(false);
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) topbar.getLayoutParams();
         layoutParams.topMargin = SmartBarUtils.getStatusBarHeight(this);
@@ -261,24 +303,103 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
         }
     }
 
-    public class OverlayWithIWClickListener implements Polyline.OnClickListener, Marker.OnMarkerClickListener, Polygon.OnClickListener {
+    @Override
+    public void onLongClick(OverlayWithIW iw) {
+
+        if (iw instanceof CustomPolyline) {
+            final Polyline polyline = (Polyline) iw;
+            String[] menu = new String[]{"删除线条"};
+            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).setTitle("操作选择").setItems(menu, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    switch (which) {
+                        case 0:
+                            getPresenter().removeElement(objectMapElementHashMap.get(polyline));
+                            mapView.getOverlays().remove(polyline);
+                            mapView.invalidate();
+                            break;
+                        case 1:
+//                                final List<LatLng> points = polygon.getPoints();
+//                                List<LatLng> list = new ArrayList<>();
+//                                list.add(points.get(0));
+//                                list.add(points.get(2));
+//
+//                                float maxZoomLevel = Math.min(getMap().getCameraPosition().zoom + 5, getMap().getMaxZoomLevel());
+//                                float minZoomLevel = Math.max(getMap().getCameraPosition().zoom - 5, getMap().getMinZoomLevel());
+//
+//                                pickZoom(list, maxZoomLevel, minZoomLevel);
+                            break;
+                    }
+
+
+                }
+            }).create();
+            alertDialog.show();
+        }
+
+
+    }
+
+    public class OverlayWithIWClickListener implements Polyline.OnClickListener, Marker.OnMarkerClickListener, Polygon.OnClickListener, Circle.OnClickListener {
+        @Override
+        public boolean onCircleClick(final Circle circle, final MapView mapView) {
+            String[] menu = new String[]{"删除图形", "下载离线地图"};
+            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).setTitle("操作选择").setItems(menu, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    switch (which) {
+                        case 0:
+                            getPresenter().removeElement(objectMapElementHashMap.get(circle));
+                            mapView.getOverlays().remove(circle);
+                            mapView.invalidate();
+
+                            break;
+                        case 1:
+
+                            List<GeoPoint> list = new ArrayList<>();
+
+                            Point point = new Point();
+                            Projection projection = mapView.getProjection();
+                            int v = (int) projection.metersToPixels((float) circle.getRadiusInMeter());
+                            projection.toPixels(circle.getCenter(), point);
+                            GeoPoint leftTop = (GeoPoint) projection.fromPixels(point.x - v, point.y - v);
+                            GeoPoint rightBottom = (GeoPoint) projection.fromPixels(point.x + v, point.y + v);
+                            list.add(leftTop);
+                            list.add(rightBottom);
+
+//                            float maxZoomLevel = (float) Math.min(mapView.getZoomLevelDouble() + 5, mapView.getMaxZoomLevel());
+//                            float minZoomLevel = (float) Math.max(mapView.getZoomLevelDouble() - 5, mapView.getMinZoomLevel());
+                            pickZoom(list, TileUrlHelper.MAX_OFFLINE_ZOOM, TileUrlHelper.MIN_OFFLINE_ZOOM);
+                            break;
+                    }
+
+
+                }
+            }).create();
+            alertDialog.show();
+
+
+            return true;
+        }
+
 
         @Override
         public boolean onMarkerClick(final Marker marker, MapView mapView) {
-            if(marker instanceof CustomMarker) {
+            if (marker instanceof CustomMarker) {
 
-                if(((CustomMarker) marker).isShowPopup())
-                {
+                if (((CustomMarker) marker).isShowPopup()) {
                     final MapElement mapElement = objectMapElementHashMap.get(marker);
                     AddMarkActivity.start(MapWorkActivity.this, mapElement, REQUEST_UPDATE_MARK);
-                }else
-                {
-                    ((CustomMarker)marker).setShowPopup(true);
+                } else {
+                    ((CustomMarker) marker).setShowPopup(true);
+
+                    mapView.invalidate();
                 }
 
                 return false;
             }
-
 
 
 //            if (mapElement != null) {
@@ -406,12 +527,29 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                         startActivityForResult(intent, REQUEST_ADD_MARK);
                         break;
                     case STATE_ADD_POLYLINE:
-                        getPresenter().addNewPolylinePoint(p);
+                        //getPresenter().addNewPolylinePoint(p);
+
+                        if (isFirstClick()) {
+                            lastClickPoint = p;
+                            ToastHelper.showTop("请在任意地方点击，标记线另一端");
+                        } else {
+
+                            getPresenter().addNewPolyline(lastClickPoint, p);
+                            resetLastClickPoint();
+
+                        }
+
+
                         break;
                     case STATE_ADD_MAPPING_LINE:
 
 
                         getPresenter().addMappingLine(p);
+                        break;
+                    case STATE_ADD_MAPPING_RADIUS:
+
+
+                        getPresenter().addMappingRadius(p);
                         break;
                     case STATE_ADD_POLYGON:
 
@@ -442,27 +580,43 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
 
                     case STATE_ADD_RECTANGLE: {
-                        int[] screenWH = Utils.getScreenWH();
-                        GeoPoint left = ProjectionUtils.fromScreenPixel(mapView, screenWH[0] / 3, screenWH[1] / 3);
-                        GeoPoint center = ProjectionUtils.fromScreenPixel(mapView, screenWH[0] / 2, screenWH[1] / 2);
-
-                        List<GeoPoint> latLngs = createRectangle(p, center.getLatitude() - left.getLatitude(), center.getLongitude() - left.getLongitude());
 
 
-                        getPresenter().addNewRectangle(latLngs);
+                        if (isFirstClick()) {
+                            lastClickPoint = p;
+                            ToastHelper.showTop("请在任意地方点击方形对角");
+                        } else {
+
+                            List<GeoPoint> latLngs = Arrays.asList(new GeoPoint(lastClickPoint.getLatitude(), lastClickPoint.getLongitude()),
+                                    new GeoPoint(lastClickPoint.getLatitude(), p.getLongitude()),
+                                    new GeoPoint(p.getLatitude(), p.getLongitude()),
+                                    new GeoPoint(p.getLatitude(), lastClickPoint.getLongitude()));
+
+
+                            getPresenter().addNewRectangle(latLngs);
+                            resetLastClickPoint();
+                        }
+
+
                     }
                     break;
 
                     case STATE_ADD_CIRCLE: {
-                        int[] screenWH = Utils.getScreenWH();
-                        Point point = new Point();
-                        ProjectionUtils.toScreenPixel(mapView, p, point);
-                        point.x += screenWH[0] / 4;
-                        GeoPoint geoPoint = ProjectionUtils.fromScreenPixel(mapView, point.x, point.y);
-                        double distanceInMeter = LatLngUtil.distanceInMeter(p , geoPoint );
 
 
-                        getPresenter().addNewCircle(p, distanceInMeter);
+                        if (isFirstClick()) {
+                            lastClickPoint = p;
+                            ToastHelper.showTop("请在任意地方点击，标记圆边");
+                        } else {
+
+
+                            double distanceInMeter = LatLngUtil.distanceInMeter(lastClickPoint, p);
+                            getPresenter().addNewCircle(lastClickPoint, distanceInMeter);
+                            resetLastClickPoint();
+
+                        }
+
+
                         break;
                     }
 
@@ -606,14 +760,27 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                 boolean b = false;
                 long time = Calendar.getInstance().getTimeInMillis();
                 try {
-                    b = kmlDocument.parseKMLFile(new File(kmlFilePath));
+                    if (kmlFilePath.toLowerCase().endsWith("kmz")) {
+                        b = kmlDocument.parseKMZFile(new File(kmlFilePath));
+                    } else {
+                        b = kmlDocument.parseKMLFile(new File(kmlFilePath));
+
+                    }
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }
+
+//                try {
+//                    b = kmlDocument.parseKMZFile(new File(kmlFilePath));
+//                } catch (Throwable e) {
+//                    e.printStackTrace();
+//                }
                 Log.e("parse result:" + b + ",time:" + (Calendar.getInstance().getTimeInMillis() - time));
 //
 //                if (!b) {
-//                 b = kmlDocument.parseKMLStream(getResources().openRawResource(R.raw.k00002), null);
+
+//                    b = kmlDocument.parseKMLStream(getResources().openRawResource(R.raw.doc), null);
+
 //                    //b = kmlDocument.parseKMLStream(getResources().openRawResource(R.raw.campus), null);
 //                     //b = kmlDocument.parseKMLStream(getResources().openRawResource(R.raw.kmlgeometrytest), null);
 //                }
@@ -650,7 +817,9 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
             }
         }
 
-                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                .
+
+                        executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
     }
 
@@ -693,7 +862,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle("选择地图级别");
-        final String[] s = new String[(int) maxZoom - (int) minzoom+1];
+        final String[] s = new String[(int) maxZoom - (int) minzoom + 1];
         for (int i = 0; i < s.length; i++) {
 
             s[i] = String.valueOf((int) (minzoom + i));
@@ -705,7 +874,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
                 Integer fromZoom = Integer.valueOf(s[which]);
                 //getPresenter().downloadMap(latLngs, fromZoom - 1, fromZoom + 1);
-                getPresenter().downloadMap(latLngs, fromZoom  , fromZoom  );
+                getPresenter().downloadMap(latLngs, fromZoom, fromZoom);
 
 
             }
@@ -736,6 +905,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
         addPolygon.setSelected(v.getId() == R.id.addPolygon);
         addCircle.setSelected(v.getId() == R.id.addCircle);
         addMapping.setSelected(v.getId() == R.id.addMapping);
+        addMappingRadius.setSelected(v.getId() == R.id.addMappingRadius);
 
         switch (v.getId()) {
 
@@ -743,12 +913,18 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
             case R.id.addCircle:
 
 
+                ToastHelper.showTop("请先任意处点击圆心位置");
+                resetLastClickPoint();
                 state = STATE_ADD_CIRCLE;
 
 
                 break;
             case R.id.addPolygon:
-                state = STATE_ADD_POLYGON;
+//                state = STATE_ADD_POLYGON;
+                state = STATE_ADD_RECTANGLE;
+                ToastHelper.showTop("请先任意处点击方形边角位置");
+                resetLastClickPoint();
+
 
                 break;
             case R.id.close:
@@ -762,9 +938,23 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                 state = STATE_ADD_MAPPING_LINE;
 
                 break;
+            case R.id.addMappingRadius:
+
+                state = STATE_ADD_MAPPING_RADIUS;
+
+                break;
+            case R.id.clearMapping:
+
+                state = -1;
+
+                getPresenter().clearMappingElements();
+
+                break;
             case R.id.addPolyLine:
 
                 state = STATE_ADD_POLYLINE;
+                ToastHelper.showTop("请先任意处点击线段起点");
+                resetLastClickPoint();
 
                 break;
             case R.id.addRect:
@@ -802,6 +992,25 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
 
                 FeedBackDialog.start(this, task);
+
+                break;
+
+
+            case R.id.play:
+
+                if (!trackingHelper.isTracking()) {
+                    trackingHelper.showDialog();
+                } else {
+                    ToastHelper.show("停止记录");
+                    trackingHelper.stop();
+                    tempPolyline.setVisible(false);
+                    List<GeoPoint> points = tempPolyline.getPoints();
+                    getPresenter().addTracking(points);
+                    tempPolyline = null;
+                    play.setImageResource(R.drawable.icon_map_play);
+
+                }
+
 
                 break;
 //
@@ -872,6 +1081,18 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
     }
 
+    private boolean isFirstClick() {
+        return lastClickPoint == null;
+
+    }
+
+    private void resetLastClickPoint() {
+
+
+        lastClickPoint = null;
+
+    }
+
 
     /**
      * 尝试定位当前位置
@@ -879,7 +1100,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
     private void tryLocation() {
 
 
-        myLocationHelper.getLocation(this);
+        myLocationHelper.requestLocation(this);
 //        LocationManager service = (LocationManager)
 //
 //                getSystemService(LOCATION_SERVICE);
@@ -956,11 +1177,8 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
     }
 
 
-
     @Override
     public void showPolyLine(List<GeoPoint> polyLinePositions) {
-
-
 
 
     }
@@ -1031,14 +1249,15 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                 marker.setSnippet(element.memo);
                 marker.setOnMarkerClickListener(clickListener);
                 ((CustomMarker) marker).bindData(element);
+                if (newElement != null && element == newElement) {
+                    ((CustomMarker) marker).setShowPopup(true);
+                    newElement = null;
+                }
+
                 marker.getInfoWindow().getView().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-
                         Log.e("infoWindow click!!!!!");
-
-
                     }
                 });
                 mapView.getOverlays().add(marker);
@@ -1052,9 +1271,25 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
                 CustomPolyline polyline = new CustomPolyline();
                 polyline.setTitle(element.name);
-                polyline.setGeoPoints(latLngs);
+                polyline.setPoints(latLngs);
                 polyline.setSnippet(element.memo);
-                //polyline.setOnClickListener(clickListener);
+                polyline.setOnClickListener(clickListener);
+                polyline.setOnLongClickListener(this);
+                mapView.getOverlays().add(polyline);
+                mapView.invalidate();
+                o = polyline;
+
+            }
+
+            break;
+            case MapElement.TYPE_TRACK_LINE: {
+
+                CustomPolyline polyline = new CustomPolyline();
+                polyline.setTitle(element.name);
+                polyline.setPoints(latLngs);
+                polyline.setSnippet(element.memo);
+                polyline.setOnClickListener(clickListener);
+                polyline.setOnLongClickListener(this);
                 mapView.getOverlays().add(polyline);
                 mapView.invalidate();
                 o = polyline;
@@ -1065,14 +1300,29 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
             case MapElement.TYPE_MAPPING_LINE: {
 
                 MappingPolyline polyline = new MappingPolyline();
+                polyline.setInfoType(MapElement.TYPE_MAPPING_LINE);
                 polyline.setTitle(element.name);
-                polyline.setGeoPoints(latLngs);
+                polyline.setPoints(latLngs);
                 polyline.setSnippet(element.memo);
-                //polyline.setOnClickListener(clickListener);
+                polyline.setOnClickListener(clickListener);
                 mapView.getOverlays().add(polyline);
                 mapView.invalidate();
                 o = polyline;
 
+            }
+
+            break;
+            case MapElement.TYPE_MAPPING_LINE_DEGREE: {
+
+                MappingPolyline polyline = new MappingPolyline();
+                polyline.setInfoType(MapElement.TYPE_MAPPING_LINE_DEGREE);
+                polyline.setTitle(element.name);
+                polyline.setPoints(latLngs);
+                polyline.setSnippet(element.memo);
+                polyline.setOnClickListener(clickListener);
+                mapView.getOverlays().add(polyline);
+                mapView.invalidate();
+                o = polyline;
             }
 
             break;
@@ -1099,6 +1349,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                 circle.setRadius(element.radius);
                 circle.setCenter(latLngs.get(0));
                 circle.setClickable(true);
+                circle.setOnClickListener(clickListener);
                 mapView.getOverlays().add(circle);
                 mapView.invalidate();
                 o = circle;
@@ -1120,20 +1371,23 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
         switch (requestCode) {
             case REQUEST_ADD_MARK: {
                 MapElement o = GsonUtils.fromJson(data.getStringExtra(IntentConst.KEY_MAP_ELEMENT), MapElement.class);
+                newElement = o;
                 getPresenter().addNewMapElement(o);
-
             }
             break;
             case REQUEST_UPDATE_MARK: {
                 MapElement o = GsonUtils.fromJson(data.getStringExtra(IntentConst.KEY_MAP_ELEMENT), MapElement.class);
-
+                newElement = o;
                 getPresenter().updateMapElement(o);
+
 
             }
             break;
         }
     }
 
+
+    private MapElement newElement;
 
     public void onResume() {
         super.onResume();

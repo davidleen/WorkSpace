@@ -22,7 +22,7 @@ public interface ErpOrderItemProcessRepository extends JpaRepository<ErpOrderIte
     ErpOrderItemProcess findFirstByOsNoEqualsAndItmEqualsAndCurrentWorkFlowStepEquals(String osNo, int itm,int flowStep);
     ErpOrderItemProcess findFirstByOsNoEqualsAndItmEqualsAndMrpNoEquals(String osNo, int itm,String mrpNo);
     ErpOrderItemProcess findFirstByMrpNoEquals(String mrpNo );
-    ErpOrderItemProcess findFirstByMoNoEqualsAndMrpNoEquals(String mono ,String mrpNo);
+    ErpOrderItemProcess findFirstByOsNoEqualsAndItmEqualsAndMoNoEqualsAndMrpNoEquals(String osNo,int itm,String mono ,String mrpNo);
 //    List<ErpOrderItemProcess> findBySentQtyLessThanQty(    );
         @Query(" select p from T_ErpOrderItemProcess  p where  sentQty< qty")
     List<ErpOrderItemProcess> findUnCompleteProcesses(    );
@@ -30,6 +30,14 @@ public interface ErpOrderItemProcessRepository extends JpaRepository<ErpOrderIte
     @Query("delete T_ErpOrderItemProcess  p where   p.osNo=:os_no and p.itm=:itm   ")
     int deleteByOsNoAndItm(@Param("os_no") String os_no, @Param("itm") int itm);
 
+    @Modifying
+    @Query("update T_ErpOrderItemProcess p set p.itm=:itm where   p.osNo=:os_no and p.prdNo=:prd_no     and p.pVersion=:pVersion   ")
+    int  updateItmByOsNoAndPrdNo(@Param("os_no") String osNo, @Param("prd_no") String prdNo,@Param("pVersion") String pVersion, @Param("itm") int itm);
+
+
+
+
+    List<ErpOrderItemProcess> findFirstByOsNoEqualsAndPrdNoEqualsAndPVersionEquals(String osNo, String prdNo,String pVersion);
 
 //
 //   // @Query(" select distinct o from T_ErpOrderItemProcess  p , T_OrderItem o where   o.osNo=p.osNo and o.itm=p.itm  and o.workFlowState!="+ ErpWorkFlow.STATE_COMPLETE +" ")

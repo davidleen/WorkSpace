@@ -936,11 +936,12 @@ public class ErpService extends AbstractErpService {
 
         Pageable pageable=constructPageSpecification(pageIndex,pageSize,null);
         final Page<WorkFlowMessage> page;
+        final String keyLike = StringUtils.sqlLike(key);
         if(user.name.equals(User.ADMIN))
         {
-            page=workFlowMessageRepository.findAll(pageable);
+            page=workFlowMessageRepository.findAllWorkFlowMessages(keyLike,pageable);
         }else {
-            page = workFlowMessageRepository.findMyWorkFlowMessages(user.id, StringUtils.sqlLike(key), pageable);
+            page = workFlowMessageRepository.findMyWorkFlowMessages(user.id, keyLike, pageable);
         }
         return wrapData(pageIndex,page);
 

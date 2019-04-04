@@ -89,6 +89,12 @@ public class Xiankang_Jingza implements Serializable{
     private String jingzi_gao;
 
 
+    /**
+     * 背后框边尺寸（不含槽位）
+     */
+    private String beikuanchicun="";
+
+
     public long getId() {
         return id;
     }
@@ -236,6 +242,7 @@ public class Xiankang_Jingza implements Serializable{
         if (id != jingza.id) return false;
         if (jingzi_kuan != null ? !jingzi_kuan.equals(jingza.jingzi_kuan) : jingza.jingzi_kuan != null) return false;
         if (beizhu != null ? !beizhu.equals(jingza.beizhu) : jingza.beizhu != null) return false;
+        if (beikuanchicun != null ? !beikuanchicun.equals(jingza.beikuanchicun) : jingza.beikuanchicun != null) return false;
         if (caokuan != null ? !caokuan.equals(jingza.caokuan) : jingza.caokuan != null) return false;
         if (caoshen != null ? !caoshen.equals(jingza.caoshen) : jingza.caoshen != null) return false;
         if (guaju != null ? !guaju.equals(jingza.guaju) : jingza.guaju != null) return false;
@@ -278,6 +285,15 @@ public class Xiankang_Jingza implements Serializable{
         result = 31 * result + (huaxinchangshang != null ? huaxinchangshang.hashCode() : 0);
         result = 31 * result + (huaxinxiaoguo != null ? huaxinxiaoguo.hashCode() : 0);
         result = 31 * result + (jingzi_gao != null ? jingzi_gao.hashCode() : 0);
+        result = 31 * result + (beikuanchicun != null ? beikuanchicun.hashCode() : 0);
         return result;
+    }
+
+    public String getBeikuanchicun() {
+        return beikuanchicun;
+    }
+
+    public void setBeikuanchicun(String beikuangchicun) {
+        this.beikuanchicun = beikuangchicun;
     }
 }

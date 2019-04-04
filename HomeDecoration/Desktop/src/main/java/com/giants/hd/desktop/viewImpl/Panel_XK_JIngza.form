@@ -314,6 +314,29 @@
         </constraints>
         <properties/>
       </component>
+      <component id="bc971" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="2" column="4" row-span="1" col-span="4" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <horizontalAlignment value="0"/>
+          <horizontalTextPosition value="0"/>
+          <text value="背后框边尺寸（不含槽位）"/>
+          <toolTipText value="molding width W/0 rabbet "/>
+        </properties>
+      </component>
+      <component id="1b6d2" class="javax.swing.JTextField" binding="beikuanchicun">
+        <constraints>
+          <grid row="3" column="4" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+          <forms defaultalign-horz="false" defaultalign-vert="false"/>
+        </constraints>
+        <properties>
+          <text value=""/>
+        </properties>
+      </component>
     </children>
   </grid>
 </form>

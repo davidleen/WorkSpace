@@ -13,6 +13,7 @@ import com.giants3.android.frame.util.StringUtil;
 import com.rnmap_wb.LatLngUtil;
 import com.rnmap_wb.MainApplication;
 import com.rnmap_wb.R;
+import com.rnmap_wb.entity.MapElement;
 
 import org.osmdroid.util.GeoPoint;
 
@@ -25,7 +26,17 @@ public class MappingPolyline extends CustomPolyline {
 
     Drawable mappingDrawable;
     ViewHolder holder;
-    List<String> distanceStrings = new ArrayList<>();
+    List<String> informString = new ArrayList<>();
+    private int infoType;
+
+    public void setInfoType(int infoType) {
+
+        this.infoType = infoType;
+    }
+
+    public int getInfoType() {
+        return infoType;
+    }
 
     class ViewHolder extends AbsViewHolder<String> {
         @Bind(R.id.distance)
@@ -43,21 +54,61 @@ public class MappingPolyline extends CustomPolyline {
     }
 
     @Override
-    public void setGeoPoints(List<GeoPoint> geoPoints) {
-        super.setGeoPoints(geoPoints);
-        distanceStrings.clear();
+    public void setPoints(List<GeoPoint> geoPoints) {
+        super.setPoints(geoPoints);
 
-        for (int i = 0; i < geoPoints.size(); i++) {
+        informString.clear();
+
+        int size = geoPoints.size();
+        for (int i = 0; i < size; i++) {
 
             if (i == 0) {
-                distanceStrings.add("");
+                informString.add("");
                 continue;
             }
 
-            double distance = LatLngUtil.distanceInMeter(geoPoints.get(i), geoPoints.get(i - 1));
-            if (distance > 1000000) distanceStrings.add((int) (distance / 1000000) + "公里");
-            else if (distance > 1000) distanceStrings.add((int) (distance / 1000) + "千米");
-            else distanceStrings.add((int) (distance) + "米");
+            GeoPoint geoPoint = geoPoints.get(i);
+
+
+            GeoPoint geoPrevious = geoPoints.get(i - 1);
+            switch (infoType)
+            {
+                case MapElement.TYPE_MAPPING_LINE:
+
+                    double distance = LatLngUtil.distanceInMeter(geoPoint, geoPrevious);
+                    if (distance > 1000000) informString.add((int) (distance / 1000000) + "公里");
+                    else if (distance > 1000) informString.add((int) (distance / 1000) + "千米");
+                    else informString.add((int) (distance) + "米");
+                    break;
+                case MapElement.TYPE_MAPPING_LINE_DEGREE:
+
+                    if(i==size-1)
+                        informString.add("");
+                    else
+                    {
+                        GeoPoint next=geoPoints.get(i+1);
+
+//                        关于向量a和b，向量夹角余弦公式
+//                        a*b = |a||b|cosTheta
+//                        所以
+//                                夹角 = acos((a*b )/ (|a|*|b|))
+//
+//
+//                        两向量的数量积 = a.x*b.x + a.y*b.y
+//
+//                        向量的模 = sqrt(x*x+y*y)
+                        double AX=geoPrevious.getLatitude()-geoPoint.getLatitude();
+                        double AY=geoPrevious.getLongitude()-geoPoint.getLongitude();
+                        double BX=next.getLatitude()-geoPoint.getLatitude();
+                        double BY=next.getLongitude()-geoPoint.getLongitude();
+                        double degree=Math.toDegrees(Math.acos((AX*BX+AY*BY)/(Math.sqrt(AX*AX+AY*AY)*Math.sqrt(BX*BX+BY*BY))));
+                        informString.add(String.format("%.1f°",degree));
+                    }
+
+
+                    break;
+            }
+
 
 
         }
@@ -88,8 +139,8 @@ public class MappingPolyline extends CustomPolyline {
         c.restore();
 
 
-        if (distanceStrings.size() > index) {
-            String data = distanceStrings.get(index);
+        if (informString.size() > index) {
+            String data = informString.get(index);
             if (StringUtil.isEmpty(data)) return;
 
             c.save();

@@ -58,6 +58,8 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
 
     @Bind(R.id.clear)
     View clear;
+    @Bind(R.id.adjust)
+    View adjust;
 
 
     @Bind(R.id.workFlowReport)
@@ -93,6 +95,8 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
 
         clear.setVisibility(SharedPreferencesHelper.getLoginUser().name.equals(User.ADMIN)?View.VISIBLE:View.GONE);
         clear.setOnClickListener(this);
+        adjust.setVisibility(SharedPreferencesHelper.getLoginUser().name.equals(User.ADMIN)?View.VISIBLE:View.GONE);
+        adjust.setOnClickListener(this);
     }
 
 
@@ -232,6 +236,7 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
         productMemoView.setText(productWorkMemo == null ? "" : productWorkMemo.memo);
         TextView orderItemMemoView = (TextView) inflate.findViewById(R.id.orderItemMemo);
         TextView viewMaterial = (TextView) inflate.findViewById(R.id.viewMaterial);
+        TextView items = (TextView) inflate.findViewById(R.id.items);
         TextView title_orderItemMemoView = (TextView) inflate.findViewById(R.id.title_order_item_memo);
         orderItemMemoView.setText(orderItemWorkMemo == null ? "" : orderItemWorkMemo.memo);
 
@@ -303,6 +308,18 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
 
 
                     OrderItemWorkFlowMaterialActivity.start(WorkFlowListActivity.this, workFlowReport.osNo, workFlowReport.itm, workFlowReport.workFlowCode, 0);
+
+
+            }
+        });
+
+
+        items.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ErpWorkFlowItemActivity.start(WorkFlowListActivity.this,workFlowReport.osNo,workFlowReport.itm,workFlowReport.workFlowCode);
+
 
 
             }
@@ -404,7 +421,27 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
           }).create().show();
 
 
+                break;  case R.id.adjust:
+
+                  new      AlertDialog.Builder(this).setTitle("是否校正相关流程数据itm值？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                      @Override
+                      public void onClick(DialogInterface dialog, int which) {
+
+                          dialog.dismiss();
+                           getPresenter().adjustWorkFlow();
+                      }
+                  }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                      @Override
+                      public void onClick(DialogInterface dialog, int which) {
+                          dialog.dismiss();
+                      }
+                  }).create().show();
+
+
                 break;
+
+
+
         }
     }
 }

@@ -16,8 +16,7 @@ public class TileUrlHelper {
         {
             return  String.format("http://mts%d.googleapis.com/vt?lyrs=s&x=%d&y=%d&z=%d", random.nextInt(4), x, y, z);
         }else
-
-        return String.format("http://mt%d.google.cn/vt?hl=zh-CN&gl=CN&s=Gali&lyrs=s&x=%d&y=%d&z=%d", random.nextInt(4), x, y, z);
+            return String.format("http://mt%d.google.cn/vt?hl=zh-CN&gl=CN&s=Gali&lyrs=s&x=%d&y=%d&z=%d", random.nextInt(4), x, y, z);
 
     }
 

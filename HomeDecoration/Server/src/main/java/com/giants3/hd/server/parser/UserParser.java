@@ -26,6 +26,7 @@ public class UserParser implements DataParser<User,AUser> {
         aUser.email=data.email;
         aUser.position=data.position;
         aUser.positionName=data.positionName;
+        aUser.internet=data.internet;
         return aUser;
     }
 }

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">勘察导航</string>
     <string name="register">注册</string>
@@ -9,4 +10,8 @@
     <string name="permission_camera_neverask">你已经限制应用使用相机功能，请去应用管理授权</string>
     <string name="permission_camera">应用需要使用相机功能</string>
     <string name="title_activity_about">AboutActivity</string>
+
+
+    <string name="notify_channel_name" >@string/app_name</string>
+    <string name="notify_channel_id" >rnmap_wb</string>
 </resources>

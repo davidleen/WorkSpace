@@ -20,7 +20,7 @@ public class CustomPolygon extends Polygon {
 
     public CustomPolygon() {
         super();
-        setFillColor(Color.parseColor("#994754fd"));
+        setFillColor(Color.parseColor("#224754fd"));
 
         setStrokeColor(Color.YELLOW);
     }
@@ -54,8 +54,11 @@ public class CustomPolygon extends Polygon {
         }
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event, MapView mapView) {
-        return super.onTouchEvent(event, mapView);
+
+
+
+    public interface OnClickListener {
+
+        boolean onCircleClick(final CustomPolyline polyline, MapView mapView);
     }
 }

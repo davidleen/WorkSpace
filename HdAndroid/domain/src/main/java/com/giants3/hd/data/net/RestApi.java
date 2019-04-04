@@ -231,4 +231,8 @@ public interface RestApi {
     Observable findProductByNameAndVersion(String pName, String pVersion);
 
   Observable rollbackWorkFlowMessage(long workFlowMessageId, String memo);
+
+    Observable adjustWorkFlowItem(String os_no, String prd_no,String pVersion,int itm);
+
+    Observable findWorkFlowItemsUseCase(String osNo, int itm, String code);
 }

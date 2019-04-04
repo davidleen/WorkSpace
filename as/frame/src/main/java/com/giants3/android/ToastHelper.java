@@ -3,6 +3,7 @@ package com.giants3.android;
 import android.content.Context;
 import android.support.annotation.IdRes;
 import android.support.annotation.StringRes;
+import android.view.Gravity;
 import android.widget.Toast;
 
 /**
@@ -23,6 +24,13 @@ public class ToastHelper {
 
         Toast.makeText(mContext,message
         ,Toast.LENGTH_LONG).show();
+    }  public static final void showTop(String message)
+    {
+
+        Toast toast = Toast.makeText(mContext, message
+                , Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.TOP,0,0);
+        toast.show();
     }
 
     public static final void showShort(String message)

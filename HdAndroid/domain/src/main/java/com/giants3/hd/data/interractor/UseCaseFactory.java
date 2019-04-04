@@ -364,6 +364,9 @@ public class UseCaseFactory {
     public UseCase createGetClearWorkFlowUseCase(String os_no, int itm) {
         return new ClearWorkFlowUseCase(os_no, itm, restApi);
     }
+    public UseCase createGetAdjustWorkFlowUseCase(String os_no, String prd_no,String pVersion,int itm) {
+        return new AdjustWorkFlowItemUseCase(os_no, prd_no,pVersion,itm, restApi);
+    }
 
     public UseCase createGetAppQuotationsUseCase(String key, int pageIndex, int pageSize) {
 
@@ -484,5 +487,9 @@ public class UseCaseFactory {
     public UseCase createRollbackWorkFlowMessageUseCase(long messageId, String memeo) {
         return
                 new RollbackWorkFlowMessageCase(messageId, memeo, restApi);
+    }
+
+    public UseCase createFindWorkFlowItemsUseCase(String osNo, int itm, String code) {
+        return new FindWorkFlowItemsUseCase(osNo, itm,code, restApi);
     }
 }

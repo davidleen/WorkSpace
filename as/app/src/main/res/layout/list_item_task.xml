@@ -15,7 +15,7 @@
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="30dp"
         android:layout_marginRight="15dp"
         android:layout_marginBottom="5dp"
         android:orientation="vertical">
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
 
             android:layout_marginTop="3dp"
-            android:textColor="@color/uniform_color_1"
+            android:textColor="@color/uniform_color_2"
             android:textSize="14sp"
             android:textStyle="bold" />
 

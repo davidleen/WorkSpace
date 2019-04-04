@@ -198,19 +198,19 @@
                 android:layout_height="wrap_content"
                 android:drawableTop="@drawable/icon_clear_map"
                 android:drawablePadding="5dp"
-                android:visibility="gone"
                 android:padding="10dp"
                 android:text="清空"
                 android:textColor="@color/uniform_color_1"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:visibility="gone" />
 
 
             <View
                 android:layout_width="23dp"
                 android:layout_height="1dp"
 
-                android:visibility="gone"
-                android:background="#999999"  />
+                android:background="#999999"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/edit"
@@ -259,7 +259,7 @@
                     android:drawableTop="@drawable/icon_polygon_selector"
                     android:gravity="center"
                     android:padding="7dp"
-                    android:text="图形" />
+                    android:text="方型" />
 
 
                 <TextView
@@ -288,7 +288,29 @@
                     android:drawableTop="@drawable/icon_mapping_selector"
                     android:gravity="center"
                     android:padding="7dp"
-                    android:text="测量" />
+                    android:text="测量距离" />
+
+                <TextView
+                    android:id="@+id/addMappingRadius"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/icon_mapping_selector"
+                    android:gravity="center"
+                    android:padding="7dp"
+                    android:text="测量角度" />
+
+
+                <TextView
+                    android:id="@+id/clearMapping"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/icon_clear_map"
+                    android:drawablePadding="5dp"
+                    android:padding="10dp"
+                    android:text="清除测量"
+                    android:textColor="@color/uniform_color_1"
+                    android:textSize="12sp"  />
+
 
                 <ImageView
                     android:id="@+id/close"
@@ -335,11 +357,11 @@
 
             <!--<View-->
 
-                <!--android:layout_width="180dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginTop="350dp"-->
-                <!--android:background="@drawable/icon_line_mapping_tint"-->
-                <!--android:textSize="11sp" />-->
+            <!--android:layout_width="180dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="350dp"-->
+            <!--android:background="@drawable/icon_line_mapping_tint"-->
+            <!--android:textSize="11sp" />-->
 
             <TextView
                 android:id="@+id/zoomlevel"

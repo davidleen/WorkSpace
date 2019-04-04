@@ -107,17 +107,13 @@ public class SynchronizeCenter {
 
                     String[] filePaths = mapElement.filePath.split(REGEX);
                     if (filePaths != null && filePaths.length > 0) {
-
-
                         String[] urls = new String[filePaths.length];
                         String[] oldUrl = mapElement.picture == null ? null : mapElement.picture.split(REGEX);
                         if (oldUrl != null)
                             for (int i = 0; i < oldUrl.length; i++) {
                                 urls[i] = oldUrl[i];
                             }
-
                         RemoteDataParser<UploadFileResult> parser = new RemoteDataParser<>(UploadFileResult.class);
-
                         for (int i = 0; i < filePaths.length; i++) {
                             if (!StringUtil.isEmpty(urls[i])) continue;
                             doUpload = true;
@@ -134,7 +130,6 @@ public class SynchronizeCenter {
                                     //uploadFail
                                     return null;
                                 }
-
                             } catch (IOException e) {
 
                                 //uploadFail

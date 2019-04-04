@@ -4,7 +4,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeLayout"
+        android:layout_width="match_parent"
 
+        android:layout_height="0dp"
+        android:layout_weight="1"
+       >
     <ExpandableListView
         android:id="@+id/listview"
         style="@style/listview"
@@ -12,15 +18,17 @@
 
         android:layout_width="match_parent"
 
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
 
-        android:layout_weight="1"
+
         android:childDivider="#cbcbcb"
         android:divider="@color/home_adapter_divider"
         android:dividerHeight="2dp"
         android:footerDividersEnabled="false"
         android:groupIndicator="@null"
         android:headerDividersEnabled="false"></ExpandableListView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
 </LinearLayout>

@@ -14,16 +14,23 @@ import java.util.List;
 public interface ErpWorkFlowReportRepository extends JpaRepository<ErpWorkFlowReport, Long> {
 
 
-
     List<ErpWorkFlowReport> findByOsNoEqualsAndPrdNoEquals(String os_no, String prd_no);
-    List<ErpWorkFlowReport> findByOsNoEqualsAndPrdNoEqualsAndPVersionEquals(String os_no, String prd_no,String pVersion);
-    List<ErpWorkFlowReport> findByOsNoEqualsAndItmEquals(String os_no,int itm);
-    List<ErpWorkFlowReport> findByOsNoEqualsAndItmEqualsOrderByWorkFlowStepAsc(String os_no,int itm);
-    List<ErpWorkFlowReport> findByPercentageLessThanAndStartDateGreaterThan(float percentage,long createTime);
 
-     ErpWorkFlowReport  findFirstByOsNoEqualsAndItmEqualsAndWorkFlowStepEquals(String osNo,int itm,int fromFlowStep);
+    List<ErpWorkFlowReport> findByOsNoEqualsAndPrdNoEqualsAndPVersionEquals(String os_no, String prd_no, String pVersion);
+
+    List<ErpWorkFlowReport> findByOsNoEqualsAndItmEquals(String os_no, int itm);
+
+    List<ErpWorkFlowReport> findByOsNoEqualsAndItmEqualsOrderByWorkFlowStepAsc(String os_no, int itm);
+
+    List<ErpWorkFlowReport> findByPercentageLessThanAndStartDateGreaterThan(float percentage, long createTime);
+
+    ErpWorkFlowReport findFirstByOsNoEqualsAndItmEqualsAndWorkFlowStepEquals(String osNo, int itm, int fromFlowStep);
 
     @Modifying
     @Query("delete T_ErpWorkFlowReport p where   p.osNo=:os_no and p.itm=:itm   ")
     int deleteByOsNoAndItm(@Param("os_no") String os_no, @Param("itm") int itm);
+
+    @Modifying
+    @Query("update T_ErpWorkFlowReport p set p.itm=:itm where   p.osNo=:os_no and p.prdNo=:prd_no  and p.pVersion=:pVersion   ")
+    int  updateItmByOsNoAndPrdNo(@Param("os_no") String osNo, @Param("prd_no") String prdNo, @Param("pVersion") String pVersion, @Param("itm") int itm);
 }

@@ -79,12 +79,13 @@ public class PresenterImpl extends BasePresenter<CompleteOrderItemMVP.Viewer, Co
         if (remoteData != null) {
             pageSize = remoteData.pageSize;
         }
-
+        if(getView()==null)return;
         UseCaseFactory.getInstance().createGetCompleteWorkFlowOrderItemsUseCase(key, pageIndex, pageSize).execute(new RemoteDataSubscriber<ErpOrderItem>(this) {
             @Override
             protected void handleRemoteData(RemoteData<ErpOrderItem> data) {
-
+                if(getView()==null)return;
                 if (data.isSuccess()) {
+
                     getModel().setRemoteData(data);
                     getView().bindOrderItems(getModel().getDatas());
                 } else {
@@ -96,7 +97,6 @@ public class PresenterImpl extends BasePresenter<CompleteOrderItemMVP.Viewer, Co
 
 
         });
-
         getView().showWaiting();
 
 

@@ -81,10 +81,16 @@ public class OffLineHelper {
                 final KmlDocument kmlDocument = new KmlDocument();
                 boolean b = false;
                 try {
-                    b = kmlDocument.parseKMLFile(new File(kmlFilePath));
+                    if (kmlFilePath.toLowerCase().endsWith("kmz")) {
+                        b = kmlDocument.parseKMZFile(new File(kmlFilePath));
+                    } else {
+                        b = kmlDocument.parseKMLFile(new File(kmlFilePath));
+
+                    }
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }
+
 
 //
 

@@ -30,8 +30,8 @@ android {
         applicationId "com.giants3.hd.android"
         minSdkVersion project.ANDROID_MIN_VERSION
         targetSdkVersion project.ANDROID_TARGET_VERSION
-        versionCode 67
-        versionName "1.6.7"
+        versionCode 71
+        versionName "1.7.1"
 
         buildConfigField "boolean", "AUTO_UPDATES", "true"
 

@@ -77,6 +77,8 @@ public class WorkFlowMessageAdapter
         public TextView orderName;
         @Bind(R.id.productName)
         public TextView productName;
+        @Bind(R.id.pVersion)
+        public TextView pVersion;
         @Bind(R.id.mrpNo)
         public TextView mrpNo;
         @Bind(R.id.qty)
@@ -131,6 +133,7 @@ public class WorkFlowMessageAdapter
             orderName.setText(data.orderName);
             qty.setText(String.valueOf(data.orderItemQty));
             productName.setText(data.productName);
+            pVersion.setText(data.pVersion);
             toFlow.setText(data.toFlowName);
             fromFlow.setText(data.fromFlowName);
             tranQty.setText(String.valueOf(data.transportQty));

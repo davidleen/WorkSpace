@@ -1,24 +1,24 @@
 package com.giants.hd.desktop.model;
 
 import com.giants3.hd.entity.User;
-import com.giants3.hd.utils.file.ImageUtils;
 import com.giants3.hd.noEntity.CompanyPosition;
+import com.giants3.hd.utils.file.ImageUtils;
 import com.google.inject.Inject;
 
 import java.util.List;
 
 /**
- *  业务员表格数据模型
+ * 业务员表格数据模型
  */
-public class UserModel extends  BaseTableModel<User> {
+public class UserModel extends BaseTableModel<User> {
 
-    public static String[] columnNames = new String[]{ "编号 ",  "名称" ,"中文名称      ","密码" ,"电话","邮件","是否业务员","  职位  " };
-    public static int[] columnWidth=new int[]{   80,        100 ,120,80,80,80,80,100};
+    public static String[] columnNames = new String[]{"编号 ", "名称", "中文名称      ", "密码", "电话", "邮件", "是否业务员", "  职位  ", "外网连接"};
+    public static int[] columnWidth = new int[]{80, 100, 120, 80, 80, 80, 80, 100, 60};
 
     private static final String POSITION = "positionName";
-    public static String[] fieldName = new String[]{ "code", "name", "chineseName", "password","tel","email","isSalesman", POSITION};
+    public static String[] fieldName = new String[]{"code", "name", "chineseName", "password", "tel", "email", "isSalesman", POSITION, "internet"};
 
-    public  static Class[] classes = new Class[]{Object.class,Object.class, Object.class, Object.class, Object.class,Object.class,Boolean.class,CompanyPosition.class};
+    public static Class[] classes = new Class[]{Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Boolean.class, CompanyPosition.class, Boolean.class};
 
 
     @Inject
@@ -37,42 +37,48 @@ public class UserModel extends  BaseTableModel<User> {
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 
-        User customer=getItem(rowIndex);
-        String stringValue=String.valueOf(aValue);
-        switch (columnIndex)
-        {
+        User customer = getItem(rowIndex);
+        String stringValue = String.valueOf(aValue);
+        switch (columnIndex) {
             case 0:
-                customer.code=stringValue;
+                customer.code = stringValue;
                 break;
             case 1:
-                customer.name=stringValue;
+                customer.name = stringValue;
                 break;
             case 2:
-                customer.chineseName=stringValue;
+                customer.chineseName = stringValue;
                 break;
             case 3:
-                customer.password=stringValue;
+                customer.password = stringValue;
                 break;
 
             case 4:
-                customer.tel=stringValue;
+                customer.tel = stringValue;
                 break;
             case 5:
-                customer.email=stringValue;
+                customer.email = stringValue;
                 break;
             case 6:
-                customer.isSalesman=Boolean.valueOf(stringValue);
+                customer.isSalesman = Boolean.valueOf(stringValue);
                 break;
 
 
             case 7:
 
-                if(aValue instanceof CompanyPosition)
-                {
-                    customer.positionName=   ((CompanyPosition) aValue).positionName;
-                    customer.position= ((CompanyPosition) aValue).position;
+                if (aValue instanceof CompanyPosition) {
+                    customer.positionName = ((CompanyPosition) aValue).positionName;
+                    customer.position = ((CompanyPosition) aValue).position;
 
 
+                }
+
+                break;
+            case 8:
+                try {
+                    customer.internet = Boolean.valueOf(aValue.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
                 break;
@@ -85,16 +91,17 @@ public class UserModel extends  BaseTableModel<User> {
     public int[] getColumnWidth() {
         return columnWidth;
     }
+
     @Override
     public int getRowHeight() {
-        return ImageUtils.MAX_MATERIAL_MINIATURE_HEIGHT ;
+        return ImageUtils.MAX_MATERIAL_MINIATURE_HEIGHT;
     }
 
 
     @Override
     public void setDatas(List<User> newDatas) {
 
-        MiniRowCount=newDatas.size()+20;
+        MiniRowCount = newDatas.size() + 20;
         super.setDatas(newDatas);
     }
 }

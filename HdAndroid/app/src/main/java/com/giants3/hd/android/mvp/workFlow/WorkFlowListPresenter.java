@@ -8,9 +8,9 @@ import com.giants3.hd.entity.ErpOrderItemProcess;
 import com.giants3.hd.entity.ErpWorkFlowReport;
 import com.giants3.hd.entity.OrderItemWorkMemo;
 import com.giants3.hd.entity.ProductWorkMemo;
+import com.giants3.hd.entity.WorkFlowMessage;
 import com.giants3.hd.entity_erp.SampleState;
 import com.giants3.hd.noEntity.RemoteData;
-import com.giants3.hd.entity.WorkFlowMessage;
 
 import java.util.List;
 
@@ -63,7 +63,7 @@ public class WorkFlowListPresenter extends BasePresenter<WorkFlowListMvp.Viewer,
         });
         //读取订单生产备注数据
 
-        UseCaseFactory.getInstance().createGetOrderItemWorkMemoUseCase( orderItem.os_no,orderItem.itm).execute(new RemoteDataSubscriber<OrderItemWorkMemo>(this)   {
+        UseCaseFactory.getInstance().createGetOrderItemWorkMemoUseCase(orderItem.os_no, orderItem.itm).execute(new RemoteDataSubscriber<OrderItemWorkMemo>(this) {
 
 
             @Override
@@ -77,7 +77,7 @@ public class WorkFlowListPresenter extends BasePresenter<WorkFlowListMvp.Viewer,
 
         }); //读取产品的生产备注数据
 
-        UseCaseFactory.getInstance().createGetProductWorkMemoUseCase( orderItem.prd_name,orderItem.pVersion).execute(new RemoteDataSubscriber<ProductWorkMemo>(this)   {
+        UseCaseFactory.getInstance().createGetProductWorkMemoUseCase(orderItem.prd_name, orderItem.pVersion).execute(new RemoteDataSubscriber<ProductWorkMemo>(this) {
 
 
             @Override
@@ -95,7 +95,7 @@ public class WorkFlowListPresenter extends BasePresenter<WorkFlowListMvp.Viewer,
         getView().showWaiting();
 
 
-        UseCaseFactory.getInstance().createSearchSampleData( orderItem.prd_name,orderItem.pVersion).execute(new Subscriber<RemoteData<SampleState>>()   {
+        UseCaseFactory.getInstance().createSearchSampleData(orderItem.prd_name, orderItem.pVersion).execute(new Subscriber<RemoteData<SampleState>>() {
 
 
             @Override
@@ -113,17 +113,13 @@ public class WorkFlowListPresenter extends BasePresenter<WorkFlowListMvp.Viewer,
             @Override
             public void onNext(RemoteData<SampleState> data) {
 
-                getView().showSampleState(data.datas.get(0) );
+                getView().showSampleState(data.datas.get(0));
 
             }
 
 
-
-
         });
     }
-
-
 
 
     private void showSendReceiveDialog(List<WorkFlowMessage> messageList) {
@@ -228,15 +224,9 @@ public class WorkFlowListPresenter extends BasePresenter<WorkFlowListMvp.Viewer,
     public void chooseWorkFlowReport(ErpWorkFlowReport workFlowReport) {
 
 
-
-
         ProductWorkMemo productWorkMemo = getModel().getSelectProductMemo(workFlowReport.workFlowStep);
-        OrderItemWorkMemo orderItemWorkMemo =  getModel().getSelectOrderItemMemo(workFlowReport.workFlowStep);
-        getView().showSendWorkFlowDialog(workFlowReport,productWorkMemo,orderItemWorkMemo);
-
-
-
-
+        OrderItemWorkMemo orderItemWorkMemo = getModel().getSelectOrderItemMemo(workFlowReport.workFlowStep);
+        getView().showSendWorkFlowDialog(workFlowReport, productWorkMemo, orderItemWorkMemo);
 
 
     }
@@ -245,24 +235,47 @@ public class WorkFlowListPresenter extends BasePresenter<WorkFlowListMvp.Viewer,
     public void clearWorkFlow() {
         //获取关联的流程信息
         ErpOrderItem selectOrderItem = getModel().getSelectOrderItem();
-        if(selectOrderItem==null) return;
+        if (selectOrderItem == null) return;
         UseCaseFactory.getInstance().createGetClearWorkFlowUseCase(selectOrderItem.os_no, selectOrderItem.itm).execute(new RemoteDataSubscriber<Void>(this) {
 
             @Override
             protected void handleRemoteData(RemoteData<Void> data) {
-                if(data.isSuccess())
-                {
+                if (data.isSuccess()) {
                     getView().showMessage("清除成功");
                     searchData();
 
 
-                }else
-                {
-                    getView().showMessage("清除失败："+data.message);
+                } else {
+                    getView().showMessage("清除失败：" + data.message);
                 }
 
             }
         });
+    }
+
+    @Override
+    public void adjustWorkFlow() {
+
+
+        //获取关联的流程信息
+        ErpOrderItem selectOrderItem = getModel().getSelectOrderItem();
+        if (selectOrderItem == null) return;
+        UseCaseFactory.getInstance().createGetAdjustWorkFlowUseCase(selectOrderItem.os_no, selectOrderItem.prd_name,selectOrderItem.pVersion, selectOrderItem.itm).execute(new RemoteDataSubscriber<Void>(this) {
+
+            @Override
+            protected void handleRemoteData(RemoteData<Void> data) {
+                if (data.isSuccess()) {
+                    getView().showMessage("校正itm成功"+ data.message);
+                    searchData();
+
+
+                } else {
+                    getView().showMessage("校正失败：" + data.message);
+                }
+
+            }
+        });
+
     }
 
     @Override

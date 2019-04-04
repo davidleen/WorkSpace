@@ -5,7 +5,7 @@ apply plugin: 'maven-publish'
 version = '1.0'
 def fat_appendix = '-all'
 //构建jar包依赖所对应的版本号。代码有更新修改，版本号往上加。
-def  jarVersion = '1.6.3'
+def  jarVersion = '1.6.5'
 def  jarArtifactId= 'dataLib'
 
 tasks.withType(JavaCompile) {

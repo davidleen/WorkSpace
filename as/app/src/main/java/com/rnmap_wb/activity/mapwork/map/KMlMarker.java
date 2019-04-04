@@ -115,12 +115,15 @@ public class KMlMarker extends org.osmdroid.views.overlay.Marker {
 
 
 
+
+
+        super.draw(canvas, mapView, shadow);
         if ( isDisplayed()&&!shadow&&mIcon!=null&&mAlpha!=0) {
 
 
             canvas.save();
-            int left = mPositionPixels.x;
-            int y = mPositionPixels.y;
+            int left = mPositionPixels.x-holder.getRoot().getMeasuredWidth()/2;
+            int y = mPositionPixels.y+mIcon.getIntrinsicHeight()/2;
 
             canvas.translate(left, y);
 
@@ -128,8 +131,6 @@ public class KMlMarker extends org.osmdroid.views.overlay.Marker {
             canvas.restore();
 
         }
-
-        super.draw(canvas, mapView, shadow);
     }
 
     private void setCustomIcon(Drawable drawable) {
