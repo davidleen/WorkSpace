@@ -9,7 +9,7 @@ targetCompatibility = 1.7
 
 
 version='1.1.1'
-description='xxxxxxxxxxxxxxxxxxxxxxxxxxx'
+description='数据集合模块'
 ext{
 
     PROJ_WEBSITEURL='https://github.com/davidleen/AnnotationAdapter'

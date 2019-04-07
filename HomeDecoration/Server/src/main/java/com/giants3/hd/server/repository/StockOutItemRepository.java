@@ -8,12 +8,14 @@ import java.util.List;
 
 /**
  * 出库附加数据细项
-* Created by davidleen29 on 2014/9/17.
-*/
-public interface StockOutItemRepository extends JpaRepository<StockOutItem,Long> {
+ * Created by davidleen29 on 2014/9/17.
+ */
+public interface StockOutItemRepository extends JpaRepository<StockOutItem, Long> {
 
 
-   List<StockOutItem> findByCkNoEqualsAndItmEquals(String ck_no, int item);
+    List<StockOutItem> findByCkNoEqualsAndItmEquals(String ck_no, int item);
 
-   List<StockOutItem> findByCkNoEquals(String ck_no);
+    StockOutItem findFirstByCkNoEqualsAndItmEqualsAndPsNoEquals(String ck_no, int item,String psNo);
+
+    List<StockOutItem> findByCkNoEquals(String ck_no);
 }

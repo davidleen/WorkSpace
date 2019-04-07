@@ -53,6 +53,7 @@ public class Panel_StockOutDetail extends BasePanel implements StockOutDetailVie
     private JTextField tf_guixing;
     private JButton export_qingguan;
     private JButton export_qingguan_xk;
+    private JPanel panel_input;
     private StockOutDetailIPresenter presenter;
 
     private StockOutItemTableModel tableModel;
@@ -69,7 +70,7 @@ public class Panel_StockOutDetail extends BasePanel implements StockOutDetailVie
     private void init() {
 
         tableModel = new StockOutItemTableModel();
-
+        panel_input.setVisible(false);
         tb.setModel(tableModel);
 
         tb.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);

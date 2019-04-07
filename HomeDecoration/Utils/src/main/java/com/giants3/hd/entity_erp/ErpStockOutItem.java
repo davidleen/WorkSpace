@@ -150,4 +150,8 @@ public class ErpStockOutItem   implements Serializable{
      */
     public String jmcc;
 
+
+
+
+    public String ps_no;
 }

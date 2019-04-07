@@ -57,4 +57,7 @@ public class StockOutItem implements Serializable {
 
     public boolean subRecord;
 
+    public String psNo;
+
+
 }

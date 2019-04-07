@@ -2,6 +2,7 @@ package com.giants3.hd.server.repository_erp;
 
 import com.giants3.hd.entity_erp.ErpStockOut;
 import com.giants3.hd.entity_erp.ErpStockOutItem;
+import com.giants3.hd.server.utils.SqlScriptHelper;
 import com.giants3.hd.utils.StringUtils;
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.Transformers;
@@ -31,11 +32,7 @@ public class ErpStockOutRepository extends ErpRepository {
      * AS varchar(8000)   在sqlserver 2000 中  最大的varchar 长度为8000 varchar(max) 会报错。
      */
 
-    public static final String STOCK_OUT_ITEM_LIST = " select B.ck_no,B.itm, B.PRD_NO ,b.id_no,b.os_no,b.bat_no,B.CUS_OS_NO,isnull(B.UP,0) as UP, isnull(B.QTY,0) as  QTY, isnull(B.AMT,0) as   AMT ,A.SO_ZXS,A.IDX_NAME,A.XS,A.KHXG,A.XGTJ,A.ZXGTJ,isnull(A.JZ1,0)as JZ1,isnull(A.MZ,0) as MZ ,A.HPGG ,isnull(c.rem,'') as hsCode , isnull(m.jmcc,'') as jmcc   from  (select * from TF_CK_Z  where  ck_no=:ck_no)  A FULL JOIN   (select * from TF_CK  where  ck_no=:ck_no) B ON A.CK_NO=B.CK_NO AND A.ITM=B.ITM  " +
-            "   left outer join ( select distinct prd_no,rem from  (select rem,idx_no from INDX  ) a inner join    ( select idx1,prd_no from prdt )b  on a.idx_no=b.idx1 where a.rem is  not null) c on b.prd_no=c.prd_no " +
-
-            " left outer join (select bom_no, jmcc from  MF_BOM_Z )  m on b.id_no=m.bom_no  "+
-            "  order by B.itm ASC  ";
+    public     String STOCK_OUT_ITEM_LIST ;
 
 
 
@@ -57,7 +54,7 @@ public class ErpStockOutRepository extends ErpRepository {
 
 
     public ErpStockOutRepository( ) {
-
+        STOCK_OUT_ITEM_LIST= SqlScriptHelper.readScript("stockoutitem.sql");
     }
     /*
     *   查询出库单明细列表
@@ -88,6 +85,10 @@ public class ErpStockOutRepository extends ErpRepository {
                 .addScalar("mz", FloatType.INSTANCE)
                 .addScalar("hsCode", StringType.INSTANCE)
                 .addScalar("jmcc", StringType.INSTANCE)
+                .addScalar("fengqianhao", StringType.INSTANCE)
+                .addScalar("guixing", StringType.INSTANCE)
+                .addScalar("guihao", StringType.INSTANCE)
+                .addScalar("ps_no", StringType.INSTANCE)
                 .setResultTransformer(Transformers.aliasToBean(ErpStockOutItem.class))  .list();
 
 
