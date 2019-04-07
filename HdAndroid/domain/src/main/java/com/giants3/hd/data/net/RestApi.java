@@ -82,6 +82,7 @@ public interface RestApi {
 
   Observable getProductDetail(long productId);
   Observable findProductById(long productId);
+  Observable findProductByIds(long[] productIds);
 
   Observable getQuotationList(String name, int pageIndex, int pageSize);
 
@@ -235,4 +236,8 @@ public interface RestApi {
     Observable adjustWorkFlowItem(String os_no, String prd_no,String pVersion,int itm);
 
     Observable findWorkFlowItemsUseCase(String osNo, int itm, String code);
+
+    Observable saveAndVerifyQuotationDetail(QuotationDetail quotationDetail);
+
+  Observable unVerifyQuotation(long quotationId);
 }

@@ -113,10 +113,19 @@ public class ApiManager {
         return remoteData;
     }
 
+    public RemoteData<Product> findProductByIds(long[] productIds) throws HdException {
+
+        String url = HttpUrl.findProductByIds(productIds);
+        String result = apiConnection.getString(url);
+        RemoteData<Product> productRemoteData = invokeByReflect(result, Product.class);
+        return productRemoteData;
+
+    }
+
 
     public RemoteData<Product> findProductByNameAndVersion(String pName, String pVersion) throws HdException {
 
-        String url = HttpUrl.findProductByNameAndVersion(pName,pVersion);
+        String url = HttpUrl.findProductByNameAndVersion(pName, pVersion);
         String result = apiConnection.getString(url);
         RemoteData<Product> remoteData = invokeByReflect(result, Product.class);
 
@@ -370,6 +379,7 @@ public class ApiManager {
 
         return remoteData;
     }
+
     /**
      * 读取未出库订单货款列表
      *
@@ -617,8 +627,8 @@ public class ApiManager {
     }
 
 
-    public RemoteData<Void> adjustWorkFlowItem(String os_no, String prd_no,String pVersion,int itm) throws HdException {
-        String url = HttpUrl.adjustWorkFlowItem(os_no, prd_no,pVersion,itm);
+    public RemoteData<Void> adjustWorkFlowItem(String os_no, String prd_no, String pVersion, int itm) throws HdException {
+        String url = HttpUrl.adjustWorkFlowItem(os_no, prd_no, pVersion, itm);
         String result = apiConnection.getString(url);
         RemoteData<Void> remoteData = invokeByReflect(result, Void.class);
         return remoteData;
@@ -729,8 +739,8 @@ public class ApiManager {
 
     }
 
-    public RemoteData<Customer> getCustomerList(String key,int pageIndex,int pageSize) throws HdException {
-        String url = HttpUrl.getCustomerList(key,  pageIndex,  pageSize);
+    public RemoteData<Customer> getCustomerList(String key, int pageIndex, int pageSize) throws HdException {
+        String url = HttpUrl.getCustomerList(key, pageIndex, pageSize);
         String result = apiConnection.getString(url);
         RemoteData<Customer> remoteData = invokeByReflect(result, Customer.class);
         return remoteData;
@@ -752,7 +762,7 @@ public class ApiManager {
         String url = HttpUrl.saveCustomer();
         String result = apiConnection.post(url, GsonUtils.toJson(customer));
         RemoteData<Customer> remoteData = invokeByReflect(result, Customer.class);
-         return remoteData;
+        return remoteData;
 
     }
 
@@ -821,7 +831,7 @@ public class ApiManager {
 
 
         String url = HttpUrl.scanResourceUrl(resourceUrl);
-        String result = apiConnection.getString(url );
+        String result = apiConnection.getString(url);
         RemoteData<NameCard> remoteData = invokeByReflect(result, NameCard.class);
         return remoteData;
 
@@ -829,16 +839,40 @@ public class ApiManager {
 
     public RemoteData<Void> deleteCustomer(long customerId) throws HdException {
         String url = HttpUrl.deleteCustomer(customerId);
-        String result = apiConnection.getString(url );
+        String result = apiConnection.getString(url);
         RemoteData<Void> remoteData = invokeByReflect(result, Void.class);
         return remoteData;
 
     }
 
     public RemoteData<ErpWorkFlowItem> findWorkFlowItemsUseCase(String osNo, int itm, String code) throws HdException {
-        String url = HttpUrl.findWorkFlowItemsUseCase(osNo,itm,code);
-        String result = apiConnection.getString(url );
+        String url = HttpUrl.findWorkFlowItemsUseCase(osNo, itm, code);
+        String result = apiConnection.getString(url);
         RemoteData<ErpWorkFlowItem> remoteData = invokeByReflect(result, ErpWorkFlowItem.class);
+        return remoteData;
+    }
+
+
+    public RemoteData<QuotationDetail> saveAndVerifyQuotationDetail(QuotationDetail quotationDetail) throws HdException {
+
+
+        String url = HttpUrl.saveAndVerifyQuotationDetail();
+
+        String result = apiConnection.post(url, GsonUtils.toJson(quotationDetail));
+
+        RemoteData<QuotationDetail> remoteData = invokeByReflect(result, QuotationDetail.class);
+
+        return remoteData;
+    }
+
+    public RemoteData<QuotationDetail> unVerifyQuotation(long quotationId) throws HdException {
+        String url = HttpUrl.unVerifyQuotation(quotationId);
+
+        String result = apiConnection.post(url, "");
+
+
+        RemoteData<QuotationDetail> remoteData = invokeByReflect(result, QuotationDetail.class);
+
         return remoteData;
     }
 }

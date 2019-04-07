@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
@@ -15,17 +16,21 @@ import com.giants3.hd.android.adapter.ItemListAdapter;
 import com.giants3.hd.android.entity.TableData;
 import com.giants3.hd.android.helper.SharedPreferencesHelper;
 import com.giants3.hd.android.helper.ToastHelper;
+import com.giants3.hd.android.mvp.RemoteDataSubscriber;
 import com.giants3.hd.android.widget.ExpandableHeightListView;
 import com.giants3.hd.data.interractor.UseCaseFactory;
 import com.giants3.hd.data.utils.GsonUtils;
+import com.giants3.hd.entity.Product;
 import com.giants3.hd.entity.Quotation;
-import com.giants3.hd.noEntity.QuotationDetail;
 import com.giants3.hd.entity.QuotationItem;
 import com.giants3.hd.entity.QuotationXKItem;
 import com.giants3.hd.entity.QuoteAuth;
 import com.giants3.hd.exception.HdException;
+import com.giants3.hd.logic.QuotationAnalytics;
+import com.giants3.hd.noEntity.QuotationDetail;
 import com.giants3.hd.noEntity.RemoteData;
 
+import anetwork.channel.cache.CacheManager;
 import butterknife.Bind;
 import rx.Subscriber;
 
@@ -53,7 +58,6 @@ public class QuotationDetailFragment extends BaseFragment implements View.OnClic
 
     @Bind(R.id.listView)
     ExpandableHeightListView listView;
-
 
 
     @Bind(R.id.cus_no)
@@ -121,7 +125,7 @@ public class QuotationDetailFragment extends BaseFragment implements View.OnClic
             } catch (HdException e) {
                 e.printStackTrace();
                 ToastHelper.show("参数异常");
-                 return;
+                return;
             }
 
 
@@ -129,9 +133,9 @@ public class QuotationDetailFragment extends BaseFragment implements View.OnClic
             quotationTable = TableData.resolveData(getActivity(), R.array.table_head_quotation_item);
 
 
-            QuoteAuth quoteAuth= SharedPreferencesHelper.getInitData().quoteAuth;
+            QuoteAuth quoteAuth = SharedPreferencesHelper.getInitData().quoteAuth;
 
-            if(quoteAuth!=null) {
+            if (quoteAuth != null) {
 
                 //根据权限 移除部分字段显示
                 if (!quoteAuth.costVisible) {
@@ -147,10 +151,8 @@ public class QuotationDetailFragment extends BaseFragment implements View.OnClic
             }
 
 
-
-
-            quotationItemItemListAdapter = new ItemListAdapter<>(getActivity());
-            xkquotationItemItemListAdapter = new ItemListAdapter<>(getActivity());
+            quotationItemItemListAdapter = new ItemListAdapter<QuotationItem>(getActivity());
+            xkquotationItemItemListAdapter = new ItemListAdapter<QuotationXKItem>(getActivity());
             quotationItemItemListAdapter.setTableData(quotationTable);
             xkquotationItemItemListAdapter.setTableData(xkQuotationTable);
 
@@ -176,10 +178,10 @@ public class QuotationDetailFragment extends BaseFragment implements View.OnClic
 
         qNumber.setText(quotation.qNumber);
         qDate.setText(quotation.qDate);
-      cus_no.setText(quotation.customerCode+quotation.customerName);
+        cus_no.setText(quotation.customerCode + quotation.customerName);
         sal.setText(quotation.salesman);
-       validDate.setText(quotation.vDate);
-       moneyType.setText(quotation.currency);
+        validDate.setText(quotation.vDate);
+        moneyType.setText(quotation.currency);
 
         memo.setText(quotation.memo);
         memo.setMaxLines(MAX_MEMO_ROW_LINE);
@@ -192,9 +194,7 @@ public class QuotationDetailFragment extends BaseFragment implements View.OnClic
                 boolean more = false;
 
 
-                if (memo.getLineCount()== MAX_MEMO_ROW_LINE) {
-
-
+                if (memo.getLineCount() == MAX_MEMO_ROW_LINE) {
 
 
                 }
@@ -211,7 +211,7 @@ public class QuotationDetailFragment extends BaseFragment implements View.OnClic
         showMore.setOnClickListener(this);
 
 
-        if (quotation.quotationTypeName.contains("咸康")) {
+        if (quotation.quotationTypeId == Quotation.QUOTATION_TYPE_XK) {
             listView.setAdapter(xkquotationItemItemListAdapter);
         } else {
             listView.setAdapter(quotationItemItemListAdapter);
@@ -219,12 +219,109 @@ public class QuotationDetailFragment extends BaseFragment implements View.OnClic
 
 
         check.setSelected(quotation.isVerified);
-        boolean isOverdueAndNotCheck=!quotation.isVerified &&quotation.isOverdue();
-        check.setVisibility(  isOverdueAndNotCheck?View.GONE:View.VISIBLE);
-        overdue.setVisibility(  isOverdueAndNotCheck?View.VISIBLE:View.GONE);
+        boolean isOverdueAndNotCheck = !quotation.isVerified && quotation.isOverdue();
+        check.setVisibility(isOverdueAndNotCheck ? View.GONE : View.VISIBLE);
+        overdue.setVisibility(isOverdueAndNotCheck ? View.VISIBLE : View.GONE);
 
 
         attemptLoad(quotation.id);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+
+                //彈窗提示修改利潤比
+                if (SharedPreferencesHelper.getInitData().quoteAuth.fobEditable) {
+
+                    float ratio=0;
+                 final    Object o = parent.getItemAtPosition(position);
+                    if (o instanceof QuotationXKItem) {
+
+
+                        ratio=((QuotationXKItem) o).cost_price_ratio;
+                    } else {
+                        ratio=((QuotationItem) o).cost_price_ratio;
+                    }
+
+                    ValueEditDialogFragment dialogFragment = new ValueEditDialogFragment();
+                    final float finalRatio = ratio;
+                    dialogFragment.set("修改利润比", String.valueOf(finalRatio), new ValueEditDialogFragment.ValueChangeListener(){
+                        @Override
+                        public void onValueChange(String title, String oldValue, String newValue) {
+
+                            float newRatio=0;
+                            try{
+                                newRatio=Float.valueOf(newValue);
+                            }catch (Throwable t)
+                            {}
+                            if(newRatio==0||newRatio>1)
+                            {
+                               ToastHelper.show("输入的利润比不正确");
+                                return;
+                            }
+                            if(newRatio== finalRatio)
+                            {
+                                ToastHelper.show("利润比没有改变");
+                                return;
+
+                            }
+                            if (o instanceof QuotationXKItem) {
+
+                                loadProductAndCalculatePrice((QuotationXKItem) o,newRatio,quotationItemItemListAdapter);
+
+                            } else {
+                             loadProductAndCalculatePrice((QuotationItem) o,newRatio,quotationItemItemListAdapter);
+                            }
+
+
+
+                        }
+                    });
+                    dialogFragment.setMultiableText(false);
+                    dialogFragment.show(getFragmentManager(), null);
+
+                }
+
+
+            }
+        });
+
+
+    }
+    private void loadProductAndCalculatePrice(final QuotationXKItem quotationItem, final float newValue, final ItemListAdapter itemListAdapter)
+    {
+
+    }
+    private void loadProductAndCalculatePrice(final QuotationItem quotationItem, final float newValue, final ItemListAdapter itemListAdapter)
+     {
+//        //读取产品数据  重新计算fob值
+//        UseCaseFactory.getInstance().createGetProductByIdUseCase(new long[]{quotationItem.productId}).execute(new RemoteDataSubscriber<Product>(this) {
+//            @Override
+//            protected void handleRemoteData(RemoteData<Product> data) {
+//
+//
+//                if (data.isSuccess() && data.datas.size() > 0) {
+//                    Product product = data.datas.get(0);
+//                    quotationItem.price = QuotationAnalytics.getPriceBaseOnCostRatio(product, newValue, SharedPreferencesHelper.getInitData().globalData);
+//
+//                    itemListAdapter.notifyDataSetChanged();
+//                }
+//
+//
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                super.onError(e);
+//
+//
+//                ToastHelper.show(e.getMessage());
+//
+//            }
+//        });
+//
+//        showProgress(true);
 
 
     }
