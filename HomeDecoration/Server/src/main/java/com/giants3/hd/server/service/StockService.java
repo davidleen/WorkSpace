@@ -140,6 +140,13 @@ public class StockService extends AbstractService {
                 t.printStackTrace();
             }
 
+            //数据校正
+            if (item.qty <= 0)
+                item.qty = item.qty2;
+            //数据校正
+            if (item.so_zxs <= 0)
+                item.so_zxs = item.so_zxs2;
+
             item.pVersion = pVersion;
 
             item.thumbnail = item.url = FileUtils.getErpProductPictureUrl(item.id_no, "");
@@ -160,6 +167,8 @@ public class StockService extends AbstractService {
             if (localItem != null) {
 
                 item.describe = localItem.describe;
+                item.stockOutQty = item.qty != 0 ? item.qty : item.qty2;
+
 
             } else {
 

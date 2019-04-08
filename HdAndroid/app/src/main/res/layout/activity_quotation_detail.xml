@@ -312,7 +312,7 @@
             android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
             android:textSize="13sp"
-            android:text="长按列表项目，可以修改利润比"
+            android:text="提示：长按列表项目，可以修改利润比"
             android:layout_height="wrap_content" />
 
 

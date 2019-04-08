@@ -83,7 +83,7 @@ public class StockOutItemTableModel extends BaseTableModel<ErpStockOutItem> {
 
         if(columnIndex==StringUtils.index(fieldName,XS))
         {
-            return item.so_zxs==0?0: item.stockOutQty/item.so_zxs;
+            return item.so_zxs==0?0:( item.stockOutQty/item.so_zxs);
         }
         if(columnIndex==StringUtils.index(fieldName,ZXGTJ))
         {

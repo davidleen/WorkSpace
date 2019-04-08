@@ -138,6 +138,7 @@
         <item>单位||unit||1||40</item>
         <item>成本价||cost||1||50</item>
         <item>FOB||price||1||60</item>
+        <item>利润比||cost_price_ratio||1||60</item>
         <item>立方数||volumeSize||1||60</item>
         <item>货品规格||spec||1||100</item>
         <item>净重||weight||1||60</item>
@@ -174,6 +175,7 @@
         <item>单位||unit||1||40</item>
         <item>成本价||cost||1||50</item>
         <item>FOB||price||1||60</item>
+        <item>利润比||cost_price_ratio||1||60</item>
         <item>立方数||volumeSize||1||60</item>
         <item>货品规格||spec||1||100</item>
         <item>净重||weight||1||60</item>

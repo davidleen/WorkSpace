@@ -91,8 +91,6 @@ public class QuotationDetailActivity extends BaseHeadViewerActivity<QuotationDet
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         setTitle("报价单详情");
 
 
@@ -127,6 +125,15 @@ public class QuotationDetailActivity extends BaseHeadViewerActivity<QuotationDet
                 xkQuotationTable.removeField("price");
                 xkQuotationTable.removeField("price2");
             }
+        }
+
+        if(quoteAuth != null&&quoteAuth.fobEditable)
+        {
+
+        }else
+        {
+            xkQuotationTable.removeField("cost_price_ratio");
+            xkQuotationTable.removeField("cost_price_ratio");
         }
 
 
