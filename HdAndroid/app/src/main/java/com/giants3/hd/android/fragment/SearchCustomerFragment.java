@@ -1,44 +1,34 @@
 package com.giants3.hd.android.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.giants3.hd.android.R;
 import com.giants3.android.frame.util.Utils;
-import com.giants3.hd.android.activity.ProductDetailActivity;
+import com.giants3.hd.android.R;
 import com.giants3.hd.android.adapter.ItemListAdapter;
 import com.giants3.hd.android.entity.TableData;
-import com.giants3.hd.android.mvp.RemoteDataSubscriber;
 import com.giants3.hd.android.mvp.searchcustomer.SearchCustomerMvp;
-import com.giants3.hd.android.mvp.searchproduct.SearchProductMvp;
-import com.giants3.hd.data.interractor.UseCaseFactory;
-import com.giants3.hd.data.utils.GsonUtils;
 import com.giants3.hd.entity.Customer;
-import com.giants3.hd.noEntity.RemoteData;
 
 import java.util.List;
 
 import butterknife.Bind;
 
 /**
- *  查找客户Fragment
+ * 查找客户Fragment
  */
-public class SearchCustomerFragment extends BaseDialogFragment <SearchCustomerMvp.Presenter> implements SearchCustomerMvp.Viewer  {
+public class SearchCustomerFragment extends BaseDialogFragment<SearchCustomerMvp.Presenter> implements SearchCustomerMvp.Viewer {
 
     private static final String ARG_AVAILABLE_ITEMS = "ARG_AVAILABLE_ITEMS";
-
 
 
     @Bind(R.id.key)
@@ -70,14 +60,13 @@ public class SearchCustomerFragment extends BaseDialogFragment <SearchCustomerMv
     protected void initEventAndData() {
 
 
-
-      listAdapter =new ItemListAdapter<>(getActivity());
-        listAdapter.setTableData(TableData.resolveData(getActivity(),R.array.table_customer_list));
-     int wh[]=   Utils.getScreenWH();
+        listAdapter = new ItemListAdapter<>(getActivity());
+        listAdapter.setTableData(TableData.resolveData(getActivity(), R.array.table_customer_list));
+        int wh[] = Utils.getScreenWH();
 
         ViewGroup.LayoutParams layoutParams = listView.getLayoutParams();
-        layoutParams.width= (int) (wh[0]*0.8);
-        layoutParams.height= (int) (wh[1]*0.8);
+        layoutParams.width = (int) (wh[0] * 0.8);
+        layoutParams.height = (int) (wh[1] * 0.8);
         listView.setLayoutParams(layoutParams);
 
         listView.setAdapter(listAdapter);
@@ -86,11 +75,9 @@ public class SearchCustomerFragment extends BaseDialogFragment <SearchCustomerMv
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
 
-
-                Customer customer= (Customer) parent.getItemAtPosition(position);
-                if(customer!=null&&mListener!=null
-                        )
-                {
+                Customer customer = (Customer) parent.getItemAtPosition(position);
+                if (customer != null && mListener != null
+                        ) {
                     mListener.onCustomerSelect(customer);
                     dismiss();
                 }
@@ -110,8 +97,6 @@ public class SearchCustomerFragment extends BaseDialogFragment <SearchCustomerMv
 //                return true;
 //            }
 //        }) ;
-
-
 
 
         editText.addTextChangedListener(new TextWatcher() {
@@ -148,8 +133,7 @@ public class SearchCustomerFragment extends BaseDialogFragment <SearchCustomerMv
     }
 
 
-
-    Runnable runnable=new Runnable() {
+    Runnable runnable = new Runnable() {
         @Override
         public void run() {
             getPresenter().search();
@@ -161,7 +145,7 @@ public class SearchCustomerFragment extends BaseDialogFragment <SearchCustomerMv
     private void doSearch() {
 
         editText.removeCallbacks(runnable);
-        editText.postDelayed(runnable,1000);
+        editText.postDelayed(runnable, 1000);
 
     }
 
@@ -186,15 +170,12 @@ public class SearchCustomerFragment extends BaseDialogFragment <SearchCustomerMv
     }
 
 
-
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
-        }
-        else {
+        } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
@@ -211,14 +192,12 @@ public class SearchCustomerFragment extends BaseDialogFragment <SearchCustomerMv
     public void bindDatas(List<Customer> datas) {
 
 
-
-         listAdapter.setDataArray(datas);
+        listAdapter.setDataArray(datas);
 
     }
 
 
     public interface OnFragmentInteractionListener {
-
 
 
         void onCustomerSelect(Customer aProduct);

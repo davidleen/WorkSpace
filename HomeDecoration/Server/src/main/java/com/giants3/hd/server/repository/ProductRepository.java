@@ -80,4 +80,5 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     @Query(value = " update    [yunfei].[dbo].[T_Product]   set sortname =  case   when SUBSTRING(name,1,1)>='0' and  SUBSTRING(name,1,1)<='9'  and SUBSTRING(name,2,1)>='0' and  SUBSTRING(name,2,1)<='9'  then SUBSTRING(name,1,3) else '000'  end    ",nativeQuery = true)
     void updateSortFieldValueNative();
 
+    Product findFirstByNameEquals(String productName);
 }

@@ -153,14 +153,6 @@ public class StockService extends AbstractService {
             item.specCm = StringUtils.convertInchStringToCmString(item.hpgg);
             item.specInch = item.hpgg;
 
-            //更新相关联的产品信息
-            Product product = productRepository.findFirstByNameEqualsAndPVersionEquals(productCode, pVersion);
-            if (product != null) {
-
-
-                item.unit = product.pUnitName;
-
-            }
 
 
             StockOutItem localItem = stockOutItemRepository.findFirstByCkNoEqualsAndItmEqualsAndPsNoEquals(item.ck_no, item.itm, item.ps_no);

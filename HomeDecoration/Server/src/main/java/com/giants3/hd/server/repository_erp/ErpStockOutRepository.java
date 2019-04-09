@@ -91,6 +91,7 @@ public class ErpStockOutRepository extends ErpRepository {
                 .addScalar("ps_no", StringType.INSTANCE)
                 .addScalar("qty2", IntegerType.INSTANCE)
                 .addScalar("so_zxs2", IntegerType.INSTANCE)
+                .addScalar("unit", StringType.INSTANCE)
                 .setResultTransformer(Transformers.aliasToBean(ErpStockOutItem.class))  .list();
 
 

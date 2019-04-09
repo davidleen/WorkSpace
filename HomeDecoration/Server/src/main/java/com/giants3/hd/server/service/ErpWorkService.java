@@ -920,6 +920,12 @@ public class ErpWorkService extends AbstractErpService {
 
         }
 
+//        if(true)
+//        {
+//            throw HdException.create("测试");
+//        }
+
+
         return wrapData();
 
 

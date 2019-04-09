@@ -2,6 +2,7 @@ package com.giants3.hd.android.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.adapter.ItemListAdapter;
 import com.giants3.hd.android.entity.TableData;
+import com.giants3.hd.android.fragment.ProductDetailFragment;
 import com.giants3.hd.android.fragment.QuotationDetailFragment;
 import com.giants3.hd.android.fragment.ValueEditDialogFragment;
 import com.giants3.hd.android.helper.AuthorityUtil;
@@ -18,6 +20,7 @@ import com.giants3.hd.android.helper.SharedPreferencesHelper;
 import com.giants3.hd.android.helper.ToastHelper;
 import com.giants3.hd.android.mvp.quotation.QuotationDetailMVP;
 import com.giants3.hd.android.mvp.quotation.QuotationDetailPresenterImpl;
+import com.giants3.hd.appdata.AProduct;
 import com.giants3.hd.data.utils.GsonUtils;
 import com.giants3.hd.entity.Quotation;
 import com.giants3.hd.entity.QuotationItem;
@@ -35,7 +38,10 @@ import butterknife.Bind;
  * in a {@link ProductListActivity}.
  */
 public class QuotationDetailActivity extends BaseHeadViewerActivity<QuotationDetailPresenterImpl> implements QuotationDetailMVP.Viewer {
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    public static final String P_VERSION = "pVersion";
+    public static final String PRODUCT_NAME = "productName";
+    public static final String P_VERSION2 = "pVersion2";
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
     public static String ARG_ITEM = "PRODUCT_MATERIAL_TYPE";
 
@@ -127,18 +133,74 @@ public class QuotationDetailActivity extends BaseHeadViewerActivity<QuotationDet
             }
         }
 
-        if(quoteAuth != null&&quoteAuth.fobEditable)
-        {
+        if (quoteAuth != null && quoteAuth.fobEditable) {
 
-        }else
-        {
+        } else {
             xkQuotationTable.removeField("cost_price_ratio");
             xkQuotationTable.removeField("cost_price_ratio");
         }
 
 
-        quotationItemItemListAdapter = new ItemListAdapter<QuotationItem>(this);
+        quotationItemItemListAdapter = new ItemListAdapter<QuotationItem>(this)
+        ;
         xkquotationItemItemListAdapter = new ItemListAdapter<QuotationXKItem>(this);
+
+        {
+            ItemListAdapter.CellClickListener<QuotationItem> cellClickListener = new ItemListAdapter.CellClickListener<QuotationItem>() {
+                @Override
+                public boolean isCellClickable(String field) {
+
+                    return PRODUCT_NAME.equalsIgnoreCase(field) || P_VERSION.equalsIgnoreCase(field);
+
+                }
+
+                @Override
+                public void onCellClick(String field, QuotationItem data, int position) {
+                    jumpProduct(data.productId);
+
+                }
+            };
+            quotationItemItemListAdapter.setCellClickListener(cellClickListener);
+        }
+
+
+        {
+            ItemListAdapter.CellClickListener<QuotationXKItem> xkcellClickListener = new ItemListAdapter.CellClickListener<QuotationXKItem>() {
+                @Override
+                public boolean isCellClickable(String field) {
+
+                    return PRODUCT_NAME.equalsIgnoreCase(field) || P_VERSION.equalsIgnoreCase(field) || P_VERSION2.equalsIgnoreCase(field);
+
+                }
+
+                @Override
+                public void onCellClick(String field, QuotationXKItem data, int position) {
+                    long productId = 0;
+                    switch (field) {
+                        case PRODUCT_NAME:
+
+                            productId = data.productId > 0 ? data.productId : data.productId2;
+                            break;
+                        case P_VERSION:
+                            productId = data.productId;
+
+                            break;
+
+                        case P_VERSION2:
+                            productId = data.productId2;
+                            break;
+
+
+                    }
+                    if (productId > 0)
+                        jumpProduct(productId);
+                }
+            };
+            xkquotationItemItemListAdapter.setCellClickListener(xkcellClickListener);
+
+        }
+
+
         quotationItemItemListAdapter.setTableData(quotationTable);
         xkquotationItemItemListAdapter.setTableData(xkQuotationTable);
 
@@ -147,6 +209,7 @@ public class QuotationDetailActivity extends BaseHeadViewerActivity<QuotationDet
 
 
         getPresenter().loadData();
+
 
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -243,6 +306,16 @@ public class QuotationDetailActivity extends BaseHeadViewerActivity<QuotationDet
 
     }
 
+    private void jumpProduct(long productId) {
+
+        //跳转产品详情
+        AProduct aProduct = new AProduct();
+        aProduct.id = productId;
+        //调整act
+        Intent intent = new Intent(QuotationDetailActivity.this, ProductDetailActivity.class);
+        intent.putExtra(ProductDetailFragment.ARG_ITEM, GsonUtils.toJson(aProduct));
+        startActivity(intent);
+    }
 
     @Override
     protected QuotationDetailPresenterImpl onLoadPresenter() {

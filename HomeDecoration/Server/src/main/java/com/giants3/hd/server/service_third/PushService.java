@@ -122,6 +122,7 @@ public class PushService extends AbstractService {
             case UmengPushResult.RET_SUCCESS:
                 try {
                     PushErrorReport report = new PushErrorReport();
+                    report.id=0;
                     report.code =  UmengPushResult.RET_SUCCESS;
                     report.status =0;
                     report.message =message;
