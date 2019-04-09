@@ -191,6 +191,17 @@ public class RestApiImpl implements RestApi {
     }
 
     @Override
+    public Observable findProductByIds(final long[] productIds) {
+        return create(new ApiInvoker<Product>() {
+            @Override
+            public RemoteData<Product> invoker() throws HdException {
+                return apiManager.findProductByIds(productIds);
+            }
+        });
+    }
+
+
+    @Override
     public Observable findProductByNameAndVersion(final String pName, final String pVersion) {
 
         return create(new ApiInvoker<Product>() {
@@ -1051,6 +1062,30 @@ public class RestApiImpl implements RestApi {
 
 
                 return apiManager.deleteCustomer( customerId)  ;
+            }
+        });
+    }
+
+    @Override
+    public Observable saveAndVerifyQuotationDetail(final QuotationDetail quotationDetail) {
+        return create(new ApiInvoker<QuotationDetail>() {
+            @Override
+            public RemoteData<QuotationDetail> invoker() throws HdException {
+
+
+                return apiManager.saveAndVerifyQuotationDetail( quotationDetail)  ;
+            }
+        });
+    }
+
+    @Override
+    public Observable unVerifyQuotation(final long quotationId) {
+        return create(new ApiInvoker<QuotationDetail>() {
+            @Override
+            public RemoteData<QuotationDetail> invoker() throws HdException {
+
+
+                return apiManager.unVerifyQuotation( quotationId)  ;
             }
         });
     }

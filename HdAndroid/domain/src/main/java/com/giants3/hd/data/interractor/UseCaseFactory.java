@@ -492,4 +492,21 @@ public class UseCaseFactory {
     public UseCase createFindWorkFlowItemsUseCase(String osNo, int itm, String code) {
         return new FindWorkFlowItemsUseCase(osNo, itm,code, restApi);
     }
+
+    public UseCase createGetProductByIdUseCase(long[] productIds) {
+
+        return new GetProductByIdsUseCase(productIds,restApi);
+
+    }
+
+    public UseCase createSaveAndVerifyQuotationDetailUseCase(com.giants3.hd.noEntity.QuotationDetail quotationDetail) {
+
+
+        return new SaveAndVerifyQuotationDetailUseCase(quotationDetail,restApi);
+
+    }
+
+    public UseCase createUnVerifyQuotationUseCase(long quotationId) {
+        return new UnVerifyQuotationUseCase(quotationId,restApi);
+    }
 }

@@ -9,7 +9,6 @@ import com.giants3.hd.exception.HdException;
 import com.giants3.hd.utils.StringUtils;
 import com.giants3.hd.utils.UrlFormatter;
 
-import java.io.File;
 import java.net.URLEncoder;
 
 /**
@@ -146,8 +145,7 @@ public class HttpUrl {
 
     public static String completeUrl(String url) {
         if (StringUtils.isEmpty(url)) return "";
-        if(url.startsWith("http")) return url;
-
+        if (url.startsWith("http")) return url;
 
 
         return additionInfo(BASE_URL + url);
@@ -156,15 +154,13 @@ public class HttpUrl {
 
     public static String additionInfo(String url) {
 
-        UrlFormatter urlFormatter=new UrlFormatter(url).append ( "appVersion",versionCode)
-                .append ( "client", CLIENT_TYPE)
-                .append( "token",token)
-                .append( "versionName",versionName);
+        UrlFormatter urlFormatter = new UrlFormatter(url).append("appVersion", versionCode)
+                .append("client", CLIENT_TYPE)
+                .append("token", token)
+                .append("versionName", versionName);
 
 
         return urlFormatter.toUrl();
-
-
 
 
     }
@@ -172,15 +168,13 @@ public class HttpUrl {
     public static String additionInfo(UrlFormatter urlFormatter) {
 
 
-
-        urlFormatter.append ( "appVersion",versionCode)
-                .append ( "client", CLIENT_TYPE)
-                .append( "token",token)
-                .append( "versionName",versionName);
-
+        urlFormatter.append("appVersion", versionCode)
+                .append("client", CLIENT_TYPE)
+                .append("token", token)
+                .append("versionName", versionName);
 
 
-        return  urlFormatter.toUrl();
+        return urlFormatter.toUrl();
 
 
     }
@@ -190,46 +184,47 @@ public class HttpUrl {
         return completeUrl(API_LOGIN);
     }
 
-    public static String getProductList(String name, int pageIndex, int pageSize,boolean withCopy) {
+    public static String getProductList(String name, int pageIndex, int pageSize, boolean withCopy) {
 
 
-        String apiUrl=BASE_URL + "/api/product/appSearch";
-        UrlFormatter formatter=new UrlFormatter(apiUrl)
-                .append("name",name)
-                .append("pageIndex",pageIndex)
-                .append("pageSize",pageSize)
-                .append("withCopy",withCopy)
-                ;
+        String apiUrl = BASE_URL + "/api/product/appSearch";
+        UrlFormatter formatter = new UrlFormatter(apiUrl)
+                .append("name", name)
+                .append("pageIndex", pageIndex)
+                .append("pageSize", pageSize)
+                .append("withCopy", withCopy);
         return additionInfo(formatter);
 
 
-
     }
+
     public static String findProductById(long productId) {
 
 
-        String apiUrl=BASE_URL + "/api/product/find";
-        UrlFormatter formatter=new UrlFormatter(apiUrl)
-                .append("id",productId)
-
-                ;
+        String apiUrl = BASE_URL + "/api/product/find";
+        UrlFormatter formatter = new UrlFormatter(apiUrl)
+                .append("id", productId);
         return additionInfo(formatter);
-
 
 
     }
 
+    public static String findProductByIds(long[] productIds) {
+
+
+        return additionInfo(BASE_URL + "api/product/findByProductIds?id=" + StringUtils.combine(productIds, StringUtils.STRING_SPLIT_COMMA));
+
+    }
 
 
     public static String findProductByNameAndVersion(String pName, String pVersion) {
-        String apiUrl=BASE_URL + "/api/product/findByNameAndVersion";
-        UrlFormatter formatter=new UrlFormatter(apiUrl)
-                .append("pName",pName)
-                .append("pVersion",pVersion)
-
-                ;
+        String apiUrl = BASE_URL + "/api/product/findByNameAndVersion";
+        UrlFormatter formatter = new UrlFormatter(apiUrl)
+                .append("pName", pName)
+                .append("pVersion", pVersion);
         return additionInfo(formatter);
     }
+
     public static String getOrderList(String name, int pageIndex, int pageSize) {
         return completeUrl(String.format(API_URL_GET_ORDER_LIST, UrlFormatter.encode(name), pageIndex, pageSize));
     }
@@ -292,9 +287,8 @@ public class HttpUrl {
      */
     public static String getUnHandleWorkFlowList(String key) {
 
-        String apiUrl=BASE_URL + API_URL_GET_UN_HANDLE_WORK_FLOW_LIST;
-        UrlFormatter formatter=new UrlFormatter(apiUrl).append("key",key)
-                 ;
+        String apiUrl = BASE_URL + API_URL_GET_UN_HANDLE_WORK_FLOW_LIST;
+        UrlFormatter formatter = new UrlFormatter(apiUrl).append("key", key);
         return additionInfo(formatter);
 
 
@@ -322,7 +316,7 @@ public class HttpUrl {
     }
 
     public static String sendWorkFlowMessage(int tranQty, long area, String memo) {
-        return completeUrl(String.format(API_URL_SEND_WORK_FLOW_MESSAGE, tranQty, area,UrlFormatter.encode( memo == null ? "" : memo)));
+        return completeUrl(String.format(API_URL_SEND_WORK_FLOW_MESSAGE, tranQty, area, UrlFormatter.encode(memo == null ? "" : memo)));
     }
 
     public static String mySendWorkFlowMessage() {
@@ -337,6 +331,7 @@ public class HttpUrl {
     public static String rollbackWorkFlowMessage(long workFlowMessageId, String memo) {
         return completeUrl(String.format(API_URL_ROLLBACK_WORK_FLOW_MESSAGE, workFlowMessageId, UrlFormatter.encode(memo)));
     }
+
     /**
      * 读取未出库订单货款列表
      *
@@ -376,8 +371,8 @@ public class HttpUrl {
     public static String getOrderItemWorkFlowReport(final String os_no, int itm) {
 
 
-        String apiUrl=BASE_URL + "api/erpWork/findOrderItemReport";
-        UrlFormatter formatter=new UrlFormatter(apiUrl).append("os_no",os_no).append("itm",itm);
+        String apiUrl = BASE_URL + "api/erpWork/findOrderItemReport";
+        UrlFormatter formatter = new UrlFormatter(apiUrl).append("os_no", os_no).append("itm", itm);
         return additionInfo(formatter);
 
 //        return completeUrl("api/erpWork/findOrderItemReport?os_no=" + os_no + "&itm=" + itm);
@@ -423,22 +418,22 @@ public class HttpUrl {
 
 
     public static String getCompleteWorkFlowOrderItems(String key, int pageIndex, int pageSize) {
-        return completeUrl("api/erpWork/searchCompleteOrderItems?key=" +UrlFormatter.encode( key) + "&pageIndex=" + pageIndex + "&pageSize=" + pageSize);
+        return completeUrl("api/erpWork/searchCompleteOrderItems?key=" + UrlFormatter.encode(key) + "&pageIndex=" + pageIndex + "&pageSize=" + pageSize);
 
 
     }
 
     public static String getOrderItemWorkMemoList(String os_no, int itm) {
 
-        String apiUrl=BASE_URL + "api/erpWork/getOrderItemWorkMemos";
-        UrlFormatter formatter=new UrlFormatter(apiUrl).append("os_no",os_no).append("itm",itm);
+        String apiUrl = BASE_URL + "api/erpWork/getOrderItemWorkMemos";
+        UrlFormatter formatter = new UrlFormatter(apiUrl).append("os_no", os_no).append("itm", itm);
         return additionInfo(formatter);
 
     }
 
     public static String getProductWorkMemoList(String productName, String pversion) {
 
-        return completeUrl("api/erpWork/getProductWorkMemos?productName=" +UrlFormatter.encode( productName) + "&pVersion=" + pversion);
+        return completeUrl("api/erpWork/getProductWorkMemos?productName=" + UrlFormatter.encode(productName) + "&pVersion=" + pversion);
     }
 
     public static String saveWorkMemo() {
@@ -468,10 +463,9 @@ public class HttpUrl {
     public static String getWorkFlowMessageByOrderItem(String osNo, int itm) {
 
 
-        String apiUrl=BASE_URL + "api/order/workFlowMessageByOrderItem";
-        UrlFormatter formatter=new UrlFormatter(apiUrl).append("osNo",osNo).append("itm",itm);
+        String apiUrl = BASE_URL + "api/order/workFlowMessageByOrderItem";
+        UrlFormatter formatter = new UrlFormatter(apiUrl).append("osNo", osNo).append("itm", itm);
         return additionInfo(formatter);
-
 
 
     }
@@ -483,7 +477,7 @@ public class HttpUrl {
     }
 
     public static String getMyWorkFlowMessage(String key, int pageIndex, int pageSize) {
-        return completeUrl("api/order/myWorkFlowMessage?key=" +UrlFormatter.encode( key) + "&pageIndex=" + pageIndex + "&pageSize=" + pageSize);
+        return completeUrl("api/order/myWorkFlowMessage?key=" + UrlFormatter.encode(key) + "&pageIndex=" + pageIndex + "&pageSize=" + pageSize);
 
 
     }
@@ -518,11 +512,8 @@ public class HttpUrl {
     }
 
 
-
-
-
-    public static String adjustWorkFlowItem(String os_no, String prd_no,String pVersion,int itm) {
-        return completeUrl(String.format("/api/erpWork/adjustItem?osNo=%s&prdNo=%s&pVersion=%s&itm=%d", UrlFormatter.encode(os_no), UrlFormatter.encode(prd_no), UrlFormatter.encode(pVersion),itm));
+    public static String adjustWorkFlowItem(String os_no, String prd_no, String pVersion, int itm) {
+        return completeUrl(String.format("/api/erpWork/adjustItem?osNo=%s&prdNo=%s&pVersion=%s&itm=%d", UrlFormatter.encode(os_no), UrlFormatter.encode(prd_no), UrlFormatter.encode(pVersion), itm));
     }
 
     public static String getAppQotations(String key, int pageIndex, int pageSize) {
@@ -534,11 +525,11 @@ public class HttpUrl {
     }
 
     public static String createTempAppQuotation() {
-        return completeUrl(String.format("/api/app/quotation/create" ));
+        return completeUrl(String.format("/api/app/quotation/create"));
     }
 
     public static String addProductToQuotation(long quotationId, long productId) {
-        return completeUrl(String.format("/api/app/quotation/addItem?quotationId=%d&productId=%d" ,quotationId,productId));
+        return completeUrl(String.format("/api/app/quotation/addItem?quotationId=%d&productId=%d", quotationId, productId));
     }
 
     public static String removeItemFromQuotation(long quotationId, int item) {
@@ -547,16 +538,16 @@ public class HttpUrl {
 
     public static String updateQuotationItemPrice(long quotationId, int itm, float price) {
 
-        return completeUrl(String.format("/api/app/quotation/updateItemPrice?quotationId=%d&itemIndex=%d&price=%f", quotationId, itm,price));
+        return completeUrl(String.format("/api/app/quotation/updateItemPrice?quotationId=%d&itemIndex=%d&price=%f", quotationId, itm, price));
     }
 
     public static String updateQuotationItemQty(long quotationId, int itm, int newQty) {
-        return completeUrl(String.format("/api/app/quotation/updateItemQuantity?quotationId=%d&itemIndex=%d&quantity=%d", quotationId, itm,newQty));
+        return completeUrl(String.format("/api/app/quotation/updateItemQuantity?quotationId=%d&itemIndex=%d&quantity=%d", quotationId, itm, newQty));
 
     }
 
     public static String updateQuotationItemDiscount(long quotationId, int itm, float newDisCount) {
-        return completeUrl(String.format("/api/app/quotation/updateItemDiscount?quotationId=%d&itemIndex=%d&discount=%f", quotationId, itm,newDisCount));
+        return completeUrl(String.format("/api/app/quotation/updateItemDiscount?quotationId=%d&itemIndex=%d&discount=%f", quotationId, itm, newDisCount));
 
     }
 
@@ -565,9 +556,9 @@ public class HttpUrl {
 
     }
 
-    public static String saveAppQuotation(   ) {
+    public static String saveAppQuotation() {
 
-        return completeUrl(String.format("/api/app/quotation/saveDetail" ));
+        return completeUrl(String.format("/api/app/quotation/saveDetail"));
     }
 
     public static String printQuotation(long quotationId) {
@@ -575,103 +566,113 @@ public class HttpUrl {
         return completeUrl(String.format("/api/app/quotation/print?quotationId=%d", quotationId));
     }
 
-    public static String getCustomerList(String key,int pageIndex,int pageSize) {
+    public static String getCustomerList(String key, int pageIndex, int pageSize) {
 
 
-        String apiUrl=BASE_URL + "/api/customer/search";
-        UrlFormatter formatter=new UrlFormatter(apiUrl)
-                .append("key",key)
-                .append("pageIndex",pageIndex)
-                .append("pageSize",pageSize)
-                ;
+        String apiUrl = BASE_URL + "/api/customer/search";
+        UrlFormatter formatter = new UrlFormatter(apiUrl)
+                .append("key", key)
+                .append("pageIndex", pageIndex)
+                .append("pageSize", pageSize);
         return additionInfo(formatter);
-
-
 
 
     }
 
     public static String updateQuotationCustomer(long quotationId, long customerId) {
-        return completeUrl(String.format("/api/app/quotation/updateCustomer?quotationId=%d&customerId=%d", quotationId,customerId));
+        return completeUrl(String.format("/api/app/quotation/updateCustomer?quotationId=%d&customerId=%d", quotationId, customerId));
     }
 
     public static String saveCustomer() {
-        return completeUrl( "/api/customer/saveOne" );
+        return completeUrl("/api/customer/saveOne");
     }
 
     public static String scanNameCard() {
-        return completeUrl( "/api/customer/scanNameCard");
+        return completeUrl("/api/customer/scanNameCard");
     }
-
 
 
     public static String scanResourceUrl(String resourceUrl) {
 
 
-
-        String apiUrl=BASE_URL + "/api/customer/scanResourceUrl";
-        UrlFormatter formatter=new UrlFormatter(apiUrl).append("resourceUrl",resourceUrl) ;
+        String apiUrl = BASE_URL + "/api/customer/scanResourceUrl";
+        UrlFormatter formatter = new UrlFormatter(apiUrl).append("resourceUrl", resourceUrl);
         return additionInfo(formatter);
 
     }
+
     public static String generateCustomerCode() {
 
 
-            return completeUrl( "/api/customer/newCustomerCode" );
+        return completeUrl("/api/customer/newCustomerCode");
     }
 
 
     public static String deleteCustomer(long customerId) {
 
-        String apiUrl=BASE_URL + "/api/customer/delete";
-        UrlFormatter formatter=new UrlFormatter(apiUrl).append("id",customerId) ;
+        String apiUrl = BASE_URL + "/api/customer/delete";
+        UrlFormatter formatter = new UrlFormatter(apiUrl).append("id", customerId);
         return additionInfo(formatter);
 
 
     }
+
     public static String updateQuotationItemMemo(long quotationId, int itemIndex, String memo) {
 
 
-        String apiUrl=BASE_URL + "api/app/quotation/updateItemMemo";
-        UrlFormatter formatter=new UrlFormatter(apiUrl).append("quotationId",quotationId).append("itemIndex",itemIndex).append("memo",memo);
+        String apiUrl = BASE_URL + "api/app/quotation/updateItemMemo";
+        UrlFormatter formatter = new UrlFormatter(apiUrl).append("quotationId", quotationId).append("itemIndex", itemIndex).append("memo", memo);
         return additionInfo(formatter);
 
 
     }
 
     public static String deleteQuotation(long quotationId) {
-        String apiUrl=BASE_URL + "api/app/quotation/delete";
-        UrlFormatter formatter=new UrlFormatter(apiUrl).append("quotationId",quotationId) ;
+        String apiUrl = BASE_URL + "api/app/quotation/delete";
+        UrlFormatter formatter = new UrlFormatter(apiUrl).append("quotationId", quotationId);
         return additionInfo(formatter);
 
     }
 
     public static String updateQuotationFieldValue(long quotationId, String field, String data) {
-        String apiUrl=BASE_URL + "api/app/quotation/updateField";
-        UrlFormatter formatter=new UrlFormatter(apiUrl).append("quotationId",quotationId).append("field",field).append("data",data) ;
+        String apiUrl = BASE_URL + "api/app/quotation/updateField";
+        UrlFormatter formatter = new UrlFormatter(apiUrl).append("quotationId", quotationId).append("field", field).append("data", data);
         return additionInfo(formatter);
 
     }
 
     public static String getWorkFlowMessageById(long workFlowMessageId) {
-        String apiUrl=BASE_URL + "api/workFlow/findMessageById";
-        UrlFormatter formatter=new UrlFormatter(apiUrl).append("workFlowMessageId",workFlowMessageId)  ;
+        String apiUrl = BASE_URL + "api/workFlow/findMessageById";
+        UrlFormatter formatter = new UrlFormatter(apiUrl).append("workFlowMessageId", workFlowMessageId);
         return additionInfo(formatter);
     }
 
     public static String getUnHandleWorkFlowMessageReport(int hourLimit) {
 
-        String apiUrl=BASE_URL + "api/workFlow/getUnHandleWorkFlowMessageReport";
-        UrlFormatter formatter=new UrlFormatter(apiUrl).append("hourLimit",hourLimit)  ;
+        String apiUrl = BASE_URL + "api/workFlow/getUnHandleWorkFlowMessageReport";
+        UrlFormatter formatter = new UrlFormatter(apiUrl).append("hourLimit", hourLimit);
         return additionInfo(formatter);
 
     }
 
     public static String findWorkFlowItemsUseCase(String osNo, int itm, String flowCode) {
 
-        String apiUrl=BASE_URL + "api/erpWork/findErpWorkFlowItems";
-        UrlFormatter formatter=new UrlFormatter(apiUrl).append("osNo",osNo)  .append("itm",itm)  .append("flowCode",flowCode)  ;
+        String apiUrl = BASE_URL + "api/erpWork/findErpWorkFlowItems";
+        UrlFormatter formatter = new UrlFormatter(apiUrl).append("osNo", osNo).append("itm", itm).append("flowCode", flowCode);
         return additionInfo(formatter);
 
+    }
+
+    /**
+     * 保存并审核详细数据
+     *
+     * @return
+     */
+    public static String saveAndVerifyQuotationDetail() {
+        return additionInfo(BASE_URL + "api/quotation/verify");
+    }
+
+    public static String unVerifyQuotation(long quotationId) {
+        return additionInfo(BASE_URL + "api/quotation/unVerify?quotationId=" + quotationId);
     }
 }

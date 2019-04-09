@@ -120,7 +120,15 @@ public class PushService extends AbstractService {
         switch (result.ret) {
 
             case UmengPushResult.RET_SUCCESS:
-
+                try {
+                    PushErrorReport report = new PushErrorReport();
+                    report.code =  UmengPushResult.RET_SUCCESS;
+                    report.status =0;
+                    report.message =message;
+                    pushErrorReportRepository.save(report);
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                }
 
                 break;
             case UmengPushResult.RET_FAIL:

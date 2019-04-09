@@ -1,11 +1,14 @@
 package com.giants3.hd.android.mvp.MainAct;
 
+import com.giants3.hd.android.adapter.WorkFLowMainMenuAdapter;
 import com.giants3.hd.android.mvp.NewModel;
 import com.giants3.hd.android.mvp.NewPresenter;
 import com.giants3.hd.android.mvp.NewViewer;
 import com.giants3.hd.appdata.AUser;
 import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.noEntity.FileInfo;
+
+import java.util.List;
 
 import rx.Subscriber;
 
@@ -43,6 +46,8 @@ public interface WorkFlowMainActMvp {
         void attemptUpdateNewMessageCount();
 
         void updatePassword();
+
+        void init(AUser loginUser);
     }
 
     interface Viewer extends NewViewer {
@@ -54,5 +59,7 @@ public interface WorkFlowMainActMvp {
         void setNewWorkFlowMessageCount(int count);
 
         void showApkUpdate(FileInfo fileInfo);
+
+        void bindMenu(List<WorkFLowMainMenuAdapter.MenuItem> menuItems);
     }
 }

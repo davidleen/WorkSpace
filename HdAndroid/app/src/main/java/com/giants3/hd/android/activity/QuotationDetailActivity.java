@@ -1,13 +1,30 @@
 package com.giants3.hd.android.activity;
 
-import android.net.Uri;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.giants3.hd.android.R;
+import com.giants3.hd.android.adapter.ItemListAdapter;
+import com.giants3.hd.android.entity.TableData;
 import com.giants3.hd.android.fragment.QuotationDetailFragment;
+import com.giants3.hd.android.fragment.ValueEditDialogFragment;
+import com.giants3.hd.android.helper.AuthorityUtil;
+import com.giants3.hd.android.helper.SharedPreferencesHelper;
+import com.giants3.hd.android.helper.ToastHelper;
+import com.giants3.hd.android.mvp.quotation.QuotationDetailMVP;
+import com.giants3.hd.android.mvp.quotation.QuotationDetailPresenterImpl;
+import com.giants3.hd.data.utils.GsonUtils;
+import com.giants3.hd.entity.Quotation;
+import com.giants3.hd.entity.QuotationItem;
+import com.giants3.hd.entity.QuotationXKItem;
+import com.giants3.hd.entity.QuoteAuth;
+import com.giants3.hd.exception.HdException;
+import com.giants3.hd.noEntity.QuotationDetail;
 
 import butterknife.Bind;
 
@@ -17,69 +34,306 @@ import butterknife.Bind;
  * item_work_flow_report details are presented side-by-side with a list of items
  * in a {@link ProductListActivity}.
  */
-public class QuotationDetailActivity extends BaseActivity  implements  QuotationDetailFragment.OnFragmentInteractionListener{
+public class QuotationDetailActivity extends BaseHeadViewerActivity<QuotationDetailPresenterImpl> implements QuotationDetailMVP.Viewer {
+// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
+    public static String ARG_ITEM = "PRODUCT_MATERIAL_TYPE";
+
+    private static final int MAX_MEMO_ROW_LINE = 3;
 
 
+    ItemListAdapter<QuotationItem> quotationItemItemListAdapter;
+    ItemListAdapter<QuotationXKItem> xkquotationItemItemListAdapter;
+    private QuotationDetailFragment.OnFragmentInteractionListener mListener;
 
-    @Bind(R.id.detail_toolbar )
-    Toolbar toolbar  ;
+    @Bind(R.id.listView)
+    ListView listView;
+
+
+    @Bind(R.id.cus_no)
+    TextView cus_no;
+
+    @Bind(R.id.qDate)
+    TextView qDate;
+    @Bind(R.id.validDate)
+    TextView validDate;
+    @Bind(R.id.moneyType)
+    TextView moneyType;
+    @Bind(R.id.sal)
+    TextView sal;
+    @Bind(R.id.memo)
+    TextView memo;
+    @Bind(R.id.showMore)
+    View showMore;
+    @Bind(R.id.more_text)
+    View more_text;
+    @Bind(R.id.qNumber)
+    TextView qNumber;
+
+    @Bind(R.id.check)
+    public View check;
+    @Bind(R.id.overdue)
+    public View overdue;
+    @Bind(R.id.verify)
+    public View verify;
+    @Bind(R.id.unVerify)
+    public View unVerify;
+
+    @Bind(R.id.verifyHint)
+    public View verifyHint;
+
+
+    private TableData xkQuotationTable;
+
+    private TableData quotationTable;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_product_detail);
-        setSupportActionBar(toolbar);
+        setTitle("报价单详情");
 
 
-
-        // Show the Up button in the action bar.
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle("报价详情");
+        Quotation quotation;
+        try {
+            quotation = GsonUtils.fromJson(getIntent().getStringExtra(ARG_ITEM), Quotation.class);
+        } catch (HdException e) {
+            e.printStackTrace();
+            ToastHelper.show("参数异常");
+            return;
         }
 
-        // savedInstanceState is non-null when there is fragment state
-        // saved from previous configurations of this activity
-        // (e.g. when rotating the screen from portrait to landscape).
-        // In this case, the fragment will automatically be re-added
-        // to its container so we don't need to manually add it.
-        // For more information, see the Fragments API guide at:
-        //
-        // http://developer.android.com/guide/components/fragments.html
-        //
-        if (savedInstanceState == null) {
-            // Create the detail fragment and add it to the activity
-            // using a fragment transaction.
-            Bundle arguments = new Bundle();
-            arguments.putString(QuotationDetailFragment.ARG_ITEM,
-                    getIntent().getStringExtra(QuotationDetailFragment.ARG_ITEM));
-            QuotationDetailFragment fragment = new QuotationDetailFragment();
-            fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.product_detail_container, fragment)
-                    .commit();
+        getPresenter().init(quotation);
+        bindQuotation(quotation);
+
+        xkQuotationTable = TableData.resolveData(this, R.array.table_head_xkquotation_item);
+        quotationTable = TableData.resolveData(this, R.array.table_head_quotation_item);
+
+
+        QuoteAuth quoteAuth = SharedPreferencesHelper.getInitData().quoteAuth;
+
+        if (quoteAuth != null) {
+
+            //根据权限 移除部分字段显示
+            if (!quoteAuth.costVisible) {
+                quotationTable.removeField("cost");
+                xkQuotationTable.removeField("cost");
+                xkQuotationTable.removeField("cost2");
+            }
+            if (!quoteAuth.fobVisible) {
+                quotationTable.removeField("price");
+                xkQuotationTable.removeField("price");
+                xkQuotationTable.removeField("price2");
+            }
         }
+
+        if(quoteAuth != null&&quoteAuth.fobEditable)
+        {
+
+        }else
+        {
+            xkQuotationTable.removeField("cost_price_ratio");
+            xkQuotationTable.removeField("cost_price_ratio");
+        }
+
+
+        quotationItemItemListAdapter = new ItemListAdapter<QuotationItem>(this);
+        xkquotationItemItemListAdapter = new ItemListAdapter<QuotationXKItem>(this);
+        quotationItemItemListAdapter.setTableData(quotationTable);
+        xkquotationItemItemListAdapter.setTableData(xkQuotationTable);
+
+
+        showMore.setOnClickListener(this);
+
+
+        getPresenter().loadData();
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+                //彈窗提示修改利潤比
+                if (SharedPreferencesHelper.getInitData().quoteAuth.fobEditable && !getPresenter().isVerifiedQuotation()) {
+
+                    float ratio = 0;
+                    final Object o = parent.getItemAtPosition(position);
+                    if (o instanceof QuotationXKItem) {
+
+
+                        ratio = ((QuotationXKItem) o).cost_price_ratio;
+                    } else {
+                        ratio = ((QuotationItem) o).cost_price_ratio;
+                    }
+
+                    ValueEditDialogFragment dialogFragment = new ValueEditDialogFragment();
+                    final float finalRatio = ratio;
+                    dialogFragment.set("修改利润比", String.valueOf(finalRatio), new ValueEditDialogFragment.ValueChangeListener() {
+                        @Override
+                        public void onValueChange(String title, String oldValue, String newValue) {
+
+                            float newRatio = 0;
+                            try {
+                                newRatio = Float.valueOf(newValue);
+                            } catch (Throwable t) {
+                            }
+                            if (newRatio == 0 || newRatio > 1) {
+                                ToastHelper.show("输入的利润比不正确");
+                                return;
+                            }
+                            if (newRatio == finalRatio) {
+                                ToastHelper.show("利润比没有改变");
+                                return;
+
+                            }
+                            if (o instanceof QuotationXKItem) {
+
+                                getPresenter().loadProductAndCalculatePrice((QuotationXKItem) o, newRatio, xkquotationItemItemListAdapter);
+
+                            } else {
+                                getPresenter().loadProductAndCalculatePrice((QuotationItem) o, newRatio, quotationItemItemListAdapter);
+                            }
+
+
+                        }
+                    });
+                    dialogFragment.setMultiableText(false);
+                    dialogFragment.show(getSupportFragmentManager(), null);
+
+                    return true;
+
+                }
+                return false;
+
+
+            }
+        });
+
+        verify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                new AlertDialog.Builder(QuotationDetailActivity.this).setTitle("确定保存利润比修改，并将该报价单设置为已审核?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        getPresenter().verify();
+                    }
+                }).setNegativeButton("取消", null).create().show();
+
+
+            }
+        });
+
+        unVerify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                new AlertDialog.Builder(QuotationDetailActivity.this).setTitle("是否撤销报价单的审核？（未审核的报价单可以修改，但不能导出excel）").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        getPresenter().unVerify();
+                    }
+                }).setNegativeButton("取消", null).create().show();
+
+
+            }
+        });
+
+
+    }
+
+
+    @Override
+    protected QuotationDetailPresenterImpl onLoadPresenter() {
+        return new QuotationDetailPresenterImpl();
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            // This ID represents the Home or Up button. In the case of this
-            // activity, the Up button is shown. For
-            // more details, see the Navigation pattern on Android Design:
-            //
-            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-            //
-            onBackPressed();
-            return true;
+    protected void initEventAndData(Bundle savedInstance) {
+
+    }
+
+
+    @Override
+    protected View getContentView() {
+        return getLayoutInflater().inflate(R.layout.activity_quotation_detail, null);
+    }
+
+    private void bindQuotation(Quotation quotation) {
+
+        qNumber.setText(quotation.qNumber);
+        qDate.setText(quotation.qDate);
+        cus_no.setText(quotation.customerCode + quotation.customerName);
+        sal.setText(quotation.salesman);
+        validDate.setText(quotation.vDate);
+        moneyType.setText(quotation.currency);
+
+        memo.setText(quotation.memo);
+        memo.setMaxLines(MAX_MEMO_ROW_LINE);
+        memo.post(new Runnable() {
+            @Override
+            public void run() {
+
+
+                int count = MAX_MEMO_ROW_LINE;
+                boolean more = false;
+
+
+                if (memo.getLineCount() == MAX_MEMO_ROW_LINE) {
+
+
+                }
+
+
+                showMore.setVisibility(more ? View.VISIBLE : View.GONE);
+                more_text.setVisibility(more ? View.VISIBLE : View.GONE);
+
+
+            }
+        });
+
+        if (listView.getAdapter() == null) {
+            if (quotation.quotationTypeId == Quotation.QUOTATION_TYPE_XK) {
+                listView.setAdapter(xkquotationItemItemListAdapter);
+            } else {
+                listView.setAdapter(quotationItemItemListAdapter);
+            }
         }
-        return super.onOptionsItemSelected(item);
+
+
+        check.setSelected(quotation.isVerified);
+        boolean isOverdueAndNotCheck = !quotation.isVerified && quotation.isOverdue();
+        check.setVisibility(isOverdueAndNotCheck ? View.GONE : View.VISIBLE);
+        overdue.setVisibility(isOverdueAndNotCheck ? View.VISIBLE : View.GONE);
+        boolean isVerifiable = AuthorityUtil.getInstance().verifyQuotation();
+        verify.setVisibility(isVerifiable && !quotation.isVerified ? View.VISIBLE : View.GONE);
+        unVerify.setVisibility(isVerifiable && quotation.isVerified ? View.VISIBLE : View.GONE);
+
+        verifyHint.setVisibility(isVerifiable && !quotation.isVerified ? View.VISIBLE : View.GONE);
+    }
+
+
+    @Override
+    public void bindData(QuotationDetail data) {
+
+        bindQuotation(data.quotation);
+
+        quotationItemItemListAdapter.setDataArray(data.items);
+        xkquotationItemItemListAdapter.setDataArray(data.XKItems);
+
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void showUnSaveAlert() {
 
+    }
+
+
+    @Override
+    public void updateListData() {
+
+        quotationItemItemListAdapter.notifyDataSetChanged();
+        xkquotationItemItemListAdapter.notifyDataSetChanged();
     }
 }

@@ -120,8 +120,6 @@ public class Panel_QuotationDetail extends BasePanel implements QuotationDetailV
 
 
                 //读取产品数据  重新计算fob值
-
-
                 UseCaseFactory.getInstance().createGetProductByIdUseCase(quotationItem.productId).execute(new RemoteDataSubscriber<Product>(Panel_QuotationDetail.this) {
                     @Override
                     protected void handleRemoteData(RemoteData<Product> data) {

@@ -16,8 +16,8 @@ import javax.swing.*;
 public class StockOutItemTableModel extends BaseTableModel<ErpStockOutItem> {
 
     public static final String DESCRIBE = "describe";
-    public static String[] columnNames = new String[]{ "序号","图片",                                "货号",       "版本号",    "产品描述"  ,    "柜号        封签号"   , "柜型"   ,"合同号", "客号",    "客号订单号", "单位","单价","数量" ,  "金额"  ,"每箱套数",  "箱数"    ,"箱规"    ,"箱规体积" ,"总体积",  "净重" ,"毛重",};
-    public static int[] columnWidth=new int[]{       60, ImageUtils.MAX_PRODUCT_MINIATURE_WIDTH,    120,          120,            200,           160,                     120,    120,       100,       100        ,  40 ,     60,   40 ,       60       ,40  ,         40    ,   120      ,    60       ,     60    ,      40  ,40   };
+    public static String[] columnNames = new String[]{ "序号","图片",                                "货号",       "版本号",    "产品描述"  ,    "柜号     ","   封签号"   , "柜型"   ,"合同号", "客号",    "客号订单号", "单位","单价","数量" ,  "金额"  ,"每箱套数",  "箱数"    ,"箱规"    ,"箱规体积" ,"总体积",  "净重" ,"毛重",};
+    public static int[] columnWidth=new int[]{       60, ImageUtils.MAX_PRODUCT_MINIATURE_WIDTH,    120,          120,            200,           160,      160,               120,    120,       100,       100        ,  40 ,     60,   40 ,       60       ,40  ,         40    ,   120      ,    60       ,     60    ,      40  ,40   };
 
     public static final String KHXG = "khxg";
     public static final String GUIHAO = "guihao";
@@ -26,9 +26,9 @@ public class StockOutItemTableModel extends BaseTableModel<ErpStockOutItem> {
     public static final String AMT = "amt";
     public static final String XS = "xs";
     public static final String ZXGTJ = "zxgtj";
-    public static String[] fieldName = new String[]{  "itm", "thumbnail",                                   "prd_no",  "pVersion",    DESCRIBE, GUIHAO+FENGQIANHAO,            "guixing" ,"os_no",   "bat_no","cus_os_no", "unit"  , UP,  "stockOutQty", AMT, "so_zxs"     , XS, KHXG,    "xgtj", ZXGTJ,    "jz1",  "mz"   };
+    public static String[] fieldName = new String[]{  "itm", "thumbnail",                                   "prd_no",  "pVersion",    DESCRIBE, GUIHAO,FENGQIANHAO,            "guixing" ,"os_no",   "bat_no","cus_os_no", "unit"  , UP,  "stockOutQty", AMT, "so_zxs"     , XS, KHXG,    "xgtj", ZXGTJ,    "jz1",  "mz"   };
 
-    public  static Class[] classes = new Class[]{Object.class,ImageIcon.class,                       Object.class,   Object.class, Object.class, StockOutDetailFrame.GuiInfo.class,  Object.class};
+    public  static Class[] classes = new Class[]{Object.class,ImageIcon.class,                       Object.class,   Object.class, Object.class,String.class,String.class,  Object.class};
 
 
     public int[] multiLineColumn=new int[]{StringUtils.index(fieldName,KHXG)};
@@ -58,12 +58,13 @@ public class StockOutItemTableModel extends BaseTableModel<ErpStockOutItem> {
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
 
-        if(columnIndex==StringUtils.index(fieldName,DESCRIBE))
+        if(columnIndex==StringUtils.index(fieldName,DESCRIBE)) {
 
-            return true;
-        if(columnIndex==StringUtils.index(fieldName,GUIHAO+FENGQIANHAO))
 
-            return true;
+            if(!StringUtils.isEmpty(getItem(rowIndex).ps_no))
+                 return true;
+
+        }
 
 
         return super.isCellEditable(rowIndex, columnIndex);
@@ -79,24 +80,14 @@ public class StockOutItemTableModel extends BaseTableModel<ErpStockOutItem> {
             if(!priceVisible) return "***";
         }
 
-        if(columnIndex==StringUtils.index(fieldName,GUIHAO+FENGQIANHAO))
-        {
 
-                    ;
-            if(item!=null)
-            {
-                return (StringUtils.isEmpty(item.guihao)?"":item.guihao)+"       "+(StringUtils.isEmpty(item.fengqianhao)?"":item.fengqianhao);
-            }else
-
-            return "";
-        }
         if(columnIndex==StringUtils.index(fieldName,XS))
         {
-            return item.stockOutQty/item.so_zxs;
+            return item.so_zxs==0?0:( item.stockOutQty/item.so_zxs);
         }
         if(columnIndex==StringUtils.index(fieldName,ZXGTJ))
         {
-            return FloatHelper.scale(item.stockOutQty/item.so_zxs*item.xgtj);
+            return item.so_zxs==0?0:FloatHelper.scale(item.stockOutQty/item.so_zxs*item.xgtj);
         }
         if(columnIndex==StringUtils.index(fieldName,AMT))
         {

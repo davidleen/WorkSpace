@@ -193,7 +193,7 @@ public class Report_Excel_StockOut_List extends  AbstractExcelReporter<ErpStockO
                 addString(writableSheet, stockOutItem.describe, 2, row);
                 //包装
                 addString(writableSheet, stockOutItem.unit, 3, row);
-                int itemXs= stockOutItem.stockOutQty/ stockOutItem.so_zxs ;
+                int itemXs=stockOutItem.so_zxs==0?0: (stockOutItem.stockOutQty/ stockOutItem.so_zxs) ;
 
                 addNumber(writableSheet, itemXs, 5, row);
 

@@ -3,6 +3,7 @@ package com.giants3.hd.server.controller;
 
 import com.giants3.hd.entity.User;
 import com.giants3.hd.entity_erp.ErpStockOut;
+import com.giants3.hd.exception.HdException;
 import com.giants3.hd.noEntity.ErpStockOutDetail;
 import com.giants3.hd.server.service.StockService;
 import com.giants3.hd.server.utils.Constraints;
@@ -58,7 +59,13 @@ public class StockController extends BaseController {
     RemoteData<ErpStockOutDetail> save(@RequestBody ErpStockOutDetail stockOutDetail) {
 
 
-        RemoteData<ErpStockOutDetail> detailRemoteData = stockService.saveOutDetail(stockOutDetail);
+        RemoteData<ErpStockOutDetail> detailRemoteData = null;
+        try {
+            detailRemoteData = stockService.saveOutDetail(stockOutDetail);
+        } catch (HdException e) {
+            e.printStackTrace();
+            return wrapError(e.getMessage());
+        }
         return detailRemoteData;
     }
 

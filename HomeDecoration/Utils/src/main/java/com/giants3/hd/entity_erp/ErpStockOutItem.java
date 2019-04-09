@@ -78,6 +78,9 @@ public class ErpStockOutItem   implements Serializable{
 
 
 
+    public int qty2;
+    public int so_zxs2;
+
 
 
     //以下是本系统数据 关联过来
@@ -150,4 +153,8 @@ public class ErpStockOutItem   implements Serializable{
      */
     public String jmcc;
 
+
+
+
+    public String ps_no;
 }

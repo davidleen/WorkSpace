@@ -77,6 +77,7 @@
         <item>@string/title_activity_customer_list</item>
     </string-array>
 
+
     <string-array name="product_menu_title">
         <item>@string/product_list</item>
         <item>@string/material_list</item>
@@ -88,6 +89,15 @@
         <item>com.giants3.hd.android.fragment.CustomerListFragment</item>
 
     </string-array>
+
+    <string-array name="quotation_inner_menu_title">
+        <item>@string/title_activity_inner_quotation</item>
+
+    </string-array>
+    <string-array name="quotation_inner_menu_fragemnt_class">
+        <item>com.giants3.hd.android.fragment.QuotationListFragment</item>
+    </string-array>
+
  <string-array name="product_menu_fragemnt_class">
         <item>com.giants3.hd.android.fragment.ProductListFragment</item>
         <item>com.giants3.hd.android.fragment.MaterialListFragment</item>
@@ -96,6 +106,7 @@
 
 
     <string name="title_activity_app_quotation">广交会报价</string>
+    <string name="title_activity_inner_quotation" >估价部报价</string>
     <string name="title_activity_customer_list">客户列表</string>
     <string name="cancel">取消</string>
     <string name="confirm">确定</string>
@@ -106,6 +117,7 @@
     <string name="permission_camera" >应用需要使用相机功能</string>
     <string name="notify_channel_name" >@string/app_name</string>
     <string name="notify_channel_id" >hdandroid</string>
+
 
 
 </resources>

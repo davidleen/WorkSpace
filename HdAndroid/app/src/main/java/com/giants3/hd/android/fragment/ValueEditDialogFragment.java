@@ -23,8 +23,7 @@ public class ValueEditDialogFragment<T extends Serializable> extends DialogFragm
 
 
     private Class<?> valueType;
-    private String title;
-    private Object value;
+
     private String titleString;
     private String oldValue;
     private ValueChangeListener listener;

@@ -179,7 +179,7 @@ public class Report_Excel_StockOut_Qingguan_Invoice extends SimpleExcelReporter<
             addString(writableSheet, outItem.unit, 2, row);
 
             //单款箱数
-            final int xs = (outItem.stockOutQty - 1) / outItem.so_zxs + 1;
+            final int xs =outItem.so_zxs==0?0:( (outItem.stockOutQty - 1) / outItem.so_zxs + 1);
             totalXs += xs;
             //净重
             addNumber(writableSheet, xs, 3, row);
@@ -291,7 +291,7 @@ public class Report_Excel_StockOut_Qingguan_Invoice extends SimpleExcelReporter<
 
 
                 //单款箱数
-                final int xs = (outItem.stockOutQty - 1) / outItem.so_zxs + 1;
+                final int xs =outItem.so_zxs==0?0: ((outItem.stockOutQty - 1) / outItem.so_zxs + 1);
                 totalXs += xs;
 
                 addNumber(writableSheet, xs, 3, row);
@@ -437,7 +437,7 @@ public class Report_Excel_StockOut_Qingguan_Invoice extends SimpleExcelReporter<
                 //addNumber(writableSheet, outItem.stockOutQty, 3, row);
                 totalStockOutQty += outItem.stockOutQty;
                 //单款箱数
-                final int xs = (outItem.stockOutQty - 1) / outItem.so_zxs + 1;
+                final int xs =outItem.so_zxs==0?0:( (outItem.stockOutQty - 1) / outItem.so_zxs + 1);
                 totalXs += xs;
 
                 addNumber(writableSheet, xs, 3, row);

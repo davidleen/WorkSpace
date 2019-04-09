@@ -93,12 +93,11 @@ public class Report_Excel_StockOut_XK_Invoice extends SimpleExcelReporter<ErpSto
     public void exportSheetHead(ErpStockOutDetail data, Sheet writableSheet) {
         //发票单号
         addString(writableSheet, "Invoice No.:" + data.erpStockOut.ck_no, 8, 4);
-        //Po号
-        addString(writableSheet, "PO#:" , 8, 5);
-        // S/C NO:
-        addString(writableSheet, "S/C NO:", 8, 6);
-        //Date:
-        addString(writableSheet, "Date:" + data.erpStockOut.ck_dd, 8, 7);
+
+////        // S/C NO:
+////        addString(writableSheet, "S/C NO:", 8, 6);
+//        //Date:
+//        addString(writableSheet, "Date:" + data.erpStockOut.ck_dd, 8, 7);
         //Country of origin:
        //   addString(writableSheet, "Country of origin:"+"FUZHOU", 10, 8);
 
@@ -119,10 +118,10 @@ public class Report_Excel_StockOut_XK_Invoice extends SimpleExcelReporter<ErpSto
         ApiManager apiManager = Guice.createInjector().getInstance(ApiManager.class);
 
         Set<String> orders = new HashSet<>();
-        Set<String> pos = new HashSet<>();
+       // Set<String> pos = new HashSet<>();
         for (ErpStockOutItem item : data.items) {
             orders.add(item.os_no);
-            pos.add(item.cus_os_no);
+           // pos.add(item.cus_os_no);
         }
         for (String os_no : orders) {
 
@@ -143,7 +142,7 @@ public class Report_Excel_StockOut_XK_Invoice extends SimpleExcelReporter<ErpSto
         //
         addString(writableSheet, maitous.toString(), 1, 11);
 
-        addString(writableSheet, "PO#:" + StringUtils.combine(pos), 8, 5);
+//        addString(writableSheet, "PO#:" + StringUtils.combine(pos), 8, 5);
 
     }
 
@@ -220,23 +219,25 @@ public class Report_Excel_StockOut_XK_Invoice extends SimpleExcelReporter<ErpSto
 
 
                 //单款箱数
-                final int xs = (outItem.stockOutQty - 1) / outItem.so_zxs + 1;
+                final int xs = outItem.so_zxs==0?0:((outItem.stockOutQty - 1) / outItem.so_zxs + 1);
                 totalXs += xs;
 
                 addNumber(writableSheet, xs, 4, row);
                 //数量
                 addNumber(writableSheet, outItem.stockOutQty, 5, row);
 
-                addString(writableSheet, outItem.hsCode, 7, row);
+
+                addString(writableSheet, outItem.os_no, 7, row);
+                addString(writableSheet, outItem.hsCode, 8, row);
 //描述
-                addString(writableSheet, outItem.describe, 8, row);
-               addString(writableSheet, outItem.jmcc, 9, row);
+                addString(writableSheet, outItem.describe, 9, row);
+               addString(writableSheet, outItem.jmcc, 10, row);
                 //fob
 
-                addNumber(writableSheet, outItem.up, 10, row);
+                addNumber(writableSheet, outItem.up, 11, row);
 
                 //amount
-                addNumber(writableSheet, FloatHelper.scale(outItem.up * outItem.stockOutQty), 11, row);
+                addNumber(writableSheet, FloatHelper.scale(outItem.up * outItem.stockOutQty), 12, row);
 
 //                //Product size (inch)
 //                addString(writableSheet, outItem.specInch, 8, row);
@@ -262,7 +263,7 @@ public class Report_Excel_StockOut_XK_Invoice extends SimpleExcelReporter<ErpSto
         }
         addString(writableSheet, totalXs + " /CTNS", 4, row);
         addString(writableSheet, totalStockOutQty + " /PCS", 5, row);
-        addNumber(writableSheet, totalAmt, 11, row);
+        addNumber(writableSheet, totalAmt, 12, row);
 
     }
 
@@ -369,7 +370,7 @@ public class Report_Excel_StockOut_XK_Invoice extends SimpleExcelReporter<ErpSto
                 //addNumber(writableSheet, outItem.stockOutQty, 3, row);
                 totalStockOutQty += outItem.stockOutQty;
                 //单款箱数
-                final int xs = (outItem.stockOutQty - 1) / outItem.so_zxs + 1;
+                final int xs =outItem.so_zxs==0?0:( (outItem.stockOutQty - 1) / outItem.so_zxs + 1);
                 totalXs += xs;
 
                 addNumber(writableSheet, xs, 5, row);

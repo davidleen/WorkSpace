@@ -10,8 +10,8 @@
 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="5dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="5dp">
 
 
         <LinearLayout
@@ -74,6 +74,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
+
                 <TextView
 
                     android:layout_width="81dp"
@@ -114,7 +115,6 @@
 
 
             </LinearLayout>
-
 
 
         </LinearLayout>
@@ -227,8 +227,8 @@
                 android:id="@+id/more_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
                 android:layout_below="@+id/memo"
+                android:layout_alignParentLeft="true"
                 android:layout_marginLeft="30dp"
                 android:text="......" />
 
@@ -236,14 +236,14 @@
                 android:id="@+id/showMore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_below="@+id/memo"
+                android:layout_alignParentRight="true"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/button_white_round_selector"
-                android:paddingBottom="2dp"
                 android:paddingLeft="5dp"
-                android:paddingRight="5dp"
                 android:paddingTop="2dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="2dp"
                 android:text="查看详细" />
 
 
@@ -251,8 +251,8 @@
                 android:id="@+id/check"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:layout_marginRight="15dp"
                 android:layout_marginBottom="15dp"
                 android:src="@drawable/icon_verify_selector" />
@@ -262,8 +262,8 @@
                 android:id="@+id/overdue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:layout_marginRight="15dp"
                 android:layout_marginBottom="15dp"
                 android:src="@mipmap/overdue" />
@@ -283,14 +283,32 @@
                 android:id="@+id/listView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:divider="@drawable/icon_divider"
                 android:background="@drawable/background_gray_border"
+                android:divider="@drawable/icon_divider"
                 android:fillViewport="false"
 
 
                 android:orientation="vertical" />
 
         </HorizontalScrollView>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <Button
+                android:id="@+id/verify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="审核" />
+
+
+
+
+
+        </LinearLayout>
 
 
     </LinearLayout>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.giants.hd.desktop.viewImpl.Panel_StockOutDetail">
   <grid id="27dc6" binding="root" layout-manager="FormLayout">
-    <rowspec value="center:max(m;80px):noGrow"/>
+    <rowspec value="center:100dlu:noGrow"/>
     <rowspec value="top:185px:noGrow"/>
     <rowspec value="top:4dlu:noGrow"/>
     <rowspec value="center:425px:grow"/>
@@ -10,12 +10,10 @@
     <colspec value="fill:d:grow"/>
     <colspec value="left:4dlu:noGrow"/>
     <colspec value="fill:735px:grow"/>
-    <colspec value="left:4dlu:noGrow"/>
+    <colspec value="left:150dlu:noGrow"/>
     <colspec value="fill:max(d;4px):noGrow"/>
-    <colspec value="left:4dlu:noGrow"/>
-    <colspec value="fill:max(m;150dlu):noGrow"/>
     <constraints>
-      <xy x="20" y="20" width="1874" height="1013"/>
+      <xy x="20" y="20" width="1942" height="1315"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -253,13 +251,13 @@
       </grid>
       <grid id="da434" layout-manager="BorderLayout" hgap="0" vgap="0">
         <constraints>
-          <grid row="0" column="6" row-span="2" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
           <forms defaultalign-vert="false"/>
         </constraints>
         <properties>
-          <toolTipText value="柜号处理"/>
+          <toolTipText value="柜号信息"/>
         </properties>
-        <border type="line" title="柜号处理相关" title-position="2"/>
+        <border type="line" title="柜号信息" title-position="2"/>
         <children>
           <scrollpane id="86bd4">
             <constraints border-constraint="Center"/>
@@ -274,7 +272,7 @@
               </component>
             </children>
           </scrollpane>
-          <grid id="66877" layout-manager="GridLayoutManager" row-count="4" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="66877" binding="panel_input" layout-manager="GridLayoutManager" row-count="4" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints border-constraint="North"/>
             <properties/>
