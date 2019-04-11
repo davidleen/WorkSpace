@@ -10,10 +10,14 @@ import com.giants3.android.frame.util.Log;
 import com.giants3.android.frame.util.Utils;
 import com.giants3.android.network.ApiConnection;
 import com.giants3.android.push.PushProxy;
+import com.giants3.android.reader.domain.DefaultUseCaseHandler;
 import com.giants3.android.reader.domain.GsonUtils;
 import com.giants3.android.reader.domain.ResApiFactory;
+import com.giants3.android.reader.domain.UseCaseFactory;
 import com.rnmap_wb.android.dao.DaoManager;
 import com.rnmap_wb.android.data.LoginResult;
+import com.rnmap_wb.android.data.RemoteData;
+import com.rnmap_wb.android.data.Task;
 import com.rnmap_wb.helper.AndroidUtils;
 import com.rnmap_wb.message.NotificationUtils;
 import com.rnmap_wb.message.PushManager;
@@ -69,8 +73,30 @@ public class MainApplication extends Application {
 
         PushProxy.config(this, new com.rnmap_wb.android.api.push.RegisterCallback() {
             @Override
-            public void onSuccess(String... deviceToken) {
+            public void onSuccess(final String... deviceToken) {
                 SettingContent.getInstance().setDeviceToken(deviceToken[0]);
+                UseCaseFactory.getInstance().createPostUseCase(HttpUrl.uploadDeviceToken(deviceToken[0]), Void.class).execute(new DefaultUseCaseHandler<RemoteData<Void>>() {
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(RemoteData<Void> remoteData) {
+
+
+                        if (remoteData.isSuccess()) {
+
+
+                        } else {
+                            Log.e(remoteData.errmsg);
+                        }
+                    }
+
+
+                });
                 Log.e(SettingContent.getInstance().getToken());
             }
 
@@ -88,13 +114,13 @@ public class MainApplication extends Application {
 
 
                 //ToastHelper.show(message);
-                com.rnmap_wb.android.api.push.PushMessage pushMessage = null;
+                Task task   = null;
                 try {
-                    pushMessage = GsonUtils.fromJson(message, com.rnmap_wb.android.api.push.PushMessage.class);
+                    task = GsonUtils.fromJson(message, Task.class);
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }
-                PushManager.getInstance().handleMessage(pushMessage);
+                PushManager.getInstance().handleMessage(task);
             }
         });
 

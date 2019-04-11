@@ -272,7 +272,8 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
 
 
         MapElement edittingMapElement = getModel().getEdittingMapElement();
-        getView().removeMapElement(edittingMapElement);
+        if (edittingMapElement!=null&&(edittingMapElement.type == MapElement.TYPE_MAPPING_LINE_DEGREE || edittingMapElement.type == MapElement.TYPE_MAPPING_LINE))
+             getView().removeMapElement(edittingMapElement);
 
         List<MapElement> mapElements = getModel().getMapElements();
         List<MapElement> mappings = new ArrayList<>();
@@ -402,6 +403,7 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
     private void addMappingTypeLine(GeoPoint p, int elementType) {
         MapElement mapElement = getModel().getEdittingMapElement();
 
+        getView().removeMapElement(mapElement);
         if (mapElement == null || mapElement.type != elementType) {
             mapElement = new MapElement();
             mapElement.type = elementType;

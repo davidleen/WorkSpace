@@ -236,6 +236,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
         btnOffLine.setOnClickListener(this);
         btnOnline.setOnClickListener(this);
         clear.setOnClickListener(this);
+        clear.setVisibility(BuildConfig.DEBUG?View.VISIBLE:View.GONE);
         mylocation.setOnClickListener(this);
         feedback.setOnClickListener(this);
         play.setOnClickListener(this);
@@ -1225,6 +1226,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
     @Override
     public void removeMapElement(MapElement replaced) {
+        if(replaced==null) return;
         Object remove = elementObjectMap.remove(replaced);
         objectMapElementHashMap.remove(remove);
         if (remove instanceof OverlayWithIW) {
@@ -1234,6 +1236,9 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
 
     @Override
     public void showMapElement(MapElement element) {
+
+
+
 
         List<GeoPoint> latLngs = LatLngUtil.convertStringToGeoPoints(element.latLngs);
 

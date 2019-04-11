@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.giants3.android.ToastHelper;
 import com.giants3.android.frame.util.Log;
-import com.giants3.android.push.PushProxy;
+import com.giants3.android.frame.util.StringUtil;
 import com.giants3.android.reader.domain.DefaultUseCaseHandler;
 import com.giants3.android.reader.domain.GsonUtils;
 import com.giants3.android.reader.domain.UseCaseFactory;
@@ -36,6 +36,7 @@ import com.rnmap_wb.helper.AndroidUtils;
 import com.rnmap_wb.service.SynchronizeCenter;
 import com.rnmap_wb.url.HttpUrl;
 import com.rnmap_wb.utils.SessionManager;
+import com.rnmap_wb.utils.SettingContent;
 import com.rnmap_wb.utils.StorageUtils;
 import com.vector.update_app.UpdateAppBean;
 import com.vector.update_app.UpdateAppManager;
@@ -52,6 +53,7 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
 
     private static final int REQUEST_LOGIN = 999;
     private static final int REQUEST_MAP = 998;
+    public static String PARAM_TASK ="PARAM_TASK";
 
 
     @Bind(R.id.listview)
@@ -268,6 +270,10 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
         //读取更新数据
         checkUpdate(true);
 
+
+
+        handleIntent(getIntent());
+
 //        Intent serviceIntent = new Intent(this, DownloadManagerService.class);
 //        serviceIntent.putExtra(IntentConst.KEY_WAKE_DOWNLOAD,99l);
 //        startService(serviceIntent);
@@ -325,6 +331,24 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent)
+    {
+
+
+        String taskString=intent.getStringExtra(PARAM_TASK);
+        if(!StringUtil.isEmpty(taskString))
+        {
+            Task  task=GsonUtils.fromJson(taskString,Task.class);
+            ProjectTaskDetailActivity.start(HomeActivity.this, task, REQUEST_MAP);
+        }
+    }
+
+    @Override
     protected boolean supportDrawer() {
         return true;
     }
@@ -349,6 +373,31 @@ public class HomeActivity extends BaseMvpActivity<HomePresenter> implements Home
 
                     LoginResult loginUser = SessionManager.getLoginUser(HomeActivity.this);
                     userName.setText(loginUser == null ? "" : loginUser.name);
+
+
+                    UseCaseFactory.getInstance().createPostUseCase(HttpUrl.uploadDeviceToken(SettingContent.getInstance().getToken()), Void.class).execute(new DefaultUseCaseHandler<RemoteData<Void>>() {
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onNext(RemoteData<Void> remoteData) {
+
+
+                            if (remoteData.isSuccess()) {
+
+
+                            } else {
+                                Log.e(remoteData.errmsg);
+                            }
+                        }
+
+
+                    });
+
                     reloadData();
                     break;
             }

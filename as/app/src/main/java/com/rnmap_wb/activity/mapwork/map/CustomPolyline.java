@@ -48,7 +48,9 @@ public class CustomPolyline extends Polyline {
     public void draw(Canvas c, MapView osmv, boolean shadow) {
 
         if (getPoints() == null) return;
-
+        if (shadow) {
+            return;
+        }
 
         drawable_point.setBounds(0, 0, drawable_point.getIntrinsicWidth(), drawable_point.getIntrinsicHeight());
         point_end.setBounds(0, 0, point_end.getIntrinsicWidth(), point_end.getIntrinsicHeight());

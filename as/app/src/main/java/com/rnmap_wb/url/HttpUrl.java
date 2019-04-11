@@ -68,7 +68,7 @@ public class HttpUrl {
 
         urlFormatter.append("appVersion", versionCode)
                 .append("client", CLIENT_TYPE)
-                .append("token", token)
+//                .append("token", token)
                 .append("versionName", versionName);
 
 
@@ -85,7 +85,7 @@ public class HttpUrl {
 
         UrlFormatter urlFormatter = new UrlFormatter(url).append("appVersion", versionCode)
                 .append("client", CLIENT_TYPE)
-                .append("token", token)
+//                .append("token", token)
                 .append("versionName", versionName);
 
 
@@ -161,5 +161,12 @@ public class HttpUrl {
         UrlFormatter formatter = new UrlFormatter(url);
         return additionInfo(formatter);
 
+    }
+
+    public static String uploadDeviceToken(String token) {
+        String url = BASE_URL + "api/app/device";
+        UrlFormatter formatter = new UrlFormatter(url);
+        formatter.append("token",token);
+        return additionInfo(formatter);
     }
 }
