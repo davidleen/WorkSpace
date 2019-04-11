@@ -1,5 +1,6 @@
 //include ':app'
 include ':Data'
+include ':library'
 include ':Utils'
 include ':Server'
 

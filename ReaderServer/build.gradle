@@ -6,6 +6,7 @@ buildscript {
 
     }
     dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0'
 
     }
 }
@@ -14,9 +15,18 @@ allprojects {
     repositories {
         jcenter()
         maven{ url LOCAL_MAVEN_URL}
+        mavenCentral()
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+
+tasks.withType(JavaCompile)
+        {
+
+            options.encoding='UTF-8'
+        }
+
