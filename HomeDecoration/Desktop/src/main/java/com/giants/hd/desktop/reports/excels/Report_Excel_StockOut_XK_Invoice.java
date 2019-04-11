@@ -92,7 +92,7 @@ public class Report_Excel_StockOut_XK_Invoice extends SimpleExcelReporter<ErpSto
      */
     public void exportSheetHead(ErpStockOutDetail data, Sheet writableSheet) {
         //发票单号
-        addString(writableSheet, "Invoice No.:" + data.erpStockOut.ck_no, 8, 4);
+        addString(writableSheet, "Invoice No.:" + data.erpStockOut.ck_no, 9, 4);
 
 ////        // S/C NO:
 ////        addString(writableSheet, "S/C NO:", 8, 6);

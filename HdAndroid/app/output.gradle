@@ -7,8 +7,30 @@
 
 ext {
 
+    //打包时间
+    assembleTime = {
+
+        try {
+            URLConnection uc = new URL("https://www.baidu.com/").openConnection();
+            uc.connect();
+            long d = uc.getDate();
+            if(d ==0){
+                return new Date().format("yyyy-MM-dd-HH-mm");
+            }else{
+                println new Date(d).format("yyyy-MM-dd-HH-mm").toString();
+                return new Date(d).format("yyyy-MM-dd-HH-mm");
+            }
+
+        } catch (Throwable throwable) {
+            println throwable.toString();
+            return new Date().format("yyyy-MM-dd-HH-mm");
+        }
+    }
+
+
+
 //供78打包修改路径使用
-    getApkFileParentPath = "D:\\包存放地址android\\"
+    getApkFileParentPath = "F:\\包存放地址android\\"
     getProductFilePath = {
         variant ->
 
@@ -51,13 +73,14 @@ ext {
             if (variant.buildType.name == "debug") return
 
             def abiName = output.getFilter(output.ABI)
+            if(abiName==null) abiName=""
             println "abiName......" + abiName
             output.versionCodeOverride = abiCodes.get(abiName, 99) * 100000 + variant.versionCode
             println " output.versionCodeOverride......" + output.versionCodeOverride
 
             def outputFile = output.outputFile
 
-            def remainPart = outputFile.name.substring(outputFile.name.indexOf('-') + 1, outputFile.name.lastIndexOf('.apk'))
+             def remainPart = getProductFilePath()+"_"+outputFile.name.substring(outputFile.name.indexOf('-') + 1, outputFile.name.lastIndexOf('.apk'))
 
 
 
@@ -83,6 +106,8 @@ ext {
 
         }
     }
+
+
 
 
 }
