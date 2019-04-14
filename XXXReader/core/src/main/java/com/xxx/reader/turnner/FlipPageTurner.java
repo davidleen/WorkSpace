@@ -285,8 +285,8 @@ public abstract class FlipPageTurner extends AbsPageTurner implements GestureDet
      */
     private boolean isNeedScrollBack() {
 
-        if(offsetX<drawParam.width/2&&direction==IPageTurner.TURN_PREVIOUS) return true;
-        if(offsetX>-drawParam.width/2&&direction==IPageTurner.TURN_NEXT) return true;
+        if(offsetX>0&&offsetX<drawParam.width/2&&direction==IPageTurner.TURN_PREVIOUS) return true;
+        if(offsetX<0&&offsetX>-drawParam.width/2&&direction==IPageTurner.TURN_NEXT) return true;
         return false;
     }
 

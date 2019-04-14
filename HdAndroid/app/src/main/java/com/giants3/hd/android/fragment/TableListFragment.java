@@ -14,7 +14,7 @@ import android.widget.ListView;
 
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.adapter.ItemListAdapter;
-import com.giants3.hd.android.helper.ToastHelper;
+import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.data.interractor.UseCase;
 import com.giants3.hd.noEntity.RemoteData;
 

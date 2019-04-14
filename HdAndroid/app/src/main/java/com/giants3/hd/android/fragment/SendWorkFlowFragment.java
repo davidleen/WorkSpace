@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.helper.AndroidUtils;
 import com.giants3.hd.android.helper.ImageLoaderFactory;
-import com.giants3.hd.android.helper.ToastHelper;
+import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.mvp.workFlow.WorkFlowSendMvp;
 import com.giants3.hd.data.net.HttpUrl;
 import com.giants3.hd.data.utils.GsonUtils;

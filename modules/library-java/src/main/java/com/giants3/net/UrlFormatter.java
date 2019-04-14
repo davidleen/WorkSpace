@@ -1,5 +1,7 @@
 package com.giants3.net;
 
+import com.giants3.algorithm.DigestUtils;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 

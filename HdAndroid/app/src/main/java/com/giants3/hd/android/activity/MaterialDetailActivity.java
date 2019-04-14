@@ -10,12 +10,10 @@ import android.view.MenuItem;
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.events.MaterialUpdateEvent;
 import com.giants3.hd.android.fragment.MaterialDetailFragment;
-import com.giants3.hd.android.helper.ToastHelper;
+import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.data.utils.GsonUtils;
 import com.giants3.hd.entity.Material;
 import com.giants3.hd.exception.HdException;
-
-import javax.xml.transform.Result;
 
 import butterknife.Bind;
 

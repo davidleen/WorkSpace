@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.giants3.hd.android.helper.ImageLoaderFactory;
-import com.giants3.hd.android.helper.ToastHelper;
+import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.widget.ZoomImageView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.sigseg.android.io.RandomAccessFileInputStream;

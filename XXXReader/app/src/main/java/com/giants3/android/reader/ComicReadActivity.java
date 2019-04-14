@@ -38,7 +38,7 @@ public class ComicReadActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Utils.init(getApplicationContext());
+
         ReaderView readerView = (ReaderView) findViewById(R.id.reader);
         int[] wh = Utils.getScreenDimension(this);
 

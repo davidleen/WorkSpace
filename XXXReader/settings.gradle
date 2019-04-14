@@ -11,8 +11,13 @@ project(':library-java').projectDir = new File('../modules/library-java')
 include ':frame'
 project(':frame').projectDir = new File('../modules/frame')
 
+
+
+
 include ':core',    ':comic', ':domain'
 
 include ':app'
 include ':text'
 include ':vedio'
+include ':epub'
+project(':epub').projectDir = new File('../modules/books/epub')

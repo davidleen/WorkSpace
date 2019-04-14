@@ -21,7 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
 
-/**各種文件入口处理。
+/**
+ * 各種文件入口处理。
  * Created by davidleen29 on 2018/12/24.
  */
 
@@ -145,13 +146,16 @@ public class OpenFileActivity extends BaseActivity {
                 if (!TextUtils.isEmpty(filePath)) {
                     File file = new File(filePath);
                     Log.d(file.getAbsolutePath());
-//                    if (file.exists()) {
-//                        FileBrowserHelper fileBrowserHelper = FileBrowserHelper.createFileBrowserHelper(this);
-//                        fileBrowserHelper.openFile(file);
-//                        if (FileBrowserHelper.isPdf(filePath)) {
-//                            return;
-//                        }
-//                    }
+                    if (file.exists()) {
+                        FileBrowser fileBrowserHelper = new FileBrowser(this);
+                        try {
+                            fileBrowserHelper.openFile(file);
+                            finish();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
                 }
                 break;
         }

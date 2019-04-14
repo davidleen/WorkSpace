@@ -17,11 +17,10 @@ ext{
     ANDROID_SUPPORT_V7_VERSION='27.0.2'
 
 
-
-    //编译sdk版本
     compileSdkVersion=26
-    //最低支持版本
-    minSdkVersion=14
-    //目标版本号
+    buildToolsVersion='28.0.3'
     targetSdkVersion=26
+    minSdkVersion=14
+
+
 }

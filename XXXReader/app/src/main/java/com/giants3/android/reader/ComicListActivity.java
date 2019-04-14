@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.giants3.android.frame.util.Log;
 import com.giants3.android.reader.activity.BaseActivity;
 import com.giants3.android.reader.domain.UseCaseFactory;
 import com.giants3.android.reader.domain.UseCaseHandler;
@@ -49,6 +50,7 @@ public class ComicListActivity extends BaseActivity {
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
 
             }
 
@@ -59,6 +61,10 @@ public class ComicListActivity extends BaseActivity {
 
                     adapter.setDataArray(remoteData.datas);
 
+                }else
+                {
+
+                    Log.e(remoteData.message);
                 }
 
             }

@@ -10,7 +10,7 @@ import android.widget.ListView;
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.adapter.ItemListAdapter;
 import com.giants3.hd.android.entity.TableData;
-import com.giants3.hd.android.helper.ToastHelper;
+import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.mvp.NewPresenter;
 import com.giants3.hd.android.mvp.NewViewer;
 import com.giants3.hd.android.widget.RefreshLayoutConfig;

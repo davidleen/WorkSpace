@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.io.FileUtils;
 import com.giants3.android.frame.util.StorageUtils;
 import com.giants3.android.frame.util.UriFileComapt;

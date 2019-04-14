@@ -84,7 +84,7 @@ bintray {
             name = project.getVersion()
             desc = project.getDescription()
             released = new Date()
-            vcsTag = project.getVersion()+"-FINAL"
+            vcsTag = project.getVersion()
 //            mavenCentralSync {
 //                sync = true//是否同步到中央仓库
 //                user = OSSRH_USER//见下文

@@ -8,7 +8,7 @@ import android.widget.ListView;
 
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.adapter.WorkFlowMessageAdapter;
-import com.giants3.hd.android.helper.ToastHelper;
+import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.presenter.WorkFlowMessagePresenter;
 import com.giants3.hd.android.viewer.WorkFlowMessageViewer;
 import com.giants3.hd.noEntity.RemoteData;

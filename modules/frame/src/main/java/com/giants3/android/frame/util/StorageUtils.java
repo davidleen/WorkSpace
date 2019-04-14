@@ -84,11 +84,16 @@ public class StorageUtils {
         return relativePath;
     }
 
-    public static String getAbsolutePathIgnoreExist(String tagPath) {
-        return null;
+    public static String getAbsolutePathIgnoreExist(String relativePath) {
+        return getFilePath(relativePath);
     }
 
     public static String getShelfRootPath() {
         return "";
+    }
+
+    public static void buildStoragePath(String path ) {
+
+        FileUtils.makeDirs(path);
     }
 }

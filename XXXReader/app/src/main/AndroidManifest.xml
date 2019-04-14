@@ -16,6 +16,8 @@
         android:theme="@style/AppTheme">
         <activity android:name=".ComicReadActivity">
 
+        </activity><activity android:name=".activity.TextReadActivity">
+
         </activity>
 
 

@@ -1,4 +1,4 @@
-package com.giants3.hd.android.helper;
+package com.giants3.android.frame.util;
 
 import android.content.Context;
 import android.support.annotation.IdRes;

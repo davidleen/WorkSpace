@@ -19,7 +19,7 @@ public class ChapterMeasureResult<T> {
     public List<T> pageValues;
 
     /**
-     * 总文件大小   章节内图片的总高度
+     * 总文件大小  或者 章节内图片的总高度
      */
     public  int fileSize;
     /**

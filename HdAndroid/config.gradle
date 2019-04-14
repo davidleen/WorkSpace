@@ -24,4 +24,10 @@ ext{
 
     BUTTERKNIFE_VERSION="7.0.1"
 
+    compileSdkVersion=26
+    buildToolsVersion='28.0.3'
+    targetSdkVersion=26
+    minSdkVersion=14
+
+
 }

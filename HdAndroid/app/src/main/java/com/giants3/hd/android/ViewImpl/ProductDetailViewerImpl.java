@@ -18,7 +18,7 @@ import com.giants3.hd.android.entity.TableData;
 import com.giants3.hd.android.helper.AuthorityUtil;
 import com.giants3.hd.android.helper.ImageLoaderFactory;
 import com.giants3.hd.android.helper.ImageViewerHelper;
-import com.giants3.hd.android.helper.ToastHelper;
+import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.presenter.ProductDetailPresenter;
 import com.giants3.hd.android.viewer.ProductDetailViewer;
 import com.giants3.hd.android.widget.ExpandableHeightListView;

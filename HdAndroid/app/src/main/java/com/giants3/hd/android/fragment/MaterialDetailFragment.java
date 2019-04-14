@@ -17,7 +17,7 @@ import com.giants3.hd.android.R;
 import com.giants3.hd.android.events.MaterialUpdateEvent;
 import com.giants3.hd.android.helper.CapturePictureHelper;
 import com.giants3.hd.android.helper.ImageLoaderFactory;
-import com.giants3.hd.android.helper.ToastHelper;
+import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.data.interractor.UseCaseFactory;
 import com.giants3.hd.data.net.HttpUrl;
 import com.giants3.hd.data.utils.GsonUtils;

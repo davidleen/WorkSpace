@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.giants3.hd.android.R;
-import com.giants3.hd.android.helper.ToastHelper;
+import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.crypt.DigestUtils;
 import com.giants3.hd.data.interractor.UseCaseFactory;
 import com.giants3.hd.noEntity.RemoteData;

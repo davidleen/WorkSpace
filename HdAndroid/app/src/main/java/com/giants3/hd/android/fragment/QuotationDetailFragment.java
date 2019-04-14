@@ -15,22 +15,18 @@ import com.giants3.hd.android.R;
 import com.giants3.hd.android.adapter.ItemListAdapter;
 import com.giants3.hd.android.entity.TableData;
 import com.giants3.hd.android.helper.SharedPreferencesHelper;
-import com.giants3.hd.android.helper.ToastHelper;
-import com.giants3.hd.android.mvp.RemoteDataSubscriber;
+import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.widget.ExpandableHeightListView;
 import com.giants3.hd.data.interractor.UseCaseFactory;
 import com.giants3.hd.data.utils.GsonUtils;
-import com.giants3.hd.entity.Product;
 import com.giants3.hd.entity.Quotation;
 import com.giants3.hd.entity.QuotationItem;
 import com.giants3.hd.entity.QuotationXKItem;
 import com.giants3.hd.entity.QuoteAuth;
 import com.giants3.hd.exception.HdException;
-import com.giants3.hd.logic.QuotationAnalytics;
 import com.giants3.hd.noEntity.QuotationDetail;
 import com.giants3.hd.noEntity.RemoteData;
 
-import anetwork.channel.cache.CacheManager;
 import butterknife.Bind;
 import rx.Subscriber;
 

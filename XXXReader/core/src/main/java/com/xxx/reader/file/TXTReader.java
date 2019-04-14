@@ -2,20 +2,15 @@ package com.xxx.reader.file;
 
 import android.text.TextUtils;
 
-import com.changdu.changdulib.util.StringUtil;
-import com.changdu.changdulib.util.storage.StorageUtils;
 import com.giants3.android.frame.util.Log;
-import com.giants3.android.frame.util.StorageUtils;
+import com.giants3.android.frame.util.StringUtil;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.List;
 
 public class TXTReader extends AbsReader {
@@ -175,9 +170,6 @@ public class TXTReader extends AbsReader {
     public long getLocation() {
         return offset;
     }
-
-
-
 
 
 //    /**
@@ -467,8 +459,6 @@ public class TXTReader extends AbsReader {
             for (String fileEnding : FILE_ENDING) {
                 if (fileName.toLowerCase().endsWith(fileEnding)) {
                     code = TXTReader.regCode(fileName);// 每次在读取源文件前都要获取一下编码.
-                    path = getHtmlTempPath();
-                    code = createTempFile(readTempFile(), path);
                     break;
                 }
             }
@@ -478,58 +468,6 @@ public class TXTReader extends AbsReader {
         return path;
     }
 
-    /**
-     * 创建缓存文件
-     *
-     * @param strHtml      html
-     * @param htmlTempPath 缓存路径
-     * @return
-     */
-    private int createTempFile(String strHtml, String htmlTempPath) {
-        File desFile = new File(htmlTempPath.replace("\\", File.separator));
-        String htmlContent = ContentExtractor.getContent(strHtml);
-        File parentFile = desFile.getParentFile();
-        if (parentFile != null && !parentFile.exists()) {
-            parentFile.mkdirs();
-        }
-
-        BufferedWriter bw = null;
-        try {
-            code = UTF_8;
-            bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(desFile),
-                    ENCODINGS[code]));
-            bw.append(htmlContent);
-            bw.flush();
-        } catch (Exception e) {
-            Log.e(e);
-        } finally {
-            if (bw != null) {
-                try {
-                    bw.close();
-                } catch (IOException e) {
-                    Log.v(e);
-                }
-            }
-        }
-
-        return code;
-    }
-
-    public String getHtmlTempPath() {
-        String tempFilePath = fileName;
-        if (!TextUtils.isEmpty(fileName)) {
-            tempFilePath = StorageUtils.getRelativePath(fileName);
-            int pointIndex = tempFilePath.lastIndexOf(".");
-            if (pointIndex > 1) {
-                tempFilePath = tempFilePath.substring(1, pointIndex);// +1跳过自身
-            }
-
-            tempFilePath = StorageUtils.getAbsolutePath(PATH_HTML_TEMP + tempFilePath
-                    + EXTENSION_TEMP_PARSE_PAHT, StorageUtils.DEFAULT_FILE_SIZE);
-        }
-
-        return tempFilePath;
-    }
 
     private String readTempFile() {
         StringBuilder sbHtml = new StringBuilder();
@@ -610,44 +548,6 @@ public class TXTReader extends AbsReader {
             return mInReader.isHead();
         }
         return false;
-    }
-
-    /**
-     * 设置是否显示赞图标,添加赞图标文件数据
-     *
-     * @param isShowPraise
-     */
-    public void setShowPraise(boolean isShowPraise) {
-        this.isShowPraise = isShowPraise;
-
-        int priceIndex = -1;
-        int size = appendixTypes.size();
-        for (int i = 0; i < size; i++) {
-
-            if (appendixTypes.get(i) == APPENDIX_TYPE_PRAISE) {
-                priceIndex = i;
-
-                break;
-            }
-        }
-
-
-        if (isShowPraise) {
-            if (priceIndex == -1)
-                addPriceType();
-
-
-        } else {
-            //移除赞文件数据
-            if (priceIndex > -1) {
-                appendixTypes.remove(priceIndex);
-                appendixSizes.remove(priceIndex);
-                appendixStrings.remove(priceIndex);
-
-            }
-        }
-        calculateAppendixOffsets();
-        calculateAppendixSize();
     }
 
 

@@ -1,4 +1,4 @@
-package com.giants3.net;
+package com.giants3.algorithm;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

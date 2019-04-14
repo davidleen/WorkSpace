@@ -179,6 +179,7 @@ public class FileUtils {
      */
     public static void makeDirs(String absoluteFilePath) {
         File newFile = new File(absoluteFilePath);
+        if(newFile.isDirectory()&&!newFile.exists()) newFile.mkdirs();
         File parentFile = newFile.getParentFile();
         if (!parentFile.exists())
             parentFile.mkdirs();

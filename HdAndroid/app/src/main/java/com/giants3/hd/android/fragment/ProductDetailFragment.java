@@ -15,7 +15,7 @@ import com.giants3.hd.android.entity.ProductDetailSingleton;
 import com.giants3.hd.android.events.LoginSuccessEvent;
 import com.giants3.hd.android.events.ProductUpdateEvent;
 import com.giants3.hd.android.helper.SharedPreferencesHelper;
-import com.giants3.hd.android.helper.ToastHelper;
+import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.presenter.ProductDetailPresenter;
 import com.giants3.hd.android.viewer.BaseViewer;
 import com.giants3.hd.android.viewer.ProductDetailViewer;

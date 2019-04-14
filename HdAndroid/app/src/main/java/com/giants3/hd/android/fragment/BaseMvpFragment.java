@@ -11,7 +11,7 @@ import com.giants3.hd.android.activity.BaseActivity;
 import com.giants3.hd.android.activity.LoginActivity;
 import com.giants3.hd.android.events.BaseEvent;
 import com.giants3.hd.android.events.LoginSuccessEvent;
-import com.giants3.hd.android.helper.ToastHelper;
+import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.mvp.NewPresenter;
 import com.giants3.hd.android.mvp.NewViewer;
 

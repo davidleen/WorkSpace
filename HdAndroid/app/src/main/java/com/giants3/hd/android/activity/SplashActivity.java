@@ -4,14 +4,12 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.helper.SharedPreferencesHelper;
-import com.giants3.hd.android.helper.ToastHelper;
+import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.appdata.AUser;
 import com.giants3.hd.data.net.HttpUrl;
 

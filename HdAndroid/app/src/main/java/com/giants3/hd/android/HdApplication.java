@@ -14,7 +14,7 @@ import com.giants3.hd.android.helper.BitmapToolkit;
 import com.giants3.hd.android.helper.ConnectionHelper;
 import com.giants3.hd.android.helper.NotificationUtils;
 import com.giants3.hd.android.helper.SharedPreferencesHelper;
-import com.giants3.hd.android.helper.ToastHelper;
+import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.message.PushManager;
 import com.giants3.hd.data.net.HttpUrl;
 import com.giants3.hd.data.utils.GsonUtils;

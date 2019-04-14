@@ -31,7 +31,7 @@ import com.giants3.hd.android.fragment.QuotationDetailFragment;
 import com.giants3.hd.android.fragment.QuotationListFragment;
 import com.giants3.hd.android.helper.AuthorityUtil;
 import com.giants3.hd.android.helper.SharedPreferencesHelper;
-import com.giants3.hd.android.helper.ToastHelper;
+import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.helper.UpgradeUtil;
 import com.giants3.hd.android.mvp.MainAct.MainActMvp;
 import com.giants3.hd.android.mvp.MainAct.MainActPresenter;

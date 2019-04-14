@@ -21,7 +21,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -35,7 +34,7 @@ import com.giants3.android.push.PushProxy;
 import com.giants3.hd.android.events.BaseEvent;
 import com.giants3.hd.android.events.LoginSuccessEvent;
 import com.giants3.hd.android.helper.AnalysisFactory;
-import com.giants3.hd.android.helper.ToastHelper;
+import com.giants3.android.frame.util.ToastHelper;
 
 import java.util.ArrayList;
 import java.util.List;

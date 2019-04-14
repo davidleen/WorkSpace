@@ -17,7 +17,7 @@ import com.giants3.hd.android.fragment.QuotationDetailFragment;
 import com.giants3.hd.android.fragment.ValueEditDialogFragment;
 import com.giants3.hd.android.helper.AuthorityUtil;
 import com.giants3.hd.android.helper.SharedPreferencesHelper;
-import com.giants3.hd.android.helper.ToastHelper;
+import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.mvp.quotation.QuotationDetailMVP;
 import com.giants3.hd.android.mvp.quotation.QuotationDetailPresenterImpl;
 import com.giants3.hd.appdata.AProduct;

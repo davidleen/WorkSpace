@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.fragment.ProductDetailFragment;
 import com.giants3.hd.android.helper.ImageLoaderFactory;
-import com.giants3.hd.android.helper.ToastHelper;
+import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.appdata.AProduct;
 import com.giants3.hd.data.interractor.UseCaseFactory;
 import com.giants3.hd.data.net.HttpUrl;

@@ -26,7 +26,7 @@ import com.giants3.hd.android.fragment.SearchProductFragment;
 import com.giants3.hd.android.fragment.ValueEditDialogFragment;
 import com.giants3.hd.android.helper.AuthorityUtil;
 import com.giants3.hd.android.helper.SharedPreferencesHelper;
-import com.giants3.hd.android.helper.ToastHelper;
+import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.mvp.AndroidRouter;
 import com.giants3.hd.android.mvp.appquotationdetail.AppQuotationDetailMVP;
 import com.giants3.hd.android.mvp.appquotationdetail.PresenterImpl;

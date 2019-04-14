@@ -60,6 +60,7 @@ public abstract class PageBitmap<P extends PageInfo, D extends DrawParam> extend
         if (this.drawParam == drawParam) return;
         this.drawParam = drawParam;
         drawPage(pageInfo,drawParam);
+        if(pageInfo!=null&&iDrawable!=null)
         iDrawable.updateView();
 
 

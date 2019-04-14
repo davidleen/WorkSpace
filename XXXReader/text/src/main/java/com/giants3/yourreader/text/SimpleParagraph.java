@@ -16,13 +16,13 @@ public class SimpleParagraph {
     {
 
 
-        StaticLayout staticLayout=new StaticLayout();
-        staticLayout.getHeight();
-
-
-        StaticLayout layout=new StaticLayout();
-        layout.leter
-        layout.getLineForOffset()
-        canvas.drawPosText();
+//        StaticLayout staticLayout=new StaticLayout();
+//        staticLayout.getHeight();
+//
+//
+//        StaticLayout layout=new StaticLayout();
+//        layout.leter
+//        layout.getLineForOffset()
+//        canvas.drawPosText();
     }
 }
