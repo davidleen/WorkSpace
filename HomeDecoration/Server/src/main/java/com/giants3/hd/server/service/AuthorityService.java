@@ -66,7 +66,9 @@ public class AuthorityService extends AbstractService {
 
         List<Module> modules = moduleRepository.findAll();
         List<Authority> authorities = authorityRepository.findByUser_IdEquals(userId);
-        List<Authority> unConfigAuthorities = new ArrayList<>();
+
+
+
         int moduleSize = modules.size();
         for (int i = 0; i < moduleSize; i++) {
 
@@ -83,37 +85,42 @@ public class AuthorityService extends AbstractService {
                 Authority authority = new Authority();
                 authority.module = module;
                 authority.user = user;
-                unConfigAuthorities.add(authority);
+
+                authorityRepository.saveAndFlush(authority);
 
             }
 
 
         }
 
-        authorities.addAll(unConfigAuthorities);
-        return authorities;
+
+        return authorityRepository.findByUser_IdEquals(userId);
     }
 
     @Transactional
-    public List<Authority> saveAuthorities(@RequestParam(value = "userId") long userId, @RequestBody List<Authority> authorities) {
+    public RemoteData<Authority> saveAuthorities(@RequestParam(value = "userId") long userId, @RequestBody List<Authority> authorities) {
         User user = userRepository.findOne(userId);
+        if(user==null)
+
+            return wrapError("用户不存在");
         List<Authority> newData = new ArrayList<>();
 
-        for (Authority authority : authorities) {
-            authority.user = user;
 
-            Authority findSameAuthority = authorityRepository.findFirstByUser_IdEqualsAndModule_IdEquals(authority.user.id, authority.module.id);
 
-            //保证数据新增或者修改 不存在重复增加
-            if (findSameAuthority == null) {
-                authority.id = -1;
-            } else {
-                authority.id = findSameAuthority.id;
+        for(Authority authority:authorities)
+        {
+            if(authority.id<=0)
+                return wrapError("数据异常，权限数据未初始化");
+
+            if(authority.user.id!=userId)
+            {
+                return wrapError("数据异常，用户id不匹配");
             }
 
-            newData.add(authorityRepository.save(authority));
         }
-        return newData;
+        newData.addAll( authorityRepository.save(authorities));
+        authorityRepository.flush();
+        return wrapData(newData);
     }
 
 

@@ -48,10 +48,8 @@ public class AuthorityController extends BaseController {
     RemoteData<Authority> save(@RequestParam(value = "userId") long userId, @RequestBody List<Authority> authorities) {
 
 
-        List<Authority> newData = authorityService.saveAuthorities(userId, authorities);
+        return authorityService.saveAuthorities(userId, authorities);
 
-
-        return wrapData(newData);
     }
 
 
@@ -257,6 +255,7 @@ public class AuthorityController extends BaseController {
 
         return wrapData(newData);
     }
+
     @RequestMapping(value = "/saveAppQuoteList", method = RequestMethod.POST)
     public
     @ResponseBody
