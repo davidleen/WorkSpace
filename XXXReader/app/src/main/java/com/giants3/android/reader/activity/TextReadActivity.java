@@ -8,9 +8,12 @@ import android.support.annotation.Nullable;
 
 import com.giants3.android.frame.util.Log;
 import com.giants3.android.frame.util.StorageUtils;
+import com.giants3.android.frame.util.StringUtil;
 import com.giants3.android.reader.R;
 import com.giants3.file.FileContentType;
+import com.giants3.reader.book.EpubChapter;
 import com.giants3.reader.book.EpubParser;
+import com.giants3.tool.zip.ZipJNIInterface;
 import com.giants3.yourreader.text.TextPageBitmap;
 import com.giants3.yourreader.text.TextPageInfo;
 import com.giants3.yourreader.text.TextPrepareJob;
@@ -19,6 +22,8 @@ import com.xxx.reader.Url2FileMapper;
 import com.xxx.reader.Utils;
 import com.xxx.reader.book.IBook;
 import com.xxx.reader.book.IChapter;
+import com.xxx.reader.book.TextBook;
+import com.xxx.reader.book.TextChapter;
 import com.xxx.reader.core.DrawParam;
 import com.xxx.reader.core.IPageTurner;
 import com.xxx.reader.core.PageSwitchListener;
@@ -27,12 +32,16 @@ import com.xxx.reader.prepare.PageBitmapCreator;
 import com.xxx.reader.prepare.PagePlayer;
 import com.xxx.reader.prepare.PagePlayerBuilder;
 import com.xxx.reader.turnner.ScrollPageTurner;
+import com.xxx.reader.turnner.sim.SimPageTurner;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.List;
 
 import butterknife.Bind;
+
+import static com.giants3.reader.book.EpubParser.GBK;
 
 public class TextReadActivity extends BaseActivity {
     @Bind(R.id.reader)
@@ -66,6 +75,35 @@ public class TextReadActivity extends BaseActivity {
         builder.setPrepareJob(new TextPrepareJob(new Url2FileMapper<IChapter>() {
             @Override
             public String map(IChapter iChapter, String url) {
+
+                if (iChapter instanceof EpubChapter) {
+
+                    if (StringUtil.isEmpty(iChapter.getFilePath())) {
+
+
+                        ((EpubChapter) iChapter).setSrcFilePath(EpubParser.getEpubOutputPath() + ((EpubChapter) iChapter).getSrc());
+                    }
+                    File file = new File(iChapter.getFilePath());
+                    if (!file.exists()) {
+
+                        file.getParentFile().mkdirs();
+                        try {
+                            ZipJNIInterface.UnZip(((EpubChapter) iChapter).getBookPath(), ((EpubChapter) iChapter).getSrc(),iChapter.getFilePath() ,GBK);
+                        } catch (Exception e) {
+                            Log.e(e);
+                        }
+
+                    }
+
+                    return file.getPath();
+                }else  if (iChapter instanceof TextChapter)
+                {
+
+                    return  iChapter.getFilePath();
+                }
+
+
+
                 String fileName = String.valueOf(url.hashCode());
                 try {
                     fileName = URLDecoder.decode(url.substring(url.lastIndexOf("/")), "UTF-8");
@@ -82,11 +120,21 @@ public class TextReadActivity extends BaseActivity {
         }));
 
 
+
         final PagePlayer<IChapter, TextPageInfo, DrawParam, TextPageBitmap> prepareLayer = builder.createPrepareLayer();
         DrawParam drawParam = new DrawParam();
-        drawParam.width = wh[0];
-        drawParam.height = wh[1];
+        drawParam.width = wh[0] ;
+        drawParam.height = wh[1] ;
         prepareLayer.updateDrawParam(drawParam);
+        readerView.setOnSizeChangeListener(new ReaderView.onSizeChangeLister(){
+            @Override
+            public void onSizeChanged(int width, int height) {
+                DrawParam drawParam = new DrawParam();
+                drawParam.width = width ;
+                drawParam.height =height;
+                prepareLayer.updateDrawParam(drawParam);
+            }
+        });
 
         DrawLayer drawLayer = new DrawLayer(this, prepareLayer, readerView);
 
@@ -106,9 +154,8 @@ public class TextReadActivity extends BaseActivity {
             public void afterPageChanged(int direction) {
 
 
-                Log.e("afterPageChanged:" + direction);
+               // Log.e("afterPageChanged:" + direction);
                 if (direction == PageSwitchListener.TURN_NEXT) {
-
                     prepareLayer.turnNext();
                 } else {
                     prepareLayer.turnPrevious();
@@ -124,8 +171,8 @@ public class TextReadActivity extends BaseActivity {
 
 
         IPageTurner pageTurner = null;
-        pageTurner = new ScrollPageTurner(this, pageSwitchListener, readerView, prepareLayer);
-        //  pageTurner=new SimPageTurner(this,pageSwitchListener,readerView,provider);
+       // pageTurner = new ScrollPageTurner(this, pageSwitchListener, readerView, prepareLayer);
+         pageTurner=new SimPageTurner(this,pageSwitchListener,readerView,prepareLayer);
         // pageTurner = new SlidePageTurner(this, pageSwitchListener, readerView, provider);
 
         drawLayer.setPageTurner(pageTurner);
@@ -145,6 +192,15 @@ public class TextReadActivity extends BaseActivity {
                         Log.e(iBook.getName());
 
                         break;
+
+                        case FileContentType.TEXT:
+                            TextBook  textBook = new TextBook() ;
+                            TextChapter textChapter=new TextChapter(filePath);
+                            textBook.addChapter(textChapter);
+                            iBook=textBook;
+                        Log.e(iBook.getName());
+
+                        break;
                 }
 
 
@@ -159,7 +215,6 @@ public class TextReadActivity extends BaseActivity {
                     prepareLayer.updateBook(iBook);
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
 
 
     }

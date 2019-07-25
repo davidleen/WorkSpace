@@ -51,5 +51,5 @@ public interface IViewer {
      * @deprecated
      *
      */
-    void showLoadingDialogCarfully();
+    void showLoadingDialogCarefully();
 }

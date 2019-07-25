@@ -2,6 +2,7 @@ package com.xxx.reader.text.layout;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.view.MotionEvent;
 
 /**
@@ -24,4 +25,5 @@ public interface BitmapHolder {
 
 
     void draw(Canvas canvas);
+    void draw(Canvas canvas, Paint mPaint);
 }

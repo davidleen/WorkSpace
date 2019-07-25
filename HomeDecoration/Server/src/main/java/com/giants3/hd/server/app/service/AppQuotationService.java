@@ -809,12 +809,8 @@ public class AppQuotationService extends AbstractService {
                 synchronizedCustomerFromRemote(urlHead, apiManager, remoteData.token);
 
 
-
-
-
-
-
-
+            }else{
+                return wrapError(remoteData==null?"登录异常":remoteData.message);
             }
             return wrapData();
         } catch (Exception e) {

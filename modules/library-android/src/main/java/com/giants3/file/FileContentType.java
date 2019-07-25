@@ -16,6 +16,7 @@ public class FileContentType {
 
 
     public static final String EPUB = "application/epub+zip";
+    public static final String TEXT = "text/plain";
 
     public static  String getContentType(File file)
     {
@@ -44,6 +45,7 @@ public class FileContentType {
     {
 
         contentTypeMap.put(".epub",EPUB);
+        contentTypeMap.put(".text",TEXT);
 
 
     }

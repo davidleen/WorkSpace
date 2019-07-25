@@ -35,7 +35,7 @@ public class TXTReader extends AbsReader {
      * 所有段落结束位置， 即每一个回车字符位置。
      */
     long[] paragraphEndPositions;
-    public static final String[] ENCODINGS = new String[]{"", "GB18030", "GB2312", "GBK",
+    public static final String[] ENCODINGS = new String[]{"UTF-8", "GB18030", "GB2312", "GBK",
             "UTF-8", "BIG5", "UTF16-LE", "UTF16-BE", "ASCII"};
 
     //章末附加类型数据  赞图标

@@ -1,9 +1,6 @@
 package com.giants.hd.desktop.viewImpl;
 
-import com.giants.hd.desktop.dialogs.ProductProcessDialog;
-
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -26,11 +23,11 @@ public class Panel_BaseData extends  BasePanel {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                ProductProcessDialog dialog=new ProductProcessDialog(SwingUtilities.getWindowAncestor(root));
-                dialog.setMinimumSize(new Dimension(480,600));
-                dialog.pack();;
-                dialog.setLocationRelativeTo(root);
-                dialog.setVisible(true);
+//                ProductProcessFrame dialog=new ProductProcessFrame(SwingUtilities.getWindowAncestor(root));
+//                dialog.setMinimumSize(new Dimension(480,600));
+//                dialog.pack();;
+//                dialog.setLocationRelativeTo(root);
+//                dialog.setVisible(true);
             }
         });
     }

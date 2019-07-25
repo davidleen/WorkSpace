@@ -33,4 +33,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     compile project(path: ':frame')
     compile project(path: ':core')
+    compile project(path: ':epub')
 }

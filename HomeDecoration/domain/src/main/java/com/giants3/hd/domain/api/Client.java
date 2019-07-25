@@ -28,6 +28,12 @@ public class Client {
 
     public static final String BODY_ENCODING = "UTF-8";
     private static final String TAG = "HTTPCLIENT";
+
+
+    public static final int METHOD_GET=0;
+    public static final int METHOD_POST=1;
+    public static final int METHOD_DELETE=2;
+
     //客户端连接
     public AsyncHttpClient client;
 
@@ -47,18 +53,7 @@ public class Client {
     public String postWithStringReturned(String url, String body) throws HdException {
         Logger.getLogger(TAG).info(url);
 
-        String result = post(url, body, new AsyncCompletionHandler<String>() {
-            @Override
-            public String onCompleted(Response response) throws Exception {
-
-//                    String result= response.getResponseBody(BODY_ENCODING);
-
-                String result = descryptResult(response.getResponseBodyAsBytes(), BODY_ENCODING);
-                return result;
-
-
-            }
-        });
+        String result = post(url, body, stringHandler);
 
 
         Logger.getLogger(TAG).info(result);
@@ -73,21 +68,7 @@ public class Client {
 
         Logger.getLogger(TAG).info(url);
 
-        String result = get(url, new AsyncCompletionHandler<String>() {
-            @Override
-            public String onCompleted(Response response) throws Exception {
-
-                //String result = response.getResponseBody(BODY_ENCODING);
-
-
-                String result = descryptResult(response.getResponseBodyAsBytes(), BODY_ENCODING);
-
-
-                return result;
-
-
-            }
-        });
+        String result = get(url, stringHandler);
 
 
         Logger.getLogger(TAG).info(result);
@@ -151,18 +132,7 @@ public class Client {
      */
     public String uploadWidthStringReturned(String url, File file) throws HdException {
         Logger.getLogger(TAG).info(url);
-        String result = upload(url, file, new AsyncCompletionHandler<String>() {
-            @Override
-            public String onCompleted(Response response) throws Exception {
-
-//                String result = response.getResponseBody(BODY_ENCODING);
-
-                String result = descryptResult(response.getResponseBodyAsBytes(), BODY_ENCODING);
-                return result;
-
-
-            }
-        });
+        String result = upload(url, file, stringHandler);
 
         Logger.getLogger(TAG).info(result);
 
@@ -175,7 +145,7 @@ public class Client {
 
         AsyncHttpClient.BoundRequestBuilder builder;
         builder = client.prepareGet(url);
-        builder.addHeader("Content-Type", "application/json");
+        addJsonContentType(builder);
         return execute(handler, builder);
     }
 
@@ -183,7 +153,7 @@ public class Client {
 
         AsyncHttpClient.BoundRequestBuilder builder;
         builder = client.preparePost(url);
-        builder.addHeader("Content-Type", "application/json");
+        addJsonContentType(builder);
         builder.setBodyEncoding(BODY_ENCODING);
         byte[] data = null;
         try {
@@ -228,45 +198,87 @@ public class Client {
 
     }
 
-    private <T> T execute(AsyncHandler<T> handler, AsyncHttpClient.BoundRequestBuilder builder) throws HdException {
-        try {
-
-            long time= Calendar.getInstance().getTimeInMillis();
-            T result = builder.execute(handler).get();
+    private <T> T execute(final AsyncHandler<T> handler, AsyncHttpClient.BoundRequestBuilder builder) throws HdException {
 
 
-            //特殊处理  避免请求结果太快返回，
-            if(Calendar.getInstance().getTimeInMillis()-time<500)
-            {
-                try {
-                    Thread.sleep(500);
-                }catch (Throwable t){}
-            }
+
+       int retryTime=0;
+       int maxRetryTime=
+               3;
 
 
-            Logger.getLogger(TAG).info("time user in :"+ ( Calendar.getInstance().getTimeInMillis()-time)+"in " +Thread.currentThread());
+       do {
+           try {
 
-            return result
-                    ;
-        } catch (InterruptedException e) {
-            throw HdException.create(HdException.FAIL_ASYNC_CLIENT, e);
-        } catch (ExecutionException e) {
-            Throwable cause
-                    = e.getCause();
-            if (cause != null && cause instanceof HdException) {
-                throw (HdException) cause;
-            } else
-                throw HdException.create(HdException.FAIL_ASYNC_CLIENT, e);
+               long time = Calendar.getInstance().getTimeInMillis();
+
+               T result = builder.execute(handler).get();
+
+
+               //特殊处理  避免请求结果太快返回，
+               if (Calendar.getInstance().getTimeInMillis() - time < 500) {
+                   try {
+                       Thread.sleep(500);
+                   } catch (Throwable t) {
+                   }
+               }
+
+
+               Logger.getLogger(TAG).info("time user in :" + (Calendar.getInstance().getTimeInMillis() - time) + "in " + Thread.currentThread());
+
+               return result
+                       ;
+           } catch (InterruptedException e) {
+               throw HdException.create(HdException.FAIL_ASYNC_CLIENT, e);
+           } catch (ExecutionException e) {
+               retryTime++;
+               if(retryTime>maxRetryTime) {
+
+                   Throwable cause
+                           = e.getCause();
+                   if (cause != null && cause instanceof HdException) {
+                       throw (HdException) cause;
+                   } else
+                       throw HdException.create(HdException.FAIL_ASYNC_CLIENT, e);
+               }
+
+           }
+       }while (true);
+    }
+
+
+
+    AsyncCompletionHandler<String> stringHandler=new AsyncCompletionHandler<String>() {
+        @Override
+        public String onCompleted(Response response) throws Exception {
+
+            //String result = response.getResponseBody(BODY_ENCODING);
+
+
+            String result = descryptResult(response.getResponseBodyAsBytes(), BODY_ENCODING);
+
+
+            return result;
+
 
         }
+    };
+
+
+
+    public String deleteWithStringReturned(String url) throws HdException {
+
+        Logger.getLogger(TAG).info(url);
+        AsyncHttpClient.BoundRequestBuilder builder;
+        builder = client.prepareDelete(url);
+        addJsonContentType(builder);
+        return execute(stringHandler, builder);
+
+
+
     }
 
-    public void get() {
+    private void addJsonContentType(AsyncHttpClient.BoundRequestBuilder builder) {
+        builder.addHeader("Content-Type", "application/json");
     }
-
-    public void delete() {
-
-    }
-
-
 }

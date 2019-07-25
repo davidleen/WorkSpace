@@ -1,6 +1,7 @@
 package com.giants.hd.desktop.model;
 
 import com.giants.hd.desktop.frames.StockOutDetailFrame;
+import com.giants.hd.desktop.local.ConstantData;
 import com.giants3.hd.utils.FloatHelper;
 import com.giants3.hd.utils.StringUtils;
 import com.giants3.hd.entity_erp.ErpStockOutItem;
@@ -57,16 +58,10 @@ public class StockOutItemTableModel extends BaseTableModel<ErpStockOutItem> {
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-
         if(columnIndex==StringUtils.index(fieldName,DESCRIBE)) {
-
-
             if(!StringUtils.isEmpty(getItem(rowIndex).ps_no))
                  return true;
-
         }
-
-
         return super.isCellEditable(rowIndex, columnIndex);
     }
 
@@ -74,7 +69,10 @@ public class StockOutItemTableModel extends BaseTableModel<ErpStockOutItem> {
     public Object getValueAt(int rowIndex, int columnIndex) {
 
         ErpStockOutItem item=getItem(rowIndex);
-
+        if (fieldName[columnIndex].equalsIgnoreCase(ConstantData.COLUMN_ITM)) {
+            //erp数据 itm 从1开始。
+               return item.itm;
+        }
         if (columnIndex == StringUtils.index(fieldName, UP)||columnIndex == StringUtils.index(fieldName, AMT)) {
 
             if(!priceVisible) return "***";

@@ -1,6 +1,7 @@
 package com.giants.hd.desktop.viewImpl;
 
 import com.giants.hd.desktop.local.HdDateComponentFormatter;
+import com.giants.hd.desktop.mvp.IPresenter;
 import com.giants.hd.desktop.mvp.IViewer;
 import com.google.inject.Guice;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
@@ -17,8 +18,9 @@ import java.util.Calendar;
  * 基础模本类。  提供guice注射等等功能  提供一些公共方法
  */
 public abstract class
-BasePanel implements IViewer {
+BasePanel<T extends IPresenter> implements IViewer {
 
+    T p;
     protected PanelListener listener;
     private Window window;
 
@@ -36,6 +38,13 @@ BasePanel implements IViewer {
 
     public BasePanel() {
 
+        this((Window) null);
+
+    }
+
+    public BasePanel(T presenter) {
+
+        this.p=presenter;
         Guice.createInjector().injectMembers(this);
     }
 
@@ -45,6 +54,10 @@ BasePanel implements IViewer {
         Guice.createInjector().injectMembers(this);
     }
 
+    protected T getPresenter()
+    {
+        return p;
+    }
 
     /**
      * 遍历返回任意控件的frame
@@ -97,7 +110,7 @@ BasePanel implements IViewer {
 
 
     @Override
-    public void showLoadingDialogCarfully() {
+    public void showLoadingDialogCarefully() {
 
 
 

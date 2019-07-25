@@ -24,4 +24,7 @@ public interface IBook<T extends IChapter> {
     int getChapterCount();
 
     String getBookId();
+
+    void addChapter(T chapter);
+    void addChapter(int index,T chapter);
 }

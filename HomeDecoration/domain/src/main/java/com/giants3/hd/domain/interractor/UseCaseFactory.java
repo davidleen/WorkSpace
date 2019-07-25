@@ -403,6 +403,37 @@ public class UseCaseFactory {
                 Schedulers.newThread(), Schedulers.immediate(), userRepository);
     }
 
+
+    /**
+     * 获取列表
+     *
+     * @return
+     */
+    public <T> RemoteDataUseCase<T> createGetUseCase(String url,Class<T> tClass) {
+
+        return new RemoteDataGetUseCase(url
+                , tClass);
+    }
+  /**
+     * 获取列表
+     *
+     * @return
+     */
+    public <T> RemoteDataPostUseCase<T> createPostUseCase(String url,T data,Class<T> tClass) {
+
+        return new RemoteDataPostUseCase(url,data
+                , tClass);
+    }/**
+     * 获取列表
+     *
+     * @return
+     */
+    public <T> RemoteDataUseCase<T> createDeleteUseCase(String url, Class<T> tClass) {
+
+        return new RemoteDataDeleteUseCase(url
+                , tClass);
+    }
+
     /**
      * 启动订单跟踪
      *

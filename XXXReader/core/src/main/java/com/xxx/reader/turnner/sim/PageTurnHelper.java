@@ -17,9 +17,11 @@ import android.graphics.drawable.GradientDrawable;
 
 import com.giants3.android.frame.util.Log;
 import com.xxx.reader.Utils;
-import com.xxx.reader.core.IPageTurner;
 
 import java.lang.ref.SoftReference;
+
+import static com.xxx.reader.turnner.sim.SimPageTurner.TURN_NEXT;
+import static com.xxx.reader.turnner.sim.SimPageTurner.TURN_PREVIOUS;
 
 
 public class PageTurnHelper {
@@ -264,9 +266,9 @@ public class PageTurnHelper {
     public static Point getDistancePoint(PointF touch, PointF corner, Shape shape, int turn) {
         Point distancePoint = new Point();
 
-        if (turn == IPageTurner.TURN_NEXT) {//corner.x > 0
+        if (turn == TURN_NEXT) {//corner.x > 0
             distancePoint.x = -(int) (shape.width - 0.1f + touch.x);
-        } else if (turn == IPageTurner.TURN_PREVIOUS) {
+        } else if (turn == TURN_PREVIOUS) {
             PointF p = deExcursion(shape, touch);
             distancePoint.x = (int) ((shape.width * 1.6667f) - p.x);
 
@@ -288,9 +290,9 @@ public class PageTurnHelper {
     public static Point getDistancePointSlide(PointF touch, Shape shape, int turn) {
         Point distancePoint = new Point();
 
-        if (turn == IPageTurner.TURN_NEXT) {//corner.x > 0
+        if (turn == SimPageTurner.TURN_NEXT) {//corner.x > 0
             distancePoint.x = -(int) (shape.width);
-        } else if (turn == IPageTurner.TURN_PREVIOUS) {
+        } else if (turn == SimPageTurner.TURN_PREVIOUS) {
             PointF p = deExcursionSlide(shape, touch);
             distancePoint.x = (int) (shape.width - p.x);
 
@@ -342,9 +344,9 @@ public class PageTurnHelper {
     public static Point getNoDistancePoint(PointF touch, PointF corner, Shape shape, int turn) {
         Point distancePoint = new Point();
 
-        if (turn == IPageTurner.TURN_NO_NEXT) {//corner.x > 0
+        if (turn == SimPageTurner.TURN_NO_NEXT) {//corner.x > 0
             distancePoint.x = (int) (shape.width - 0.1f - touch.x);
-        } else if (turn == IPageTurner.TURN_NO_PREVIOUS) {
+        } else if (turn == SimPageTurner.TURN_NO_PREVIOUS) {
             distancePoint.x = (int) (-(shape.width << 1) * 0.3333f - touch.x);
         }
 
@@ -457,7 +459,7 @@ public class PageTurnHelper {
      * @return
      */
     public static PointF excursion(Shape mShape, PointF touchDown, PointF touchMove) {
-        return excursion(mShape, touchDown, touchMove, IPageTurner.TURN_PREVIOUS);
+        return excursion(mShape, touchDown, touchMove, SimPageTurner.TURN_PREVIOUS);
     }
 
     /**
@@ -468,13 +470,13 @@ public class PageTurnHelper {
      * @return
      */
     public static PointF excursionSlide(Shape mShape, PointF touchDown, PointF touchMove) {
-        return excursionSlide(mShape, touchDown, touchMove, IPageTurner.TURN_PREVIOUS);
+        return excursionSlide(mShape, touchDown, touchMove, SimPageTurner.TURN_PREVIOUS);
     }
 
     public static PointF excursion(Shape mShape, PointF touchDown, PointF touchMove, int turn) {
         PointF exTouch = new PointF();
 
-        if (turn == IPageTurner.TURN_PREVIOUS || turn == IPageTurner.TURN_NO_PREVIOUS) {
+        if (turn == SimPageTurner.TURN_PREVIOUS || turn == SimPageTurner.TURN_NO_PREVIOUS) {
             if (touchDown.y > mShape.height * 0.6667f && touchMove.x < mShape.width * 0.4f && touchMove.y < mShape.height * 0.4f) {
                 touchMove.x = mShape.width * 0.4f;
             } else if (touchDown.y < mShape.height * 0.3333f && touchMove.x < mShape.width * 0.4f && touchMove.y > mShape.height * 0.3333f) {
@@ -491,7 +493,7 @@ public class PageTurnHelper {
     public static PointF excursionSlide(Shape mShape, PointF touchDown, PointF touchMove, int turn) {
         PointF exTouch = new PointF();
 
-        if (turn == IPageTurner.TURN_PREVIOUS || turn == IPageTurner.TURN_NO_PREVIOUS) {
+        if (turn == SimPageTurner.TURN_PREVIOUS || turn == SimPageTurner.TURN_NO_PREVIOUS) {
             exTouch.x = touchMove.x > mShape.width ? mShape.width : touchMove.x;
             exTouch.y = touchMove.y;
         }
@@ -500,17 +502,17 @@ public class PageTurnHelper {
     }
 
     public static PointF deExcursion(Shape mShape, PointF touch) {
-        return deExcursion(mShape, touch, IPageTurner.TURN_PREVIOUS);
+        return deExcursion(mShape, touch, SimPageTurner.TURN_PREVIOUS);
     }
 
     public static PointF deExcursionSlide(Shape mShape, PointF touch) {
-        return deExcursionSlide(mShape, touch, IPageTurner.TURN_PREVIOUS);
+        return deExcursionSlide(mShape, touch, SimPageTurner.TURN_PREVIOUS);
     }
 
     public static PointF deExcursion(Shape mShape, PointF touch, int turn) {
         PointF deTouch = new PointF();
 
-        if (turn == IPageTurner.TURN_PREVIOUS || turn == IPageTurner.TURN_NO_PREVIOUS) {
+        if (turn == SimPageTurner.TURN_PREVIOUS || turn == SimPageTurner.TURN_NO_PREVIOUS) {
             deTouch.x = (touch.x * 2 + mShape.width) * 0.3333f;
             deTouch.y = touch.y > mShape.height / 3 ? touch.y * 2 - mShape.height : touch.y;
         }
@@ -521,7 +523,7 @@ public class PageTurnHelper {
     public static PointF deExcursionSlide(Shape mShape, PointF touch, int turn) {
         PointF deTouch = new PointF();
 
-        if (turn == IPageTurner.TURN_PREVIOUS || turn == IPageTurner.TURN_NO_PREVIOUS) {
+        if (turn == SimPageTurner.TURN_PREVIOUS || turn == SimPageTurner.TURN_NO_PREVIOUS) {
             deTouch.x = touch.x > mShape.width ? mShape.width : touch.x;
             deTouch.y = touch.y;
         }

@@ -165,7 +165,7 @@ public class Report_Excel_XK_JINGZI_ZA extends ExcelReportor {
                 xiankang=remoteData1.datas.get(0);
                  xiankang_jingza=xiankang.xiankang_jingza;
                 //折盒包装描述
-                addString(writableSheet, xiankang.pack_memo, 22, rowUpdate);
+                addString(writableSheet, xiankang.pack_memo, 23, rowUpdate);
             }
 
 

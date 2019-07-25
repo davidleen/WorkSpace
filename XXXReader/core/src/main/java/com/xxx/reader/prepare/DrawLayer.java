@@ -74,8 +74,8 @@ public class DrawLayer {
     public boolean onTouchEvent(MotionEvent event) {
 
 
-        if (zoomHandler != null && zoomHandler.onTouchEvent(event)) return true;
 
+        if (zoomHandler != null && zoomHandler.onTouchEvent(event)) return true;
         if (pageTurner != null)
             return pageTurner.onTouchEvent(event);
         return false;

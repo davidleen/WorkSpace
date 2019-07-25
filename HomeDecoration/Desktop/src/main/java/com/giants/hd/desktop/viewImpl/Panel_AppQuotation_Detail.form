@@ -26,6 +26,10 @@
         <colspec value="fill:max(d;40pt):noGrow"/>
         <colspec value="left:4dlu:noGrow"/>
         <colspec value="fill:max(d;100pt):noGrow"/>
+        <colspec value="left:4dlu:noGrow"/>
+        <colspec value="fill:62px:noGrow"/>
+        <colspec value="left:4dlu:noGrow"/>
+        <colspec value="fill:114px:noGrow"/>
         <constraints border-constraint="North"/>
         <properties/>
         <border type="none"/>
@@ -97,7 +101,7 @@
           </component>
           <component id="ee7eb" class="javax.swing.JTextArea" binding="ta_memo">
             <constraints>
-              <grid row="4" column="2" row-span="1" col-span="9" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+              <grid row="4" column="2" row-span="1" col-span="13" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="50"/>
               </grid>
               <forms defaultalign-horz="false" defaultalign-vert="false"/>
@@ -186,6 +190,48 @@
               </component>
             </children>
           </grid>
+          <component id="36758" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="12" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+              <forms defaultalign-horz="false"/>
+            </constraints>
+            <properties>
+              <text value="总体积"/>
+            </properties>
+          </component>
+          <component id="2b31d" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="2" column="12" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+              <forms defaultalign-horz="false"/>
+            </constraints>
+            <properties>
+              <text value="总金额"/>
+            </properties>
+          </component>
+          <component id="d2029" class="javax.swing.JTextField" binding="txt_amount_sum">
+            <constraints>
+              <grid row="2" column="14" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <forms defaultalign-horz="false"/>
+            </constraints>
+            <properties>
+              <editable value="false"/>
+              <horizontalAlignment value="2"/>
+            </properties>
+          </component>
+          <component id="678e" class="javax.swing.JTextField" binding="txt_volume_sum">
+            <constraints>
+              <grid row="0" column="14" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <forms defaultalign-horz="false"/>
+            </constraints>
+            <properties>
+              <editable value="false"/>
+              <horizontalAlignment value="2"/>
+            </properties>
+          </component>
         </children>
       </grid>
       <scrollpane id="34bdb">

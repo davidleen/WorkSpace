@@ -246,6 +246,9 @@ public class AppQuotationAnalytics {
         final QuotationItem quotationItem = quotationDetail.items.get(itemIndex);
         quotationItem.qty=newQty;
         quotationItem.amountSum = FloatHelper.scale(quotationItem.price * quotationItem.qty);
+        quotationItem.packQuantity = quotationItem.qty / (quotationItem.inBoxCount <= 0 ? 1 : quotationItem.inBoxCount);
+        quotationItem.volumeSum = quotationItem.volumePerBox * quotationItem.packQuantity;
+        quotationItem.weightSum = quotationItem.weight * quotationItem.qty;
         updateTotalMessage(quotationDetail);
     }
 

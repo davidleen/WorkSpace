@@ -79,7 +79,6 @@ public class SimPageTurner extends AbsPageTurner {
     private PointF mTouchTop = new PointF(0.0f, 0.0f);
     private PointF mTouchBottom = new PointF(0.0f, 0.0f);
 
-    private View additiveView;
     private boolean needSpeedUp = false;
 
 
@@ -87,7 +86,7 @@ public class SimPageTurner extends AbsPageTurner {
         super(context, pageSwitchListener, drawable, bitmapProvider);
 
 
-//          mBitmap = Bitmap.createBitmap(mShape.width, mShape.height, Bitmap.Config.ARGB_4444);
+
 
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStyle(Paint.Style.FILL);
@@ -509,6 +508,7 @@ public class SimPageTurner extends AbsPageTurner {
 
 
             lastPath = drawCurrentPageArea(mCanvas, topPage);
+            drawCurrentBackArea(mCanvas, topPage, lastPath);
         }
 
         if (bottomPage != null) {
@@ -911,7 +911,7 @@ public class SimPageTurner extends AbsPageTurner {
     /**
      * 绘制翻起页背面
      */
-    private void drawCurrentBackArea(Canvas canvas, Bitmap topPage, Path lastPath) throws Throwable {
+    private void drawCurrentBackArea(Canvas canvas, BitmapHolder topPage, Path lastPath) throws Throwable {
         if (canvas != null && lastPath != null) {
             ColorFilter tempColorFilter = mPaint.getColorFilter();
             mPaint.setColorFilter(PageTurnHelper.getColorMatrixColorFilter());
@@ -927,7 +927,9 @@ public class SimPageTurner extends AbsPageTurner {
                 canvas.setMatrix(matrix);
 
                 canvas.translate(PageTurnHelper.getBookBoxRectLeft(PageTurnHelper.getBookBoxRect().right), 0);
-                canvas.drawBitmap(topPage, 0, 0, mPaint);
+                //canvas.drawBitmap(topPage, 0,BlurMaskFilter 0, mPaint);
+                //topPage.draw(canvas);
+                topPage.draw(canvas,mPaint);
                 canvas.restore();
 
 
@@ -947,8 +949,10 @@ public class SimPageTurner extends AbsPageTurner {
 
                 canvas.setMatrix(matrix);
                 canvas.translate(PageTurnHelper.getBookBoxRectLeft(PageTurnHelper.getBookBoxRect().left), 0);
-                canvas.drawBitmap(topPage, 0, 0, mPaint);
-
+                //canvas.drawBitmap(topPage, 0, 0, mPaint);
+                topPage.draw(canvas,mPaint);
+//                topPage.draw(canvas);
+//                canvas.drawColor(Color.parseColor("#88888888"));
                 canvas.restore();
 
 

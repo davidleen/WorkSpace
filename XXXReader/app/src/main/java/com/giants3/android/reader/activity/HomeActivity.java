@@ -26,15 +26,24 @@ public class HomeActivity extends  BaseActivity implements View.OnClickListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         comic.setOnClickListener(this);
+        text.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId())
         {
-            case R.id.comic:
-                Intent intent=new Intent(HomeActivity.this, ComicListActivity.class);
+            case R.id.comic: {
+                Intent intent = new Intent(HomeActivity.this, ComicListActivity.class);
                 startActivity(intent);
+            }
+
+                break;
+                case R.id.text: {
+                    Intent intent = new Intent(HomeActivity.this, TextReadActivity.class);
+                    intent.putExtra("filePath", "/storage/emulated/0/各格式书籍/1.恐惧炸弹(语言 下部).txt");
+                    startActivity(intent);
+                }
 
                 break;
         }

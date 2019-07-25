@@ -1,6 +1,7 @@
 package com.giants3.yourreader.text.stream;
 
 import com.giants3.yourreader.text.ParagraghData;
+import com.xxx.reader.file.BufferedRandomAccessFile;
 
 import java.util.List;
 
@@ -11,6 +12,8 @@ import java.util.List;
 public class TextReader implements  IReader{
     @Override
     public List<ParagraghData> read() {
+
+        BufferedRandomAccessFile bufferedRandomAccessFile;
         return null;
     }
 }

@@ -2,6 +2,7 @@ package com.xxx.reader.turnner;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -12,6 +13,8 @@ import com.xxx.reader.core.IPageTurner;
 import com.xxx.reader.core.PageSwitchListener;
 import com.xxx.reader.text.layout.BitmapProvider;
 
+import static com.xxx.reader.turnner.sim.PageTurnHelper.PAGGING_SLOP;
+
 
 /**
  * 滚动式
@@ -21,10 +24,13 @@ import com.xxx.reader.text.layout.BitmapProvider;
 public abstract class FlipPageTurner extends AbsPageTurner implements GestureDetector.OnGestureListener {
 
 
+    public static final int SCROLL_DURATION = 888;
     /**
      * 是否触发了fling的标志
      */
     private boolean mIsFling = false;
+
+    boolean animating = false;
 
 
     /**
@@ -38,16 +44,24 @@ public abstract class FlipPageTurner extends AbsPageTurner implements GestureDet
      */
     protected float offsetX;
 
+    Point downPoint = new Point();
+
+
     /**
      * 翻页方向
      * {@link com.xxx.reader.core.IPageTurner#TURN_NEXT }
      * {@link com.xxx.reader.core.IPageTurner#TURN_NONE }
      * {@link com.xxx.reader.core.IPageTurner#TURN_PREVIOUS }
      */
+
+
+    boolean turnWorking = false;
     private int direction = 0;
 
 
     protected Rect drawRect = new Rect();
+    private boolean scrollingBack;
+    private boolean scrolling;
 
     public FlipPageTurner(Context context, PageSwitchListener pageSwitchListener, IDrawable drawable, BitmapProvider bitmapProvider) {
         super(context, pageSwitchListener, drawable, bitmapProvider);
@@ -58,37 +72,82 @@ public abstract class FlipPageTurner extends AbsPageTurner implements GestureDet
     @Override
     public boolean onDown(MotionEvent e) {
 
-        direction = IPageTurner.TURN_NONE;
-        if (e.getX() > drawParam.width * 2 / 3) direction = IPageTurner.TURN_NEXT;
-        if (e.getX() < drawParam.height / 3) direction = IPageTurner.TURN_PREVIOUS;
+        downPoint.y = (int) e.getY();
+        downPoint.x = (int) e.getX();
+        if (!scroller.isFinished()) {
+            scroller.abortAnimation();
 
+             drawable.updateView();
+        }
 
+        scrolling=false;
+        mIsFling=false;
         return true;
     }
 
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        Log.e("onScroll==============");
+        Log.e("onScroll==============distanceX:"+distanceX);
         if (mIsFling) return false;
+        int currX=0;
+        if (!turnWorking) {
+
+            if ((Math.abs(distanceX) > PAGGING_SLOP || Math.abs(distanceY) > PAGGING_SLOP)) {
+                if (downPoint.x > drawParam.width * 2 / 3)
+                    direction = IPageTurner.TURN_NEXT;
+                else if (downPoint.x < drawParam.height / 3)
+                    direction = IPageTurner.TURN_PREVIOUS;
+                else {
+                    direction = distanceX > 0 ? IPageTurner.TURN_PREVIOUS : IPageTurner.TURN_NEXT;
+                }
+            }
+            offsetX=direction==TURN_NEXT? drawParam.width:0;
 
 
-        int direction = (int) (e2.getX() - e1.getX());
+//            resetScroller();
+            turnWorking = true;
+        }
+        if (!turnWorking) return false;
 
-        scroller.abortAnimation();
 
-        int currX = scroller.getCurrX();
-        if (!canScrollPrevious(direction, currX)) {
-            scroller.startScroll(currX, 0, 0, 0);
-        } else if (!canScrollNext(direction, currX)) {
-            scroller.startScroll(currX, 0, 0, 0);
-        } else {
-            scroller.startScroll(currX, 0, (int) (-distanceX), 0);
+        scrolling=true;
+
+//        switch (e2.getAction()) {
+//            case MotionEvent.ACTION_UP:
+//            case MotionEvent.ACTION_CANCEL:
+//
+//
+//
+//                if (direction < 0 && !canTurnPrevious()
+//
+//                        || direction > 0 && !canTurnNext()
+//                ) {
+//                    doScrollBack();
+//                    if (pageSwitchListener != null)
+//                        pageSwitchListener.onPageTurnFail(direction);
+//                    drawable.updateView();
+//
+//                } else {
+//                    scrollRest(direction);
+//                }
+//
+//                return true;
+//
+//
+//        }
+
+        if(!scroller.isFinished())
+        {
+            scroller.abortAnimation();
+              offsetX = scroller.getFinalX();
         }
 
+        scroller.startScroll((int) offsetX, 0,  (int)- distanceX, 0,100);
+        Log.e("scroller:" + scroller.getStartX()+",e1.getx()"+e1.getX() +",e2.getx()"+e2.getX() + ", scroller.getFinalX():" + scroller.getFinalX() + ",direction:" + direction);
         drawable.updateView();
-//        return true;
         return true;
+//        return true;
     }
 
     /**
@@ -115,23 +174,66 @@ public abstract class FlipPageTurner extends AbsPageTurner implements GestureDet
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-//        Log.e("=================velocityX="+(velocityX)+" ,offsetX ="+offsetX);
+        Log.e("=================velocityX=" + (velocityX) + " ,offsetX =" + offsetX+(e2.getAction()==MotionEvent.ACTION_UP));
         if (mIsFling) return false;
-        if (isCancelMove(e1, e2)) {
-            return true;
+        if(direction==0)
+        {
+            direction=velocityX<0?TURN_NEXT:TURN_PREVIOUS;
         }
-        if (cancelFlingAndSroll(e1, e2, velocityX)) {
-            drawable.updateView();
+
+        scrolling=false;
+        if (direction == TURN_PREVIOUS && !canTurnPrevious()
+
+                || direction == TURN_NEXT && !canTurnNext()
+        ) {
+            doScrollBack();
+            if (pageSwitchListener != null)
+                pageSwitchListener.onPageTurnFail(direction > 0 ? PageSwitchListener.TURN_PREVIOUS : PageSwitchListener.TURN_NEXT);
+
             return true;
         }
 
+
+        if (  Math.abs(velocityX) > drawRect.width() * 1.5) {
+            mIsFling = true;
+
+            int startX=  (int) e2.getX();
+            if(!scroller.isFinished())
+            {
+                scroller.abortAnimation();
+                startX=scroller.getFinalX();
+            }
+
+
+
+            if (direction == TURN_NEXT) {
+
+                scroller.startScroll(startX, 0, 0 - startX, 0);
+            }
+
+            if (direction == TURN_PREVIOUS) {
+
+                scroller.startScroll(startX, 0, (drawRect.width() - startX), 0);
+            }
+            drawable.updateView();
+
+
+        }else
+        {
+            doScrollBack();
+        }
+
+
         return true;
+
 
     }
 
 
     @Override
-    public boolean onSingleTapConfirmed(MotionEvent e) {
+    public boolean onSingleTapUp(MotionEvent e) {
+
+
         boolean handled = false;
         if (pageSwitchListener != null) {
             int x = (int) e.getX();
@@ -143,117 +245,114 @@ public abstract class FlipPageTurner extends AbsPageTurner implements GestureDet
 
             int startX = 0;
             if (x < width / 3) {
+//                resetScroller();
+
                 handled = true;
                 direction = IPageTurner.TURN_PREVIOUS;
-                scroller.startScroll(startX, 0, drawRect.width() + startX, 0, 888);
+                turnWorking = true;
+                startX=0;
+                scroller.startScroll(startX, 0, drawRect.width()  , 0, SCROLL_DURATION);
 
             } else if (x > width * 2 / 3) {
-                handled = true;
+//                resetScroller();
 
+                handled = true;
+                turnWorking = true;
                 direction = IPageTurner.TURN_NEXT;
-                scroller.startScroll(startX, 0, -drawRect.width() - startX, 0, 888);
+                startX=drawRect.width();
+                scroller.startScroll(startX, 0, -drawRect.width()  , 0, SCROLL_DURATION);
             }
-            offsetX = startX;
+
+            offsetX=startX;
             if (handled) drawable.updateView();
         }
 
 
         return handled;
+
+
     }
 
-//    @Override
-//    public boolean onSingleTapUp(MotionEvent e) {
-//        Log.e("onSingleTapUp");
-//        boolean handled=false;
-//        direction= IPageTurner.TURN_NONE;
-//        int startX=0;
-//
-//        if(e.getX()>drawParam.width*2/3  && canTurnNext())
-//        {
-//
-//            direction= IPageTurner.TURN_NEXT;
-//            scroller.startScroll(startX, 0, -drawRect.width() - startX, 0,3000);
-//
-//            handled=true;
-//        }else
-//            if(e.getX()<drawParam.width/3  && canTurnPrevious())
-//            {
-//                direction= IPageTurner.TURN_PREVIOUS;
-//                scroller.startScroll(startX, 0, drawRect.width() + startX, 0,3000);
-//                handled=true;
-//            }
-//
-//         offsetX=startX;
-//
-//
-//        if(handled)   drawable.updateView();
-//
-//
-//       return handled;
-//    }
+
+    private void scrollRest(int direction) {
+        scroller.forceFinished(true);
+        int startX = scroller.getCurrX();
+        if (Math.abs(startX) == drawRect.width()) {
+            startX = 0;
+        }
+        if (direction ==IPageTurner.TURN_NEXT) {
+
+            scroller.startScroll(startX, 0,   - startX, 0);
+        }
+
+        if (direction ==IPageTurner.TURN_PREVIOUS) {
+
+            scroller.startScroll(startX, 0, (drawRect.width() - startX), 0);
+        }
+
+        drawable.updateView();
+    }
+
+    @Override
+    public boolean onSingleTapConfirmed(MotionEvent e) {
+        Log.e("onSingleTapConfirmed");
+        return super.onSingleTapConfirmed(e);
+
+    }
 
 
     protected void computeScroll() {
         if (drawParam == null) return;
 
+        Log.e("==========" + offsetX+",mIsFling:"+mIsFling+",turnWorking:"+turnWorking);
         if (!scroller.computeScrollOffset()) {
-
-            if (mIsFling) { //快速滑动处理
-                handleFling();
-                resetScroller();
-                direction = IPageTurner.TURN_NONE;
-                return;
-            }
-
+//            if (mIsFling) { //快速滑动处理
+//                handleFling();
+//                resetScroller();
+//                direction = IPageTurner.TURN_NONE;
+//                return;
+//            }
 
 
-
-            Log.e("=============computeScroll .offsetX="+isTouching);
-            if (isNeedScrollBack()&&!isTouching) {
-                doScrollBack(); //在同一张图的回弹  如 滑动距离不够
-                return;
-            }
-
-
-            if(!isTouching&&offsetX>-drawParam.width&&direction==IPageTurner.TURN_NEXT)
-            {
-
-                //scroll the rest;
-                scroller.startScroll((int)offsetX,0,(int)(-drawParam.width-offsetX),0);
-                drawable.updateView();
-
-            return ;
-            }
-            if(!isTouching&&offsetX< drawParam.width&&direction==IPageTurner.TURN_PREVIOUS)
-            {
-                //scroll the rest;
-                scroller.startScroll((int)offsetX,0,(int)(drawParam.width-offsetX),0);
-                drawable.updateView();
-                return ;
-            }
+            Log.e("offsetX：" + offsetX);
+            if (!scrollingBack && turnWorking) {
+//                if (!isTouching && offsetX > -drawParam.width && direction == IPageTurner.TURN_NEXT) {
+//
+//                    //scroll the rest;
+//                    scroller.startScroll((int) offsetX, 0, (int) (-drawParam.width - offsetX), 0);
+//
+//                }
+//                if (!isTouching && offsetX < drawParam.width && direction == IPageTurner.TURN_PREVIOUS) {
+//                    //scroll the rest;
+//                    scroller.startScroll((int) offsetX, 0, (int) (drawParam.width - offsetX), 0);
+//
+//                }
 
 
-
-
-            if (!isTouching) {
-                if (offsetX<=-drawParam.width&&direction == IPageTurner.TURN_NEXT && canTurnNext() && pageSwitchListener != null) {
+                if (scroller.getCurrX() <=0 && direction == IPageTurner.TURN_NEXT && canTurnNext() && pageSwitchListener != null) {
+                    Log.e("XXXXXXXXXXXXXXXX");
                     pageSwitchListener.afterPageChanged(PageSwitchListener.TURN_NEXT);
+                    offsetX = 0;
+                    drawable.updateView();
+                    turnWorking = false;
+                    direction = IPageTurner.TURN_NONE;
                 }
-                if (offsetX>=drawParam.width&&direction == IPageTurner.TURN_PREVIOUS && canTurnPrevious() && pageSwitchListener != null) {
+                if (scroller.getCurrX() >= drawParam.width && direction == IPageTurner.TURN_PREVIOUS && canTurnPrevious() && pageSwitchListener != null) {
+                    Log.e("XXXXXXXXXXXXXXXX");
                     pageSwitchListener.afterPageChanged(PageSwitchListener.TURN_PREVIOUS);
+                    offsetX = 0;
+                    drawable.updateView();
+                    turnWorking = false;
+                    direction = IPageTurner.TURN_NONE;
                 }
-                direction = IPageTurner.TURN_NONE;
-                resetScroller();
+
+
             }
+        } else {
 
-
-            return;
+            offsetX = scroller.getCurrX();
+            drawable.updateView();
         }
-
-        offsetX = scroller.getCurrX();
-      Log.e("=============computeScroll .offsetX="+offsetX);
-
-        drawable.updateView();
 
 
     }
@@ -261,19 +360,43 @@ public abstract class FlipPageTurner extends AbsPageTurner implements GestureDet
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        switch (event.getAction())
-        {
+//        switch (event.getAction()) {
+//            case MotionEvent.ACTION_CANCEL:
+//            case MotionEvent.ACTION_UP:
+//                isTouching = false;
+//                break;
+//            case MotionEvent.ACTION_DOWN:
+//                scrollingBack = false;
+//                isTouching = true;
+//                break;
+//        }
+
+
+        boolean b = super.onTouchEvent(event);
+
+
+            switch (event.getAction()) {
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                isTouching=false;
+                isTouching = false;
+
+                if(turnWorking&&scrolling)
+                {
+
+                    scrollRest(direction);
+                }
+
+
+
+
+
                 break;
             case MotionEvent.ACTION_DOWN:
-                isTouching=true;
+
                 break;
         }
 
-
-       return super.onTouchEvent(event);
+        return b;
 
 
     }
@@ -285,8 +408,10 @@ public abstract class FlipPageTurner extends AbsPageTurner implements GestureDet
      */
     private boolean isNeedScrollBack() {
 
-        if(offsetX>0&&offsetX<drawParam.width/2&&direction==IPageTurner.TURN_PREVIOUS) return true;
-        if(offsetX<0&&offsetX>-drawParam.width/2&&direction==IPageTurner.TURN_NEXT) return true;
+        if (offsetX > 0 && offsetX < drawParam.width / 2 && direction == IPageTurner.TURN_PREVIOUS)
+            return true;
+        if (offsetX < 0 && offsetX > -drawParam.width / 2 && direction == IPageTurner.TURN_NEXT)
+            return true;
         return false;
     }
 
@@ -297,12 +422,12 @@ public abstract class FlipPageTurner extends AbsPageTurner implements GestureDet
         mIsFling = false;
         if (offsetX < 0 && canTurnNext() && pageSwitchListener != null) {
             pageSwitchListener.afterPageChanged(PageSwitchListener.TURN_NEXT);
-            direction=IPageTurner.TURN_NONE;
+            direction = IPageTurner.TURN_NONE;
 
         }
         if (offsetX > 0 && canTurnPrevious() && pageSwitchListener != null) {
             pageSwitchListener.afterPageChanged(PageSwitchListener.TURN_PREVIOUS);
-            direction=IPageTurner.TURN_NONE;
+            direction = IPageTurner.TURN_NONE;
 
         }
     }
@@ -315,34 +440,14 @@ public abstract class FlipPageTurner extends AbsPageTurner implements GestureDet
         offsetX = 0;
     }
 
-    /**
-     * 滑动距离够大,进行翻页调整
-     *
-     * @param isLeft 是否向左划  显示下一张
-     */
-    private void adjustPage(boolean isLeft) {
-//        Log.e("adjustPage =========offsetX"+offsetX);
-        if (offsetX == 0) {
-            return;
-        }
-
-        int w = isLeft ? -drawRect.width() : drawRect.width();
-        direction = w == 0 ? IPageTurner.TURN_NONE : (w > 0 ? IPageTurner.TURN_PREVIOUS : IPageTurner.TURN_NEXT);
-        int diaX = (int) (w - offsetX);
-
-        scroller.startScroll(scroller.getCurrX(), 0, diaX, 0);
-        mIsAdjust = true;
-        drawable.updateView();
-
-    }
 
 
     /**
      * 滑动距离不够 回滚处理
      */
     private void doScrollBack() {
-
-        scroller.startScroll((int)offsetX, 0, -(int)offsetX, 0);
+        Log.e("do scroll backing------------");
+        scroller.startScroll((int) offsetX, 0, -(int) offsetX, 0);
         drawable.updateView();
 
     }
@@ -358,11 +463,11 @@ public abstract class FlipPageTurner extends AbsPageTurner implements GestureDet
                 if (direction > 0 && !canTurnPrevious()
 
                         || direction < 0 && !canTurnNext()
-                        ) {
+                ) {
                     doScrollBack();
                     if (pageSwitchListener != null)
                         pageSwitchListener.onPageTurnFail(direction > 0 ? PageSwitchListener.TURN_PREVIOUS : PageSwitchListener.TURN_NEXT);
-                    drawable.updateView();
+
                     return true;
                 }
 
@@ -372,46 +477,7 @@ public abstract class FlipPageTurner extends AbsPageTurner implements GestureDet
         return false;
     }
 
-    /**
-     * 处理fling操作
-     *
-     * @param e1        开始事件
-     * @param e2        结束事件
-     * @param velocityX 水平每秒滑动的像素
-     * @return
-     */
-    private boolean cancelFlingAndSroll(MotionEvent e1, MotionEvent e2, float velocityX) {
-        int direction = (int) (e2.getX() - e1.getX());
-        switch (e2.getAction()) {
-            case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_UP:
 
-                Log.e("==============velocityX=" + velocityX + "==============direction=" + direction + "===========e2.getX()=" + e2.getX() + "====scroller.getCurrX()=" + scroller.getCurrX());
-                if (Math.abs(direction) > drawRect.width() / 2 || Math.abs(velocityX) > drawRect.width() * 1.5) {
-                    mIsFling = true;
-                    scroller.forceFinished(true);
-                    int startX = scroller.getCurrX();
-                    if (Math.abs(startX) == drawRect.width()) {
-                        startX = 0;
-                    }
-                    if (direction < 0) {
-
-                        scroller.startScroll(startX, 0, -drawRect.width() - startX, 0);
-                    }
-
-                    if (direction > 0) {
-
-                        scroller.startScroll(startX, 0, (drawRect.width() - startX), 0);
-                    }
-
-
-                    return true;
-                }
-
-        }
-        return false;
-
-    }
 
 
     @Override
@@ -434,15 +500,20 @@ public abstract class FlipPageTurner extends AbsPageTurner implements GestureDet
     @Override
     public void onDraw(Canvas canvas) {
 
+
+
         if (drawParam == null) return;
 
         drawRect.set(0, 0, drawParam.width, drawParam.height);
         canvas.clipRect(0, 0, drawParam.width, drawParam.height);
-        onDraw(canvas, direction, offsetX, bitmapProvider);
 
+        Log.e("offsetX:"+offsetX+",direction:"+direction);
+        onDraw(canvas, direction, offsetX, bitmapProvider);
 
         computeScroll();
     }
 
     protected abstract void onDraw(Canvas canvas, int direction, float offsetX, BitmapProvider provider);
+
+
 }

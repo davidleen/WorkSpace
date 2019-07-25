@@ -18,7 +18,7 @@ public class ProductProcessModel  extends  BaseTableModel<ProductProcess>{
 
     public  static boolean[] editables = new boolean[]{false,true, true, true, true};
 
-    public boolean canEdit=true;
+
 
     public ProductProcessModel( ) {
        this(true);
@@ -26,12 +26,13 @@ public class ProductProcessModel  extends  BaseTableModel<ProductProcess>{
 
     public ProductProcessModel(boolean canEdit ) {
         super(columnNames, fieldName, classes, ProductProcess.class);
-        this.canEdit=canEdit;
+
     }
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return canEdit&& editables[columnIndex];
+       // return canEdit&& editables[columnIndex];
+        return false;
     }
 
 

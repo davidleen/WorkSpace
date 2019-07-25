@@ -122,9 +122,10 @@
 <!--192.168.10.198-->
 <!--172.17.122.183-->
 <!--192.168.10.197-->
+<!--172.18.212.152-->
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2008Dialect"/>
-            <property name="hibernate.connection.url" value="jdbc:jtds:sqlserver://192.168.10.198:1433;databaseName=yunfei"/>
+            <property name="hibernate.connection.url" value="jdbc:jtds:sqlserver://172.17.122.183:1433;databaseName=yunfei"/>
             <property name="hibernate.connection.driver_class" value="net.sourceforge.jtds.jdbc.Driver"/>
             <property name="hibernate.connection.username" value="sa"/>
             <property name="hibernate.connection.password" value="xinsui"/>
@@ -142,7 +143,7 @@
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2008Dialect"/>
             <property name="hibernate.connection.url"
-                      value="jdbc:jtds:sqlserver://192.168.10.198;databaseName=DB_YF01"/>
+                      value="jdbc:jtds:sqlserver://172.17.122.183:1433;databaseName=DB_YF01"/>
             <property name="hibernate.connection.driver_class" value="net.sourceforge.jtds.jdbc.Driver"/>
             <property name="hibernate.connection.username" value="sa"/>
             <property name="hibernate.connection.password" value="xinsui"/>

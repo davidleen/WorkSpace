@@ -210,7 +210,7 @@
         <property name="persistenceUnitName" value="erpPersistenceUnit"/>
     </bean>-->
 
-    <!-- <bean id="prdtRepository" class="com.giants3.readerader.server.repository.ErpPrdtRepository">
+    <!-- <bean id="prdtRepository" class="com.giants3.readerader.server.repositories.ErpPrdtRepository">
          <property name="entityManager" ref="sharedEntityManager"/>
      </bean>-->
     <!-- <bean id="entityManagerFactoryERP" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"

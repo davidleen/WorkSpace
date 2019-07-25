@@ -27,6 +27,11 @@
     "fileName": "price",
     "width": 60,
     "aClass": "S"
+  },{
+    "columnName": "金额",
+    "fileName": "amountSum",
+    "width": 60,
+    "aClass": "S"
   },
   {
     "columnName": "原价",
@@ -73,6 +78,11 @@
   {
     "columnName": "体积/箱",
     "fileName": "volumePerBox",
+    "width": 60,
+    "aClass": "S"
+  },{
+    "columnName": "总体积",
+    "fileName": "volumeSum",
     "width": 60,
     "aClass": "S"
   },

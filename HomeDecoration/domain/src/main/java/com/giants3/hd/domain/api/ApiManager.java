@@ -2228,4 +2228,25 @@ public class ApiManager {
 
     }
 
+
+
+    public <T> RemoteData<T> getData(String url,Class<T> tClass)throws HdException
+    {
+        String result = client.getWithStringReturned(url);
+        RemoteData<T> remoteData = invokeByReflect(result,tClass);
+        return remoteData;
+    }
+
+    public <T> RemoteData<T> postData(String url, T data, Class<T> tClass) throws HdException {
+        String result = client.postWithStringReturned(url, GsonUtils.toJson(data));
+        RemoteData<T> remoteData = invokeByReflect(result,tClass);
+        return remoteData;
+    }
+
+
+    public <T> RemoteData<T> deleteData(String url,  Class<T> tClass) throws HdException {
+        String result = client.deleteWithStringReturned(url );
+        RemoteData<T> remoteData = invokeByReflect(result,tClass);
+        return remoteData;
+    }
 }

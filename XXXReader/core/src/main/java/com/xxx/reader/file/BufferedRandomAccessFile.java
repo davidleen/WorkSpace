@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  *
  */
-public class BufferedRandomAccessFile extends BaseRandomAccessFile {
+public class BufferedRandomAccessFile extends RandomAccessFile {
 
     private final static int BUFFERSIZE = 12288; // 在线阅读 章节大小 12KB
 

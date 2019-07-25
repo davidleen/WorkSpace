@@ -284,7 +284,7 @@ public class EpubParser implements IEpubParser {
                 return "";
             }
 
-            StringBuffer tempbBuffer = new StringBuffer(StorageUtils.getAbsolutePathIgnoreExist("/temp/Epub/"));
+            StringBuffer tempbBuffer = new StringBuffer(getEpubOutputPath());
 
             int index = tempbBuffer.length();
             tempbBuffer.append(path.substring(path.lastIndexOf('/') + 1, path.lastIndexOf('.')));
@@ -297,13 +297,17 @@ public class EpubParser implements IEpubParser {
         return tempPath;
     }
 
+    public  static String getEpubOutputPath() {
+        return StorageUtils.getAbsolutePathIgnoreExist("/temp/Epub/");
+    }
+
     public static String getEpubCachePath(String epubPath) {
         File epubFile = new File(epubPath);
         if (!epubFile.exists()) {
             return null;
         }
 
-        StringBuffer tempbBuffer = new StringBuffer(StorageUtils.getAbsolutePathIgnoreExist("/temp/Epub/"));
+        StringBuffer tempbBuffer = new StringBuffer(getEpubOutputPath());
         tempbBuffer.append(epubPath.substring(epubPath.lastIndexOf('/') + 1, epubPath.lastIndexOf('.')));
         tempbBuffer.append(epubFile.length());
         tempbBuffer.append("/");
@@ -628,6 +632,7 @@ public class EpubParser implements IEpubParser {
                                 }
                                 if (!hasNcxFile && tempValeString.equals("application/xhtml+xml")) {
                                     EpubChapter chapter = new EpubChapter();
+                                    chapter.setBookPath(path);
                                     chapter.setPri(1);
                                     chapter.setPlayOrder(order++);
                                     chapter.setText(parser.getAttributeValue(null, "id"));
@@ -1070,6 +1075,7 @@ public class EpubParser implements IEpubParser {
                     }
 
                     EpubChapter chapter = new EpubChapter();
+                    chapter.setBookPath(path);
                     chapter.setPri(chapterLevel);
                     //<navPoint xxxx <navPoint xxxx   或者 <navPoint xxxx <navPoint xxxx </navPoint>
                     if (end == -1 || (nextStart != -1 && end > nextStart)) {

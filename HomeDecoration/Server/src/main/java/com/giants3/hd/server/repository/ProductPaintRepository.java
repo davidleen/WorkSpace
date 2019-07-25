@@ -2,6 +2,7 @@ package com.giants3.hd.server.repository;
 //
 
 import com.giants3.hd.entity.ProductPaint;
+import com.giants3.hd.entity.ProductWage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -31,4 +32,5 @@ public interface ProductPaintRepository extends JpaRepository<ProductPaint,Long>
     @Query("update T_ProductPaint p set    p.memo=:memo    WHERE p.materialId =   :materialId  and ( p.memo <> :memo or p.memo is null) ")
     public void updateMemoOnMaterialId(@Param("memo") String memo ,  @Param("materialId") long materialId);
 
+    ProductPaint findFirstByProcessIdEquals(long processId);
 }

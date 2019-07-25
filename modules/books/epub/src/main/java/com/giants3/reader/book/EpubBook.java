@@ -1,5 +1,6 @@
 package com.giants3.reader.book;
 
+import com.xxx.reader.book.AbstractBook;
 import com.xxx.reader.book.IBook;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ import java.util.List;
  *
  * @author Chenli
  */
-public class EpubBook implements IBook<EpubChapter> {
+public class EpubBook extends AbstractBook<EpubChapter> {
 
 
     /**

@@ -1,5 +1,6 @@
 package com.xxx.reader.book;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,12 +17,12 @@ public class ChapterMeasureResult<T> {
     /**
      * 分页信息
      */
-    public List<T> pageValues;
+    public List<T> pageValues=new ArrayList<>();
 
     /**
      * 总文件大小  或者 章节内图片的总高度
      */
-    public  int fileSize;
+    public  long fileSize;
     /**
      * 章节名称
      */

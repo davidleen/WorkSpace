@@ -2,10 +2,7 @@ package com.giants3.hd.server.service;
 
 import com.giants3.hd.entity.*;
 import com.giants3.hd.noEntity.RemoteData;
-import com.giants3.hd.server.repository.ProductMaterialRepository;
-import com.giants3.hd.server.repository.ProductProcessRepository;
-import com.giants3.hd.server.repository.XiankangRepository;
-import com.giants3.hd.server.repository.Xiankang_JingzaRepository;
+import com.giants3.hd.server.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +21,10 @@ public class ProductRelateService extends AbstractService {
     private ProductMaterialRepository productMaterialRepository;
     @Autowired
     private JpaRepository<PClass, Long> productClassRepository;
+    @Autowired
+    private ProductWageRepository productWageRepository;
+    @Autowired
+    private ProductPaintRepository productPaintRepository;
     @Autowired
     private ProductProcessRepository processRepository;
     @Autowired
@@ -133,5 +134,37 @@ public class ProductRelateService extends AbstractService {
             }
         }
         return wrapData();
+    }
+
+    public RemoteData<ProductProcess> updateProductProcesses(ProductProcess productProcess) {
+
+        ProductProcess save = processRepository.save(productProcess);
+        return wrapData(save);
+
+    }
+
+    public RemoteData<Void> deleteProductProcess(long processId) {
+
+
+        //检查productprocess 相关的数据， 是否有关联，有关联不能删除
+
+
+        ProductWage firstByProcessIdEquals = productWageRepository.findFirstByProcessIdEquals(processId);
+        if(firstByProcessIdEquals!=null)
+        {
+            return wrapError("工资数据有关联到当前工序，不能删除!");
+        }
+
+
+        ProductPaint productPaint = productPaintRepository.findFirstByProcessIdEquals(processId);
+        if(productPaint!=null)
+        {
+            return wrapError("油漆相关数据有关联到当前工序，不能删除!");
+        }
+
+
+
+        processRepository.delete(processId);
+        return wrapMessageData("删除成功");
     }
 }

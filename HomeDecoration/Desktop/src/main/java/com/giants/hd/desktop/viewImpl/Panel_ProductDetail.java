@@ -2106,7 +2106,7 @@ public class Panel_ProductDetail extends BasePanel implements ProductDetailViewe
         tf_inboxCount.setText(String.valueOf(product.insideBoxQuantity));
 
 
-        //to avoid fire listener  first check value changed or not  and remove listener and rebind.
+        //to avoid fire codeListener  first check value changed or not  and remove codeListener and rebind.
         if (!tf_quantity.getText().trim().equals(String.valueOf(product.packQuantity))) {
             clearPackQuantityListener();
             tf_quantity.setText(String.valueOf(product.packQuantity));

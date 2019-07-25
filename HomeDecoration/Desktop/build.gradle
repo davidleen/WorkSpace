@@ -1,9 +1,9 @@
 apply plugin: 'java'
- apply plugin: 'application'
+
 
 compileJava.options.encoding = 'UTF-8'
 
- mainClassName="com.giants.hd.desktop.frames.Main"
+// mainClassName="com.giants.hd.desktop.frames.Main"
 tasks.withType(org.gradle.api.tasks.compile.JavaCompile) {
     options.encoding = 'UTF-8'
 }
@@ -27,7 +27,7 @@ repositories {
 //        }
 //    }
 //}
-jar.manifest.attributes 'Main-Class': mainClassName
+//jar.manifest.attributes 'Main-Class': mainClassName
 jar {
     baseName = 'MyDesktop'
     version = '0.1.0'

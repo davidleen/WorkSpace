@@ -17,6 +17,7 @@ tasks.withType(JavaCompile) {
 
 dependencies {
     compile project(":deskData")
+    compile project(":Utils")
     compile 'io.reactivex:rxjava:1.0.14'
     compile "com.google.code.gson:gson:${gsonVersion}"
     compile group: 'com.ning', name: 'async-http-client', version: '1.9.21'

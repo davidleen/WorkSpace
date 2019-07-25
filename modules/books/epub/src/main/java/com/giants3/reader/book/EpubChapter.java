@@ -40,6 +40,7 @@ public class EpubChapter implements IChapter {
     private boolean mHasChild = false;
 
     private boolean expanded = false;
+    private String path;
 
     public void setHasChild(boolean hasChild) {
         this.mHasChild = hasChild;
@@ -152,5 +153,14 @@ public class EpubChapter implements IChapter {
     @Override
     public boolean hasPay() {
         return false;
+    }
+
+    public void setBookPath(String path) {
+        this.path = path;
+    }
+
+    public String getBookPath()
+    {
+        return path;
     }
 }

@@ -15,4 +15,6 @@ public interface IPresenter {
      * @return
      */
     boolean  hasModifyData();
+
+
 }

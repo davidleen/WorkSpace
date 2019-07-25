@@ -18,5 +18,7 @@ public interface ProductWageRepository extends JpaRepository<ProductWage,Long> {
     public List<ProductWage> findByProductIdEqualsOrderByItemIndexAsc(long productId);
     public List<ProductWage> findByProductIdEqualsAndFlowIdEquals(long productId, long flowId);
 
+    public ProductWage findFirstByProcessIdEquals( long processId);
+
     public int deleteByProductIdEquals(long productId);
 }

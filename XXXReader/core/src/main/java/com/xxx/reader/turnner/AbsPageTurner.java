@@ -65,8 +65,6 @@ public abstract class AbsPageTurner implements IPageTurner, GestureDetector.OnGe
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
-
         return gestureDetector.onTouchEvent(event);
     }
     protected int getDrawHeight() {
@@ -135,4 +133,6 @@ public abstract class AbsPageTurner implements IPageTurner, GestureDetector.OnGe
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         return false;
     }
+
+
 }

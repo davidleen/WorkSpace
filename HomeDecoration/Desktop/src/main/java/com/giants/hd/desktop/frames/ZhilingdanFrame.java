@@ -78,7 +78,7 @@ public class ZhilingdanFrame extends BaseInternalFrame implements ZhilingdanIPre
 
 
         });
-        workFlowViewer.showLoadingDialogCarfully();
+        workFlowViewer.showLoadingDialogCarefully();
     }
 
 

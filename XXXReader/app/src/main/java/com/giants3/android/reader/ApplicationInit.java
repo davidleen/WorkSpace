@@ -3,6 +3,7 @@ package com.giants3.android.reader;
 import android.app.Application;
 
 import com.giants3.android.frame.util.StorageUtils;
+import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.android.network.ApiConnection;
 import com.giants3.android.reader.domain.ResApiFactory;
 import com.giants3.android.reader.R;
@@ -22,6 +23,7 @@ public class ApplicationInit extends Application {
 //			com.facebook.stetho.Stetho.initializeWithDefaults(this);
         }
         ResApiFactory.getInstance().setResApi(new ApiConnection());
+        ToastHelper.init(this);
         HttpUrl.init(this);
         StorageUtils.setRoot("AAAAAAA");
         Utils.init(getApplicationContext());

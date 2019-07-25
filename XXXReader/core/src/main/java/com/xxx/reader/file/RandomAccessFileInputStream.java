@@ -3,16 +3,17 @@ package com.xxx.reader.file;
 import java.io.DataInput;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 
 public class RandomAccessFileInputStream extends InputStream implements DataInput {
-    private BaseRandomAccessFile file;
+    private RandomAccessFile file;
 
-    public RandomAccessFileInputStream(BaseRandomAccessFile file) {
+    public RandomAccessFileInputStream(RandomAccessFile file) {
         this.file = file;
     }
 
     public RandomAccessFileInputStream(String filePath) throws IOException {
-        this.file = new BaseRandomAccessFile(filePath, "r");
+        this.file = new RandomAccessFile(filePath, "r");
     }
 
     @Override

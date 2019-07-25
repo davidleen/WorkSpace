@@ -12,14 +12,19 @@ import com.giants3.hd.server.parser.RemoteDataParser;
 import com.giants3.hd.server.service.ProductRelateService;
 import com.giants3.hd.server.service.ProductService;
 import com.giants3.hd.server.utils.Constraints;
+import com.giants3.hd.server.utils.FileUtils;
 import com.giants3.hd.utils.StringUtils;
+import com.giants3.hd.utils.file.ImageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -615,6 +620,52 @@ public class ProductController extends BaseController {
 
 
         return productService.syncProductFromRemote(user, remoteUrlHead, filterKey, shouldOverride);
+
+
+    }
+
+
+
+    /**
+     * 单张
+     *
+     * @param file
+     * @return
+     */
+    @RequestMapping(value = "/uploadProductPhoto", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    RemoteData<Product> uploadProductPhoto(@RequestParam("productId") long productId,@RequestParam("file") MultipartFile file) {
+
+
+
+
+        Product product=productService.findProductById(productId);
+        if(product==null) return wrapError("未找到产品数据");
+        long lastPhotoUpdateTime=System.currentTimeMillis();
+
+        String uploadFileName=file.getName();
+        int indexOfDot = uploadFileName.indexOf(".");
+        String suffix = uploadFileName.substring(indexOfDot + 1);
+        String productPicturePath = FileUtils.getProductPicturePath(productFilePath, product.name, product.pVersion, suffix);
+        try {
+
+            FileUtils.copy(file, productPicturePath);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return wrapError("文件上传失败，原因："+e.getMessage());
+        }
+
+        boolean b = productService.updateProductPhotoData(product);
+        if(b)
+        {
+            return wrapData(productService.findProductById(productId));
+        }else
+        {
+            return wrapError("图片更新失败");
+        }
+
 
 
     }

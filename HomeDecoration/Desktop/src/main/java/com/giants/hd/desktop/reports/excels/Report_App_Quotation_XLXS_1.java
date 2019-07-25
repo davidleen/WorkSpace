@@ -4,6 +4,7 @@ import com.giants3.hd.entity.Company;
 import com.giants3.hd.entity.app.Quotation;
 import com.giants3.hd.entity.app.QuotationItem;
 import com.giants3.hd.noEntity.app.QuotationDetail;
+import com.giants3.hd.utils.FloatHelper;
 import com.giants3.hd.utils.StringUtils;
 import com.giants3.report.ResourceUrl;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -62,22 +63,22 @@ public class Report_App_Quotation_XLXS_1 extends SimpleExcelReporter<QuotationDe
 
 
         addString(writableSheet, company.tel,2,3);
-        addString(writableSheet, company.fax,7,3);
+        addString(writableSheet, company.fax,8,3);
 
 
         final Quotation quotation = quotationDetail.quotation;
-        addString(writableSheet, quotation.email,12,3);
-        addString(writableSheet, quotation.booth,12,4);
-        addString(writableSheet, quotation.qNumber,11,7);
-        addString(writableSheet, quotation.qDate,11,9);
+        addString(writableSheet, quotation.email,13,3);
+        addString(writableSheet, quotation.booth,13,4);
+        addString(writableSheet, quotation.qNumber,12,7);
+        addString(writableSheet, quotation.qDate,12,9);
 
 
 
 
         addString(writableSheet, quotation.customerName,2,7);
         addString(writableSheet, quotation.customerAddress,2,9);
-        addString(writableSheet, quotation.qNumber,11,7);
-        addString(writableSheet, quotation.qDate,11,9);
+        addString(writableSheet, quotation.qNumber,12,7);
+        addString(writableSheet, quotation.qDate,12,9);
 
         int rowIndex=startItemRow;
         for (int i = 0; i < dataSize; i++) {
@@ -90,11 +91,38 @@ public class Report_App_Quotation_XLXS_1 extends SimpleExcelReporter<QuotationDe
 
             addString(writableSheet,item.productName,2,rowIndex);
             addString(writableSheet,item.unit,4,rowIndex);
-            addString(writableSheet,item.spec,5,rowIndex);
-            addString(writableSheet,"$"+item.price,9,rowIndex);
-            addString(writableSheet, item.inBoxCount+"/"+item.packQuantity+"/"+item.packageSize,11,rowIndex);
-            addNumber(writableSheet, item.volumeSize ,14,rowIndex);
-            addString(writableSheet, item.memo ,15,rowIndex);
+//            addString(writableSheet,item.spec,5,rowIndex);
+            String[] specValue = groupSpec(StringUtils.decoupleSpecString(item.spec));
+            addString(writableSheet, specValue[0], 5, rowIndex);
+            addString(writableSheet, "*", 6, rowIndex);
+
+
+            addString(writableSheet, specValue[1], 7, rowIndex);
+            addString(writableSheet, "*", 8, rowIndex);
+
+            addString(writableSheet, specValue[2], 9, rowIndex);
+
+
+            addString(writableSheet,"$"+item.price,10,rowIndex);
+
+            addNumber(writableSheet, FloatHelper.scale(item.volumeSize,2) ,12,rowIndex);
+            addNumber(writableSheet, FloatHelper.scale(item.weight,2) ,14,rowIndex);
+
+
+            int index=16;
+            addNumber(writableSheet,item.inBoxCount,index++,rowIndex);
+            addString(writableSheet,"/",index++,rowIndex);
+            addNumber(writableSheet,item.packQuantity,index++,rowIndex);
+            addString(writableSheet,"/",index++,rowIndex);
+
+
+            addNumber(writableSheet, item.boxLong,index++,rowIndex);
+            addString(writableSheet,"*",index++,rowIndex);
+            addNumber(writableSheet,item.boxWidth,index++,rowIndex);
+            addString(writableSheet,"*",index++,rowIndex);
+            addNumber(writableSheet,item.boxHeight,index++,rowIndex);
+
+            addString(writableSheet, item.memo ,index++ ,rowIndex);
 
 
             if(fileExporter!=null)

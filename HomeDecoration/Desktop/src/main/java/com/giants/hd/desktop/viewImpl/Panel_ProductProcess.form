@@ -20,12 +20,25 @@
           </component>
         </children>
       </scrollpane>
-      <component id="6442c" class="javax.swing.JButton" binding="btn_save">
+      <grid id="5d4d9" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
         <constraints border-constraint="South"/>
-        <properties>
-          <text value="保存"/>
-        </properties>
-      </component>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="a384d" class="javax.swing.JButton" binding="btn_add">
+            <constraints/>
+            <properties>
+              <text value="添加"/>
+            </properties>
+          </component>
+          <hspacer id="8e7c5">
+            <constraints/>
+          </hspacer>
+          <hspacer id="2fdfc">
+            <constraints/>
+          </hspacer>
+        </children>
+      </grid>
     </children>
   </grid>
 </form>

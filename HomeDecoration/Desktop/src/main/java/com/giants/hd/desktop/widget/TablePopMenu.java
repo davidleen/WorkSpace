@@ -54,11 +54,17 @@ public class TablePopMenu extends JPopupMenu {
 
 
                 int tableRow[] = JTableUtils.getSelectedRowSOnModel(table);
-                if (table.getModel() instanceof BaseTableModel) {
-                    BaseTableModel model = (BaseTableModel) table.getModel();
+                if(tableRow==null||tableRow.length==0)
+                {
+                    JOptionPane.showMessageDialog(table,"请选中一行进行操作。");
 
-                    if (lister != null)
-                        lister.onTableMenuClick(ITEM_INSERT, model, tableRow);
+                }else {
+                    if (table.getModel() instanceof BaseTableModel) {
+                        BaseTableModel model = (BaseTableModel) table.getModel();
+
+                        if (lister != null)
+                            lister.onTableMenuClick(ITEM_INSERT, model, tableRow);
+                    }
                 }
 
 

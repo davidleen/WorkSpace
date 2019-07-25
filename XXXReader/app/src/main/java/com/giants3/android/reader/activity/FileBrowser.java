@@ -33,13 +33,23 @@ public class FileBrowser {
         }
 
         switch (contentType.toLowerCase()) {
-            case FileContentType.EPUB:
+            case FileContentType.EPUB: {
                 IBook iBook = EpubParser.getEpubParser(file.getPath()).getEpub();
                 Log.e(iBook.getName());
 
                 Intent intent = new Intent(context, TextReadActivity.class);
                 intent.putExtra("filePath", file.getAbsolutePath());
                 context.startActivity(intent);
+            }
+
+
+                break;
+                case FileContentType.TEXT: {
+
+                    Intent intent = new Intent(context, TextReadActivity.class);
+                    intent.putExtra("filePath", file.getAbsolutePath());
+                    context.startActivity(intent);
+                }
 
 
                 break;

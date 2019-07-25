@@ -41,7 +41,7 @@ public class SlidePageTurner extends FlipPageTurner {
             bottomHolder=bitmapProvider.getCurrentBitmap();
         }else
         if (direction== IPageTurner.TURN_NEXT) {
-            topOffset=offsetX;
+            topOffset=offsetX-drawParam.width;
             topHolder=bitmapProvider.getCurrentBitmap();
             bottomHolder=bitmapProvider.getNextBitmap();
 

@@ -194,24 +194,22 @@ public class DownloadFileManager {
 
 
 
-
-
-
-        makeDir(filePath);
-
         InputStream is = null;
-
 
 
         BufferedInputStream bis = null;
         FileOutputStream fos = null;
-        File newFile=new File(filePath);
 
 
-            //打开URL通道
-        try{
+        //打开URL通道
+        try {
+
+            makeDir(filePath);
+            File newFile = new File(filePath);
+
+
             URL url = new URL(remoteUrl);
-            is =   url.openStream();
+            is = url.openStream();
 
 
             byte[] buffer = new byte[1024];
@@ -222,19 +220,27 @@ public class DownloadFileManager {
             fos = new FileOutputStream(newFile);
 
 
-           // IoUtils.copyAllBytes(bis,fos);
+            // IoUtils.copyAllBytes(bis,fos);
 
             //保存文件
 
 
-                while ((size = bis.read(buffer)) != -1) {
-                    //读取并刷新临时保存文件
-                    fos.write(buffer, 0, size);
-                    fos.flush();
+            while ((size = bis.read(buffer)) != -1) {
+                //读取并刷新临时保存文件
+                fos.write(buffer, 0, size);
+                fos.flush();
 
-                }
+            }
 
-        } finally {
+        } catch (Throwable t)
+        {
+
+            LocalFileHelper.printThrowable(t);
+
+        }
+
+
+        finally {
 
             try {
                 if(fos!=null)

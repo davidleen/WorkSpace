@@ -212,7 +212,6 @@ public class ChapterMeasureManager<C extends IChapter, P extends PageInfo, DP ex
             for (PreparingTask task : measureTasks) {
 
                 if (task.getStatus() == AsyncTask.Status.RUNNING && task.chapterIndex == chapterIndex) {
-
                     findTask = task;
                     break;
                 }

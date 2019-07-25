@@ -19,24 +19,33 @@ import com.xxx.reader.prepare.DrawLayer;
  */
 
 public class ReaderView  extends View implements IDrawable{
+    private ReaderView.onSizeChangeLister onSizeChangeLister;
+
     public ReaderView(Context context) {
-        super(context);
+        this(context,null);
     }
 
     public ReaderView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs,0);
     }
 
     public ReaderView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+        super(context, attrs, defStyleAttr );
+        init();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public ReaderView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        init();
     }
 
 
+
+    private void init()
+    {
+        setLayerType(LAYER_TYPE_HARDWARE, null);
+    }
     public void setDrawLayer(DrawLayer drawLayer) {
         this.drawLayer = drawLayer;
     }
@@ -47,13 +56,12 @@ public class ReaderView  extends View implements IDrawable{
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
+        boolean b = super.onTouchEvent(event);
         if(drawLayer!=null)
         {
             if(drawLayer.onTouchEvent(event)) return true;
         }
-
-        return false;
+        return b;
     }
 
 
@@ -80,10 +88,14 @@ public class ReaderView  extends View implements IDrawable{
         drawParam.width=w;
         drawParam.height=h;
 
-        drawParam.padding=new int[]{30,80,30,80};
+       // drawParam.padding=new int[]{30,80,30,80};
         if(drawLayer!=null)
         {
             drawLayer.updateDrawParam(drawParam);
+        }
+        if(onSizeChangeLister!=null)
+        {
+            onSizeChangeLister.onSizeChanged(w,h);
         }
 
 
@@ -94,5 +106,14 @@ public class ReaderView  extends View implements IDrawable{
         postInvalidate();
     }
 
+    public void setOnSizeChangeListener(onSizeChangeLister onSizeChangeLister) {
 
+        this.onSizeChangeLister = onSizeChangeLister;
+    }
+
+
+    public interface onSizeChangeLister
+    {
+        public void onSizeChanged(int width,int height);
+    }
 }

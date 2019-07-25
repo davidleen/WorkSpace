@@ -2,6 +2,7 @@ package com.giants3.android.reader.adapter;
 
 import com.giants3.reader.entity.ComicChapterFile;
 import com.giants3.reader.noEntity.ComicChapterInfo;
+import com.xxx.reader.book.AbstractBook;
 import com.xxx.reader.book.IBook;
 import com.xxx.reader.comic.ComicChapter;
 import com.xxx.reader.comic.ComicChapterItem;
@@ -13,14 +14,14 @@ import java.util.List;
  * Created by davidleen29 on 2018/11/25.
  */
 
-public class ComicBook implements IBook<ComicChapter> {
+public class ComicBook extends AbstractBook<ComicChapter> {
 
-    private List<ComicChapter> comicChapters;
+
 
     public ComicBook(List<ComicChapterInfo> chapterInfos)
     {
 
-        comicChapters=new ArrayList<>();
+
 
         int size = chapterInfos.size();
         for (int i = 0; i < size; i++) {
@@ -43,43 +44,21 @@ public class ComicBook implements IBook<ComicChapter> {
             }
 
 
-            comicChapters.add(comicChapter);
+            addChapter(comicChapter);
         }
 
 
     }
-    @Override
-    public String getName() {
-        return comicChapters.toString();
-    }
 
-    @Override
-    public String getUrl() {
-        return null;
-    }
 
-    @Override
-    public String getFilePath() {
-        return null;
-    }
 
-    @Override
-    public List<ComicChapter> getChapters() {
-        return comicChapters;
-    }
 
-    @Override
-    public ComicChapter getChapter(int index) {
-        return comicChapters.get(index);
-    }
 
-    @Override
-    public int getChapterCount() {
-        return comicChapters.size();
-    }
 
-    @Override
-    public String getBookId() {
-        return String.valueOf(comicChapters.hashCode());
-    }
+
+
+
+
+
+
 }

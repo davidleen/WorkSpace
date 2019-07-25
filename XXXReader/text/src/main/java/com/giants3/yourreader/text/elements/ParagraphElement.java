@@ -1,5 +1,8 @@
 package com.giants3.yourreader.text.elements;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
+
 import java.util.List;
 
 /**
@@ -8,7 +11,25 @@ import java.util.List;
 
 public class ParagraphElement extends Element {
 
-    List<LineElement> lineElements;
 
 
+    public int firstLine=-1;
+    public int lastLine=-1;
+    TextParam para;
+     List<LineElement> lineElements;
+
+
+    @Override
+    public void draw(Canvas canvas, Paint paint) {
+
+
+    }
+
+    class TextParam
+    {
+        public String text;
+        public float[] xPositions;
+        public int lineCount;
+        int[] lineHead;
+    }
 }

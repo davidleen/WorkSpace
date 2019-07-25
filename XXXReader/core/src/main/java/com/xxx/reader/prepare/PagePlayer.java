@@ -286,8 +286,6 @@ public class PagePlayer<C extends IChapter, P extends PageInfo, DP extends DrawP
     public boolean canPageChangedNext() {
 
         //如果当前页在测量中, return false;
-
-
         return chapterMeasureManager.canPageChangedNext(currentChapterIndex, currentPageIndex);
 
 
@@ -310,13 +308,9 @@ public class PagePlayer<C extends IChapter, P extends PageInfo, DP extends DrawP
 
         P pageInfo = chapterMeasureManager.getNextPageInfo(currentChapterIndex, currentPageIndex);
         if (pageInfo != null) {
-
-
             currentPageIndex = pageInfo.pageIndex;
             currentChapterIndex = pageInfo.chapterIndex;
             currentPageCount = pageInfo.pageCount;
-
-
             long time = Calendar.getInstance().getTimeInMillis();
 
             PageBitmap tempPageBitmap = cacheBitmaps[0];

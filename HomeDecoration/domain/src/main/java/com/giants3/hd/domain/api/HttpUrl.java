@@ -1103,6 +1103,9 @@ public class HttpUrl {
     public static String updateMaterialClass() {
 
         return additionInfo(BaseUrl + "api/material/updateClass");
+    }public static String updateProductProcess() {
+
+        return additionInfo(BaseUrl + "api/process/update");
     }
 
     public static String deleteMaterialClass(long materialClassId) {
@@ -1382,4 +1385,7 @@ public class HttpUrl {
     }
 
 
+    public static String deleteProductProcess(long id) {
+        return additionInfo(BaseUrl + "api/process/delete?id=" + id);
+    }
 }

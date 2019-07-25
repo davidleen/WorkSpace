@@ -23,7 +23,7 @@ public abstract class PageBitmap<P extends PageInfo, D extends DrawParam> extend
      */
     private final  int STATE_DIRTY=1;
     private final  int STATE_NONE=0;
-    private final IDrawable iDrawable;
+    protected final IDrawable iDrawable;
     public volatile int state;
 
 

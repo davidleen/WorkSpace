@@ -1,6 +1,7 @@
 package com.giants3.hd.server.controller;
 
 
+import com.giants3.hd.entity.Product;
 import com.giants3.hd.entity.ProductProcess;
 import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.server.service.ProductRelateService;
@@ -43,6 +44,28 @@ public class ProductProcessController extends BaseController {
 
 
         return productRelateService.searchProductProcesses(name, pageIndex, pageSize);
+
+
+    }
+
+    @RequestMapping(value = "/update", method = {RequestMethod.GET, RequestMethod.POST})
+    public
+    @ResponseBody
+    RemoteData<ProductProcess> update(@RequestBody ProductProcess productProcess  ) {
+
+
+        return productRelateService.updateProductProcesses(productProcess);
+
+
+    }
+
+    @RequestMapping(value = "/delete", method = {  RequestMethod.DELETE})
+    public
+    @ResponseBody
+    RemoteData<Void> update(@RequestParam(value = "id", required = true, defaultValue = "-1") long  processId  ) {
+
+
+        return productRelateService.deleteProductProcess(processId);
 
 
     }

@@ -1,5 +1,6 @@
 rootProject.name = 'HomeDecoration'
-include ':Server',':Desktop'
+include ':Server'
+include ':Desktop'
 
 include ':domain'
 //include  'common'

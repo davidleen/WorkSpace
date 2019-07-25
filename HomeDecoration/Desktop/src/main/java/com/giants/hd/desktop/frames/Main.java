@@ -892,10 +892,9 @@ public class Main extends BaseFrame {
                 public void actionPerformed(ActionEvent e) {
 
 //                Main.this.setContentPane(new Panel_BaseData().getRoot());
-                    ProductProcessDialog dialog = new ProductProcessDialog(Main.this);
-                    dialog.setLocationRelativeTo(getRootPane());
+                    ProductProcessFrame dialog = new ProductProcessFrame( );
+                    addInterFrame(dialog);
 
-                    dialog.setVisible(true);
 
                 }
             });

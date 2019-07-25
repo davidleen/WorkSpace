@@ -498,44 +498,44 @@ public class ComicBitmapDrawer {
                 iDrawable.updateView();
 
 
-                String s = "一个月之前，一位名叫莱莉-莫里森的9岁小女孩给库里写了一封信，并指出库里代言的UA官网上并没有为女孩设立的球鞋专区。 我希望你能和UA改变这个情况，因为女孩们也希望穿库里5代球鞋。”莫里森在给库里的信中写道。 " +
-                        "\n" +
-                        "　　很快，库里给莫里斯回信，他不仅承诺会改正这个问题，而且还答应莫里森，她将成为第一批收到库里6代球鞋的人。\n" +
-                        "\n" +
-                        " 果然，库里履行了他的承诺，莱莉-莫里森收到了来自库里的圣诞礼物——库里6代球鞋。当看到这双球鞋之后，莱利-莫里森兴奋地叫了起来，并称这双球鞋太酷了。";
-                Canvas canvas = new Canvas(bitmap);
-                Paint paint = new Paint();
-                paint.setColor(Color.RED);
-                paint.setTextSize(9);
-                float y = 13;
-                for (int i = 0; i < s.length(); i++) {
-
-
-                    canvas.drawText(String.valueOf(s.charAt(i)), 9 * (i % 20), y, paint);
-                    if (i % 20 == 19) {
-                        y += 9;
-                    }
-
-                    iDrawable.updateView();
-                    try {
-                        Thread.sleep(8);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-
-                }
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if (isCancelled()) {
-                    return null;
-                }
-
-
-                loadTime = Calendar.getInstance().getTimeInMillis();
+//                String s = "一个月之前，一位名叫莱莉-莫里森的9岁小女孩给库里写了一封信，并指出库里代言的UA官网上并没有为女孩设立的球鞋专区。 我希望你能和UA改变这个情况，因为女孩们也希望穿库里5代球鞋。”莫里森在给库里的信中写道。 " +
+//                        "\n" +
+//                        "　　很快，库里给莫里斯回信，他不仅承诺会改正这个问题，而且还答应莫里森，她将成为第一批收到库里6代球鞋的人。\n" +
+//                        "\n" +
+//                        " 果然，库里履行了他的承诺，莱莉-莫里森收到了来自库里的圣诞礼物——库里6代球鞋。当看到这双球鞋之后，莱利-莫里森兴奋地叫了起来，并称这双球鞋太酷了。";
+//                Canvas canvas = new Canvas(bitmap);
+//                Paint paint = new Paint();
+//                paint.setColor(Color.RED);
+//                paint.setTextSize(9);
+//                float y = 13;
+//                for (int i = 0; i < s.length(); i++) {
+//
+//
+//                    canvas.drawText(String.valueOf(s.charAt(i)), 9 * (i % 20), y, paint);
+//                    if (i % 20 == 19) {
+//                        y += 9;
+//                    }
+//
+//                    iDrawable.updateView();
+//                    try {
+//                        Thread.sleep(8);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//
+//                }
+//                try {
+//                    Thread.sleep(3000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                if (isCancelled()) {
+//                    return null;
+//                }
+//
+//
+               loadTime = Calendar.getInstance().getTimeInMillis();
                 bitmap = bitmapRegionDecoder.decodeRegion(decodeRect, options);
 
 

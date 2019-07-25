@@ -2,6 +2,7 @@ package com.giants3.hd.domain.api;
 
 import com.ning.http.client.*;
 import com.ning.http.client.multipart.FilePart;
+import org.jboss.netty.handler.codec.http.HttpResponse;
 
 import javax.activation.MimetypesFileTypeMap;
 import java.io.File;
@@ -232,11 +233,45 @@ public class Client {
 
     }
 
-    private <T> T execute(AsyncHandler<T> handler, AsyncHttpClient.BoundRequestBuilder builder) throws Exception {
+    private <T> T execute(final AsyncHandler<T> handler, AsyncHttpClient.BoundRequestBuilder builder) throws Exception {
         try {
 
             long time = Calendar.getInstance().getTimeInMillis();
-            T result = builder.execute(handler).get();
+
+
+            AsyncHandler wrapper=new AsyncHandler() {
+                @Override
+                public void onThrowable(Throwable t) {
+                    handler.onThrowable(t);
+                }
+
+                @Override
+                public STATE onBodyPartReceived(HttpResponseBodyPart bodyPart) throws Exception {
+                    return handler.onBodyPartReceived(bodyPart);
+                }
+
+                @Override
+                public STATE onStatusReceived(HttpResponseStatus responseStatus) throws Exception {
+
+                    if(responseStatus.getStatusCode()!= 200)
+                    {
+                        throw new Exception(responseStatus.getStatusCode()+","+responseStatus.getStatusText() );
+                    }
+                    return handler.onStatusReceived(responseStatus);
+                }
+
+                @Override
+                public STATE onHeadersReceived(HttpResponseHeaders headers) throws Exception {
+                    return handler.onHeadersReceived(headers);
+                }
+
+                @Override
+                public Object onCompleted() throws Exception {
+                    return handler.onCompleted();
+                }
+            };
+            ListenableFuture<T> execute = builder.execute(wrapper);
+            T result = execute.get();
 
 
             //特殊处理  避免请求结果太快返回，

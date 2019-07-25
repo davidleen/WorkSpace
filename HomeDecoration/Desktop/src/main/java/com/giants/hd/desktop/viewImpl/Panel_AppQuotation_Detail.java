@@ -15,13 +15,17 @@ import com.giants3.hd.entity.User;
 import com.giants3.hd.entity.app.Quotation;
 import com.giants3.hd.entity.app.QuotationItem;
 import com.giants3.hd.noEntity.app.QuotationDetail;
+import com.giants3.hd.utils.FloatHelper;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import java.awt.event.*;
+import java.util.List;
 
 /**
  * 广交会报价详情
@@ -53,7 +57,10 @@ public class Panel_AppQuotation_Detail extends BasePanel implements AppQuotation
     private JButton export_pdf;
     private JButton setAllDiscount;
     private JButton cancelAllDiscount;
-//    private JTextField tf_booth;
+    private JDatePickerImpl volumeSun;
+    private JTextField txt_amount_sum;
+    private JTextField txt_volume_sum;
+    //    private JTextField tf_booth;
 
 
     private AppQuotationItemTableModel tableModel;
@@ -173,7 +180,28 @@ public class Panel_AppQuotation_Detail extends BasePanel implements AppQuotation
         });
 
         table.setModel(tableModel);
+        tableModel.addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent e) {
 
+
+                final List<QuotationItem> datas = tableModel.getDatas();
+                float sumPrice=0;
+                float sumVolume=0;
+                for (int i = 0; i < datas.size(); i++) {
+
+
+                    QuotationItem item=datas.get(i);
+                    sumPrice+= item.amountSum;
+                    sumVolume+= item.volumeSum;
+                }
+
+
+                txt_amount_sum.setText(String.valueOf(FloatHelper.scale(sumPrice)));
+                txt_volume_sum.setText(String.valueOf(FloatHelper.scale(sumVolume)));
+
+            }
+        });
 
         table.addMouseListener(new TableMenuAdapter(table, new String[]{"   添加   ", "   删除   ", "   打折   ", "   取消折扣   "}, new TableMenuAdapter.TableMenuListener() {
             @Override

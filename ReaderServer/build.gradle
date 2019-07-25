@@ -12,11 +12,15 @@ buildscript {
 }
 
 allprojects {
+
+
     repositories {
         jcenter()
         maven{ url LOCAL_MAVEN_URL}
         mavenCentral()
+        maven { url 'https://repo.gradle.org/gradle/libs-releases' }
     }
+
 }
 
 task clean(type: Delete) {
