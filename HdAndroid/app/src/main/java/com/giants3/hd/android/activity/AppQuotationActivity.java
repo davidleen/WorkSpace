@@ -20,7 +20,6 @@ import com.giants3.hd.android.R;
 import com.giants3.hd.android.adapter.ItemListAdapter;
 import com.giants3.hd.android.entity.TableData;
 import com.giants3.hd.android.events.CustomerUpdateEvent;
-import com.giants3.hd.android.fragment.ProductDetailFragment;
 import com.giants3.hd.android.fragment.SearchCustomerFragment;
 import com.giants3.hd.android.fragment.SearchProductFragment;
 import com.giants3.hd.android.fragment.ValueEditDialogFragment;
@@ -30,6 +29,7 @@ import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.mvp.AndroidRouter;
 import com.giants3.hd.android.mvp.appquotationdetail.AppQuotationDetailMVP;
 import com.giants3.hd.android.mvp.appquotationdetail.PresenterImpl;
+import com.giants3.hd.android.presenter.ProductDetailPresenter;
 import com.giants3.hd.appdata.AProduct;
 import com.giants3.hd.appdata.AUser;
 import com.giants3.hd.appdata.QRProduct;
@@ -247,7 +247,7 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
                         aProduct.id = data.productId;
                         //调整act
                         Intent intent = new Intent(AppQuotationActivity.this, ProductDetailActivity.class);
-                        intent.putExtra(ProductDetailFragment.ARG_ITEM, GsonUtils.toJson(aProduct));
+                        intent.putExtra(ProductDetailPresenter.ARG_ITEM, GsonUtils.toJson(aProduct));
                         startActivity(intent);
 
 
@@ -702,7 +702,7 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
 
                 }
                 Log.i("result:" + product);
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
 

@@ -101,13 +101,9 @@ public class OrderDetailFragment extends BaseFragment implements View.OnClickLis
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
 
-            try {
+
                 erpOrder = GsonUtils.fromJson(getArguments().getString(ARG_ITEM), ErpOrder.class);
-            } catch (HdException e) {
-                e.printStackTrace();
-                ToastHelper.show("参数异常");
-                getActivity().finish();
-            }
+
 
 
 //        String[] tableHead=    getResources().getStringArray(R.array.table_head_order_item);

@@ -116,13 +116,9 @@ public class QuotationDetailFragment extends BaseFragment implements View.OnClic
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
 
-            try {
+
                 quotation = GsonUtils.fromJson(getArguments().getString(ARG_ITEM), Quotation.class);
-            } catch (HdException e) {
-                e.printStackTrace();
-                ToastHelper.show("参数异常");
-                return;
-            }
+
 
 
             xkQuotationTable = TableData.resolveData(getActivity(), R.array.table_head_xkquotation_item);

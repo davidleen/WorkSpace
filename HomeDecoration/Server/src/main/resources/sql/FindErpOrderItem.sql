@@ -2,7 +2,7 @@ select a.os_no,a.os_dd,a.itm,a.bat_no,a.prd_no,a.prd_name,a.id_no, a.up,
 isnull(d.ut,'') as ut,
 isnull(d.idx1,'') as idx1,
 
-a.qty,a.amt , isnull(pdc.produceType,-1) as produceType,
+isnull(a.qty,0) as qty , isnull(a.amt ,0) as amt, isnull(pdc.produceType,-1) as produceType,
 
 b.workFlowDescribe, isnull(b.workflowState,0) as workflowState,
  isnull(b.maxWorkFlowStep,0 )  as maxWorkFlowStep , isnull(b.maxWorkFlowName,'') as maxWorkFlowName,

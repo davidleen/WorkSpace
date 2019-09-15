@@ -6,23 +6,11 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.view.View;
-import android.widget.RemoteViews;
 
-import com.giants3.android.frame.util.StringUtil;
 import com.giants3.android.reader.domain.GsonUtils;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.rnmap_wb.R;
 import com.rnmap_wb.activity.home.HomeActivity;
-import com.rnmap_wb.android.dao.DaoManager;
 import com.rnmap_wb.android.data.Task;
-import com.rnmap_wb.android.data.TaskMessage;
-import com.rnmap_wb.helper.ImageLoaderFactory;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 /**
  * Created by davidleen29 on 2018/6/24.

@@ -2,8 +2,6 @@ package com.rnmap_wb.service;
 
 import android.app.Service;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.wifi.p2p.nsd.WifiP2pUpnpServiceInfo;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Handler;
@@ -13,9 +11,12 @@ import android.support.annotation.Nullable;
 
 import com.giants3.android.frame.util.Log;
 import com.giants3.android.network.ApiConnection;
-import com.rnmap_wb.android.dao.DaoManager;
-import com.rnmap_wb.android.dao.IDownloadItemDao;
-import com.rnmap_wb.android.data.LoginResult;
+import com.rnmap_wb.BuildConfig;
+import com.rnmap_wb.activity.OffLineHelper;
+import com.rnmap_wb.activity.mapwork.TileUrlHelper;
+import com.rnmap_wb.android.idao.DaoManager;
+import com.rnmap_wb.android.idao.IDownloadItemDao;
+import com.rnmap_wb.android.idao.IDownloadTaskDao;
 import com.rnmap_wb.android.entity.DownloadItem;
 import com.rnmap_wb.android.entity.DownloadTask;
 import com.rnmap_wb.utils.IntentConst;
@@ -62,18 +63,23 @@ public class DownloadManagerService extends Service {
         };
 
 
+        tryStartDownloadJob();
 
-        if (TelephoneUtil.isWifiEnable()&&SettingContent.getInstance().autoDownloadOnWifi()) {
+
+    }
+
+    private void tryStartDownloadJob() {
+        if (TelephoneUtil.isWifiEnable() && SettingContent.getInstance().autoDownloadOnWifi()) {
             AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
 
                 @Override
                 public void run() {
 
-                    List<DownloadTask> downloadTasks = DaoManager.getInstance().getDownloadTaskDao().loadAll();
+                    IDownloadTaskDao downloadTaskDao = DaoManager.getInstance().getDownloadTaskDao();
+                    List<DownloadTask> downloadTasks = downloadTaskDao.loadAll();
 
                     for (DownloadTask downloadTask : downloadTasks) {
-                        if (downloadTask.getState() == 0) {
-
+                        if (downloadTask.getState() == DownloadTask.STATE_NONE ) {
                             startATask(downloadTask.getId());
 
 
@@ -83,8 +89,6 @@ public class DownloadManagerService extends Service {
                 }
             });
         }
-
-
     }
 
 
@@ -108,21 +112,28 @@ public class DownloadManagerService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         int result = super.onStartCommand(intent, flags, startId);
 
-        if (intent==null) return result;
+        if (intent == null) return result;
         long taskId = intent.getLongExtra(IntentConst.KEY_TASK_ID, 0);
         if (taskId > 0) {
-
-
             startATask(taskId);
+        } else {
 
+            tryStartDownloadJob();
         }
+
+
         return result;
     }
 
     private void startATask(long taskId) {
-        MapTileDownloadThread thread = new MapTileDownloadThread(taskId);
-        downloadingThread.put(taskId, thread);
-        thread.start();
+
+
+        if (downloadingThread.get(taskId) == null) {
+
+            MapTileDownloadThread thread = new MapTileDownloadThread(taskId);
+            downloadingThread.put(taskId, thread);
+            thread.start();
+        }
 
     }
 
@@ -136,6 +147,7 @@ public class DownloadManagerService extends Service {
 
             this.taskId = taskId;
         }
+
         public AtomicBoolean destroy = new AtomicBoolean();
 
         @Override
@@ -145,7 +157,10 @@ public class DownloadManagerService extends Service {
             ApiConnection apiConnection = new ApiConnection();
 
             //  IMbTilesDao mapTileDao = DaoManager.getInstance().getMapTileDao();
-            DownloadTask downloadTask = DaoManager.getInstance().getDownloadTaskDao().load(taskId);
+            IDownloadTaskDao downloadTaskDao = DaoManager.getInstance().getDownloadTaskDao();
+            DownloadTask downloadTask = downloadTaskDao.load(taskId);
+            downloadTask.setState(DownloadTask.STATE_DOWNLOADING);
+            downloadTaskDao.save(downloadTask);
             IDownloadItemDao downloadItemDao = DaoManager.getInstance().getDownloadItemDao();
 
 
@@ -159,15 +174,27 @@ public class DownloadManagerService extends Service {
                     if (destroy.get()) break;
 
 
+
+
                     String downloadFilePath = downloadItem.getDownloadFilePath();
                     boolean exist = new File(downloadFilePath).exists();
                     if (!exist) {
-                        Log.e("downloading:" + downloadItem.getUrl() + ",toPath:" + downloadItem.getDownloadFilePath());
-                        try {
-                            apiConnection.download(downloadItem.getUrl(), downloadFilePath);
-                        } catch (IOException e) {
-                            e.printStackTrace();
+
+
+
+                        for (int i = 0; i < TileUrlHelper.MAX_MT_COUNT; i++) {
+                            String url= TileUrlHelper.getUrl(downloadItem.getTileX(),downloadItem.getTileY(),downloadItem.getTileZ(),i);
+                            if(BuildConfig.DEBUG)
+                                Log.e("downloading:" +url + ",toPath:" + downloadItem.getDownloadFilePath());
+                            try {
+                                apiConnection.download(url, downloadFilePath);
+                                if(new File(downloadFilePath).exists())
+                                    break;
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
+
 
                     }
 
@@ -179,7 +206,7 @@ public class DownloadManagerService extends Service {
                         DaoManager.getInstance().getDownloadItemDao().save(downloadItem);
                         downloadTask.downloadedCount++;
                         downloadTask.percent = (float) downloadTask.downloadedCount / downloadTask.count;
-                        DaoManager.getInstance().getDownloadTaskDao().save(downloadTask);
+                        downloadTaskDao.save(downloadTask);
                         Message message = handler.obtainMessage();
                         message.what = MSG_STATE_CHANGE;
                         message.obj = downloadTask;
@@ -241,7 +268,7 @@ public class DownloadManagerService extends Service {
 
             if (items != null && items.size() == 0 && downloadTask.downloadedCount >= downloadTask.count) {
                 downloadTask.setState(DownloadTask.STATE_COMPLETE);
-                DaoManager.getInstance().getDownloadTaskDao().save(downloadTask);
+                downloadTaskDao.save(downloadTask);
                 Message message = handler.obtainMessage();
                 message.what = MSG_STATE_CHANGE;
                 message.obj = downloadTask;
@@ -251,7 +278,7 @@ public class DownloadManagerService extends Service {
 
         }
 
-        public void setDestroy( ) {
+        public void setDestroy() {
 
 
             destroy.set(true);
@@ -292,7 +319,7 @@ public class DownloadManagerService extends Service {
 
             MapTileDownloadThread thread = downloadingThread.get(downLoadTaskId);
             if (thread != null) {
-                thread.setDestroy( );
+                thread.setDestroy();
                 downloadingThread.remove(downLoadTaskId);
             }
 

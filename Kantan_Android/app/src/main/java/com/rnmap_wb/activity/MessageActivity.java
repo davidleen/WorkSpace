@@ -1,7 +1,10 @@
 package com.rnmap_wb.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,12 +16,14 @@ import com.giants3.android.reader.domain.UseCaseFactory;
 import com.rnmap_wb.R;
 import com.rnmap_wb.activity.mapwork.SimpleMvpActivity;
 import com.rnmap_wb.adapter.MessageAdapter;
-import com.rnmap_wb.android.dao.DaoManager;
+import com.rnmap_wb.android.idao.DaoManager;
+import com.rnmap_wb.android.idao.IMessageStateDao;
 import com.rnmap_wb.android.data.RemoteData;
 import com.rnmap_wb.android.data.TaskMessage;
 import com.rnmap_wb.android.entity.MessageState;
 import com.rnmap_wb.url.HttpUrl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -60,6 +65,45 @@ public class MessageActivity extends SimpleMvpActivity {
         });
 
         listView.setAdapter(adapter);
+        final IMessageStateDao messageStateDao = DaoManager.getInstance().getMessageStateDao();
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+
+                final TaskMessage taskMessage= (TaskMessage) parent.getItemAtPosition(position);
+
+                AlertDialog alertDialog = new AlertDialog.Builder(parent.getContext()).setMessage("是否删除该消息?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        adapter.removeItem(taskMessage);
+                        adapter.notifyDataSetChanged();
+
+                        new AsyncTask() {
+                            @Override
+                            protected Object doInBackground(Object[] objects) {
+                                MessageState messageState = messageStateDao.findByMessageId(taskMessage.id);
+                                if(messageState==null)
+                                    messageState=new MessageState();
+                                messageState.messageId=taskMessage.id;
+                                messageState.deleted=true;
+                                messageStateDao.save(messageState);
+                                return null;
+                            }
+                        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+
+                    }
+                }).create();
+                alertDialog.show();
+
+
+
+
+                return true;
+            }
+        });
 
         String url = HttpUrl.getMessageList();
 
@@ -75,27 +119,42 @@ public class MessageActivity extends SimpleMvpActivity {
             @Override
             public void onNext(RemoteData<TaskMessage> remoteData) {
 
+
+                List<TaskMessage> result=new ArrayList<>();
                 if (remoteData.isSuccess()) {
 
-                    List<MessageState> states=DaoManager.getInstance().getMessageStateDao().findAll();
+                    List<MessageState> states= messageStateDao.findAll();
 
+                    boolean deleted;
                     for (TaskMessage taskMessage:remoteData.data)
                     {
-
+                        deleted=false;
                         for(MessageState messageState:states)
                         {
                             if(taskMessage.id.equalsIgnoreCase(messageState.messageId))
                             {
+
                                 taskMessage.read=true;
+
+                                if(messageState.deleted)
+                                {
+                                    deleted=true;
+                                }
+
                                 break;
                             }
+                        }
+
+                        if(!deleted)
+                        {
+                            result.add(taskMessage);
                         }
                     }
 
 
 
 
-                    adapter.setDataArray(remoteData.data);
+                    adapter.setDataArray(result);
                 } else {
                     ToastHelper.show(remoteData.errmsg);
                 }

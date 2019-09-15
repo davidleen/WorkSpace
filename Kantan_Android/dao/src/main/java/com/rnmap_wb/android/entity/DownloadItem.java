@@ -28,8 +28,6 @@ public class DownloadItem {
     private Long taskId;
 
 
-    private String url;
-
     private String downloadFilePath;
 
     /**
@@ -37,16 +35,15 @@ public class DownloadItem {
      */
     private int state;
 
-    @Generated(hash = 292662926)
+    @Generated(hash = 732608727)
     public DownloadItem(Long id, String name, int tileX, int tileY, int tileZ,
-            Long taskId, String url, String downloadFilePath, int state) {
+            Long taskId, String downloadFilePath, int state) {
         this.id = id;
         this.name = name;
         this.tileX = tileX;
         this.tileY = tileY;
         this.tileZ = tileZ;
         this.taskId = taskId;
-        this.url = url;
         this.downloadFilePath = downloadFilePath;
         this.state = state;
     }
@@ -69,30 +66,6 @@ public class DownloadItem {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Long getTaskId() {
-        return this.taskId;
-    }
-
-    public void setTaskId(Long taskId) {
-        this.taskId = taskId;
-    }
-
-    public String getUrl() {
-        return this.url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getDownloadFilePath() {
-        return this.downloadFilePath;
-    }
-
-    public void setDownloadFilePath(String downloadFilePath) {
-        this.downloadFilePath = downloadFilePath;
     }
 
     public int getTileX() {
@@ -119,6 +92,22 @@ public class DownloadItem {
         this.tileZ = tileZ;
     }
 
+    public Long getTaskId() {
+        return this.taskId;
+    }
+
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
+    }
+
+    public String getDownloadFilePath() {
+        return this.downloadFilePath;
+    }
+
+    public void setDownloadFilePath(String downloadFilePath) {
+        this.downloadFilePath = downloadFilePath;
+    }
+
     public int getState() {
         return this.state;
     }
@@ -126,7 +115,6 @@ public class DownloadItem {
     public void setState(int state) {
         this.state = state;
     }
-
 
 
 

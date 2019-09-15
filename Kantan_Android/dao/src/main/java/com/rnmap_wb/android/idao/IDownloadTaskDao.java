@@ -1,7 +1,7 @@
-package com.rnmap_wb.android.dao;
+package com.rnmap_wb.android.idao;
 
 import com.rnmap_wb.android.entity.DownloadTask;
-import com.rnmap_wb.android.entity.DownloadTaskDao;
+import com.rnmap_wb.android.dao.DownloadTaskDao;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
@@ -9,9 +9,9 @@ import java.util.List;
 
 public class IDownloadTaskDao {
 
-    private com.rnmap_wb.android.entity.DownloadTaskDao dao;
+    private com.rnmap_wb.android.dao.DownloadTaskDao dao;
 
-    public IDownloadTaskDao(com.rnmap_wb.android.entity.DownloadTaskDao dao) {
+    public IDownloadTaskDao(com.rnmap_wb.android.dao.DownloadTaskDao dao) {
 
         QueryBuilder.LOG_SQL = true;
         QueryBuilder.LOG_VALUES = true;

@@ -41,7 +41,7 @@
         <rowspec value="top:4dlu:noGrow"/>
         <rowspec value="center:max(d;4px):noGrow"/>
         <rowspec value="top:4dlu:noGrow"/>
-        <rowspec value="center:max(d;4px):noGrow"/>
+        <rowspec value="center:d:grow"/>
         <colspec value="fill:max(m;40dlu):noGrow"/>
         <colspec value="left:4dlu:noGrow"/>
         <colspec value="fill:max(m;150dlu):noGrow"/>
@@ -207,6 +207,32 @@
               <editable value="false"/>
             </properties>
           </component>
+          <component id="d1b03" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="4" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+              <forms defaultalign-horz="false"/>
+            </constraints>
+            <properties>
+              <text value="唛头"/>
+            </properties>
+          </component>
+          <scrollpane id="e1309">
+            <constraints>
+              <grid row="4" column="6" row-span="3" col-span="5" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <forms defaultalign-horz="false" defaultalign-vert="false"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="d11bd" class="javax.swing.JTextArea" binding="jta_maitou">
+                <constraints/>
+                <properties>
+                  <lineWrap value="true"/>
+                  <wrapStyleWord value="false"/>
+                </properties>
+              </component>
+            </children>
+          </scrollpane>
         </children>
       </grid>
       <grid id="6a19d" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">

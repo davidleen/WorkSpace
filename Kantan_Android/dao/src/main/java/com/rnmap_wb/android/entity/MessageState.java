@@ -13,11 +13,13 @@ public class MessageState {
     public Long id;
     public  String messageId;
     public boolean read;
-    @Generated(hash = 723702105)
-    public MessageState(Long id, String messageId, boolean read) {
+    public boolean deleted;
+    @Generated(hash = 8038705)
+    public MessageState(Long id, String messageId, boolean read, boolean deleted) {
         this.id = id;
         this.messageId = messageId;
         this.read = read;
+        this.deleted = deleted;
     }
     @Generated(hash = 1584660776)
     public MessageState() {
@@ -39,6 +41,12 @@ public class MessageState {
     }
     public void setRead(boolean read) {
         this.read = read;
+    }
+    public boolean getDeleted() {
+        return this.deleted;
+    }
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
 

@@ -45,4 +45,10 @@ public class StockOut implements Serializable {
     @Basic @Lob
     public String attaches;
 
+    /**
+     * 嘜頭數據
+     */
+    @Basic @Lob
+    public  String maitou;
+
 }

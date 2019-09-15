@@ -18,6 +18,7 @@ import com.giants3.hd.android.events.MaterialUpdateEvent;
 import com.giants3.hd.android.helper.CapturePictureHelper;
 import com.giants3.hd.android.helper.ImageLoaderFactory;
 import com.giants3.android.frame.util.ToastHelper;
+import com.giants3.hd.android.helper.ImageViewerHelper;
 import com.giants3.hd.data.interractor.UseCaseFactory;
 import com.giants3.hd.data.net.HttpUrl;
 import com.giants3.hd.data.utils.GsonUtils;
@@ -127,13 +128,9 @@ public class MaterialDetailFragment extends BaseFragment implements View.OnClick
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
 
-            try {
+
                 material = GsonUtils.fromJson(getArguments().getString(ARG_ITEM), Material.class);
-            } catch (HdException e) {
-                e.printStackTrace();
-                ToastHelper.show("参数异常");
-                getActivity().finish();
-            }
+
 
 
         }
@@ -213,6 +210,14 @@ public class MaterialDetailFragment extends BaseFragment implements View.OnClick
         ingredientRatio.setText(String.valueOf(material.ingredientRatio));
         outOfService.setText(material.outOfService ? "停用" : "使用中");
         ImageLoaderFactory.getInstance().displayImage(HttpUrl.completeUrl(material.url), image);
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url= (String) v.getTag();
+                ImageViewerHelper.view(v.getContext(),url);
+            }
+        });
+        image.setTag(material.url);
         upload.setVisibility(newPicture == null ? View.GONE : View.VISIBLE);
     }
 

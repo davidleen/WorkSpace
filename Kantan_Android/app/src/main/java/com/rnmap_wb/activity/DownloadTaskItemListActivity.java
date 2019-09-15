@@ -12,7 +12,7 @@ import com.giants3.android.reader.domain.GsonUtils;
 import com.google.gson.reflect.TypeToken;
 import com.rnmap_wb.R;
 import com.rnmap_wb.adapter.DownLoadItemAdapter;
-import com.rnmap_wb.android.dao.DaoManager;
+import com.rnmap_wb.android.idao.DaoManager;
 import com.rnmap_wb.android.entity.DownloadItem;
 
 import java.util.List;

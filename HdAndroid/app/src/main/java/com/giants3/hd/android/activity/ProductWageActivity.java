@@ -1,38 +1,73 @@
 package com.giants3.hd.android.activity;
 
-import android.net.Uri;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.widget.TextView;
 
 import com.giants3.hd.android.R;
-import com.giants3.hd.android.fragment.ProductWageFragment;
+import com.giants3.hd.android.entity.ProductDetailSingleton;
+import com.giants3.hd.android.fragment.ProcessSelectFragment;
+import com.giants3.hd.data.utils.GsonUtils;
+import com.giants3.hd.entity.ProductProcess;
+import com.giants3.hd.entity.ProductWage;
+import com.giants3.hd.exception.HdException;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 
 /**
- *
- * 产品材料清单编辑界面
+ * 产品清单工资编辑界面
  * An activity representing a single ProductListActivity detail screen. This
  * activity is only used narrow width devices. On tablet-size devices,
  * item_work_flow_report details are presented side-by-side with a list of items
  * in a {@link ProductListActivity}.
  */
-public class ProductWageActivity extends BaseActivity implements  ProductWageFragment.OnFragmentInteractionListener {
+public class ProductWageActivity extends BaseActionBarActivity {
+    private static final int REQUEST_PROCESS_SELECT = 12;
+
+        public static final String EXTRA_PRODUCT_WAGE = "EXTRA_PRODUCT_WAGE";
+    public static String PRODUCT_MATERIAL_TYPE = "PRODUCT_MATERIAL_TYPE";
+   public static String PRODUCT_WAGE_POSITION = "PRODUCT_WAGE_POSITION";
+
+    public static final int PRODUCT_MATERIAL_CONCEPTUS = 1;
+        public static final int PRODUCT_MATERIAL_ASSEMBLE = 2;
+    public static final int PRODUCT_MATERIAL_PACK = 3;
+    public  static final int PRODUCT_WAGE_CONCEPTUS=2;
+    ProductWage productWage;
 
 
+    @Bind(R.id.processCode)
+    TextView processCode;
+    @Bind(R.id.processName)
+    TextView processName;
+    @Bind(R.id.price)
+    TextView price;
+    @Bind(R.id.amount)
+    TextView amount;
+    @Bind(R.id.memo)
+    TextView memo;
+    @Bind(R.id.selectWage)
+    View selectWage;
+    @Bind(R.id.selectWage2)
+    View selectWage2;
 
-    @Bind(R.id.detail_toolbar )
-    Toolbar toolbar  ;
+    @Bind(R.id.goBack)
+    View goBack;
+
+
+    private ProductWage originData;
+    private int productMaterialType;
+    private int wagePosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_product_wage);
-        setSupportActionBar(toolbar);
-
-
 
 
         // Show the Up button in the action bar.
@@ -50,49 +85,160 @@ public class ProductWageActivity extends BaseActivity implements  ProductWageFra
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
-            Bundle arguments = new Bundle();
-            arguments.putInt(ProductWageFragment.PRODUCT_MATERIAL_TYPE,
-                    getIntent().getIntExtra(ProductWageFragment.PRODUCT_MATERIAL_TYPE,ProductWageFragment.PRODUCT_MATERIAL_CONCEPTUS));
-            arguments.putInt(ProductWageFragment.PRODUCT_WAGE_POSITION,
-                    getIntent().getIntExtra(ProductWageFragment.PRODUCT_WAGE_POSITION,0));
-            arguments.putString(ProductWageFragment.EXTRA_PRODUCT_WAGE,
-                    getIntent().getStringExtra(ProductWageFragment.EXTRA_PRODUCT_WAGE  ));
-            ProductWageFragment fragment = new ProductWageFragment();
-            fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.product_wage_container, fragment)
-                    .commit();
+
+              productMaterialType = getIntent().getIntExtra(ProductWageActivity.PRODUCT_MATERIAL_TYPE, ProductWageActivity.PRODUCT_MATERIAL_CONCEPTUS);
+
+              wagePosition = getIntent().getIntExtra(ProductWageActivity.PRODUCT_WAGE_POSITION, 0);
+            productWage = ProductDetailSingleton.getInstance().getProductWage(productMaterialType, wagePosition);
+            originData=GsonUtils.fromJson(GsonUtils.toJson(productWage),ProductWage.class);
+
         }
 
 
+        setTitle("产品工资编辑");
+        bindData(productWage);
+    }
 
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle("产品工资编辑" );
+
+    @OnClick(R.id.goBack)
+    public void goBack()
+    {
+        finish();
+    }
+
+
+    @OnClick(R.id.delete)
+    public void deleteItem()
+    {
+
+//        new AlertDialog.Builder(this).setMessage("有新版本apk，是否下载安装？").setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                startDownLoadApk(fileInfo);
+//
+//            }
+//        }).create().show();
+
+        ProductDetailSingleton.getInstance().deleteProductWage(productMaterialType,wagePosition);
+        productWage=null;
+        finish();
+
+
+
+    }
+
+    @OnClick({R.id.selectWage, R.id.selectWage2})
+    public void onProcessSelect(View v) {
+
+        Intent intent = new Intent(this, ProductProcessSelectActivity.class);
+
+        if (v.getId() == R.id.selectWage) {
+            intent.putExtra(ProcessSelectFragment.ARG_PARAM_CODE, productWage.processCode);
+        } else {
+
+            intent.putExtra(ProcessSelectFragment.ARG_PARAM_NAME, productWage.processName);
         }
+
+
+        startActivityForResult(intent, REQUEST_PROCESS_SELECT);
+    }
+
+    private void bindData(ProductWage productWage) {
+
+        price.removeTextChangedListener(priceTextWatcher);
+        memo.removeTextChangedListener(memoTextWatcher);
+        processCode.setText(productWage.processCode);
+        processName.setText(productWage.processName);
+        price.setText(String.valueOf(productWage.price));
+        amount.setText(String.valueOf(productWage.amount));
+        memo.setText(productWage.memo == null ? "" : productWage.memo);
+
+
+        price.addTextChangedListener(priceTextWatcher);
+        memo.addTextChangedListener(memoTextWatcher);
+    }
+
+    private TextWatcher priceTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            Float price = null;
+            try {
+                price = Float.valueOf(s.toString().trim());
+
+                productWage.setPrice(price);
+                productWage.setAmount(price);
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+    ;
+
+    private TextWatcher memoTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            productWage.setMemo(s.toString().trim());
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
+
+    @Override
+    public void finish() {
+
+
+
+        if(!GsonUtils.toJson(productWage).equalsIgnoreCase(GsonUtils.toJson(originData)))
+        {
+            setResult(RESULT_OK);
+        }
+        super.finish();
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            // This ID represents the Home or Up button. In the case of this
-            // activity, the Up button is shown. For
-            // more details, see the Navigation pattern on Android Design:
-            //
-            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-            //
-            onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+    protected View getContentView() {
+        return getLayoutInflater().inflate(R.layout.fragment_product_wage, null);
     }
-
-
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != Activity.RESULT_OK) return;
+        switch (requestCode) {
+
+            case REQUEST_PROCESS_SELECT:
+
+
+                    ProductProcess productProcess = GsonUtils.fromJson(data.getExtras().getString(ProductProcessSelectActivity.EXTRA_PRODUCT_PROCESS), ProductProcess.class);
+                    productWage.setProductProcess(productProcess);
+                    bindData(productWage);
+
+
+                break;
+        }
+
 
     }
+
 }

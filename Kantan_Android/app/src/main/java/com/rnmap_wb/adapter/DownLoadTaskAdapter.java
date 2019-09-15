@@ -16,6 +16,8 @@ import butterknife.Bind;
 
 import static com.rnmap_wb.android.entity.DownloadTask.STATE_COMPLETE;
 import static com.rnmap_wb.android.entity.DownloadTask.STATE_DOWNLOADING;
+import static com.rnmap_wb.android.entity.DownloadTask.STATE_NONE;
+import static com.rnmap_wb.android.entity.DownloadTask.STATE_STOP;
 
 public class DownLoadTaskAdapter extends AbstractAdapter<DownloadTask> implements View.OnClickListener {
     private TaskStateChangeListener listener;
@@ -129,7 +131,15 @@ public class DownLoadTaskAdapter extends AbstractAdapter<DownloadTask> implement
             panel_download.setVisibility(data.getState() != STATE_COMPLETE ? View.VISIBLE : View.GONE);
 
             boolean downloading = data.getState() == STATE_DOWNLOADING;
-            msg_download.setText(downloading ? "正在下载" : "下载暂停");
+            String tateString="";
+            switch (data.getState())
+            {
+                case STATE_NONE: tateString="开始下载"; break;
+                case STATE_DOWNLOADING: tateString="正在下载";break;
+                case STATE_STOP: tateString="下载暂停";break;
+
+            }
+            msg_download.setText(tateString);
 
             panel_download.setSelected(downloading);
             switchState.setImageResource(downloading ? R.drawable.icon_state_pause : R.drawable.icon_state_download);

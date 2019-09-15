@@ -124,12 +124,14 @@ public class ErpStockSubmitRepository  extends  ErpRepository{
     /*
     *    查询出 进货与缴库 列表  日期参数格式 "2016-07-11"
      */
-    public List<StockSubmit> getStockSubmitList(String startDate, String endData) {
+    public List<StockSubmit> getStockSubmitList(String key,String startDate, String endData) {
 
 
 
 
         Query query = getEntityManager().createNativeQuery(stockInAndSubmitSql)
+
+                .setParameter("keywords", StringUtils.sqlLike(key))
                 .setParameter(START_DATE, startDate)
                 .setParameter(END_DATE, endData);
         List<StockSubmit> orders = getStockSubmits(query);

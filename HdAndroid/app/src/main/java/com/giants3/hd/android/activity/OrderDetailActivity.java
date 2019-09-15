@@ -69,14 +69,9 @@ public class OrderDetailActivity extends BaseActivity implements OrderDetailFrag
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
-            try {
+
                 erpOrder= GsonUtils.fromJson(getIntent().getStringExtra(OrderDetailFragment.ARG_ITEM),ErpOrder.class);
-            } catch (HdException e) {
-                e.printStackTrace();
-                ToastHelper.show("参数异常");
-                finish();
-                return;
-            }
+
 
 
 

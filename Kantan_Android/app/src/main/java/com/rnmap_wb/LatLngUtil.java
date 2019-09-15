@@ -134,6 +134,8 @@ public class LatLngUtil {
     public static boolean LineIntersectRect(GeoPoint lineStart, GeoPoint lineEnd, BoundingBox latLngBounds) {
 
 
+        if(latLngBounds==null||lineStart==null||lineEnd==null) return false;
+
         //先判断线两点是否在范围中。
         if (latLngBounds.contains(lineStart) || latLngBounds.contains(lineEnd)) return true;
 

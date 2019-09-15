@@ -1,12 +1,9 @@
-package com.rnmap_wb.android.dao;
+package com.rnmap_wb.android.idao;
 
-import com.rnmap_wb.android.entity.DownloadTask;
 import com.rnmap_wb.android.entity.MessageState;
-import com.rnmap_wb.android.entity.MessageState;
-import com.rnmap_wb.android.entity.MessageStateDao;
+import com.rnmap_wb.android.dao.MessageStateDao;
 
 import org.greenrobot.greendao.query.QueryBuilder;
-import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
 

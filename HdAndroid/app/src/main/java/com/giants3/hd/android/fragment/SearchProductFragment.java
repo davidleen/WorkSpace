@@ -23,6 +23,7 @@ import com.giants3.hd.android.activity.ProductDetailActivity;
 import com.giants3.hd.android.adapter.ItemListAdapter;
 import com.giants3.hd.android.entity.TableData;
 import com.giants3.hd.android.mvp.searchproduct.SearchProductMvp;
+import com.giants3.hd.android.presenter.ProductDetailPresenter;
 import com.giants3.hd.appdata.AProduct;
 import com.giants3.hd.data.utils.GsonUtils;
 
@@ -33,7 +34,7 @@ import butterknife.Bind;
 /**
  *  查找产品Fragment
  */
-public class SearchProductFragment extends BaseDialogFragment<SearchProductMvp.Presenter> implements SearchProductMvp.Viewer {
+public class SearchProductFragment extends BaseMVPDialogFragment<SearchProductMvp.Presenter> implements SearchProductMvp.Viewer {
 
     private static final String ARG_AVAILABLE_ITEMS = "ARG_AVAILABLE_ITEMS";
 
@@ -104,7 +105,7 @@ public class SearchProductFragment extends BaseDialogFragment<SearchProductMvp.P
 
                 //调整act
                 Intent intent = new Intent(SearchProductFragment.this.getContext(), ProductDetailActivity.class);
-                intent.putExtra(ProductDetailFragment.ARG_ITEM, GsonUtils.toJson(parent.getItemAtPosition(position)));
+                intent.putExtra(ProductDetailPresenter.ARG_ITEM, GsonUtils.toJson(parent.getItemAtPosition(position)));
                 startActivity(intent);
                 return true;
             }

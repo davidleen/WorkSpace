@@ -12,7 +12,6 @@ import com.giants3.android.ToastHelper;
 import com.giants3.android.mvp.BasePresenter;
 import com.giants3.android.mvp.Model;
 import com.giants3.android.mvp.Presenter;
-import com.giants3.android.reader.domain.DefaultUseCase;
 import com.giants3.android.reader.domain.DefaultUseCaseHandler;
 import com.giants3.android.reader.domain.GsonUtils;
 import com.giants3.android.reader.domain.UseCaseFactory;
@@ -20,7 +19,7 @@ import com.giants3.android.reader.domain.UseCaseHandler;
 import com.rnmap_wb.R;
 import com.rnmap_wb.activity.mapwork.MapWorkActivity;
 import com.rnmap_wb.adapter.ProjectReplyAdapter;
-import com.rnmap_wb.android.dao.DaoManager;
+import com.rnmap_wb.android.idao.DaoManager;
 import com.rnmap_wb.android.data.ProjectReply;
 import com.rnmap_wb.android.data.RemoteData;
 import com.rnmap_wb.android.data.Task;
@@ -233,6 +232,7 @@ public class ProjectTaskDetailActivity extends BaseMvpActivity {
 
     private void showTask(Task task) {
 
+        if(task==null)return;
         name.setText(task.name);
         file.setText(task.kml_name==null?task.kml:task.kml_name);
         memo.setText(task.memo);

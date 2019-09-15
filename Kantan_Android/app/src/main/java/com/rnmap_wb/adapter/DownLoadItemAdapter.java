@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.giants3.android.adapter.AbstractAdapter;
 import com.giants3.android.adapter.AbstractViewHolder;
 import com.rnmap_wb.R;
+import com.rnmap_wb.activity.mapwork.TileUrlHelper;
 import com.rnmap_wb.android.entity.DownloadItem;
 
 import butterknife.Bind;
@@ -38,7 +39,7 @@ public class DownLoadItemAdapter extends AbstractAdapter<DownloadItem> {
 
 
             name.setText(data.getName());
-            url.setText(String.valueOf(data.getUrl()));
+            url.setText(TileUrlHelper.getUrl(data.getTileX(),data.getTileY(),data.getTileZ(),0));
 
         }
     }

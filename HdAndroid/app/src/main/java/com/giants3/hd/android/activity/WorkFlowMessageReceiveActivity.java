@@ -166,7 +166,7 @@ public class WorkFlowMessageReceiveActivity extends BaseHeadViewerActivity<Prese
         WorkFlowMessage workFlowMessage = null;
         try {
             workFlowMessage = GsonUtils.fromJson(getIntent().getStringExtra(KEY_MESSAGE), WorkFlowMessage.class);
-        } catch (HdException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
         if (workFlowMessage != null) {
@@ -297,6 +297,7 @@ public class WorkFlowMessageReceiveActivity extends BaseHeadViewerActivity<Prese
             case R.id.picture: {
                 String url = (String) v.getTag();
                 ImageViewerHelper.view(this, url);
+                break;
             }
              case R.id.rollback: {
 

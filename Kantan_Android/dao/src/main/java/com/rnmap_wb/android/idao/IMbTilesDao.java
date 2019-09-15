@@ -1,7 +1,7 @@
-package com.rnmap_wb.android.dao;
+package com.rnmap_wb.android.idao;
 
 import com.rnmap_wb.android.entity.MbTiles;
-import com.rnmap_wb.android.entity.MbTilesDao;
+import com.rnmap_wb.android.dao.MbTilesDao;
 
 import org.greenrobot.greendao.query.Query;
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -9,9 +9,9 @@ import org.greenrobot.greendao.query.QueryBuilder;
 public class IMbTilesDao {
 
 
-    private com.rnmap_wb.android.entity.MbTilesDao dao;
+    private com.rnmap_wb.android.dao.MbTilesDao dao;
 
-    public IMbTilesDao(com.rnmap_wb.android.entity.MbTilesDao dao) {
+    public IMbTilesDao(com.rnmap_wb.android.dao.MbTilesDao dao) {
 
         QueryBuilder.LOG_SQL = true;
         QueryBuilder.LOG_VALUES = true;

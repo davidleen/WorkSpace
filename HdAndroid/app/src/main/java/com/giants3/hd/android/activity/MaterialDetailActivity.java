@@ -70,14 +70,9 @@ public class MaterialDetailActivity extends BaseActivity implements MaterialDeta
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
-            try {
+
                 material = GsonUtils.fromJson(getIntent().getStringExtra(MaterialDetailFragment.ARG_ITEM),Material.class);
-            } catch (HdException e) {
-                e.printStackTrace();
-                ToastHelper.show("参数异常");
-                finish();
-                return;
-            }
+
 
 
 

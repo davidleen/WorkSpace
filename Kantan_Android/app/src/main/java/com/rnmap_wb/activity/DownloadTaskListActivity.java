@@ -24,7 +24,7 @@ import com.giants3.android.reader.domain.GsonUtils;
 import com.google.gson.reflect.TypeToken;
 import com.rnmap_wb.R;
 import com.rnmap_wb.adapter.DownLoadTaskAdapter;
-import com.rnmap_wb.android.dao.DaoManager;
+import com.rnmap_wb.android.idao.DaoManager;
 import com.rnmap_wb.android.entity.DownloadTask;
 import com.rnmap_wb.service.DownLoadBinder;
 import com.rnmap_wb.service.DownloadManagerService;
@@ -97,7 +97,7 @@ public class DownloadTaskListActivity extends BaseMvpActivity implements DownLoa
                     mBinder.stopDownLoad(downloadTask.getId());
                     DaoManager.getInstance().getDownloadTaskDao().save(downloadTask);
                     adapter.notifyDataSetChanged();
-                } else if (downloadTask.getState() == DownloadTask.STATE_STOP) {
+                } else if (downloadTask.getState() == DownloadTask.STATE_STOP||downloadTask.getState() ==DownloadTask.STATE_NONE) {
 
                     downloadTask.setState(DownloadTask.STATE_DOWNLOADING);
                     mBinder.startDownLoad(downloadTask.getId());

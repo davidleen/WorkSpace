@@ -34,7 +34,7 @@ public class HttpUrl {
     public static final String API_URL_GET_MATERIAL_LIST = "/api/material/search?codeOrName=%s&pageIndex=%d&pageSize=%d";
     public static final String API_URL_GET_MATERIAL_LIST_IN_SERVICE = "/api/material/searchInService?codeOrName=%s&pageIndex=%d&pageSize=%d";
     public static final String API_URL_UPLOAD_MATERIAL_PICTURE = "/api/file/uploadMaterialPicture?materialId=%d";
-    public static final String API_URL_GET_INITDATA = "/api/user/getAppInitData?userId=%d";
+    public static final String API_URL_GET_INITDATA = "/api/user/getInitData?userId=%d";
     public static final String API_URL_SAVE_PRODUCTDETAIL = "/api/product/save";
     public static final String API_URL_GET_QUOTATION_DETAIL = "/api/quotation/detail?id=%d";
     public static final String API_URL_GET_ORDER_LIST = "/api/order/list?key=%s&pageIndex=%d&pageSize=%d";

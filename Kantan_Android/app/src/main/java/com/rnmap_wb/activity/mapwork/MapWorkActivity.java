@@ -168,6 +168,13 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
         activity.startActivityForResult(intent, requestCode);
 
     }
+    public static void start(Activity activity,   String kmlFilePath ) {
+
+        Intent intent = new Intent(activity, MapWorkActivity.class);
+        intent.putExtra(IntentConst.PARAM_KML_PATH, kmlFilePath);
+        activity.startActivity(intent);
+
+    }
 
 
     @Override
@@ -184,9 +191,9 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
         task = GsonUtils.fromJson(getIntent().getStringExtra(IntentConst.KEY_TASK_DETAIL), Task.class);
         if (task == null && BuildConfig.DEBUG) {
             task = new Task();
-            task.id = "xxxxxxxxx";
-            task.name = "task_name_fffff";
-            task.dir_name = "task_dir_name_fffff";
+            task.id = "";
+            task.name = "";
+            task.dir_name = "";
         }
         getPresenter().prepare(task);
 
@@ -805,7 +812,7 @@ public class MapWorkActivity extends BaseMvpActivity<MapWorkPresenter> implement
                     return;
                 }
 
-                CustomClusterManager customClusterManager = new CustomClusterManager(mapView, kmlDocument, clickListener);
+           CustomClusterManager customClusterManager = new CustomClusterManager(mapView, kmlDocument, clickListener);
                 mapView.invalidate();
 
 //                FolderOverlay kmlOverlay = (FolderOverlay) kmlDocument.mKmlRoot.buildOverlay(mapView, null, null, kmlDocument);

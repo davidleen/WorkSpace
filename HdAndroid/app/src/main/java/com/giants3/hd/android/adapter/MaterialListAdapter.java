@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.giants3.android.adapter.AbstractAdapter;
 import com.giants3.android.adapter.AbstractViewHolder;
+import com.giants3.android.frame.util.StringUtil;
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.helper.ImageLoaderFactory;
 import com.giants3.hd.android.helper.ImageViewerHelper;
@@ -48,7 +49,9 @@ public class MaterialListAdapter
 
     @Override
     protected Bindable<Material> createViewHolder(int itemViewType) {
-        return new ViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.list_item_material, null));
+        ViewHolder viewHolder = new ViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.list_item_material, null));
+        viewHolder.picture.setOnClickListener(imageClickListener);
+        return viewHolder;
     }
 
 
@@ -82,7 +85,7 @@ public class MaterialListAdapter
             materialType.setText(data.className);
             unit.setText(data.unitName);
             ImageLoaderFactory.getInstance().displayImage(HttpUrl.completeUrl(data.url), picture);
-//            v.setOnClickListener(itemClickListener);
+            picture.setTag(data.url);
         }
 
         @Override
@@ -97,6 +100,7 @@ public class MaterialListAdapter
         public void onClick(View v) {
 
             String url = (String) v.getTag();
+            if(StringUtil.isEmpty(url)) return;
             ImageViewerHelper.view(v.getContext(), url);
 
         }

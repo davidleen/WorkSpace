@@ -41,8 +41,12 @@ public abstract class BaseMvpActivity<P extends Presenter> extends BaseActivity 
 
         View contentView = LayoutInflater.from(this).inflate(R.layout.activity_root, null);
         FrameLayout frameLayout = contentView.findViewById(R.id.activity_content);
-        View contentLayout = LayoutInflater.from(this).inflate(getContentLayoutId(), null);
-        frameLayout.addView(contentLayout);
+
+        int contentLayoutId = getContentLayoutId();
+        if(contentLayoutId!=0) {
+            View contentLayout = LayoutInflater.from(this).inflate(contentLayoutId, null);
+            frameLayout.addView(contentLayout);
+        }
 
 
         if(supportDrawer())

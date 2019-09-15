@@ -454,7 +454,16 @@ public class StockOutDetailFrame extends BaseFrame implements StockOutDetailIPre
         }
 
 
-    } /**
+    }
+
+
+    @Override
+    public void onMaitouChanged(String maitou) {
+        if (erpStockOutDetail == null || erpStockOutDetail.erpStockOut == null) return;
+        erpStockOutDetail.erpStockOut.maitou = maitou;
+    }
+
+    /**
      * 导出咸康清关发票
      */
     @Override

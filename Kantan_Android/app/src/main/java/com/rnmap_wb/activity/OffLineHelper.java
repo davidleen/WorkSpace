@@ -2,6 +2,7 @@ package com.rnmap_wb.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 
@@ -11,13 +12,14 @@ import com.rnmap_wb.BuildConfig;
 import com.rnmap_wb.LatLngUtil;
 import com.rnmap_wb.activity.mapwork.MapWorkActivity;
 import com.rnmap_wb.activity.mapwork.TileUrlHelper;
-import com.rnmap_wb.android.dao.DaoManager;
-import com.rnmap_wb.android.dao.IDownloadTaskDao;
+import com.rnmap_wb.android.idao.DaoManager;
+import com.rnmap_wb.android.idao.IDownloadTaskDao;
 import com.rnmap_wb.android.data.Task;
 import com.rnmap_wb.android.entity.DownloadItem;
 import com.rnmap_wb.android.entity.DownloadTask;
 import com.rnmap_wb.map.KmlHelper;
 import com.rnmap_wb.map.TileUtil;
+import com.rnmap_wb.service.DownloadManagerService;
 
 import org.osmdroid.bonuspack.kml.KmlDocument;
 import org.osmdroid.util.GeoPoint;
@@ -103,6 +105,12 @@ public class OffLineHelper {
                     public void run() {
 
                         initDownloadTask(task, kmlDocument, fromZoom, toZoom);
+
+                        try {
+                            activity.startService(new Intent(activity, DownloadManagerService.class));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
 
@@ -195,11 +203,6 @@ public class OffLineHelper {
                 downloadItem.setTileX(xy[0]);
                 downloadItem.setTileY(xy[1]);
                 downloadItem.setTileZ(z);
-                String url = TileUrlHelper.getUrl(xy[0], xy[1], z);
-
-                if (BuildConfig.DEBUG)
-                    Log.e(url);
-                downloadItem.setUrl(url);
                 downloadItem.setDownloadFilePath(TileUtil.getFilePath(xy[0], xy[1], z));
                 downloadItems.add(downloadItem);
 

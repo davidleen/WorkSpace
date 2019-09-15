@@ -1,7 +1,7 @@
-package com.rnmap_wb.android.dao;
+package com.rnmap_wb.android.idao;
 
-import com.rnmap_wb.android.entity.DaoMaster;
-import com.rnmap_wb.android.entity.DaoSession;
+import com.rnmap_wb.android.dao.DaoMaster;
+import com.rnmap_wb.android.dao.DaoSession;
 
 import  android.content.Context;
 import org.greenrobot.greendao.database.Database;
@@ -23,6 +23,7 @@ public class DaoManager {
         DaoMaster daoMaster = new DaoMaster(db);
 
         daoSession = daoMaster.newSession();
+
 
 
 //        DaoMaster.DevOpenHelper temp = new DaoMaster.DevOpenHelper(application, "map.mbtiles");

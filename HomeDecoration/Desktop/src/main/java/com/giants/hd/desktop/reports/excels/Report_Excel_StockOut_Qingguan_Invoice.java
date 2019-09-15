@@ -114,6 +114,8 @@ public class Report_Excel_StockOut_Qingguan_Invoice extends SimpleExcelReporter<
         addString(writableSheet, data.erpStockOut.tel1, 0, 7);
         addString(writableSheet, data.erpStockOut.fax, 0, 8);
 
+        addString(writableSheet, data.erpStockOut.maitou, 1, 12);
+
 
         //目的港
         String mdgText = "FROM FUZHOU TO %s BY SEA";
@@ -280,7 +282,7 @@ public class Report_Excel_StockOut_Qingguan_Invoice extends SimpleExcelReporter<
             //合并单元格
             combineRowAndCell(writableSheet, row, row, 0, 8);
             setCellAlignLeftCenter(workbook, writableSheet, row, 0);
-            addString(writableSheet, guihao + "& seal # : " + fengqianhao, 0, row);
+            addString(writableSheet, StockStringHelper.generateCombineString(guihao, fengqianhao), 0, row);
             row++;
             List<ErpStockOutItem> groupItems = groupMaps.get(guihao);
             for (ErpStockOutItem outItem : groupItems) {
@@ -425,7 +427,7 @@ public class Report_Excel_StockOut_Qingguan_Invoice extends SimpleExcelReporter<
             //合并单元格
             combineRowAndCell(writableSheet, row, row, 0, 8);
             setCellAlignLeftCenter(workbook, writableSheet, row, 0);
-            addString(writableSheet, guihao + "& seal # : " + fengqianhao, 0, row);
+            addString(writableSheet, StockStringHelper.generateCombineString(guihao, fengqianhao), 0, row);
             row++;
             List<ErpStockOutItem> groupItems = groupMaps.get(guihao);
             for (ErpStockOutItem outItem : groupItems) {

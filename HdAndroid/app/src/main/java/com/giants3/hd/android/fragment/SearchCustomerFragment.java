@@ -26,7 +26,7 @@ import butterknife.Bind;
 /**
  * 查找客户Fragment
  */
-public class SearchCustomerFragment extends BaseDialogFragment<SearchCustomerMvp.Presenter> implements SearchCustomerMvp.Viewer {
+public class SearchCustomerFragment extends BaseMVPDialogFragment<SearchCustomerMvp.Presenter> implements SearchCustomerMvp.Viewer {
 
     private static final String ARG_AVAILABLE_ITEMS = "ARG_AVAILABLE_ITEMS";
 
@@ -92,7 +92,7 @@ public class SearchCustomerFragment extends BaseDialogFragment<SearchCustomerMvp
 //
 //                //调整act
 //                Intent intent = new Intent(getContext(), ProductDetailActivity.class);
-//                intent.putExtra(ProductDetailFragment.ARG_ITEM, GsonUtils.toJson(parent.getItemAtPosition(position)));
+//                intent.putExtra(ProductDetailPresenter.ARG_ITEM, GsonUtils.toJson(parent.getItemAtPosition(position)));
 //                startActivity(intent);
 //                return true;
 //            }

@@ -200,7 +200,7 @@ public class SharedPreferencesHelper {
                     return ArrayList.class;
                 }
             });
-        } catch (HdException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
 

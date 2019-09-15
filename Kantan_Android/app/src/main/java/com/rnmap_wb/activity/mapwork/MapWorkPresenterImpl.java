@@ -9,8 +9,8 @@ import com.giants3.android.reader.domain.GsonUtils;
 import com.google.gson.reflect.TypeToken;
 import com.rnmap_wb.BuildConfig;
 import com.rnmap_wb.LatLngUtil;
-import com.rnmap_wb.android.dao.DaoManager;
-import com.rnmap_wb.android.dao.IDownloadTaskDao;
+import com.rnmap_wb.android.idao.DaoManager;
+import com.rnmap_wb.android.idao.IDownloadTaskDao;
 import com.rnmap_wb.android.data.Task;
 import com.rnmap_wb.android.entity.DownloadItem;
 import com.rnmap_wb.android.entity.DownloadTask;
@@ -146,11 +146,6 @@ public class MapWorkPresenterImpl extends BasePresenter<MapWorkViewer, MapWorkMo
                     downloadItem.setTileY(y);
                     downloadItem.setTileZ(z);
 
-//                    String url = String.format("http://mts%d.googleapis.com/vt?lyrs=p&x=%d&y=%d&z=%d", random.nextInt(4), x, y, z);
-                    String url = TileUrlHelper.getUrl(x, y, z);
-                    if (BuildConfig.DEBUG)
-                        Log.e(url);
-                    downloadItem.setUrl(url);
                     downloadItem.setDownloadFilePath(TileUtil.getFilePath(x, y, z));
                     downloadItems.add(downloadItem);
                     totalCount++;

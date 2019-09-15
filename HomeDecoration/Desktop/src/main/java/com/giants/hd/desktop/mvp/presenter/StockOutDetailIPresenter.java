@@ -108,4 +108,6 @@ public interface StockOutDetailIPresenter extends IPresenter {
     void exportQingguan();
 
     void exportQingguan_xk();
+
+    void onMaitouChanged(String maitou);
 }

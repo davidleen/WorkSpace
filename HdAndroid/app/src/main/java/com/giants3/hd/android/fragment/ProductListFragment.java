@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import com.giants3.hd.android.activity.ProductDetailActivity;
 import com.giants3.android.adapter.AbstractAdapter;
 import com.giants3.hd.android.adapter.ProductListAdapter;
+import com.giants3.hd.android.presenter.ProductDetailPresenter;
 import com.giants3.hd.appdata.AProduct;
 import com.giants3.hd.data.interractor.UseCase;
 import com.giants3.hd.data.interractor.UseCaseFactory;
@@ -40,7 +41,7 @@ public class ProductListFragment extends ListFragment<AProduct> {
             public void onFragmentInteraction(AProduct data) {
                 //调整act
                 Intent intent = new Intent(getActivity(), ProductDetailActivity.class);
-                intent.putExtra(ProductDetailFragment.ARG_ITEM, GsonUtils.toJson(data));
+                intent.putExtra(ProductDetailPresenter.ARG_ITEM, GsonUtils.toJson(data));
                 startActivity(intent);
             }
         });

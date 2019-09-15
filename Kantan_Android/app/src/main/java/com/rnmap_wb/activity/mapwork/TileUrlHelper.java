@@ -12,15 +12,26 @@ public class TileUrlHelper {
 
 
 
+
+        return getUrl(x,y,z,random.nextInt(4));
+    }
+
+
+    public static  String getUrl(int x,int y ,int z,int mtIndex)
+    {
+
+
+
         if(abroad)
         {
-            return  String.format("http://mts%d.googleapis.com/vt?lyrs=s&x=%d&y=%d&z=%d", random.nextInt(4), x, y, z);
+            return  String.format("https://mts%d.googleapis.com/vt?lyrs=s&x=%d&y=%d&z=%d", mtIndex, x, y, z);
         }else
-            return String.format("http://mt%d.google.cn/vt?hl=zh-CN&gl=CN&s=Gali&lyrs=s&x=%d&y=%d&z=%d", random.nextInt(4), x, y, z);
+            return String.format("https://mt%d.google.cn/vt?hl=zh-CN&gl=CN&lyrs=y&x=%d&y=%d&z=%d",mtIndex, x, y, z);
 
     }
 
 
     public static final int MAX_OFFLINE_ZOOM=21;
     public static final int MIN_OFFLINE_ZOOM=1;
+    public static final int MAX_MT_COUNT=4;
 }

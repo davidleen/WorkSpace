@@ -16,8 +16,8 @@ android {
         minSdkVersion project.ANDROID_MIN_VERSION
         targetSdkVersion project.ANDROID_TARGET_VERSION
         manifestPlaceholders = [ANDROID_SUPPORT_VERSION: "${ANDROID_SUPPORT_V7_VERSION}"]
-        versionCode 14
-        versionName "1.0.14"
+        versionCode 16
+        versionName "1.0.16"
         multiDexEnabled true
 
         javaCompileOptions {

@@ -1,7 +1,7 @@
-package com.rnmap_wb.android.dao;
+package com.rnmap_wb.android.idao;
 
 import com.rnmap_wb.android.entity.DownloadItem;
-import com.rnmap_wb.android.entity.DownloadItemDao;
+import com.rnmap_wb.android.dao.DownloadItemDao;
 
 import org.greenrobot.greendao.query.DeleteQuery;
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -10,9 +10,9 @@ import java.util.List;
 
 public class IDownloadItemDao {
 
-    private com.rnmap_wb.android.entity.DownloadItemDao dao;
+    private com.rnmap_wb.android.dao.DownloadItemDao dao;
 
-    public IDownloadItemDao(com.rnmap_wb.android.entity.DownloadItemDao dao) {
+    public IDownloadItemDao(com.rnmap_wb.android.dao.DownloadItemDao dao) {
 
         QueryBuilder.LOG_SQL = true;
         QueryBuilder.LOG_VALUES = true;

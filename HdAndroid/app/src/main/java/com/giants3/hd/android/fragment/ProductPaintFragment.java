@@ -126,7 +126,7 @@ public class ProductPaintFragment extends BaseFragment implements View.OnClickLi
             try {
                 oldData =GsonUtils.fromJson(getArguments().getString(EXTRA_PRODUCT_PAINT),ProductPaint.class);
 
-        } catch (HdException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
 
@@ -162,7 +162,7 @@ public class ProductPaintFragment extends BaseFragment implements View.OnClickLi
                     bindData(productPaint);
 
 
-                } catch (HdException e) {
+                } catch (Throwable e) {
                     e.printStackTrace();
                 }
                 break;

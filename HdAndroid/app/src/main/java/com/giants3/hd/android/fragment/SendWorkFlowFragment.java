@@ -22,7 +22,6 @@ import com.giants3.hd.data.net.HttpUrl;
 import com.giants3.hd.data.utils.GsonUtils;
 import com.giants3.hd.entity.ErpOrderItemProcess;
 import com.giants3.hd.entity.WorkFlowArea;
-import com.giants3.hd.exception.HdException;
 import com.giants3.hd.utils.StringUtils;
 import com.google.gson.reflect.TypeToken;
 
@@ -34,7 +33,7 @@ import butterknife.Bind;
 /**
  * 发送流程fragment
  */
-public class SendWorkFlowFragment extends BaseDialogFragment<WorkFlowSendMvp.Presenter> implements WorkFlowSendMvp.Viewer {
+public class SendWorkFlowFragment extends BaseMVPDialogFragment<WorkFlowSendMvp.Presenter> implements WorkFlowSendMvp.Viewer {
 
     private static final String ARG_AVAILABLE_ITEMS = "ARG_AVAILABLE_ITEMS";
 
@@ -166,7 +165,7 @@ public class SendWorkFlowFragment extends BaseDialogFragment<WorkFlowSendMvp.Pre
             }.getType();
             try {
                 orderItemProcesses = GsonUtils.fromJson(getArguments().getString(ARG_AVAILABLE_ITEMS, ""), typeToken);
-            } catch (HdException e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
 

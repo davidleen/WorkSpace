@@ -207,7 +207,7 @@ public class Report_Excel_StockOut_XK_Invoice extends SimpleExcelReporter<ErpSto
             //合并单元格
             combineRowAndCell(writableSheet, row, row, 0, 8);
             setCellAlignLeftCenter(workbook, writableSheet, row, 0);
-            addString(writableSheet, guihao + "& seal # : " + fengqianhao, 0, row);
+            addString(writableSheet, StockStringHelper.generateCombineString(guihao, fengqianhao), 0, row);
             row++;
             List<ErpStockOutItem> groupItems = groupMaps.get(guihao);
             for (ErpStockOutItem outItem : groupItems) {
@@ -266,6 +266,8 @@ public class Report_Excel_StockOut_XK_Invoice extends SimpleExcelReporter<ErpSto
         addNumber(writableSheet, totalAmt, 12, row);
 
     }
+
+
 
     /**
      * 清单sheet数据
@@ -356,7 +358,7 @@ public class Report_Excel_StockOut_XK_Invoice extends SimpleExcelReporter<ErpSto
             //合并单元格
             combineRowAndCell(writableSheet, row, row, 0, 8);
             setCellAlignLeftCenter(workbook, writableSheet, row, 0);
-            addString(writableSheet, guihao + "& seal # : " + fengqianhao, 0, row);
+            addString(writableSheet, StockStringHelper.generateCombineString(guihao, fengqianhao), 0, row);
             row++;
             List<ErpStockOutItem> groupItems = groupMaps.get(guihao);
             for (ErpStockOutItem outItem : groupItems) {

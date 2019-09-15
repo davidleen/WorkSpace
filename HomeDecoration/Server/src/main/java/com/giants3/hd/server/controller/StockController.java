@@ -72,10 +72,10 @@ public class StockController extends BaseController {
     @RequestMapping(value = "/stockInAndSubmitList", method = RequestMethod.GET)
     public
     @ResponseBody
-    RemoteData<StockSubmit> getStockInAndSubmitList(@RequestParam(value = "startDate") String startDate, @RequestParam(value = "endDate") String endDate) {
+    RemoteData<StockSubmit> getStockInAndSubmitList(@RequestParam(value = "key",defaultValue = "") String key,@RequestParam(value = "startDate") String startDate, @RequestParam(value = "endDate") String endDate) {
 
 
-        RemoteData<StockSubmit> detailRemoteData = stockService.getStockInAndSubmitList(startDate, endDate);
+        RemoteData<StockSubmit> detailRemoteData = stockService.getStockInAndSubmitList(key,startDate, endDate);
         return detailRemoteData;
     }
 

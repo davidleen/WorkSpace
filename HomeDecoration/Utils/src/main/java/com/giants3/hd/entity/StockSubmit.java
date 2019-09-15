@@ -79,7 +79,7 @@ public class StockSubmit {
 
 
     /**
-     * 箱数   =  qty/so_zxs
+     * 箱数   =  (qty-1)/so_zxs+1
      */
     public int xs;
     /**
@@ -162,4 +162,7 @@ public class StockSubmit {
      * 拖车公司
      */
     public  String tcgs;
+
+
+
 }

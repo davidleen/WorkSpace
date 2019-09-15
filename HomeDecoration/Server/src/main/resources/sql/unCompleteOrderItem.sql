@@ -1,5 +1,5 @@
 WITH query AS (
-   SELECT     ROW_NUMBER() OVER (ORDER BY a.os_no DESC,a.itm ASC ) AS __rowindex__, a.os_no, a.os_dd, a.itm, a.bat_no, a.prd_no, a.prd_name, a.id_no, a.up, a.qty, a.amt,
+   SELECT     ROW_NUMBER() OVER (ORDER BY a.os_no DESC,a.itm ASC ) AS __rowindex__, a.os_no, a.os_dd, a.itm, a.bat_no, a.prd_no, a.prd_name, a.id_no, isnull(a.up,0) as up, isnull( a.qty,0) as qty, isnull(a.amt,0) amt,
 b.workflowdescribe, isnull(b.workflowstate, 0) AS workflowstate, isnull(b.maxworkflowstep, 0) AS maxworkflowstep, isnull(b.maxworkflowname, '') AS maxworkflowname,
 isnull(b.maxworkflowcode, '') AS maxworkflowcode,
   isnull(b.currentOverDueDay,0) as currentOverDueDay

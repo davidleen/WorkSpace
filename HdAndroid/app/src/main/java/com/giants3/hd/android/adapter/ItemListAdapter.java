@@ -146,6 +146,8 @@ public class ItemListAdapter<T>
 
             linearLayout.addView(v, layoutParams);
         }
+
+
         linearLayout.setDividerDrawable(context.getResources().getDrawable(R.drawable.icon_divider));
         linearLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
 

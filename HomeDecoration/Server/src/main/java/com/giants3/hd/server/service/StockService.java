@@ -272,6 +272,7 @@ public class StockService extends AbstractService {
                 erpStockOut.memo = stockOut.memo;
 
                 erpStockOut.attaches = stockOut.attaches;
+                erpStockOut.maitou = stockOut.maitou;
             }
 
         }
@@ -315,6 +316,7 @@ public class StockService extends AbstractService {
         stockOut.memo = erpStockOut.memo;
         stockOut.ckNo = erpStockOut.ck_no;
         stockOut.attaches = erpStockOut.attaches;
+        stockOut.maitou = erpStockOut.maitou;
 
 
     }
@@ -403,10 +405,10 @@ public class StockService extends AbstractService {
      *
      * @return
      */
-    public RemoteData<StockSubmit> getStockInAndSubmitList(String startDate, String endData) {
+    public RemoteData<StockSubmit> getStockInAndSubmitList(String key,String startDate, String endData) {
 
 
-        final List<StockSubmit> stockSubmitList = erpStockSubmitRepository.getStockSubmitList(startDate, endData);
+        final List<StockSubmit> stockSubmitList = erpStockSubmitRepository.getStockSubmitList(key,startDate, endData);
         updateStockSubmitList(stockSubmitList);
         return wrapData(stockSubmitList);
     }
@@ -495,7 +497,7 @@ public class StockService extends AbstractService {
             float price = typePriceMap.get(submit.type);
             submit.area = typeAreaMap.get(submit.type);
 
-            submit.xs = submit.qty / submit.so_zxs;
+            submit.xs =(submit.qty-1) / submit.so_zxs+1;
             submit.zxgtj = submit.xgtj * submit.xs;
             submit.price = price;
             submit.cost = FloatHelper.scale(submit.price * submit.zxgtj, 2);

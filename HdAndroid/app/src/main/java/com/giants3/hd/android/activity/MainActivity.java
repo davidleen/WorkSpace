@@ -25,7 +25,7 @@ import com.giants3.hd.android.fragment.MaterialDetailFragment;
 import com.giants3.hd.android.fragment.MaterialListFragment;
 import com.giants3.hd.android.fragment.OrderDetailFragment;
 import com.giants3.hd.android.fragment.OrderListFragment;
-import com.giants3.hd.android.fragment.ProductDetailFragment;
+
 import com.giants3.hd.android.fragment.ProductListFragment;
 import com.giants3.hd.android.fragment.QuotationDetailFragment;
 import com.giants3.hd.android.fragment.QuotationListFragment;
@@ -35,6 +35,7 @@ import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.helper.UpgradeUtil;
 import com.giants3.hd.android.mvp.MainAct.MainActMvp;
 import com.giants3.hd.android.mvp.MainAct.MainActPresenter;
+import com.giants3.hd.android.presenter.ProductDetailPresenter;
 import com.giants3.hd.appdata.AProduct;
 import com.giants3.hd.appdata.AUser;
 import com.giants3.hd.data.interractor.UseCaseFactory;
@@ -230,18 +231,14 @@ public class MainActivity extends BaseViewerActivity<MainActMvp.Presenter>
         productListFragmentListener = new OnFragmentInteractionListener<AProduct>() {
             @Override
             public void onFragmentInteraction(AProduct data) {
-                if (findViewById(R.id.detail_container) == null) {
+
 
                     //调整act
                     Intent intent = new Intent(MainActivity.this, ProductDetailActivity.class);
-                    intent.putExtra(ProductDetailFragment.ARG_ITEM, GsonUtils.toJson(data));
+                    intent.putExtra(ProductDetailPresenter.ARG_ITEM, GsonUtils.toJson(data));
                     startActivity(intent);
 
-                } else {
 
-                    ProductDetailFragment fragment = ProductDetailFragment.newInstance(data);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.detail_container, fragment).commit();
-                }
 
             }
         };

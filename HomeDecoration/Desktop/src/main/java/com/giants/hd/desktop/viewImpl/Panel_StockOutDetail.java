@@ -15,6 +15,8 @@ import com.giants3.hd.entity_erp.ErpStockOutItem;
 import com.giants3.hd.noEntity.ErpStockOutDetail;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -54,6 +56,7 @@ public class Panel_StockOutDetail extends BasePanel implements StockOutDetailVie
     private JButton export_qingguan;
     private JButton export_qingguan_xk;
     private JPanel panel_input;
+    private JTextArea jta_maitou;
     private StockOutDetailIPresenter presenter;
 
     private StockOutItemTableModel tableModel;
@@ -344,17 +347,22 @@ public class Panel_StockOutDetail extends BasePanel implements StockOutDetailVie
         tf_sal.setText(erpStockOutDetail.erpStockOut.sal_name + "-" + erpStockOutDetail.erpStockOut.sal_cname);
 
 
+
+
+        jta_maitou.getDocument().removeDocumentListener(maitouDocumentListener);
 //        ta_cemai.getDocument().removeDocumentListener(cemaiDocumentListener);
 //        ta_neihemai.getDocument().removeDocumentListener(neihemaiDocumentListener);
 //        ta_zhengmai.getDocument().removeDocumentListener(zhengmaiDocumentListener);
 //        ta_memo.getDocument().removeDocumentListener(memoDocumentListener);
 //
+        jta_maitou.setText(erpStockOutDetail.erpStockOut.maitou);
 //        ta_cemai.setText(erpStockOutDetail.erpStockOut.cemai);
 //        ta_zhengmai.setText(erpStockOutDetail.erpStockOut.zhengmai);
 //        ta_neihemai.setText(erpStockOutDetail.erpStockOut.neheimai);
 //        ta_memo.setText(erpStockOutDetail.erpStockOut.memo);
 //
 //
+        jta_maitou.getDocument().addDocumentListener(maitouDocumentListener);
 //        ta_cemai.getDocument().addDocumentListener(cemaiDocumentListener);
 //        ta_neihemai.getDocument().addDocumentListener(neihemaiDocumentListener);
 //        ta_zhengmai.getDocument().addDocumentListener(zhengmaiDocumentListener);
@@ -364,6 +372,15 @@ public class Panel_StockOutDetail extends BasePanel implements StockOutDetailVie
 
     }
 
+
+    private DocumentListener maitouDocumentListener=new DocumentAdapter() {
+
+
+        @Override
+        public void onTextChange(DocumentEvent documentEvent) {
+            presenter.onMaitouChanged(jta_maitou.getText().trim());
+        }
+    };
 
     @Override
     public void showGuihaoData(Set<StockOutDetailFrame.GuiInfo> guiInfos) {
@@ -411,7 +428,6 @@ public class Panel_StockOutDetail extends BasePanel implements StockOutDetailVie
 
     @Override
     public void setExportable(boolean b) {
-
 
         export_pack.setVisible(b);
         export_invoice.setVisible(b);

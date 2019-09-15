@@ -11,9 +11,10 @@ import org.greenrobot.greendao.annotation.Generated;
 })
 public class DownloadTask {
 
-    public static  final int STATE_DOWNLOADING=0;
+    public static  final int STATE_NONE=0;
     public static  final int STATE_STOP=1;
     public static  final int STATE_COMPLETE=2;
+    public static  final int STATE_DOWNLOADING=3;
 
     public int count;
     public int downloadedCount;
@@ -29,7 +30,7 @@ public class DownloadTask {
     private int toZoom;
 
     /**
-     * 0 下载中， 1 停止， 2 完成
+     * 0 未下载 1 停止， 2  完成， 3 下载中
      */
     private int state;
 

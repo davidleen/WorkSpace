@@ -51,6 +51,12 @@ public class ErpStockOut   implements Serializable {
 
     public String attaches;
 
+    /**
+     * 嘜頭數據
+     */
+    public  String maitou;
+
+
 
 
 }

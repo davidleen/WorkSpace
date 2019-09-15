@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.adapter.ItemListAdapter;
 import com.giants3.hd.android.entity.TableData;
-import com.giants3.hd.android.fragment.ProductDetailFragment;
 import com.giants3.hd.android.fragment.QuotationDetailFragment;
 import com.giants3.hd.android.fragment.ValueEditDialogFragment;
 import com.giants3.hd.android.helper.AuthorityUtil;
@@ -20,22 +19,18 @@ import com.giants3.hd.android.helper.SharedPreferencesHelper;
 import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.mvp.quotation.QuotationDetailMVP;
 import com.giants3.hd.android.mvp.quotation.QuotationDetailPresenterImpl;
+import com.giants3.hd.android.presenter.ProductDetailPresenter;
 import com.giants3.hd.appdata.AProduct;
 import com.giants3.hd.data.utils.GsonUtils;
 import com.giants3.hd.entity.Quotation;
 import com.giants3.hd.entity.QuotationItem;
 import com.giants3.hd.entity.QuotationXKItem;
 import com.giants3.hd.entity.QuoteAuth;
-import com.giants3.hd.exception.HdException;
 import com.giants3.hd.noEntity.QuotationDetail;
 
 import butterknife.Bind;
 
-/**
- * An activity representing a single ProductListActivity detail screen. This
- * activity is only used narrow width devices. On tablet-size devices,
- * item_work_flow_report details are presented side-by-side with a list of items
- * in a {@link ProductListActivity}.
+/** 
  */
 public class QuotationDetailActivity extends BaseHeadViewerActivity<QuotationDetailPresenterImpl> implements QuotationDetailMVP.Viewer {
     public static final String P_VERSION = "pVersion";
@@ -103,7 +98,7 @@ public class QuotationDetailActivity extends BaseHeadViewerActivity<QuotationDet
         Quotation quotation;
         try {
             quotation = GsonUtils.fromJson(getIntent().getStringExtra(ARG_ITEM), Quotation.class);
-        } catch (HdException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
             ToastHelper.show("参数异常");
             return;
@@ -313,7 +308,7 @@ public class QuotationDetailActivity extends BaseHeadViewerActivity<QuotationDet
         aProduct.id = productId;
         //调整act
         Intent intent = new Intent(QuotationDetailActivity.this, ProductDetailActivity.class);
-        intent.putExtra(ProductDetailFragment.ARG_ITEM, GsonUtils.toJson(aProduct));
+        intent.putExtra(ProductDetailPresenter.ARG_ITEM, GsonUtils.toJson(aProduct));
         startActivity(intent);
     }
 

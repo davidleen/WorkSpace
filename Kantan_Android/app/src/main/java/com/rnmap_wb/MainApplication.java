@@ -14,7 +14,7 @@ import com.giants3.android.reader.domain.DefaultUseCaseHandler;
 import com.giants3.android.reader.domain.GsonUtils;
 import com.giants3.android.reader.domain.ResApiFactory;
 import com.giants3.android.reader.domain.UseCaseFactory;
-import com.rnmap_wb.android.dao.DaoManager;
+import com.rnmap_wb.android.idao.DaoManager;
 import com.rnmap_wb.android.data.LoginResult;
 import com.rnmap_wb.android.data.RemoteData;
 import com.rnmap_wb.android.data.Task;

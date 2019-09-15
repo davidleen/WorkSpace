@@ -74,7 +74,7 @@ public class OrderItemWorkFlowMessageActivity extends BaseViewerActivity<OrderIt
         ErpOrderItem orderItem = null;
         try {
             orderItem = GsonUtils.fromJson(getIntent().getStringExtra(KEY_ORDER_ITEM), ErpOrderItem.class);
-        } catch (HdException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
 
             showMessage("未发现传递的订单数据");

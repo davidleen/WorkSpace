@@ -19,7 +19,7 @@ public class GsonUtils {
     }
 
 
-    public static <T> T fromJson(String json, Type typeOfT) throws HdException {
+    public static <T> T fromJson(String json, Type typeOfT)   {
 
         return com.giants3.hd.utils.GsonUtils.fromJson(json, typeOfT);
 

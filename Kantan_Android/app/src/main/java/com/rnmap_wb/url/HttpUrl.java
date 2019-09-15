@@ -172,8 +172,9 @@ public class HttpUrl {
 
     public static String getMessageList() {
 
-        String url = BASE_URL + "api/user/messages";
+        String url = BASE_URL + "api/user/myMessages";
         UrlFormatter formatter = new UrlFormatter(url);
+        formatter.append("token",token);
         return additionInfo(formatter);
     }
 }

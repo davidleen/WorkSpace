@@ -93,8 +93,8 @@ public class ProductMaterialFragment extends BaseFragment implements View.OnClic
     @Bind(R.id.selectMaterial2)
     View selectMaterial2;
 
-    @Bind(R.id.save)
-    View save;
+    @Bind(R.id.goBack)
+    View goBack;
 
 
     @Bind(R.id.packMaterialClass)
@@ -182,7 +182,7 @@ public class ProductMaterialFragment extends BaseFragment implements View.OnClic
                     bindData(productMaterial);
 
 
-                } catch (HdException e) {
+                } catch (Throwable e) {
                     e.printStackTrace();
                 }
                 break;
@@ -203,8 +203,8 @@ public class ProductMaterialFragment extends BaseFragment implements View.OnClic
     }
 
 
-    @OnClick(R.id.save)
-    public void onSave(View v) {
+    @OnClick(R.id.goBack)
+    public void goBack(View v) {
 
 
         ProductDetail productDetail = ProductDetailSingleton.getInstance().getProductDetail();

@@ -86,7 +86,7 @@ public class HdApplication extends Application {
                 PushMessage pushMessage = null;
                 try {
                     pushMessage = GsonUtils.fromJson(message, PushMessage.class);
-                } catch (HdException e) {
+                } catch (Throwable e) {
                     e.printStackTrace();
                 }
                 PushManager.getInstance().handleMessage(pushMessage);

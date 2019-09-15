@@ -15,12 +15,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.giants3.hd.android.R;
-import com.giants3.hd.android.fragment.ProductDetailFragment;
+
 import com.giants3.hd.android.helper.ImageLoaderFactory;
 import com.giants3.android.frame.util.ToastHelper;
+import com.giants3.hd.android.presenter.ProductDetailPresenter;
 import com.giants3.hd.appdata.AProduct;
 import com.giants3.hd.data.interractor.UseCaseFactory;
 import com.giants3.hd.data.net.HttpUrl;
+import com.giants3.hd.data.utils.GsonUtils;
 import com.giants3.hd.noEntity.RemoteData;
 
 import java.util.ArrayList;
@@ -182,21 +184,13 @@ public class ProductListActivity extends BaseActivity {
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mTwoPane) {
-                        Bundle arguments = new Bundle();
-                        arguments.putLong(ProductDetailFragment.ARG_ITEM, holder.mItem.id);
-                        ProductDetailFragment fragment = new ProductDetailFragment();
-                        fragment.setArguments(arguments);
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.productlistactivity_detail_container, fragment)
-                                .commit();
-                    } else {
+
                         Context context = v.getContext();
                         Intent intent = new Intent(context, ProductDetailActivity.class);
-                        intent.putExtra(ProductDetailFragment.ARG_ITEM, holder.mItem.id);
+                        intent.putExtra(ProductDetailPresenter.ARG_ITEM, GsonUtils.toJson(holder.mItem));
 
                         context.startActivity(intent);
-                    }
+
                 }
             });
         }

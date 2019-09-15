@@ -250,6 +250,14 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+
+
+
+
+
+
+
+
     protected boolean shouldAskPermission() {
         return (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1);
     }
