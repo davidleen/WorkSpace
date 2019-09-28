@@ -1,10 +1,12 @@
 package com.giants3.hd.android.fragment;
 
+import com.giants3.hd.android.helper.SharedPreferencesHelper;
 import com.giants3.hd.android.mvp.NewModel;
 import com.giants3.hd.entity.Factory;
 import com.giants3.hd.entity.PClass;
 import com.giants3.hd.entity.Pack;
 import com.giants3.hd.entity.Product;
+import com.giants3.hd.logic.ProductAnalytics;
 import com.giants3.hd.noEntity.ProductDetail;
 import com.giants3.hd.utils.StringUtils;
 
@@ -19,6 +21,9 @@ public class ProductDetailModelImpl implements ProductDetailModel {
     @Override
     public void setNewPack(Pack newValue) {
         productDetail.product.pack = newValue;
+
+        ProductAnalytics.updateProductPackRelateData(productDetail);
+        ProductAnalytics.updateProductStatistics(productDetail, SharedPreferencesHelper.getInitData().globalData);
 
 
     }
@@ -55,14 +60,15 @@ public class ProductDetailModelImpl implements ProductDetailModel {
     }
 
     @Override
-    public void setNewPackData(int insideBoxQuantity, int packQuantity, float packLong, float packWidth, float packHeight) {
+    public void setNewPackData(int insideBoxQuantity, int packQuantity) {
 
         Product product = productDetail.product;
         product.insideBoxQuantity=insideBoxQuantity;
         product.packQuantity=packQuantity;
-        product.packLong=packLong;
-        product.packWidth=packWidth;
-        product.packHeight=packHeight;
+
+        ProductAnalytics.updateProductPackRelateData(productDetail);
+        ProductAnalytics.updateProductStatistics(productDetail, SharedPreferencesHelper.getInitData().globalData);
+
 
     }
 

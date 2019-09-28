@@ -18,4 +18,5 @@ public class ProductToUpdate {
 
 
     public long productId;
+    public String updateWay;
 }

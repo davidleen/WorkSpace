@@ -350,10 +350,10 @@ public class StockService extends AbstractService {
 
 
         for (ErpStockOutItem item : newStockOutItems) {
-            if (StringUtils.isEmpty(item.ps_no)) {
-
-                throw HdException.create("出库单" + stockOut.ckNo + "的款项：" + item.id_no + "未有对应销库数据（封签号，柜号），不能保存");
-            }
+//            if (StringUtils.isEmpty(item.ps_no)) {
+//
+//                throw HdException.create("出库单" + stockOut.ckNo + "的款项：" + item.id_no + "未有对应销库数据（封签号，柜号），不能保存");
+//            }
             StockOutItem stockOutItem = stockOutItemRepository.findFirstByCkNoEqualsAndItmEqualsAndPsNoEquals(item.ck_no, item.itm, item.ps_no);
             if (stockOutItem == null) {
                 stockOutItem = new StockOutItem();

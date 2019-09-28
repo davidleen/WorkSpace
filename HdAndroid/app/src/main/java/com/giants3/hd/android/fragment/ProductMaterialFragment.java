@@ -499,7 +499,7 @@ public class ProductMaterialFragment extends BaseFragment implements View.OnClic
 
 
         ValueEditDialogFragment dialogFragment = new ValueEditDialogFragment();
-        dialogFragment.set("利用率", String.valueOf(productMaterial.available), new ValueEditDialogFragment.ValueChangeListener() {
+        dialogFragment.set("利用率", String.valueOf(productMaterial.available),Float.class, new ValueEditDialogFragment.ValueChangeListener() {
             @Override
             public void onValueChange(String title, String oldValue, String newValue) {
                 try {
@@ -524,7 +524,7 @@ public class ProductMaterialFragment extends BaseFragment implements View.OnClic
 
 
         ValueEditDialogFragment dialogFragment = new ValueEditDialogFragment();
-        dialogFragment.set("数量", String.valueOf(productMaterial.quantity), new ValueEditDialogFragment.ValueChangeListener() {
+        dialogFragment.set("数量", String.valueOf(productMaterial.quantity),Integer.class, new ValueEditDialogFragment.ValueChangeListener() {
             @Override
             public void onValueChange(String title, String oldValue, String newValue) {
                 try {
@@ -549,7 +549,7 @@ public class ProductMaterialFragment extends BaseFragment implements View.OnClic
 
 
         ValueEditDialogFragment dialogFragment = new ValueEditDialogFragment();
-        dialogFragment.set("长", String.valueOf(productMaterial.pLong), new ValueEditDialogFragment.ValueChangeListener() {
+        dialogFragment.set("长", String.valueOf(productMaterial.pLong),Float.class, new ValueEditDialogFragment.ValueChangeListener() {
             @Override
             public void onValueChange(String title, String oldValue, String newValue) {
                 try {
@@ -574,7 +574,7 @@ public class ProductMaterialFragment extends BaseFragment implements View.OnClic
 
 
         ValueEditDialogFragment dialogFragment = new ValueEditDialogFragment();
-        dialogFragment.set("宽", String.valueOf(productMaterial.pWidth), new ValueEditDialogFragment.ValueChangeListener() {
+        dialogFragment.set("宽", String.valueOf(productMaterial.pWidth),Float.class, new ValueEditDialogFragment.ValueChangeListener() {
             @Override
             public void onValueChange(String title, String oldValue, String newValue) {
                 try {
@@ -599,7 +599,7 @@ public class ProductMaterialFragment extends BaseFragment implements View.OnClic
 
 
         ValueEditDialogFragment dialogFragment = new ValueEditDialogFragment();
-        dialogFragment.set("高", String.valueOf(productMaterial.pHeight), new ValueEditDialogFragment.ValueChangeListener() {
+        dialogFragment.set("高", String.valueOf(productMaterial.pHeight),Float.class, new ValueEditDialogFragment.ValueChangeListener() {
             @Override
             public void onValueChange(String title, String oldValue, String newValue) {
                 try {

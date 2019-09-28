@@ -34,6 +34,8 @@ public interface ProductDetailViewer extends NewViewer {
 
       void showFieldValueEditDailog(String title, String field, String oldValue);
 
+      void showFieldValueEditDailog(String title, String field, String oldValue,Class valueType);
+
 
         <T> void showPickDialog(String title , final String field, List<T> items, T preItem);
 

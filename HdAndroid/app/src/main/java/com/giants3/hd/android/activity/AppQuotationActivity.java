@@ -156,7 +156,7 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
                     case "price": {
 
 
-                        updateValue("修改单价", String.valueOf(data.price), new ValueEditDialogFragment.ValueChangeListener() {
+                        updateValue("修改单价", String.valueOf(data.price), Float.class,new ValueEditDialogFragment.ValueChangeListener() {
                             @Override
                             public void onValueChange(String title, String oldValue, String newValue) {
                                 try {
@@ -185,7 +185,7 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
                     case "qty": {
 
 
-                        updateValue("修改数量", String.valueOf(data.qty)
+                        updateValue("修改数量", String.valueOf(data.qty),Integer.class
                                 , new ValueEditDialogFragment.ValueChangeListener() {
                                     @Override
                                     public void onValueChange(String title, String oldValue, String newValue) {
@@ -282,7 +282,7 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
                                 case 1:
 
 
-                                    updateValue("设置折扣", "0", new ValueEditDialogFragment.ValueChangeListener() {
+                                    updateValue("设置折扣", "0", Float.class,new ValueEditDialogFragment.ValueChangeListener() {
                                         @Override
                                         public void onValueChange(String title, String oldValue, String newValue) {
                                             float newDisCount = 0;
@@ -361,12 +361,20 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
     }
 
     private void updateValue(String title, String value, ValueEditDialogFragment.ValueChangeListener listener) {
-        updateValue(title, value, false, listener);
+        updateValue(title, value,null, listener);
     }
 
-    private void updateValue(String title, String value, boolean multiableText, ValueEditDialogFragment.ValueChangeListener listener) {
+    private void updateValue(String title, String value,Class valueType, ValueEditDialogFragment.ValueChangeListener listener) {
+        updateValue(title, value,valueType, false, listener);
+    }
+
+    private void updateValue(String title, String value,boolean multiableText, ValueEditDialogFragment.ValueChangeListener listener) {
+        updateValue(title, value,null, multiableText, listener);
+    }
+
+    private void updateValue(String title, String value, Class valueType, boolean multiableText, ValueEditDialogFragment.ValueChangeListener listener) {
         ValueEditDialogFragment dialogFragment = new ValueEditDialogFragment();
-        dialogFragment.set(title, value, listener);
+        dialogFragment.set(title, value, valueType,listener);
         dialogFragment.setMultiableText(multiableText);
         dialogFragment.show(getSupportFragmentManager(), null);
     }
@@ -618,7 +626,7 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
 
                 break;
             case R.id.discountAll:
-                updateValue("设置全部折扣", "0", new ValueEditDialogFragment.ValueChangeListener() {
+                updateValue("设置全部折扣", "0",Float.class, new ValueEditDialogFragment.ValueChangeListener() {
                     @Override
                     public void onValueChange(String title, String oldValue, String newValue) {
                         float newDisCount = 0;

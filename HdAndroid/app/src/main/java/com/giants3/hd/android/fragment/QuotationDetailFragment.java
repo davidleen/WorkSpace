@@ -238,7 +238,7 @@ public class QuotationDetailFragment extends BaseFragment implements View.OnClic
 
                     ValueEditDialogFragment dialogFragment = new ValueEditDialogFragment();
                     final float finalRatio = ratio;
-                    dialogFragment.set("修改利润比", String.valueOf(finalRatio), new ValueEditDialogFragment.ValueChangeListener(){
+                    dialogFragment.set("修改利润比", String.valueOf(finalRatio), Float.class,new ValueEditDialogFragment.ValueChangeListener(){
                         @Override
                         public void onValueChange(String title, String oldValue, String newValue) {
 

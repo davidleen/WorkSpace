@@ -21,4 +21,8 @@ public interface ProductDetailIPresenter extends IPresenter {
      * 修复缩略图
      */
     void correctThumbnail(long productId);
+
+    void correctProductStatistics();
+
+    void viewValueHistory();
 }

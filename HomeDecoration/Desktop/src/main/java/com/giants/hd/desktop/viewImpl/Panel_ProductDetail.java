@@ -6,6 +6,7 @@ import com.giants.hd.desktop.dialogs.OperationLogDialog;
 import com.giants.hd.desktop.dialogs.ProductQRDialog;
 import com.giants.hd.desktop.dialogs.SearchDialog;
 import com.giants.hd.desktop.filters.PictureFileFilter;
+import com.giants.hd.desktop.frames.ProductDetailFrame;
 import com.giants.hd.desktop.interf.CommonSearchAdapter;
 import com.giants.hd.desktop.interf.DataChangeListener;
 import com.giants.hd.desktop.interf.Iconable;
@@ -157,6 +158,8 @@ public class Panel_ProductDetail extends BasePanel implements ProductDetailViewe
 
     private JButton workFlow;
     private JButton save2;
+    private JButton btn_correct;
+    private JLabel value_histroy;
 
 
     /**
@@ -251,6 +254,7 @@ public class Panel_ProductDetail extends BasePanel implements ProductDetailViewe
     ProductDetailIPresenter presenter;
 
     private boolean cannotViewPrice = false;
+    private int viewType=ProductDetailFrame.VIEW_TYPE_NORMAL;
 
 
     public Panel_ProductDetail() {
@@ -283,10 +287,10 @@ public class Panel_ProductDetail extends BasePanel implements ProductDetailViewe
     /**
      * 设置数据
      */
-    public void setProductDetail(ProductDetail productDetail, ProductDelete productDelete) {
+    public void setProductDetail(ProductDetail productDetail, ProductDelete productDelete,int viewType) {
 
 
-        initPanel(productDetail, productDelete);
+        initPanel(productDetail, productDelete,viewType);
 
 
     }
@@ -1195,6 +1199,8 @@ public class Panel_ProductDetail extends BasePanel implements ProductDetailViewe
         model.removeTableModelListener(allTableModelListener);
         model.setDatas(datas);
         table.setModel(model);
+
+        if (viewType==ProductDetailFrame.VIEW_TYPE_NORMAL)
         model.addTableModelListener(allTableModelListener);
 
     }
@@ -1338,10 +1344,11 @@ public class Panel_ProductDetail extends BasePanel implements ProductDetailViewe
 
     private void initPanel(ProductDetail detail) {
 
-        initPanel(detail, null);
+        initPanel(detail, null, ProductDetailFrame.VIEW_TYPE_NORMAL);
     }
 
-    private void initPanel(ProductDetail detail, final ProductDelete productDelete) {
+    private void initPanel(ProductDetail detail, final ProductDelete productDelete,int viewType) {
+        this.viewType = viewType;
 
         removeListeners();
 
@@ -1362,17 +1369,26 @@ public class Panel_ProductDetail extends BasePanel implements ProductDetailViewe
         bindData();
 
 
-        bindLogData(detail == null ? null : detail.productLog);
+        bindLogData(viewType==ProductDetailFrame.VIEW_TYPE_HISTORY?null:(detail == null ? null : detail.productLog));
 
 
         //非删除数据 添加对数据的监听。
-        if (productDelete == null)
+        if (productDelete == null||viewType==ProductDetailFrame.VIEW_TYPE_HISTORY)
             addListeners();
 
 
-        panel_nomal.setVisible(null == productDelete);
-        panel_delete.setVisible(productDelete != null);
+        panel_nomal.setVisible(null == productDelete&&viewType==ProductDetailFrame.VIEW_TYPE_NORMAL);
+        btn_resume.setVisible(productDelete != null);
+        btn_correct.setVisible(AuthorityUtil.getInstance().isDebug());
+        btn_correct.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
+                presenter.correctProductStatistics();
+
+
+            }
+        });
         for (ActionListener listener : btn_resume.getActionListeners()) {
             btn_resume.removeActionListener(listener);
         }
@@ -1484,7 +1500,8 @@ public class Panel_ProductDetail extends BasePanel implements ProductDetailViewe
     public void initComponent() {
 
 
-        panel_delete.setVisible(false);
+        btn_resume.setVisible(false);
+        btn_correct.setVisible(false);
         panel_nomal.setVisible(false);
 
 
@@ -1851,6 +1868,20 @@ public class Panel_ProductDetail extends BasePanel implements ProductDetailViewe
                     OperationLogDialog dialog = new OperationLogDialog(window, Product.class, productDetail.product.id);
                     dialog.setLocationRelativeTo(window);
                     dialog.setVisible(true);
+
+
+                }
+            }
+        });
+        value_histroy.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+
+
+                    presenter.viewValueHistory();
+
+
 
 
                 }

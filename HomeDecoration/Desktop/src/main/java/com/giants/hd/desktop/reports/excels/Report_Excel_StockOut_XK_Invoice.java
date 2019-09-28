@@ -234,7 +234,7 @@ public class Report_Excel_StockOut_XK_Invoice extends SimpleExcelReporter<ErpSto
                addString(writableSheet, outItem.jmcc, 10, row);
                 //fob
 
-                addNumber(writableSheet, outItem.up, 11, row);
+                addString(writableSheet, "$"+FloatHelper.scale( outItem.up), 11, row);
 
                 //amount
                 addNumber(writableSheet, FloatHelper.scale(outItem.up * outItem.stockOutQty), 12, row);

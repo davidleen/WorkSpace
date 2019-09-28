@@ -374,7 +374,7 @@ public class ProductPaintFragment extends BaseFragment implements View.OnClickLi
 
 
         ValueEditDialogFragment dialogFragment=new ValueEditDialogFragment();
-        dialogFragment.set("工价", String.valueOf(productPaint.processPrice), new ValueEditDialogFragment.ValueChangeListener() {
+        dialogFragment.set("工价", String.valueOf(productPaint.processPrice),Float.class, new ValueEditDialogFragment.ValueChangeListener() {
             @Override
             public void onValueChange(String title, String oldValue, String newValue) {
                 try {
@@ -399,7 +399,7 @@ public class ProductPaintFragment extends BaseFragment implements View.OnClickLi
 
 
         ValueEditDialogFragment dialogFragment=new ValueEditDialogFragment();
-        dialogFragment.set("用量", String.valueOf(productPaint.quantity), new ValueEditDialogFragment.ValueChangeListener() {
+        dialogFragment.set("用量", String.valueOf(productPaint.quantity),Float.class, new ValueEditDialogFragment.ValueChangeListener() {
             @Override
             public void onValueChange(String title, String oldValue, String newValue) {
                 try {
@@ -427,7 +427,7 @@ public class ProductPaintFragment extends BaseFragment implements View.OnClickLi
 
 
         ValueEditDialogFragment dialogFragment=new ValueEditDialogFragment();
-        dialogFragment.set("配料比例", String.valueOf(productPaint.ingredientRatio), new ValueEditDialogFragment.ValueChangeListener() {
+        dialogFragment.set("配料比例", String.valueOf(productPaint.ingredientRatio),Float.class, new ValueEditDialogFragment.ValueChangeListener() {
             @Override
             public void onValueChange(String title, String oldValue, String newValue) {
                 try {

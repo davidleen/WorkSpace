@@ -7,6 +7,7 @@ import com.giants3.hd.exception.HdException;
 import com.giants3.hd.noEntity.ProductDetail;
 import com.giants3.hd.noEntity.ProductListViewType;
 import com.giants3.hd.noEntity.RemoteData;
+import com.giants3.hd.entity.ProductValueHistory;
 import com.giants3.hd.server.parser.DataParser;
 import com.giants3.hd.server.parser.RemoteDataParser;
 import com.giants3.hd.server.service.ProductRelateService;
@@ -18,6 +19,8 @@ import com.giants3.hd.utils.file.ImageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -387,6 +390,144 @@ public class ProductController extends BaseController {
         }
     }
 
+    /**
+     * 查找产品的修改历史记录
+     *
+     * @param user
+     * @param operationLogId
+     * @return
+     */
+    @RequestMapping(value = "/findProductHistory", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    RemoteData<ProductDetail> findProductHistory(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam(value = "operationLogId") long operationLogId) {
+
+
+        return productService.findHistoryProductData(user, operationLogId);
+
+    }
+
+
+    /**
+     * 查找产品的修改历史记录
+     *
+     * @param user
+     * @param historyId
+     * @return
+     */
+    @RequestMapping(value = "/findProductDetailByValueHistory", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    RemoteData<ProductDetail> findProductDetailByValueHistory(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam(value = "historyId") long historyId) {
+
+
+        return productService.findProductDetailByValueHistory(user, historyId);
+
+    }
+
+    /**
+     * 查找产品材料单价同步后，产品统计数据变动记录
+     *
+     * @param user
+     * @param productId
+     * @return
+     */
+    @RequestMapping(value = "/findProductValueHistory", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    RemoteData<ProductValueHistory> findProductValueHistory(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam(value = "productId") long productId) {
+
+
+        return productService.findProductValueHistory(user, productId);
+
+    }
+
+
+
+
+    /**
+     * 查询产品历史价格变动记录
+     *
+     * @param key
+     * @param pageIndex
+     * @param pageSize
+     * @param isLike 是否模糊查询
+     * @return
+     * @Param pageSize
+     */
+    @RequestMapping(value = "/searchProductValueHistory", method = {RequestMethod.GET})
+    public
+    @ResponseBody
+    RemoteData<ProductValueHistory> searchProductValueHistory(@RequestParam(value = "key", required = false, defaultValue = "") String key
+            , @RequestParam(value = "pageIndex", required = false, defaultValue = "0") int pageIndex, @RequestParam(value = "pageSize", required = false, defaultValue = "20") int pageSize, @RequestParam(value = "isLike", required = false) boolean isLike
+
+    )   {
+
+
+        RemoteData<ProductValueHistory> productRemoteData = productService.searchProductValueHistory(key, pageIndex, pageSize, isLike);
+
+
+        return productRemoteData;
+
+
+    }
+
+
+
+    /**
+     * 校正产品统计数据
+     *
+     * @param user
+     * @param productId
+     * @return
+     */
+    @RequestMapping(value = "/updateProductStatistics", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    RemoteData<ProductDetail> updateProductStatistics(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam(value = "productId") long productId) {
+
+
+        return productService.updateProductStatistics(user, productId);
+
+    }
+
+    /**
+     * 校正全部产品统计数据
+     *
+     * @param user
+     * @return
+     */
+    @RequestMapping(value = "/updateAllProductStatistics", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    RemoteData<Void> updateAllProductStatistics(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user) {
+
+
+        RemoteData<Product> productRemoteData;
+        int pageIndex = 0;
+        int count = 0;
+
+        do {
+            productRemoteData = productService.searchProductList("", pageIndex, 100);
+            if (productRemoteData.isSuccess()) {
+
+                for (Product product : productRemoteData.datas) {
+
+                    RemoteData<ProductDetail> productDetailRemoteData = productService.updateProductStatistics(user, product.id);
+                    if (productDetailRemoteData.isSuccess())
+                        count++;
+
+                }
+                pageIndex++;
+
+            }
+        }
+        while (productRemoteData.isSuccess() && productRemoteData.hasNext());
+
+
+        return wrapMessageData("校正产品统计数据成功， 共校正" + count + ",款");
+
+    }
 
     /**
      * 由操作纪录恢复产品分析表数据
@@ -625,7 +766,6 @@ public class ProductController extends BaseController {
     }
 
 
-
     /**
      * 单张
      *
@@ -635,16 +775,14 @@ public class ProductController extends BaseController {
     @RequestMapping(value = "/uploadProductPhoto", method = RequestMethod.POST)
     public
     @ResponseBody
-    RemoteData<Product> uploadProductPhoto(@RequestParam("productId") long productId,@RequestParam("file") MultipartFile file) {
+    RemoteData<Product> uploadProductPhoto(@RequestParam("productId") long productId, @RequestParam("file") MultipartFile file) {
 
 
+        Product product = productService.findProductById(productId);
+        if (product == null) return wrapError("未找到产品数据");
+        long lastPhotoUpdateTime = System.currentTimeMillis();
 
-
-        Product product=productService.findProductById(productId);
-        if(product==null) return wrapError("未找到产品数据");
-        long lastPhotoUpdateTime=System.currentTimeMillis();
-
-        String uploadFileName=file.getName();
+        String uploadFileName = file.getName();
         int indexOfDot = uploadFileName.indexOf(".");
         String suffix = uploadFileName.substring(indexOfDot + 1);
         String productPicturePath = FileUtils.getProductPicturePath(productFilePath, product.name, product.pVersion, suffix);
@@ -654,18 +792,15 @@ public class ProductController extends BaseController {
 
         } catch (IOException e) {
             e.printStackTrace();
-            return wrapError("文件上传失败，原因："+e.getMessage());
+            return wrapError("文件上传失败，原因：" + e.getMessage());
         }
 
         boolean b = productService.updateProductPhotoData(product);
-        if(b)
-        {
+        if (b) {
             return wrapData(productService.findProductById(productId));
-        }else
-        {
+        } else {
             return wrapError("图片更新失败");
         }
-
 
 
     }

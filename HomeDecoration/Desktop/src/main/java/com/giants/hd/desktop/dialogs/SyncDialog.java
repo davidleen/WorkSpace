@@ -1,10 +1,15 @@
 package com.giants.hd.desktop.dialogs;
 
+import com.giants.hd.desktop.frames.ProductDetailFrame;
 import com.giants.hd.desktop.local.HdSwingWorker;
+import com.giants.hd.desktop.mvp.DialogViewer;
 import com.giants.hd.desktop.mvp.IViewer;
+import com.giants.hd.desktop.mvp.RemoteDataSubscriber;
 import com.giants.hd.desktop.viewImpl.Panel_Sync;
 import com.giants3.hd.domain.api.ApiManager;
+import com.giants3.hd.domain.api.HttpUrl;
 import com.giants3.hd.domain.interractor.UseCaseFactory;
+import com.giants3.hd.noEntity.ProductDetail;
 import com.giants3.hd.noEntity.RemoteData;
 import com.google.inject.Inject;
 import rx.Subscriber;
@@ -129,6 +134,42 @@ public class SyncDialog extends BaseDialog<Void>  {
 
 
 
+
+
+            }
+        });
+
+
+        panel_photoSync.update_product_statistic.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                int option= JOptionPane.showConfirmDialog(SyncDialog.this, "是否校正所有产品的统计数据吗？"," 提示", JOptionPane.OK_CANCEL_OPTION);
+
+                if (JOptionPane.OK_OPTION == option) {
+
+
+
+
+                    UseCaseFactory.getInstance().createPostUseCase(HttpUrl.updateAllProductStatistics(), null,Void.class).execute(new RemoteDataSubscriber<Void>(viewer) {
+
+
+                        @Override
+                        protected void handleRemoteData(RemoteData<Void> data) {
+
+
+                            viewer.showMesssage(data.message);
+
+
+                        }
+
+
+                    });
+                    viewer.showLoadingDialog("正在校正中.....");
+
+
+
+                }
 
 
             }

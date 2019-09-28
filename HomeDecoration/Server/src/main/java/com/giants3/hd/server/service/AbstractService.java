@@ -73,6 +73,20 @@ public  abstract  class AbstractService implements InitializingBean, DisposableB
         return wrapData(0,datas.size(),1,datas.size(),datas);
 
 
+    } /**
+     * 封装正常的返回结果。
+     * @param page
+     * @param <T>
+     * @return
+     */
+    public <T> RemoteData<T> wrapData(Pageable pageable,Page<T> page)
+    {
+
+
+
+        return wrapData(pageable.getPageNumber(),pageable.getPageSize(),page.getTotalPages(),(int)page.getTotalElements(),page.getContent());
+
+
     }
 
 

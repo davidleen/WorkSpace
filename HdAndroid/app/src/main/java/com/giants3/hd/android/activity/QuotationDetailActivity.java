@@ -225,7 +225,7 @@ public class QuotationDetailActivity extends BaseHeadViewerActivity<QuotationDet
 
                     ValueEditDialogFragment dialogFragment = new ValueEditDialogFragment();
                     final float finalRatio = ratio;
-                    dialogFragment.set("修改利润比", String.valueOf(finalRatio), new ValueEditDialogFragment.ValueChangeListener() {
+                    dialogFragment.set("修改利润比", String.valueOf(finalRatio), Float.class,new ValueEditDialogFragment.ValueChangeListener() {
                         @Override
                         public void onValueChange(String title, String oldValue, String newValue) {
 
@@ -235,7 +235,7 @@ public class QuotationDetailActivity extends BaseHeadViewerActivity<QuotationDet
                             } catch (Throwable t) {
                             }
                             if (newRatio == 0 || newRatio > 1) {
-                                ToastHelper.show("输入的利润比不正确");
+                                ToastHelper.show("输入的利润比不正确,必须在0-1 之间");
                                 return;
                             }
                             if (newRatio == finalRatio) {

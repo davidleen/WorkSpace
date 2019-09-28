@@ -4,6 +4,7 @@ import com.giants.hd.desktop.ImageViewDialog;
 import com.giants.hd.desktop.interf.Iconable;
 import com.giants.hd.desktop.local.ImageLoader;
 import com.giants.hd.desktop.utils.AuthorityUtil;
+import com.giants.hd.desktop.widget.NumericTextField;
 import com.giants3.hd.domain.api.CacheManager;
 import com.giants3.hd.domain.api.HttpUrl;
 import com.giants3.hd.entity.Material;
@@ -11,9 +12,13 @@ import com.giants3.hd.entity.MaterialClass;
 import com.giants3.hd.entity.MaterialType;
 import com.google.inject.Inject;
 
+
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
 import javax.swing.event.MouseInputAdapter;
+import javax.swing.text.NumberFormatter;
 import java.awt.event.*;
+import java.text.ParseException;
 
 /**
  * 材料详细
@@ -23,7 +28,7 @@ public class Panel_Material_Detail extends BasePanel {
     private JTextField tf_name;
     private JComboBox<MaterialClass> cb_materialClass;
     private JTextField tf_unit;
-    private JFormattedTextField ftf_price;
+    private NumericTextField ftf_price;
     private JTextField tf_spec;
     private JComboBox<MaterialType> cb_materialType;
     private JFormattedTextField ftf_wLong;
@@ -148,7 +153,16 @@ public class Panel_Material_Detail extends BasePanel {
 
         btn_delete.setVisible(AuthorityUtil.getInstance().deleteMaterial());
 
+        ftf_price.getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            public void onTextChange(DocumentEvent documentEvent) {
 
+//                String text=ftf_price.getText().trim();
+//                float f=Float.valueOf(text);
+//                documentEvent.
+
+            }
+        });
     }
 
 
@@ -165,7 +179,8 @@ public class Panel_Material_Detail extends BasePanel {
         tf_spec.setText(data.getSpec());
         tf_memo.setText(data.getMemo());
 
-        ftf_price.setValue(new Float(data.getPrice()));
+
+        ftf_price.setValue(data.getPrice());
         ftf_wLong.setValue(new Float(data.getwLong()));
         ftf_wWdith.setValue(new Float(data.getwWidth()));
         ftf_wHeight.setValue(new Float(data.getwHeight()));
@@ -253,7 +268,14 @@ public class Panel_Material_Detail extends BasePanel {
 //        data.equationId=equation.equationId;
 
 
-        data.setPrice(Float.valueOf(ftf_price.getValue().toString()));
+        try {
+            data.setPrice( ftf_price.getDoubleValue().floatValue());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            throw new RuntimeException("材料单价输入数据异常");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         data.setwLong(Float.valueOf(ftf_wLong.getValue().toString()));
 
@@ -289,8 +311,6 @@ public class Panel_Material_Detail extends BasePanel {
         data.outOfService = cb_outofservice.getSelectedIndex() == 0 ? false : true;
 
     }
-
-
 
 
 }

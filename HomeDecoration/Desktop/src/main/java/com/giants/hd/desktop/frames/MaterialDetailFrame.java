@@ -65,7 +65,14 @@ public class MaterialDetailFrame extends BaseFrame implements BasePanel.PanelLis
     public void save() {
 
 
-         material_detail.getData(material);
+        try {
+            material_detail.getData(material);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            JOptionPane.showMessageDialog(this,e.getMessage());
+            return;
+        }
 
 
         boolean  isChanged=   !  GsonUtils.toJson(oldMaterial).equals(GsonUtils.toJson(material));
@@ -192,8 +199,13 @@ public class MaterialDetailFrame extends BaseFrame implements BasePanel.PanelLis
      */
     @Override
     public boolean hasModifyData() {
-        material_detail.getData(material);
+        try {
+            material_detail.getData(material);
+        } catch (Exception e) {
 
-         return   !  GsonUtils.toJson(oldMaterial).equals(GsonUtils.toJson(material));
+            return false;
+        }
+
+        return   !  GsonUtils.toJson(oldMaterial).equals(GsonUtils.toJson(material));
     }
 }

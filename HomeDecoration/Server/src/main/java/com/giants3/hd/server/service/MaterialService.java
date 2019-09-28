@@ -211,61 +211,31 @@ public class MaterialService extends AbstractService {
      * <p/>
      * 检查ProductToUpdateBiao是否有数据 ，有 则跟新指定的产品的统计信息
      */
-    @Transactional
+
     public void updateProductData() {
 
 
         //读取第一百条 更新
         Pageable pageable = new PageRequest(0, UPDATE_PRODUCT_PAGE_SIZE);
-        Page<ProductToUpdate> page = productToUpdateRepository.findAll(pageable);
+        Page<ProductToUpdate> page  ;
 
-        boolean hasNext = page.hasNext();
-        if (page.getSize() > 0) {
 
+        do{
+            page = productToUpdateRepository.findAll(pageable);
             List<ProductToUpdate> productIds = page.getContent();
-            if (globalData == null)
-                globalData = globalDataService.findCurrentGlobalData();
+            productService.updateProductDataBaseUpdateEvent(productIds);
 
-
-            //修正关联产品的统计数据
-            int size = productIds.size();
-            long totalSize = page.getTotalElements();
-            final StringBuilder stringBuilder = new StringBuilder();
-            if (size > 0) {
-
-
-                for (int i = 0; i < size; i++) {
-
-                    long productId = productIds.get(i).productId;
-
-                    ProductDetail productDetail = productService.findProductDetailById(productId);
-                    if (productDetail != null) {
-
-                        ProductAnalytics.updateProductStatistics(productDetail, globalData);
-                        productRepository.save(productDetail.product);
-                        stringBuilder.setLength(0);
-                        logger.info(stringBuilder.append("productId:").append(productId).append(" has Update!").toString());
-                    }
-
-
-                }
-
-            }
-            productRepository.flush();
-            productToUpdateRepository.delete(productIds);
-            productToUpdateRepository.flush();
-
-            // commit()
-
-            if (hasNext) {
-
-                updateProductData();
-
-
-            }
-        }
+        }while (page!=null&&page.hasNext());
 
     }
+
+
+
+
+
+
+
+
 
     public Material findMaterial(long materialId) {
 
@@ -400,6 +370,37 @@ public class MaterialService extends AbstractService {
         if (relateProductIds.size() > 0) {
 
             logger.info("   relateProduct Count :" + relateProductIds.size());
+
+            List<ProductToUpdate> productToUpdates=new ArrayList<>();
+
+
+            int i=0;
+            for(long productId:relateProductIds)
+            {
+                ProductToUpdate productToUpdate=new ProductToUpdate();
+                productToUpdate.productId=productId;
+                productToUpdate.updateWay="ERP材料同步";
+                productToUpdates.add(productToUpdate);
+                i++;
+
+                if(i>100 )
+                {
+
+                    productToUpdateRepository.save(productToUpdates);
+                    productToUpdateRepository.flush();
+                    i=0;
+                    productToUpdates.clear();
+                }
+
+
+            }
+
+            if(productToUpdates.size()>0)
+            {
+                productToUpdateRepository.save(productToUpdates);
+                productToUpdateRepository.flush();
+            }
+
 
             new Thread(new Runnable() {
                 @Override
@@ -557,6 +558,7 @@ public class MaterialService extends AbstractService {
 //                }
 
                 productToUpdate.productId = productId;
+                productToUpdate.updateWay="材料修改单价";
                 productToUpdateRepository.save(productToUpdate);
             }
 
@@ -568,8 +570,13 @@ public class MaterialService extends AbstractService {
         logger.info("product to update for statis data, count:" + count
         );
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                updateProductData();
+            }
+        }).start();
 
-        updateProductData();
 
 
     }
@@ -890,4 +897,10 @@ public class MaterialService extends AbstractService {
 
         return wrapMessageData(count > 0 ? "同步材料数据图片成功，共成功同步" + count + "款材料！" : "所有材料图片已经都是最新的。");
     }
+
+
+
+
+
+
 }

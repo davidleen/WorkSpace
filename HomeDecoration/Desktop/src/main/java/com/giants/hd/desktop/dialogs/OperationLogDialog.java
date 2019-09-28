@@ -1,12 +1,19 @@
 package com.giants.hd.desktop.dialogs;
 
+import com.giants.hd.desktop.frames.ProductDetailFrame;
 import com.giants.hd.desktop.local.HdSwingWorker;
 import com.giants.hd.desktop.model.BaseTableModel;
 import com.giants.hd.desktop.model.OperationLogModel;
+import com.giants.hd.desktop.mvp.DialogViewer;
+import com.giants.hd.desktop.mvp.RemoteDataSubscriber;
 import com.giants.hd.desktop.utils.JTableUtils;
 import com.giants.hd.desktop.widget.JHdTable;
 import com.giants3.hd.domain.api.ApiManager;
+import com.giants3.hd.domain.api.HttpUrl;
+import com.giants3.hd.domain.interractor.UseCaseFactory;
 import com.giants3.hd.entity.OperationLog;
+import com.giants3.hd.entity.ProductProcess;
+import com.giants3.hd.noEntity.ProductDetail;
 import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.entity.Product;
 import com.giants3.hd.exception.HdException;
@@ -108,19 +115,53 @@ public class OperationLogDialog extends BaseSimpleDialog<OperationLog> {
                         popupMenuLocation.setLocation(e.getXOnScreen(), e.getYOnScreen());
                         JPopupMenu menu = new JPopupMenu();
 
-
-                        JMenuItem split = new JMenuItem("恢复该修改前的数据吗？");
+                        JMenuItem  split = new JMenuItem("查看历史数据");
                         split.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
 
 
-                                restoreData(operationLog.id);
+                                UseCaseFactory.getInstance().createGetUseCase(HttpUrl.readProductHistoryData(operationLog.id), ProductDetail.class).execute(new RemoteDataSubscriber<ProductDetail>(new DialogViewer(OperationLogDialog.this)) {
+
+
+                                    @Override
+                                    protected void handleRemoteData(RemoteData<ProductDetail> data) {
+                                        ProductDetail productDetail=data.datas.get(0);
+
+                                        OperationLogDialog.this.dispose();
+                                        ProductDetailFrame productDetailFrame = new ProductDetailFrame(productDetail, null,ProductDetailFrame.VIEW_TYPE_HISTORY);
+
+                                        JFrame frame = productDetailFrame;
+                                        frame.setLocationRelativeTo(OperationLogDialog.this);
+                                        frame.setVisible(true);
+
+
+                                    }
+
+
+                                });
+
 
                             }
                         });
                         menu.add(split);
+                         split = new JMenuItem("恢复修改前数据");
+                        split.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
 
+                                int option= JOptionPane.showConfirmDialog(OperationLogDialog.this, "确定恢复当前分析表数据到当前修改记录前吗？"," 提示", JOptionPane.OK_CANCEL_OPTION);
+
+                                if (JOptionPane.OK_OPTION == option) {
+                                    restoreData(operationLog.id);
+                                }
+
+
+                            }
+                        });
+
+
+                        menu.add(split);
                         //  取得右键点击所在行
                         menu.show(e.getComponent(), e.getX(), e.getY());
 

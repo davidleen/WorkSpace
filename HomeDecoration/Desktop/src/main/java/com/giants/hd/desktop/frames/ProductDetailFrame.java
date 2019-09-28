@@ -2,10 +2,12 @@ package com.giants.hd.desktop.frames;
 
 import com.giants.hd.desktop.dialogs.WorkFlowConfigDialog;
 import com.giants.hd.desktop.local.HdSwingWorker;
+import com.giants.hd.desktop.mvp.RemoteDataSubscriber;
 import com.giants.hd.desktop.mvp.presenter.ProductDetailIPresenter;
 import com.giants.hd.desktop.viewImpl.BasePanel;
 import com.giants.hd.desktop.viewImpl.Panel_ProductDetail;
 import com.giants3.hd.domain.api.ApiManager;
+import com.giants3.hd.domain.api.HttpUrl;
 import com.giants3.hd.domain.interractor.UseCaseFactory;
 import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.utils.StringUtils;
@@ -26,11 +28,19 @@ import java.util.*;
 public class ProductDetailFrame extends BaseFrame implements ProductDetailIPresenter {
 
 
-
+    /**
+     * 查看类型 历史数据
+     */
+    public static final int VIEW_TYPE_HISTORY = 2;
+    /**
+     * 展示类型  默认。
+     */
+    public static final int VIEW_TYPE_NORMAL = 0;
     @Inject
     ApiManager apiManager;
     @Inject
     Panel_ProductDetail panel_productDetail;
+    private ProductDetail productDetail;
     ProductDelete productDelete =null;
 
 
@@ -39,27 +49,34 @@ public class ProductDetailFrame extends BaseFrame implements ProductDetailIPrese
 
 
     private BasePanel.PanelAdapter adapter=new ProductDetailAdapter();
-   public   ProductDetailFrame(ProductDetail productDetail )
+    private int viewType;
+
+    public   ProductDetailFrame(ProductDetail productDetail )
     {
         this(productDetail, null);
 
 
     }
-
     public   ProductDetailFrame(ProductDetail productDetail,ProductDelete productDelete )
+    {
+        this(productDetail,null,VIEW_TYPE_NORMAL);
+    }
+    public   ProductDetailFrame(ProductDetail productDetail,ProductDelete productDelete ,int viewType)
     {
 
 
         super();
+        this.productDetail = productDetail;
         this.productDelete =productDelete;
+        this.viewType=viewType;
 
 
-        setTitle("产品详情[" + (productDetail.product == null ? "新增" : ("货号：" + productDetail.product.getName() + "---版本号：" + productDetail.product.getpVersion())) + "]" + (productDelete!=null ? "    [已删除]   " : ""));
+        setTitle("产品详情[" + (productDetail.product == null ? "新增" : ("货号：" + productDetail.product.getName() + "---版本号：" + productDetail.product.getpVersion())) + "]" + (productDelete!=null ? "    [已删除]   " : "")+(viewType==VIEW_TYPE_HISTORY?"(历史数据查看,修改无效)":""));
 
         panel_productDetail.setPresenter(this);
         init( );
 
-        panel_productDetail.setProductDetail(productDetail,productDelete);
+        panel_productDetail.setProductDetail(productDetail,productDelete,viewType);
     }
 
 
@@ -170,7 +187,8 @@ public class ProductDetailFrame extends BaseFrame implements ProductDetailIPrese
                     // 显示保存成功
                     panel_productDetail.showMesssage("数据保存成功!");
 
-                    panel_productDetail.setProductDetail(data.datas.get(0));
+                      ProductDetailFrame.this.productDetail = data.datas.get(0);
+                    panel_productDetail.setProductDetail(ProductDetailFrame.this.productDetail);
 
 
                 } else {
@@ -218,6 +236,8 @@ public class ProductDetailFrame extends BaseFrame implements ProductDetailIPrese
 
 
     }
+
+
 
     private class ProductDetailAdapter extends BasePanel.PanelAdapter
     {
@@ -318,9 +338,9 @@ public class ProductDetailFrame extends BaseFrame implements ProductDetailIPrese
 
                 if(data.isSuccess()) {
 
-                    ProductDetail detail = data.datas.get(0);
+                      productDetail = data.datas.get(0);
 
-                    panel_productDetail.setProductDetail(detail);
+                    panel_productDetail.setProductDetail(productDetail);
                 }else
                 {
 
@@ -376,6 +396,36 @@ public class ProductDetailFrame extends BaseFrame implements ProductDetailIPrese
 
 
 
+
+
+
+    }
+
+    @Override
+    public void correctProductStatistics() {
+        UseCaseFactory.getInstance().createPostUseCase(HttpUrl.updateProductStatistics(productDetail.product.id),null, ProductDetail.class).execute(new RemoteDataSubscriber<ProductDetail>(panel_productDetail) {
+
+
+            @Override
+            protected void handleRemoteData(RemoteData<ProductDetail> data) {
+
+                 productDetail = data.datas.get(0);
+                panel_productDetail.setProductDetail(productDetail);
+
+            }
+
+
+        });
+        panel_productDetail.showLoadingDialog("处理中。。。");
+    }
+
+
+    @Override
+    public void viewValueHistory() {
+
+
+        ProductValueHistoryDialog frame=new ProductValueHistoryDialog(this,productDetail.product.id);
+        frame.setVisible(true);
 
 
 

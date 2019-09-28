@@ -5,6 +5,7 @@ import com.giants3.hd.noEntity.ModuleConstant;
 import com.giants3.hd.entity.Authority;
 import com.giants3.hd.entity.User;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -63,7 +64,7 @@ public class AuthorityUtil {
         return false;
     }
 
-    private boolean isAdmin() {
+    public boolean isAdmin() {
         return CacheManager.getInstance().bufferData.loginUser.name.equals(User.ADMIN);
     }
 
@@ -656,5 +657,10 @@ public class AuthorityUtil {
     public boolean viewCompanyInfo() {
 
         return isViewable(ModuleConstant.NAME_COMPANY_INFO);
+    }
+
+    public boolean isDebug() {
+
+        return new File("debug").exists();
     }
 }

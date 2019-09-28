@@ -428,7 +428,7 @@ public class ProductDetailPresenterImpl extends BasePresenter<ProductDetailViewe
     public void onWeightEdit() {
         if (!editable) return;
         if (productDetail == null) return;
-        getView().showFieldValueEditDailog("净重KG", "weight", String.valueOf(productDetail.product.weight));
+        getView().showFieldValueEditDailog("净重KG", "weight", String.valueOf(productDetail.product.weight),Float.class);
 
     }
 
@@ -684,8 +684,8 @@ public class ProductDetailPresenterImpl extends BasePresenter<ProductDetailViewe
     }
 
     @Override
-    public void setNewPackData(int insideBoxQuantity, int packQuantity, float packLong, float packWidth, float packHeight) {
-        getModel().setNewPackData(  insideBoxQuantity,   packQuantity,   packLong,   packWidth,   packHeight);
+    public void setNewPackData(int insideBoxQuantity, int packQuantity ) {
+        getModel().setNewPackData(  insideBoxQuantity,   packQuantity );
         bindData();
     }
 

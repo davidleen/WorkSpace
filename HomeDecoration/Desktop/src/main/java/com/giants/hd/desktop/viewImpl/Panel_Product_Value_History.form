@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.giants.hd.desktop.viewImpl.Panel_Product_Value_History">
+  <grid id="27dc6" binding="panel1" default-binding="true" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="774" height="440"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <grid id="345ae" binding="searchPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="North"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="6749e" class="javax.swing.JTextField" binding="tf_key">
+            <constraints/>
+            <properties>
+              <columns value="30"/>
+            </properties>
+          </component>
+          <hspacer id="ebb98">
+            <constraints/>
+          </hspacer>
+          <component id="7119d" class="javax.swing.JCheckBox" binding="cb_accurate">
+            <constraints/>
+            <properties>
+              <text value="精确查询"/>
+            </properties>
+          </component>
+          <hspacer id="61529">
+            <constraints/>
+          </hspacer>
+          <component id="62a56" class="javax.swing.JButton" binding="search">
+            <constraints/>
+            <properties>
+              <text value="查询"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <scrollpane id="4b706">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="390a0" class="com.giants.hd.desktop.widget.JHdTable" binding="table">
+            <constraints/>
+            <properties>
+              <fillsViewportHeight value="true"/>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
+      <grid id="f1317" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="South"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <nested-form id="4f13a" form-file="com/giants/hd/desktop/viewImpl/Panel_Page.form" binding="pagePanel">
+            <constraints/>
+          </nested-form>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>

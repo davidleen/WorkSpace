@@ -149,7 +149,7 @@ public class BackDataHelper {
       File file=  new File(tempFile);
 
 
-        String destPath=fileDirectory+ ProductAgent.getFullName(productDetail.product)+File.separator+operationLog.id;
+        String destPath=fileDirectory+ productDetail.product.id+File.separator+operationLog.id;
 
         file.renameTo(new File(destPath));
 
@@ -159,7 +159,7 @@ public class BackDataHelper {
     public static String backProductModifyData(ProductDetail productDetail,String fileDirectory)
     {
 
-        String filePath=fileDirectory+ ProductAgent.getFullName(productDetail.product)+File.separator+ Calendar.getInstance().getTimeInMillis();
+        String filePath=fileDirectory+ productDetail.product.id+File.separator+ Calendar.getInstance().getTimeInMillis();
 
         back(productDetail,filePath);
         return filePath;
@@ -173,14 +173,20 @@ public class BackDataHelper {
      * @param operationLogId
      * @param fileDirectory
      */
-    public static ProductDetail   restoreProductModifyData(String productName , long operationLogId, String fileDirectory)
+    public static ProductDetail   restoreProductModifyData(long productId,String productName , long operationLogId, String fileDirectory)
     {
 
 
-        String filePath=fileDirectory+productName+File.separator+ operationLogId;
+        String filePath=fileDirectory+productId+File.separator+ operationLogId;
+        if(!new File(filePath).exists())
+        {
+            filePath=fileDirectory+productName+File.separator+ operationLogId;
+        }
 
 
-      ProductDetail productDetail=read(filePath,ProductDetail.class);
+
+
+       ProductDetail productDetail=read(filePath,ProductDetail.class);
 
         return productDetail;
 

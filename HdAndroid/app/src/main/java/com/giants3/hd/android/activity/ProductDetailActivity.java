@@ -454,11 +454,15 @@ public class ProductDetailActivity extends BaseHeadViewerActivity<ProductDetailP
         setData(productDetail.packWages);
         listView.setAdapter(adapter);
     }
-
     @Override
-    public void showFieldValueEditDailog(String title, final String field, String oldValue) {
+    public void showFieldValueEditDailog(String title, final String field, String oldValue)
+    {
+        showFieldValueEditDailog(  title,     field,   oldValue,null);
+    }
+    @Override
+    public void showFieldValueEditDailog(String title, final String field, String oldValue,Class valueType) {
         ValueEditDialogFragment dialogFragment = new ValueEditDialogFragment();
-        dialogFragment.set(title,oldValue, new ValueEditDialogFragment.ValueChangeListener() {
+        dialogFragment.set(title,oldValue,valueType, new ValueEditDialogFragment.ValueChangeListener() {
             @Override
             public void onValueChange(String title, String oldValue, String newValue) {
                 try {
@@ -483,8 +487,8 @@ public class ProductDetailActivity extends BaseHeadViewerActivity<ProductDetailP
         ProductPackSizeEditDialogFragment dialogFragment=new ProductPackSizeEditDialogFragment();
         dialogFragment.setPackData(product.insideBoxQuantity, product.packQuantity, product.packLong, product.packWidth, product.packHeight, new ProductPackSizeEditDialogFragment.OnNewPackDataListener() {
             @Override
-            public void onNewPack(int insideBoxQuantity, int packQuantity, float packLong, float packWidth, float packHeight) {
-                getPresenter().setNewPackData(  insideBoxQuantity,   packQuantity,   packLong,   packWidth,   packHeight);
+            public void onNewPack(int insideBoxQuantity, int packQuantity ) {
+                getPresenter().setNewPackData(  insideBoxQuantity,   packQuantity );
             }
         });
         dialogFragment.show(getSupportFragmentManager(),null);

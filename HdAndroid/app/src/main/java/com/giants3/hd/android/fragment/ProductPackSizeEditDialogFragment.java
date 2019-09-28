@@ -69,11 +69,11 @@ public class ProductPackSizeEditDialogFragment extends BaseDialogFragment {
                 try {
                     int newInBoxCount=Integer.valueOf(insideBoxQuantityText.getText().toString().trim());
                     int newPackQuantity=Integer.valueOf(packQuantityText.getText().toString().trim());
-                    float newPackLong=Float.valueOf(packLongText.getText().toString().trim());
-                    float newPackWidth =Float.valueOf(packWidthText.getText().toString().trim());
-                    float newPackHeight =Float.valueOf(packHeightText.getText().toString().trim());
+//                    float newPackLong=Float.valueOf(packLongText.getText().toString().trim());
+//                    float newPackWidth =Float.valueOf(packWidthText.getText().toString().trim());
+//                    float newPackHeight =Float.valueOf(packHeightText.getText().toString().trim());
 
-                    listener.onNewPack(newInBoxCount,newPackQuantity,newPackLong,newPackWidth,newPackHeight);
+                    listener.onNewPack(newInBoxCount,newPackQuantity );
                     dismiss();
 
 
@@ -100,6 +100,6 @@ public class ProductPackSizeEditDialogFragment extends BaseDialogFragment {
     public interface OnNewPackDataListener
     {
 
-         void onNewPack(int insideBoxQuantity, int packQuantity, float packLong, float packWidth, float packHeight);
+         void onNewPack(int insideBoxQuantity, int packQuantity);
     }
 }

@@ -25,5 +25,5 @@ public interface ProductDetailModel extends NewModel {
 
     void setNewPClass(PClass pClass);
 
-    void setNewPackData(int insideBoxQuantity, int packQuantity, float packLong, float packWidth, float packHeight);
+    void setNewPackData(int insideBoxQuantity, int packQuantity);
 }

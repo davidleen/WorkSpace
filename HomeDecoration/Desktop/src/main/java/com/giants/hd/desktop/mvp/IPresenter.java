@@ -16,5 +16,4 @@ public interface IPresenter {
      */
     boolean  hasModifyData();
 
-
 }

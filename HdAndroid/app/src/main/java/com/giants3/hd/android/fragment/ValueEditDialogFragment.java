@@ -3,10 +3,12 @@ package com.giants3.hd.android.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -22,7 +24,7 @@ import java.util.List;
 public class ValueEditDialogFragment<T extends Serializable> extends DialogFragment {
 
 
-    private Class<?> valueType;
+    private Class valueType;
 
     private String titleString;
     private String oldValue;
@@ -33,6 +35,7 @@ public class ValueEditDialogFragment<T extends Serializable> extends DialogFragm
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
 
     }
 
@@ -54,6 +57,19 @@ public class ValueEditDialogFragment<T extends Serializable> extends DialogFragm
             newValueTextView.setText(oldValue);
             newValueTextView.setSelection(oldValue.length());
         }
+
+        if(valueType!=null) {
+
+            if(valueType==Float.class||valueType==Double.class||valueType==Integer.class)
+            {
+                newValueTextView.setRawInputType(InputType.TYPE_CLASS_NUMBER);;
+                newValueTextView.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+            }else
+            {}
+
+        }
+
+
         if(isMutiableText)
         {
             newValueTextView.setMinLines(4);
@@ -86,10 +102,17 @@ public class ValueEditDialogFragment<T extends Serializable> extends DialogFragm
         });
     }
 
-    public void set(String titleString,String oldValue,ValueChangeListener listener) {
+    public void set(String titleString,String oldValue,ValueChangeListener listener)
+    {
+
+        set(titleString,oldValue,null,listener);
+    }
+
+    public void set(String titleString,String oldValue,Class<?> valueType,ValueChangeListener listener) {
         this.titleString = titleString;
         this.oldValue = oldValue;
         this.listener = listener;
+        this.valueType=valueType;
     }
 
     public void set(String titleString, List<Object> datas , ValueChangeListener listener) {

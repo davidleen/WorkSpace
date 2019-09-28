@@ -1,0 +1,70 @@
+[
+
+  {
+    "columnName": "产品名称",
+    "fileName": "name",
+    "width": 120,
+    "aClass": "S"
+  },
+  {
+    "columnName": "版本号",
+    "fileName": "pVersion",
+    "width": 100,
+    "aClass": "S"
+  },
+  {
+    "columnName": "单位",
+    "fileName": "unitName",
+    "width": 40,
+    "aClass": "S"
+  },
+
+  {
+    "columnName": "FOB",
+    "fileName": "fob",
+    "width": 70,
+    "aClass": "F"
+  },
+  {
+    "columnName": "出厂价",
+    "fileName": "price",
+    "width": 70,
+    "aClass": "F"
+  },
+  {
+    "columnName": "成本价",
+    "fileName": "cost",
+    "width": 70,
+    "aClass": "F"
+  },
+  {
+    "columnName": "汇率",
+    "fileName": "exportRate",
+    "width": 70,
+    "aClass": "F"
+  },
+  {
+    "columnName": "成本利润比值",
+    "fileName": "cost_price_ratio",
+    "width": 70,
+    "aClass": "F"
+  },
+  {
+    "columnName": "附加值",
+    "fileName": "addition",
+    "width": 70,
+    "aClass": "F"
+  },
+  {
+    "columnName": "修改时间 ",
+    "fileName": "dateString",
+    "width": 120,
+    "aClass": "S"
+  },
+  {
+    "columnName": "更新方式",
+    "fileName": "updateWay",
+    "width": 120,
+    "aClass": "S"
+  }
+]

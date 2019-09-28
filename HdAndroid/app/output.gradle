@@ -72,19 +72,20 @@ ext {
 
             if (variant.buildType.name == "debug") return
 
-            def abiName = output.getFilter(output.ABI)
-            if(abiName==null) abiName=""
-            println "abiName......" + abiName
-            output.versionCodeOverride = abiCodes.get(abiName, 99) * 100000 + variant.versionCode
-            println " output.versionCodeOverride......" + output.versionCodeOverride
+//            def abiName = output.getFilter(output.ABI)
+//            if(abiName==null) abiName=""
+//            println "abiName......" + abiName
+//            output.versionCodeOverride = abiCodes.get(abiName, 99) * 100000 + variant.versionCode
+//            println " output.versionCodeOverride......" + output.versionCodeOverride
 
             def outputFile = output.outputFile
 
-             def remainPart = getProductFilePath()+"_"+outputFile.name.substring(outputFile.name.indexOf('-') + 1, outputFile.name.lastIndexOf('.apk'))
-
-
-
-            fileName = "${remainPart}_${assembleTime()}_v${variant.versionName}_${variant.versionCode}.apk"
+//             def remainPart = getProductFilePath()+"_"+outputFile.name.substring(outputFile.name.indexOf('-') + 1, outputFile.name.lastIndexOf('.apk'))
+//
+//
+//
+//            fileName = "${remainPart}_${assembleTime()}_v${variant.versionName}_${variant.versionCode}.apk"
+            fileName =  getProductFilePath()+"_"+"${variant.versionCode}.apk"
 
             println "rename apk......" + fileName
             //设置输出的文件名
@@ -95,7 +96,7 @@ ext {
             def newOutFileDirectory = getApkFileParentPath + getProductFilePath(variant)
 
             //建立任务，在assemble 完成后， 移动apk文件到指定文件夹
-            def task = project.tasks.create("copyAndRename${variant.name}${abiName}Apk", Copy)
+            def task = project.tasks.create("copyAndRename${variant.name}Apk", Copy)
             println "=============Copying " + outputFileName + " to apk directory:" + newOutFileDirectory
             task.from(output.outputFile)
             task.into(newOutFileDirectory)

@@ -6,17 +6,21 @@ import com.giants3.hd.exception.HdException;
 import com.giants3.hd.logic.ProductAnalytics;
 import com.giants3.hd.noEntity.*;
 import com.giants3.hd.server.entity.ProductEquationUpdateTemp;
+import com.giants3.hd.server.entity.ProductToUpdate;
+import com.giants3.hd.entity.ProductValueHistory;
 import com.giants3.hd.server.repository.*;
 import com.giants3.hd.server.repository_wrapper.ProductRepositoryWrapper;
 import com.giants3.hd.server.utils.AttachFileUtils;
 import com.giants3.hd.server.utils.BackDataHelper;
 import com.giants3.hd.server.utils.FileUtils;
 import com.giants3.hd.server.utils.HttpUrl;
+import com.giants3.hd.utils.DateFormats;
 import com.giants3.hd.utils.GsonUtils;
 import com.giants3.hd.utils.ObjectUtils;
 import com.giants3.hd.utils.StringUtils;
 import com.giants3.hd.utils.file.ImageUtils;
 import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +58,16 @@ public class ProductService extends AbstractService implements InitializingBean,
 
     @Autowired
     private QuotationRepository quotationRepository;
+
+
+    @Autowired
+    private ProductToUpdateRepository productToUpdateRepository;
+
+    @Autowired
+    private ProductValueHistoryRepository productValueHistoryRepository;
+
+    @Autowired
+    private GlobalDataService globalDataService;
 
     @Autowired
     private ProductMaterialRepository productMaterialRepository;
@@ -153,7 +167,7 @@ public class ProductService extends AbstractService implements InitializingBean,
 
     public RemoteData<Product> searchAppProductList(String name, int pageIndex, int pageSize, boolean withCopy) {
 
-        Pageable pageable = constructPageSpecification(pageIndex, pageSize,sortByParam(Sort.Direction.DESC,"name"));
+        Pageable pageable = constructPageSpecification(pageIndex, pageSize, sortByParam(Sort.Direction.DESC, "name"));
         String likeValue = "%" + name.trim() + "%";
         Page<Product> pageValue;
         if (!withCopy) {
@@ -299,18 +313,10 @@ public class ProductService extends AbstractService implements InitializingBean,
     @Transactional
     public void updateProductPhoto(String fullProductName) {
 
-
+        String[] strings = splitFullName(fullProductName);
         //拆分产品全名
-        String productName;
-        String pversion;
-        int indexOfDivider = fullProductName.indexOf(StringUtils.PRODUCT_NAME_SPILT);
-        if (indexOfDivider == -1) {
-            productName = fullProductName;
-            pversion = "";
-        } else {
-            productName = fullProductName.substring(0, indexOfDivider);
-            pversion = fullProductName.substring(indexOfDivider + 1);
-        }
+        String productName = strings[0];
+        String pversion = strings[1];
 
 
         //所有同名的产品 都要遍历产品图片的url  同名 不同pversion的产品 可能共用同一张图片
@@ -320,6 +326,23 @@ public class ProductService extends AbstractService implements InitializingBean,
         updateProductAndRelateImageInfo(products);
 
 
+    }
+
+
+    public String[] splitFullName(String fullName) {
+        //拆分产品全名
+        String productName;
+        String pversion;
+        int indexOfDivider = fullName.indexOf(StringUtils.PRODUCT_NAME_SPILT);
+        if (indexOfDivider == -1) {
+            productName = fullName;
+            pversion = "";
+        } else {
+            productName = fullName.substring(0, indexOfDivider);
+            pversion = fullName.substring(indexOfDivider + 1);
+        }
+
+        return new String[]{productName, pversion};
     }
 
     /**
@@ -825,9 +848,7 @@ public class ProductService extends AbstractService implements InitializingBean,
      * @return
      */
     @Transactional(rollbackFor = Throwable.class)
-    public RemoteData<ProductDetail> saveProductDetail(User user, ProductDetail productDetail) throws HdException
-
-    {
+    public RemoteData<ProductDetail> saveProductDetail(User user, ProductDetail productDetail) throws HdException {
         return saveProductDetail(user, productDetail, true);
 
     }
@@ -914,7 +935,7 @@ public class ProductService extends AbstractService implements InitializingBean,
         newProduct.lastUpdateTime = Calendar.getInstance().getTimeInMillis();
 
 
-        newProduct.sortName=ProductAnalytics.getProductSortName(newProduct.name);
+        newProduct.sortName = ProductAnalytics.getProductSortName(newProduct.name);
         //最新product 数据
         Product product = productRepository.save(newProduct);
 
@@ -1357,11 +1378,9 @@ public class ProductService extends AbstractService implements InitializingBean,
     }
 
 
-
-
     public RemoteData<Product> findByNameAndVersion(String pName, String pVersion) {
         final Product product = productRepository.findFirstByNameEqualsAndPVersionEquals(pName, pVersion);
-        if(product==null) return wrapError("未找到"+pName+","+pVersion+"的产品信息");
+        if (product == null) return wrapError("未找到" + pName + "," + pVersion + "的产品信息");
         return wrapData(product);
     }
 
@@ -1452,40 +1471,66 @@ public class ProductService extends AbstractService implements InitializingBean,
     }
 
 
-    @Transactional(rollbackFor = Throwable.class)
-    public RemoteData<Void> restoreProductDetailFromModifyLog(User LoginUser, long operationLogId) throws HdException {
+    public RemoteData<ProductDetail> findHistoryProductData(User user, long operationLogId) {
 
 
+        ProductDetail productDetail = findHistoryByOperationId(operationLogId);
+
+        if (productDetail == null)
+            return wrapError("获取分析表历史数据记录失败");
+
+        return wrapData(productDetail);
+    }
+
+
+    private ProductDetail findHistoryByOperationId(long operationLogId) {
         OperationLog operationLog = operationLogRepository.findOne(operationLogId);
-        if (operationLog == null)
-
-            return wrapError("未找到该操作记录");
+        if (operationLog == null) {
+            logger.error("未找到该操作记录");
+            return null;
+        }
 
         if (Product.class.getSimpleName().equals(operationLog.tableName)) {
 
             Product product = productRepository.findOne(operationLog.recordId);
             if (product == null) {
-                return wrapError("未找到该关联的产品数据");
+                logger.error("未找到该关联的产品数据");
+                return null;
+
             }
 
-            ProductDetail productDetail = BackDataHelper.restoreProductModifyData(ProductAgent.getFullName(product), operationLogId, productBackFilePath);
+            ProductDetail productDetail = BackDataHelper.restoreProductModifyData(product.id, ProductAgent.getFullName(product), operationLogId, productBackFilePath);
 
 
-            if (productDetail == null)
-                return wrapError("恢复分析表全部数据记录失败");
-
-
-            RemoteData<ProductDetail> result = saveProductDetail(LoginUser, productDetail, false);
-            if (result.isSuccess()) {
-                return wrapData();
-            } else {
-                return wrapError(result.message);
+            if (productDetail == null) {
+                logger.error("获取分析表历史数据记录失败");
             }
 
-
+            return productDetail;
         } else {
+            logger.error("该操作记录不支持恢复数据");
+        }
 
-            return wrapError("该操作记录不支持恢复数据");
+        return null;
+    }
+
+
+    @Transactional(rollbackFor = Throwable.class)
+    public RemoteData<Void> restoreProductDetailFromModifyLog(User LoginUser, long operationLogId) throws HdException {
+
+
+        ProductDetail productDetail = findHistoryByOperationId(operationLogId);
+
+
+        if (productDetail == null)
+            return wrapError("恢复分析表全部数据记录失败");
+
+
+        RemoteData<ProductDetail> result = saveProductDetail(LoginUser, productDetail, false);
+        if (result.isSuccess()) {
+            return wrapData();
+        } else {
+            return wrapError(result.message);
         }
 
 
@@ -1514,7 +1559,7 @@ public class ProductService extends AbstractService implements InitializingBean,
 
         String remoteServerUrlHead = remoteUrlHead + "Server/";
 
-        String loginUrl = HttpUrl.login(remoteServerUrlHead, user.id,  user.passwordMD5);
+        String loginUrl = HttpUrl.login(remoteServerUrlHead, user.id, user.passwordMD5);
         String result = apiManager.getString(loginUrl);
         RemoteData remoteData = GsonUtils.fromJson(result, RemoteData.class);
         int copyCount = 0;
@@ -1541,7 +1586,8 @@ public class ProductService extends AbstractService implements InitializingBean,
 
                     } else {
                         product.setId(-1);
-                        Xiankang xiankang =    product.xiankang;;
+                        Xiankang xiankang = product.xiankang;
+                        ;
                         if (xiankang != null) {
                             xiankang.setId(-1);
                             if (xiankang.xiankang_dengju != null) {
@@ -1601,14 +1647,139 @@ public class ProductService extends AbstractService implements InitializingBean,
     public void updateSortFieldValue() {
 
 
-
-
         productRepository.updateSortFieldValueNative();
 
 
+    }
 
 
+    public RemoteData<ProductDetail> updateProductStatistics(User loginUser, long productId) {
 
+        ProductDetail productDetail = findProductDetailById(productId);
+        ProductAnalytics.updateProductStatistics(productDetail, globalDataService.findCurrentGlobalData());
+        RemoteData<ProductDetail> productDetailRemoteData = null;
+        try {
+            productDetailRemoteData = saveProductDetail(loginUser, productDetail);
+        } catch (HdException e) {
+            e.printStackTrace();
+            productDetailRemoteData = wrapError(e.getMessage());
+        }
+        return productDetailRemoteData;
+
+
+    }
+
+
+    @Transactional
+    public void updateProductDataBaseUpdateEvent(List<ProductToUpdate> productToUpdates) {
+
+
+        GlobalData globalData = globalDataService.findCurrentGlobalData();
+
+
+        //修正关联产品的统计数据
+        int size = productToUpdates.size();
+
+        final StringBuilder stringBuilder = new StringBuilder();
+        if (size > 0) {
+
+
+            for (int i = 0; i < size; i++) {
+
+                ProductToUpdate productToUpdate = productToUpdates.get(i);
+                long productId = productToUpdate.productId;
+
+                ProductDetail productDetail = findProductDetailById(productId);
+                if (productDetail != null) {
+
+                    ProductAnalytics.updateProductStatistics(productDetail, globalData);
+                    Product product = productDetail.product;
+                    productRepository.save(product);
+
+
+                    ProductValueHistory productValueHistory = new ProductValueHistory();
+                    productValueHistory.addition = globalData.addition;
+                    productValueHistory.exportRate = globalData.exportRate;
+                    productValueHistory.cost_price_ratio = globalData.cost_price_ratio;
+                    productValueHistory.manageRatioXK = globalData.manageRatioXK;
+                    productValueHistory.manageRatioNormal = globalData.manageRatioNormal;
+                    productValueHistory.unitName = product.pUnitName;
+                    productValueHistory.productId = product.id;
+                    productValueHistory.name = product.name;
+                    productValueHistory.pVersion = product.pVersion;
+                    productValueHistory.price = product.price;
+                    productValueHistory.cost = product.cost;
+                    productValueHistory.fob = product.fob;
+                    Date time = Calendar.getInstance().getTime();
+                    productValueHistory.dateString = DateFormats.FORMAT_YYYY_MM_DD_HH_MM.format(time);
+                    productValueHistory.dateTime = time.getTime();
+                    productValueHistory.updateWay = productToUpdate.updateWay;
+                    productValueHistory = productValueHistoryRepository.save(productValueHistory);
+                    //保存详情数据到文件 备份。
+                    String filePath = getValueHistoryPath(productValueHistory);
+                    BackDataHelper.back(productDetail, filePath);
+                    stringBuilder.setLength(0);
+                    logger.info(stringBuilder.append("productId:").append(productId).append(" has Update!").toString());
+                }
+
+
+            }
+
+        }
+        productRepository.flush();
+        productToUpdateRepository.delete(productToUpdates);
+        productToUpdateRepository.flush();
+
+
+    }
+
+    public RemoteData<ProductValueHistory> findProductValueHistory(User user, long productId) {
+
+
+        return wrapData(productValueHistoryRepository.findByProductId(productId));
+    }
+
+    public RemoteData<ProductDetail> findProductDetailByValueHistory(User user, long historyId) {
+
+        ProductValueHistory history = productValueHistoryRepository.findOne(historyId);
+
+        String filePath = getValueHistoryPath(history);
+        ProductDetail detail = BackDataHelper.read(filePath, ProductDetail.class);
+        return wrapData(detail);
+    }
+
+    private String getProductFullNameFromValueHistory(ProductValueHistory history) {
+
+        return history.name + (StringUtils.isEmpty(history.pVersion) ? "" : ("-" + history.pVersion));
+    }
+
+    private String getValueHistoryPath(ProductValueHistory productValueHistory) {
+        return productBackFilePath + File.separator + getProductFullNameFromValueHistory(productValueHistory) + File.separator + productValueHistory.dateTime + ".json";
+    }
+
+    public RemoteData<ProductValueHistory> searchProductValueHistory(String key, int pageIndex, int pageSize, boolean isLike) {
+
+
+        Pageable pageable = constructPageSpecification(pageIndex, pageSize);
+        Page<ProductValueHistory> result;
+        if (isLike) {
+            //模糊查询
+
+            result = productValueHistoryRepository.findByNameLikeOrPVersionLikeOrderByDateTimeDesc(StringUtils.sqlLike(key),StringUtils.sqlLike(key), pageable);
+
+        } else {
+            String[] strings = splitFullName(key);
+
+            String name = strings[0];
+            String pVersion = strings[1];
+
+            result = productValueHistoryRepository.findByNameEqualsAndPVersionEqualsOrderByDateTimeDesc(name, pVersion, pageable);
+
+
+        }
+
+
+        return wrapData(pageable, result);
 
 
     }

@@ -44,6 +44,7 @@
         <EditText
             android:id="@+id/packLong"
             android:layout_width="60dp"
+            android:enabled="false"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:inputType="numberDecimal" />
@@ -58,6 +59,7 @@
             android:id="@+id/packWidth"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
+            android:enabled="false"
             android:gravity="center"
             android:inputType="numberDecimal" />
 
@@ -69,6 +71,7 @@
         <EditText
             android:id="@+id/packHeight"
             android:layout_width="60dp"
+            android:enabled="false"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:inputType="numberDecimal" />

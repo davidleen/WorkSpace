@@ -78,5 +78,5 @@ public interface ProductDetailPresenter  extends NewPresenter<ProductDetailViewe
 
     void onPClassEdit();
 
-    void setNewPackData(int insideBoxQuantity, int packQuantity, float packLong, float packWidth, float packHeight);
+    void setNewPackData(int insideBoxQuantity, int packQuantity);
 }

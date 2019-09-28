@@ -71,4 +71,8 @@ public static List<TableField> getWorkFlowMessage() {
         return fromJson("appQuotationCountReport.json");
 
     }
+
+    public static List<TableField> getProductValueHistoryTable() {
+        return fromJson("productValueHistory.json");
+    }
 }

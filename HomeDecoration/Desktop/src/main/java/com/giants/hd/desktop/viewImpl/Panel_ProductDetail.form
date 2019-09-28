@@ -637,7 +637,7 @@
               <editable value="false"/>
             </properties>
           </component>
-          <grid id="73546" binding="jp_log" layout-manager="GridLayoutManager" row-count="1" column-count="17" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="73546" binding="jp_log" layout-manager="GridLayoutManager" row-count="1" column-count="19" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <grid row="19" column="0" row-span="1" col-span="21" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
@@ -764,9 +764,24 @@
                   <text value="---"/>
                 </properties>
               </component>
-              <hspacer id="79634">
+              <component id="a3cbe" class="javax.swing.JLabel" binding="value_histroy">
+                <constraints>
+                  <grid row="0" column="17" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <background color="-1"/>
+                  <foreground color="-13905944"/>
+                  <text value="查看价格变动历史"/>
+                </properties>
+              </component>
+              <hspacer id="4ce14">
                 <constraints>
                   <grid row="0" column="16" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
+              <hspacer id="f04aa">
+                <constraints>
+                  <grid row="0" column="18" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
               </hspacer>
             </children>
@@ -865,8 +880,7 @@
               </hspacer>
             </children>
           </grid>
-          <grid id="a7d6b" binding="panel_delete" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-            <margin top="0" left="0" bottom="0" right="0"/>
+          <grid id="a7d6b" binding="panel_delete" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
             <constraints>
               <grid row="17" column="0" row-span="1" col-span="20" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
               <forms defaultalign-horz="false" defaultalign-vert="false"/>
@@ -876,10 +890,17 @@
             </properties>
             <border type="none"/>
             <children>
+              <component id="d2cf6" class="javax.swing.JButton" binding="btn_correct">
+                <constraints/>
+                <properties>
+                  <text value="校正产品统计数据"/>
+                </properties>
+              </component>
+              <hspacer id="9ab17">
+                <constraints/>
+              </hspacer>
               <component id="73292" class="javax.swing.JButton" binding="btn_resume">
-                <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
+                <constraints/>
                 <properties>
                   <font size="16"/>
                   <text value="恢复"/>

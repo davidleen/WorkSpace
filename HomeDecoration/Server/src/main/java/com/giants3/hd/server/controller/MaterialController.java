@@ -318,7 +318,5 @@ public class MaterialController extends BaseController {
     }
 
 
-    public void updateProductData() {
-        materialService.updateProductData();
-    }
+
 }

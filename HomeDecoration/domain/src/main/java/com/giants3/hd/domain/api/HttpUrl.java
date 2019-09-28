@@ -76,6 +76,28 @@ public class HttpUrl {
     public static String loadProductList(String productName, int viewType, int pageIndex, int pageSize) {
         return additionInfo(BaseUrl + "api/product/search?proName=" + productName + "&pageIndex=" + pageIndex + "&pageSize=" + pageSize + "&viewType=" + viewType);
     }
+
+
+
+    public static String findProductValueHistory(long productId) {
+        return additionInfo(BaseUrl + "api/product/findProductValueHistory?productId=" + productId  );
+
+    }
+    public static String searchProductValueHistory(String key,int pageIndex,int pageSize,boolean isLike) {
+
+        UrlFormatter urlFormatter = new UrlFormatter(BaseUrl + "api/product/searchProductValueHistory")
+                .append("key",key)
+                .append("pageIndex",pageIndex)
+                .append("pageSize",pageSize)
+                .append("isLike",isLike)
+                ;
+        return additionInfo(urlFormatter);
+
+
+    }
+    public static String findProductDetailByValueHistory(long valueHistoryId) {
+        return additionInfo(BaseUrl + "api/product/findProductDetailByValueHistory?historyId=" + valueHistoryId  );
+    }
     public static String searchProduct(String key,   int pageIndex, int pageSize,boolean withCopy) {
 
 
@@ -693,6 +715,18 @@ public class HttpUrl {
     public static String readOperationLog(String className, long id) {
 
         return additionInfo(BaseUrl + "api/operationLog/search?className=" + className + "&recordId=" + id);
+    }
+    public static String readProductHistoryData(  long operationLogId) {
+
+        return additionInfo(BaseUrl + "api/product/findProductHistory?operationLogId="+operationLogId);
+    }
+
+    public static String updateProductStatistics(  long productId) {
+
+        return additionInfo(BaseUrl + "api/product/updateProductStatistics?productId="+productId);
+    } public static String updateAllProductStatistics(  ) {
+
+        return additionInfo(BaseUrl + "api/product/updateAllProductStatistics");
     }
 
 
@@ -1388,4 +1422,7 @@ public class HttpUrl {
     public static String deleteProductProcess(long id) {
         return additionInfo(BaseUrl + "api/process/delete?id=" + id);
     }
+
+
+
 }

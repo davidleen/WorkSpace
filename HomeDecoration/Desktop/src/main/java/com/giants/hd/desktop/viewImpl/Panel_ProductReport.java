@@ -2,6 +2,7 @@ package com.giants.hd.desktop.viewImpl;
 
 import com.giants.hd.desktop.ImageViewDialog;
 import com.giants.hd.desktop.dialogs.ProductQRDialog;
+import com.giants.hd.desktop.frames.ProductValueHistoryDialog;
 import com.giants.hd.desktop.local.HdSwingWorker;
 import com.giants.hd.desktop.local.LocalFileHelper;
 import com.giants.hd.desktop.local.SimpleSwingWorker;
@@ -59,6 +60,7 @@ public class Panel_ProductReport extends BasePanel {
     private JButton printQR;
     private JButton printQRA4;
     private JButton printQRLand;
+    private JButton btn_value_history;
     ProductTableModel model;
 
 
@@ -435,6 +437,19 @@ public class Panel_ProductReport extends BasePanel {
 
 
                 printQR("qrproduct_land" );
+
+
+            }
+        });
+
+
+
+        btn_value_history.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                ProductValueHistoryDialog frame=new ProductValueHistoryDialog(getWindow() );
+                frame.setVisible(true);
 
 
             }
