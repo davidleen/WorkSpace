@@ -2,9 +2,7 @@ package com.giants3.hd.android.presenter;
 
 import com.giants3.hd.android.mvp.NewPresenter;
 import com.giants3.hd.android.viewer.ProductDetailViewer;
-import com.giants3.hd.appdata.AProduct;
-import com.giants3.hd.entity.Factory;
-import com.giants3.hd.entity.Pack;
+import com.giants3.hd.entity.app.AProduct;
 
 /**
  * Created by david on 2016/4/13.
@@ -13,6 +11,8 @@ public interface ProductDetailPresenter  extends NewPresenter<ProductDetailViewe
     public static final int REQUEST_PRODUCT_MATERIAL = 113;
     public static final int REQUEST_PRODUCT_WAGE = 114;
     public static final int REQUEST_PRODUCT_PAINT = 115;
+
+    public static final int REQUEST_PRODUCT_DETAIL_EDIT = 1001;
     /**
      * The fragment argument representing the item_work_flow_report ID that this fragment
      * represents.
@@ -79,4 +79,6 @@ public interface ProductDetailPresenter  extends NewPresenter<ProductDetailViewe
     void onPClassEdit();
 
     void setNewPackData(int insideBoxQuantity, int packQuantity);
+
+    void onEditSuccess();
 }

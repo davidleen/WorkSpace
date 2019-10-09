@@ -1,17 +1,18 @@
-package com.giants3.hd.server.parser;
+package com.giants3.hd.parser;
 
-import com.giants3.hd.app.AProduct;
+
 import com.giants3.hd.entity.Product;
-import org.springframework.stereotype.Component;
+import com.giants3.hd.entity.app.AProduct;
+
 
 /**  桌面端Product 转换成app 端AProduct数据
  *
  * Created by david on 2016/1/2.
  */
 
-@Component
+
 //默认的 qualifier  为首字母小写的类名  productParser
-public class ProductParser implements DataParser<Product,AProduct> {
+public class ProductParser implements DataParser<Product, AProduct> {
 
 
     @Override

@@ -1,4 +1,4 @@
-package com.giants3.hd.app;
+package com.giants3.hd.entity.app;
 
 import com.giants3.hd.entity.Authority;
 import com.giants3.hd.entity.QuoteAuth;

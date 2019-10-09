@@ -1,10 +1,11 @@
 package com.giants3.hd.android.helper;
 
 
-import com.giants3.hd.appdata.AUser;
+
 import com.giants3.hd.entity.Authority;
 import com.giants3.hd.entity.Module;
 import com.giants3.hd.entity.User;
+import com.giants3.hd.entity.app.AUser;
 import com.giants3.hd.noEntity.ModuleConstant;
 
 import java.util.List;

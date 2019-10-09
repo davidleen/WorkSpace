@@ -3,8 +3,6 @@ package com.giants3.hd.android.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,7 +21,6 @@ import com.giants3.hd.android.R;
 import com.giants3.hd.android.adapter.ItemListAdapter;
 import com.giants3.hd.android.entity.TableData;
 import com.giants3.hd.android.events.LoginSuccessEvent;
-
 import com.giants3.hd.android.fragment.ItemPickDialogFragment;
 import com.giants3.hd.android.fragment.ProductDetailPresenterImpl;
 import com.giants3.hd.android.fragment.ProductPackSizeEditDialogFragment;
@@ -31,18 +28,15 @@ import com.giants3.hd.android.fragment.ValueEditDialogFragment;
 import com.giants3.hd.android.helper.AuthorityUtil;
 import com.giants3.hd.android.helper.ImageLoaderFactory;
 import com.giants3.hd.android.helper.ImageViewerHelper;
-import com.giants3.hd.android.helper.SharedPreferencesHelper;
 import com.giants3.hd.android.presenter.ProductDetailPresenter;
 import com.giants3.hd.android.viewer.ProductDetailViewer;
 import com.giants3.hd.android.widget.ExpandableHeightListView;
-import com.giants3.hd.appdata.AProduct;
 import com.giants3.hd.data.net.HttpUrl;
 import com.giants3.hd.data.utils.GsonUtils;
-import com.giants3.hd.entity.Factory;
 import com.giants3.hd.entity.Flow;
-import com.giants3.hd.entity.Pack;
 import com.giants3.hd.entity.Product;
 import com.giants3.hd.entity.ProductMaterial;
+import com.giants3.hd.entity.app.AProduct;
 import com.giants3.hd.noEntity.ModuleConstant;
 import com.giants3.hd.noEntity.ProductDetail;
 import com.giants3.hd.utils.FloatHelper;
@@ -55,6 +49,7 @@ import butterknife.Bind;
 import butterknife.OnClick;
 
 import static com.giants3.hd.android.presenter.ProductDetailPresenter.ARG_ITEM;
+import static com.giants3.hd.android.presenter.ProductDetailPresenter.REQUEST_PRODUCT_DETAIL_EDIT;
 import static com.giants3.hd.android.presenter.ProductDetailPresenter.REQUEST_PRODUCT_MATERIAL;
 import static com.giants3.hd.android.presenter.ProductDetailPresenter.REQUEST_PRODUCT_PAINT;
 import static com.giants3.hd.android.presenter.ProductDetailPresenter.REQUEST_PRODUCT_WAGE;
@@ -454,20 +449,21 @@ public class ProductDetailActivity extends BaseHeadViewerActivity<ProductDetailP
         setData(productDetail.packWages);
         listView.setAdapter(adapter);
     }
+
     @Override
-    public void showFieldValueEditDailog(String title, final String field, String oldValue)
-    {
-        showFieldValueEditDailog(  title,     field,   oldValue,null);
+    public void showFieldValueEditDailog(String title, final String field, String oldValue) {
+        showFieldValueEditDailog(title, field, oldValue, null);
     }
+
     @Override
-    public void showFieldValueEditDailog(String title, final String field, String oldValue,Class valueType) {
+    public void showFieldValueEditDailog(String title, final String field, String oldValue, Class valueType) {
         ValueEditDialogFragment dialogFragment = new ValueEditDialogFragment();
-        dialogFragment.set(title,oldValue,valueType, new ValueEditDialogFragment.ValueChangeListener() {
+        dialogFragment.set(title, oldValue, valueType, new ValueEditDialogFragment.ValueChangeListener() {
             @Override
             public void onValueChange(String title, String oldValue, String newValue) {
                 try {
 
-                    getPresenter().updateFieldData(field,oldValue,newValue);
+                    getPresenter().updateFieldData(field, oldValue, newValue);
 
                 } catch (Throwable t) {
 
@@ -476,7 +472,7 @@ public class ProductDetailActivity extends BaseHeadViewerActivity<ProductDetailP
 
             }
         });
-        dialogFragment.show( getSupportFragmentManager(), null);
+        dialogFragment.show(getSupportFragmentManager(), null);
     }
 
 
@@ -484,25 +480,24 @@ public class ProductDetailActivity extends BaseHeadViewerActivity<ProductDetailP
     public void showPackRelateEditDialog(Product product) {
 
 
-        ProductPackSizeEditDialogFragment dialogFragment=new ProductPackSizeEditDialogFragment();
+        ProductPackSizeEditDialogFragment dialogFragment = new ProductPackSizeEditDialogFragment();
         dialogFragment.setPackData(product.insideBoxQuantity, product.packQuantity, product.packLong, product.packWidth, product.packHeight, new ProductPackSizeEditDialogFragment.OnNewPackDataListener() {
             @Override
-            public void onNewPack(int insideBoxQuantity, int packQuantity ) {
-                getPresenter().setNewPackData(  insideBoxQuantity,   packQuantity );
+            public void onNewPack(int insideBoxQuantity, int packQuantity) {
+                getPresenter().setNewPackData(insideBoxQuantity, packQuantity);
             }
         });
-        dialogFragment.show(getSupportFragmentManager(),null);
+        dialogFragment.show(getSupportFragmentManager(), null);
 
     }
 
-    public <T> void showPickDialog(String title , final String field, List<T> items, T preItem)
-    {
+    public <T> void showPickDialog(String title, final String field, List<T> items, T preItem) {
         ItemPickDialogFragment<T> dialogFragment = new ItemPickDialogFragment<T>();
         dialogFragment.set(title, items, preItem, new ItemPickDialogFragment.ValueChangeListener<T>() {
             @Override
             public void onValueChange(String title, T oldValue, T newValue) {
 
-                getPresenter().setNewSelectItem(field,newValue);
+                getPresenter().setNewSelectItem(field, newValue);
 
             }
         });
@@ -538,8 +533,6 @@ public class ProductDetailActivity extends BaseHeadViewerActivity<ProductDetailP
     protected ProductDetailPresenter onLoadPresenter() {
         return new ProductDetailPresenterImpl();
     }
-
-
 
 
     @Override
@@ -723,6 +716,7 @@ public class ProductDetailActivity extends BaseHeadViewerActivity<ProductDetailP
         getPresenter().onPackEdit();
 
     }
+
     @OnClick(R.id.pClass)
     public void onPClassClick(View v) {
         getPresenter().onPClassEdit();
@@ -751,8 +745,13 @@ public class ProductDetailActivity extends BaseHeadViewerActivity<ProductDetailP
 
                 getPresenter().bindData();
                 break;
+            case REQUEST_PRODUCT_DETAIL_EDIT
+                    :
+                getPresenter().onEditSuccess();
+                break;
         }
     }
+
     public void onEvent(LoginSuccessEvent event) {
 
         onLoginRefresh();
@@ -762,9 +761,8 @@ public class ProductDetailActivity extends BaseHeadViewerActivity<ProductDetailP
     @Override
     public void onBackPressed() {
 
-        if(getPresenter().needNoSaveNotice())
-        {
-            AlertDialog alertDialog =new AlertDialog.Builder(this).setMessage("当前录入数据未保存，是否退出？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        if (getPresenter().needNoSaveNotice()) {
+            AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage("当前录入数据未保存，是否退出？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 
@@ -776,15 +774,15 @@ public class ProductDetailActivity extends BaseHeadViewerActivity<ProductDetailP
                 public void onClick(DialogInterface dialog, int which) {
 
 
-
                 }
             }).create();
 
             alertDialog.show();
 
 
-        }else
+        } else
             super.onBackPressed();
     }
+
 
 }

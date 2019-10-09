@@ -1,37 +1,322 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical"
-    tools:context=".activity.ProductDetailActivity"
-    tools:ignore="MergeRootFrame">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/app_bar"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <ScrollView
+
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="none">
+
+        <LinearLayout
+
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp"
+            tools:context=".fragment.ProductPaintFragment">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start|top"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    style="@style/item_group_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/title_text_style"
+                        android:layout_width="@dimen/title_length"
+                        android:text="工序代码" />
+
+                    <TextView
+                        android:id="@+id/processCode"
+                        style="@style/value_edit_text_style"
+
+                        />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/item_group_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/title_text_style"
+                        android:layout_width="@dimen/title_length"
+                        android:text="工序名称" />
+
+                    <TextView
+                        android:id="@+id/processName"
+                        style="@style/value_edit_text_style"
+
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/item_group_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/title_text_style"
+                        android:layout_width="@dimen/title_length"
+                        android:text="工价" />
+
+                    <TextView
+                        android:id="@+id/processPrice"
+                        style="@style/value_edit_text_style"
+
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/item_group_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/title_text_style"
+                        android:layout_width="@dimen/title_length"
+                        android:text="材料编码" />
+
+                    <TextView
+                        android:id="@+id/materialCode"
+                        style="@style/value_text_style"
+
+                        android:layout_width="@dimen/value_lengthX2" />
+
+
+                    <TextView
+                        android:id="@+id/selectMaterial"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/button_white_round_selector"
+                        android:padding="5dp"
+                        android:text="材料选择" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/item_group_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/title_text_style"
+                        android:layout_width="@dimen/title_length"
+                        android:text="材料名称" />
+
+                    <TextView
+                        android:id="@+id/materialName"
+
+                        style="@style/value_text_style"
+                        android:layout_width="@dimen/value_lengthX2" />
+
+                    <TextView
+                        android:id="@+id/selectMaterial2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/button_white_round_selector"
+                        android:padding="5dp"
+                        android:text="材料选择" />
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    style="@style/item_group_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/title_text_style"
+
+                        android:text="配料比例" />
+
+                    <TextView
+                        android:id="@+id/ingredientRatio"
+                        style="@style/value_edit_text_style" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/item_group_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/title_text_style"
+
+                        android:text="单位" />
+
+                    <TextView
+                        android:id="@+id/unitName"
+                        style="@style/value_text_style" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    style="@style/item_group_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/title_text_style"
+
+                        android:text="用量" />
+
+                    <TextView
+                        android:id="@+id/quantity"
+                        style="@style/value_edit_text_style" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    style="@style/item_group_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/title_text_style"
+
+                        android:text="物料单价" />
+
+                    <TextView
+                        android:id="@+id/price"
+                        style="@style/value_text_style" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    style="@style/item_group_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/title_text_style"
+
+                        android:text="物料费用" />
+
+                    <TextView
+                        android:id="@+id/cost"
+
+                        style="@style/value_text_style" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    style="@style/item_group_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/title_text_style"
+
+                        android:text="配料量" />
+
+                    <TextView
+                        android:id="@+id/materialQuantity"
+
+                        style="@style/value_text_style" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    style="@style/item_group_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/title_text_style"
+
+                        android:text="稀释剂" />
+
+                    <TextView
+                        android:id="@+id/ingredientQuantity"
+
+                        style="@style/value_text_style" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    style="@style/item_group_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/title_text_style"
+
+                        android:text="分件备注" />
+
+                    <TextView
+                        android:id="@+id/memo"
+                        style="@style/value_edit_text_style"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+
+
+                        />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:paddingBottom="5dp">
+
+        <TextView
+            android:id="@+id/goBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+
+            android:background="@drawable/button_white_round_selector"
+            android:padding="10dp"
+            android:text="返回" />
 
 
+        <TextView
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="30dp"
+            android:background="@drawable/button_white_round_selector"
+            android:padding="10dp"
+            android:text="油漆列表中移除" />
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/detail_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-        
-
-    </android.support.design.widget.AppBarLayout>
+    </LinearLayout>
 
 
-    <FrameLayout
-        android:id="@+id/product_paint_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
 </LinearLayout>

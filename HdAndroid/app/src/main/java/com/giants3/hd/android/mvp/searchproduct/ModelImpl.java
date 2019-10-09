@@ -3,8 +3,8 @@ package com.giants3.hd.android.mvp.searchproduct;
 import com.giants3.hd.android.mvp.MyAvailableOrderItemMVP;
 import com.giants3.hd.android.mvp.PageModel;
 import com.giants3.hd.android.mvp.PageModelImpl;
-import com.giants3.hd.appdata.AProduct;
 import com.giants3.hd.entity.ErpOrderItem;
+import com.giants3.hd.entity.app.AProduct;
 
 import java.util.List;
 

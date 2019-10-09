@@ -3,6 +3,7 @@ package com.giants3.hd.android.activity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
 import com.giants3.hd.android.R;
@@ -91,6 +92,7 @@ public class WorkFlowReportActivity extends BaseHeadViewerActivity<WorkFlowRepor
 
         search_text.setOnClickListener(this);
         key.setRawInputType(InputType.TYPE_CLASS_NUMBER);;
+        key.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);;
 
     }
 

@@ -1,7 +1,8 @@
 package com.giants3.hd.android.mvp.MainAct;
 
-import com.giants3.hd.appdata.AUser;
+
 import com.giants3.hd.data.interractor.UseCaseFactory;
+import com.giants3.hd.entity.app.AUser;
 import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.noEntity.FileInfo;
 

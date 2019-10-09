@@ -16,12 +16,13 @@
 package com.giants3.hd.data.net;
 
 
-import com.giants3.hd.appdata.AProduct;
-import com.giants3.hd.appdata.AUser;
+
 import com.giants3.hd.entity.Customer;
 import com.giants3.hd.entity.ErpOrderItemProcess;
 import com.giants3.hd.entity.Material;
 import com.giants3.hd.entity.User;
+import com.giants3.hd.entity.app.AProduct;
+import com.giants3.hd.entity.app.AUser;
 import com.giants3.hd.noEntity.ProductDetail;
 import com.giants3.hd.entity.Quotation;
 import com.giants3.hd.noEntity.QuotationDetail;

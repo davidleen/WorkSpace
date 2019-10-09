@@ -11,6 +11,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -83,6 +84,7 @@ public class OrderWorkFlowReportFragment extends BaseMvpFragment<OrderWorkFlowRe
             }
         });
         search_text.setRawInputType(InputType.TYPE_CLASS_NUMBER);
+        search_text.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         search_text.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

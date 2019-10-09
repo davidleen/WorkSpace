@@ -1,16 +1,17 @@
-package com.giants3.hd.server.parser;
+package com.giants3.hd.parser;
 
-import com.giants3.hd.app.AUser;
+
 import com.giants3.hd.entity.User;
-import org.springframework.stereotype.Component;
+import com.giants3.hd.entity.app.AUser;
+
 
 /**  桌面端User 转换成app 端User 数据
  *
  * Created by david on 2016/1/2.
  */
-@Component("CustomImplName")
+
 //  qualifier     CustomImplName
-public class UserParser implements DataParser<User,AUser> {
+public class UserParser implements DataParser<User, AUser> {
 
 
     @Override

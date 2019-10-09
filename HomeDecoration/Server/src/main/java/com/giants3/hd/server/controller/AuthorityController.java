@@ -1,7 +1,8 @@
 package com.giants3.hd.server.controller;
 
-import com.giants3.hd.app.AUser;
+
 import com.giants3.hd.entity.*;
+import com.giants3.hd.entity.app.AUser;
 import com.giants3.hd.entity.app.AppQuoteAuth;
 import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.server.service.AuthorityService;

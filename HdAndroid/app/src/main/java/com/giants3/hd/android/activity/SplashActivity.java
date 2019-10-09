@@ -10,8 +10,8 @@ import android.support.annotation.NonNull;
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.helper.SharedPreferencesHelper;
 import com.giants3.android.frame.util.ToastHelper;
-import com.giants3.hd.appdata.AUser;
 import com.giants3.hd.data.net.HttpUrl;
+import com.giants3.hd.entity.app.AUser;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;

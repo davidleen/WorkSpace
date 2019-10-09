@@ -3,10 +3,10 @@ package com.giants3.hd.android.mvp.searchproduct;
 import com.giants3.hd.android.mvp.BasePresenter;
 
 import com.giants3.hd.android.mvp.RemoteDataSubscriber;
-import com.giants3.hd.appdata.AProduct;
 import com.giants3.hd.data.interractor.UseCase;
 import com.giants3.hd.data.interractor.UseCaseFactory;
 import com.giants3.hd.entity.ErpOrderItem;
+import com.giants3.hd.entity.app.AProduct;
 import com.giants3.hd.noEntity.RemoteData;
 
 /**

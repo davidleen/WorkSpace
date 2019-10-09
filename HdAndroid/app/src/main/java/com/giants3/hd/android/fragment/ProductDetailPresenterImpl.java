@@ -3,6 +3,7 @@ package com.giants3.hd.android.fragment;
 import android.app.Activity;
 import android.content.Intent;
 
+import com.giants3.android.frame.util.StringUtil;
 import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.activity.ProductDetailActivity;
 import com.giants3.hd.android.activity.ProductListActivity;
@@ -15,11 +16,11 @@ import com.giants3.hd.android.helper.SharedPreferencesHelper;
 import com.giants3.hd.android.mvp.BasePresenter;
 import com.giants3.hd.android.presenter.ProductDetailPresenter;
 import com.giants3.hd.android.viewer.ProductDetailViewer;
-import com.giants3.hd.appdata.AProduct;
 import com.giants3.hd.data.interractor.UseCaseFactory;
 import com.giants3.hd.entity.Factory;
 import com.giants3.hd.entity.PClass;
 import com.giants3.hd.entity.Pack;
+import com.giants3.hd.entity.app.AProduct;
 import com.giants3.hd.logic.ProductAnalytics;
 import com.giants3.hd.noEntity.ProductDetail;
 import com.giants3.hd.noEntity.RemoteData;
@@ -27,6 +28,13 @@ import com.giants3.hd.utils.GsonUtils;
 
 import de.greenrobot.event.EventBus;
 import rx.Subscriber;
+
+
+import static com.giants3.hd.android.activity.ProductMaterialActivity.PRODUCT_MATERIAL_TYPE;
+import static com.giants3.hd.android.entity.ProductDetailSingleton.PRODUCT_MATERIAL_ASSEMBLE;
+import static com.giants3.hd.android.entity.ProductDetailSingleton.PRODUCT_MATERIAL_CONCEPTUS;
+import static com.giants3.hd.android.entity.ProductDetailSingleton.PRODUCT_MATERIAL_PACK;
+import static com.giants3.hd.android.entity.ProductDetailSingleton.PRODUCT_MATERIAL_PAINT;
 
 
 /**
@@ -41,7 +49,7 @@ public class ProductDetailPresenterImpl extends BasePresenter<ProductDetailViewe
     private boolean editable = false;
 
 
-    private ProductDetailSingleton productDetailSingleton;
+
 
     private ProductDetail productDetail;
     private AProduct aProduct;
@@ -113,6 +121,7 @@ public class ProductDetailPresenterImpl extends BasePresenter<ProductDetailViewe
         if (panelIndex == index)
             return;
         panelIndex = index;
+            subIndex=0;
         showBaseOnIndex();
 
     }
@@ -133,7 +142,7 @@ public class ProductDetailPresenterImpl extends BasePresenter<ProductDetailViewe
         Intent intent = new Intent(getActivity(), ProductDetailActivity.class);
         intent.putExtra(ProductDetailPresenter.EXTRA_EDITABLE, true);
         ProductDetailSingleton.getInstance().setProductDetail(productDetail);
-        getActivity().startActivity(intent);
+        getActivity().startActivityForResult(intent,REQUEST_PRODUCT_DETAIL_EDIT);
     }
 
     public Activity getActivity() {
@@ -152,12 +161,12 @@ public class ProductDetailPresenterImpl extends BasePresenter<ProductDetailViewe
 
                 if (subIndex == 0) {
 
-                    int newPosition = ProductDetailSingleton.getInstance().addNewProductMaterial(ProductDetailSingleton.PRODUCT_MATERIAL_CONCEPTUS);
-                    startProductMaterialEdit(ProductDetailSingleton.PRODUCT_MATERIAL_CONCEPTUS, newPosition);
+                    int newPosition = ProductDetailSingleton.getInstance().addNewProductMaterial(PRODUCT_MATERIAL_CONCEPTUS);
+                    startProductMaterialEdit(PRODUCT_MATERIAL_CONCEPTUS, newPosition);
 
                 } else {
-                    ProductDetailSingleton.getInstance().addNewProductWage(ProductDetailSingleton.PRODUCT_MATERIAL_CONCEPTUS, position);
-                    startProductWageEdit(ProductDetailSingleton.PRODUCT_MATERIAL_CONCEPTUS, position);
+                    ProductDetailSingleton.getInstance().addNewProductWage(PRODUCT_MATERIAL_CONCEPTUS, position);
+                    startProductWageEdit(PRODUCT_MATERIAL_CONCEPTUS, position);
                 }
 
             }
@@ -212,10 +221,10 @@ public class ProductDetailPresenterImpl extends BasePresenter<ProductDetailViewe
 
 
                 if (subIndex == 0) {
-                    startProductMaterialEdit(ProductDetailSingleton.PRODUCT_MATERIAL_CONCEPTUS, position);
+                    startProductMaterialEdit(PRODUCT_MATERIAL_CONCEPTUS, position);
 
                 } else {
-                    startProductWageEdit(ProductDetailSingleton.PRODUCT_MATERIAL_CONCEPTUS, position);
+                    startProductWageEdit(PRODUCT_MATERIAL_CONCEPTUS, position);
                 }
 
 
@@ -259,8 +268,8 @@ public class ProductDetailPresenterImpl extends BasePresenter<ProductDetailViewe
         Intent intent = new Intent(getActivity(), ProductMaterialActivity.class);
 
 
-        intent.putExtra(ProductMaterialFragment.PRODUCT_MATERIAL_POSITION, position);
-        intent.putExtra(ProductMaterialFragment.PRODUCT_MATERIAL_TYPE, type);
+        intent.putExtra(ProductMaterialActivity.PRODUCT_MATERIAL_POSITION, position);
+        intent.putExtra(PRODUCT_MATERIAL_TYPE, type);
         getActivity().startActivityForResult(intent, REQUEST_PRODUCT_MATERIAL);
     }
 
@@ -272,8 +281,8 @@ public class ProductDetailPresenterImpl extends BasePresenter<ProductDetailViewe
     private void startProductPaintEdit(int position) {
         Intent intent = new Intent(getView().getContext(), ProductPaintActivity.class);
 
-        intent.putExtra(ProductPaintFragment.PRODUCT_PAINT_POSITION, position);
-        intent.putExtra(ProductMaterialFragment.PRODUCT_MATERIAL_TYPE, ProductDetailSingleton.PRODUCT_MATERIAL_PAINT);
+        intent.putExtra(ProductPaintActivity.PRODUCT_PAINT_POSITION, position);
+        intent.putExtra(PRODUCT_MATERIAL_TYPE, ProductDetailSingleton.PRODUCT_MATERIAL_PAINT);
         getView().startActivityForResult(intent, REQUEST_PRODUCT_PAINT);
     }
 
@@ -286,7 +295,7 @@ public class ProductDetailPresenterImpl extends BasePresenter<ProductDetailViewe
 
         Intent intent = new Intent(getActivity(), ProductWageActivity.class);
         intent.putExtra(ProductWageActivity.PRODUCT_WAGE_POSITION, position);
-        intent.putExtra(ProductWageActivity.PRODUCT_MATERIAL_TYPE, type);
+        intent.putExtra(PRODUCT_MATERIAL_TYPE, type);
         getView().startActivityForResult(intent, REQUEST_PRODUCT_WAGE);
     }
 
@@ -294,49 +303,31 @@ public class ProductDetailPresenterImpl extends BasePresenter<ProductDetailViewe
     public void onItemDelete(Object object, int position) {
 
 
+
+        int materialType=-1;
         switch (panelIndex) {
             case 0://白胚
-                if (subIndex == 0) {
-                    productDetail.conceptusMaterials.remove(position);
 
-                } else {
-                    //工资
-                    productDetail.conceptusWages.remove(position);
-
-                }
+               materialType= PRODUCT_MATERIAL_CONCEPTUS;
 
 
                 break;
             case 1: //组装
-                if (subIndex == 0) {
-                    productDetail.assembleMaterials.remove(position);
+                materialType= PRODUCT_MATERIAL_ASSEMBLE;
 
-
-                } else {
-                    //工资
-                    productDetail.assembleWages.remove(position);
-
-
-                }
 
                 break;
             case 2://油漆
 
                 //材料
+                materialType= PRODUCT_MATERIAL_PAINT;
 
-                productDetail.paints.remove(position);
 
                 break;
             case 3://包装
-                if (subIndex == 0) {
-                    productDetail.packMaterials.remove(position);
 
-                } else {
-                    //工资
-                    productDetail.packWages.remove(position);
+                materialType=PRODUCT_MATERIAL_PACK;
 
-
-                }
 
 
                 break;
@@ -344,7 +335,16 @@ public class ProductDetailPresenterImpl extends BasePresenter<ProductDetailViewe
 
         }
 
-        ProductAnalytics.updateProductStatistics(productDetail, SharedPreferencesHelper.getInitData().globalData);
+
+        if(materialType!=-1) {
+            if (subIndex == 0) //材料
+            {
+                ProductDetailSingleton.getInstance().deleteProductMaterial(materialType,position);
+            } else {
+
+                ProductDetailSingleton.getInstance().deleteProductWage(materialType, position);
+            }
+        }
 
         bindData();
 
@@ -355,13 +355,19 @@ public class ProductDetailPresenterImpl extends BasePresenter<ProductDetailViewe
     public void saveProductDetail() {
 
 
-        if (!productDetailSingleton.hasModifyDetail()) {
+        if (!ProductDetailSingleton.getInstance().hasModifyDetail()) {
 
             ToastHelper.show("数据无改变");
             getActivity().finish();
             return;
         }
 
+        if(StringUtil.isEmpty(productDetail.product.name))
+        {
+            ToastHelper.show("产品名称不能为空");
+
+            return;
+        }
         getView().showWaiting("保存中...");
         //保存产品详情信息
         UseCaseFactory.getInstance().saveProductDetailCase(productDetail).execute(new Subscriber<RemoteData<ProductDetail>>() {
@@ -380,8 +386,10 @@ public class ProductDetailPresenterImpl extends BasePresenter<ProductDetailViewe
             public void onNext(RemoteData<ProductDetail> remoteData) {
                 if (remoteData.isSuccess()) {
 
+                    ProductDetailSingleton.getInstance().setProductDetail(remoteData.datas.get(0));
                     ToastHelper.show("保存成功");
-                    EventBus.getDefault().post(new ProductUpdateEvent(remoteData.datas.get(0)));
+
+                    getActivity().setResult(Activity.RESULT_OK);
                     getActivity().finish();
 
                 } else {
@@ -464,7 +472,15 @@ public class ProductDetailPresenterImpl extends BasePresenter<ProductDetailViewe
 
     }
 
+    @Override
+    public void onEditSuccess()
+    {
 
+
+        productDetail=ProductDetailSingleton.getInstance().getProductDetail();
+        bindData();
+    }
+    @Override
     public void bindData() {
 
         switch (panelIndex) {

@@ -1,14 +1,14 @@
-package com.giants3.hd.server.parser;
+package com.giants3.hd.parser;
 
 import com.giants3.hd.entity.app.Quotation;
-import org.springframework.stereotype.Component;
+
 
 /**  桌面端Quotation 转换成app Quotation
  *
  * Created by david on 2016/1/2.
  */
 
-@Component
+
 //默认的 qualifier  为首字母小写的类名  productParser
 public class QuotationParser implements DataParser<com.giants3.hd.entity.Quotation,Quotation> {
     @Override

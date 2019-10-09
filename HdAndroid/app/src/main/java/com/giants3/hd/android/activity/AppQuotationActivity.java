@@ -30,12 +30,13 @@ import com.giants3.hd.android.mvp.AndroidRouter;
 import com.giants3.hd.android.mvp.appquotationdetail.AppQuotationDetailMVP;
 import com.giants3.hd.android.mvp.appquotationdetail.PresenterImpl;
 import com.giants3.hd.android.presenter.ProductDetailPresenter;
-import com.giants3.hd.appdata.AProduct;
-import com.giants3.hd.appdata.AUser;
+
 import com.giants3.hd.appdata.QRProduct;
 import com.giants3.hd.data.utils.GsonUtils;
 import com.giants3.hd.entity.Customer;
 import com.giants3.hd.entity.User;
+import com.giants3.hd.entity.app.AProduct;
+import com.giants3.hd.entity.app.AUser;
 import com.giants3.hd.entity.app.QuotationItem;
 import com.giants3.hd.noEntity.app.QuotationDetail;
 import com.giants3.hd.utils.StringUtils;

@@ -19,10 +19,10 @@ import com.giants3.hd.android.R;
 import com.giants3.hd.android.helper.ImageLoaderFactory;
 import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.presenter.ProductDetailPresenter;
-import com.giants3.hd.appdata.AProduct;
 import com.giants3.hd.data.interractor.UseCaseFactory;
 import com.giants3.hd.data.net.HttpUrl;
 import com.giants3.hd.data.utils.GsonUtils;
+import com.giants3.hd.entity.app.AProduct;
 import com.giants3.hd.noEntity.RemoteData;
 
 import java.util.ArrayList;

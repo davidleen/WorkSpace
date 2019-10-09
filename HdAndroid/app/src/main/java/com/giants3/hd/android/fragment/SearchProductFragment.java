@@ -24,8 +24,8 @@ import com.giants3.hd.android.adapter.ItemListAdapter;
 import com.giants3.hd.android.entity.TableData;
 import com.giants3.hd.android.mvp.searchproduct.SearchProductMvp;
 import com.giants3.hd.android.presenter.ProductDetailPresenter;
-import com.giants3.hd.appdata.AProduct;
 import com.giants3.hd.data.utils.GsonUtils;
+import com.giants3.hd.entity.app.AProduct;
 
 import java.util.List;
 

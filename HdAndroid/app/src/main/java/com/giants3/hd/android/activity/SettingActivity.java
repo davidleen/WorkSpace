@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.helper.SharedPreferencesHelper;
-import com.giants3.hd.appdata.AUser;
 import com.giants3.hd.data.net.HttpUrl;
+import com.giants3.hd.entity.app.AUser;
 
 import butterknife.Bind;
 

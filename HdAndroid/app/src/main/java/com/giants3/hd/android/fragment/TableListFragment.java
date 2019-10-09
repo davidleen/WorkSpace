@@ -85,8 +85,9 @@ public abstract class TableListFragment<T> extends BaseFragment  {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
 
-                if (mListener != null) {
-                    mListener.onFragmentInteraction(adapter.getItem(position));
+                T item = adapter.getItem(position);
+                if (mListener != null&& item !=null) {
+                    mListener.onFragmentInteraction(item);
                 }
             }
         });

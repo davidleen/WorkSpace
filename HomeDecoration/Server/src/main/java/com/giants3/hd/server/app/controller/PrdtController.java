@@ -1,12 +1,14 @@
 package com.giants3.hd.server.app.controller;
 
 
-import com.giants3.hd.app.AProduct;
+
 import com.giants3.hd.entity.*;
+import com.giants3.hd.entity.app.AProduct;
 import com.giants3.hd.noEntity.RemoteData;
+import com.giants3.hd.parser.ProductParser;
 import com.giants3.hd.server.controller.BaseController;
-import com.giants3.hd.server.parser.DataParser;
-import com.giants3.hd.server.parser.RemoteDataParser;
+import com.giants3.hd.parser.DataParser;
+import com.giants3.hd.parser.RemoteDataParser;
 import com.giants3.hd.server.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,12 +28,16 @@ public class PrdtController extends BaseController {
     ProductService productService;
 
 
-    @Autowired
-    @Qualifier("productParser")
+
+
     private DataParser<Product, AProduct> dataParser;
 
 
-
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+        dataParser=new ProductParser();
+    }
 
     /**
      * 提供移动端接口  查询

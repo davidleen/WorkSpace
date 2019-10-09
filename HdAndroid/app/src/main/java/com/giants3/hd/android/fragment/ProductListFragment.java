@@ -1,5 +1,6 @@
 package com.giants3.hd.android.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,11 +8,24 @@ import android.support.v4.app.Fragment;
 import com.giants3.hd.android.activity.ProductDetailActivity;
 import com.giants3.android.adapter.AbstractAdapter;
 import com.giants3.hd.android.adapter.ProductListAdapter;
+import com.giants3.hd.android.entity.ProductDetailSingleton;
+import com.giants3.hd.android.helper.AuthorityUtil;
+import com.giants3.hd.android.helper.SharedPreferencesHelper;
 import com.giants3.hd.android.presenter.ProductDetailPresenter;
-import com.giants3.hd.appdata.AProduct;
 import com.giants3.hd.data.interractor.UseCase;
 import com.giants3.hd.data.interractor.UseCaseFactory;
 import com.giants3.hd.data.utils.GsonUtils;
+import com.giants3.hd.entity.app.AProduct;
+import com.giants3.hd.noEntity.ProductDetail;
+import com.giants3.hd.parser.ProductParser;
+import com.giants3.hd.utils.ObjectUtils;
+import com.google.zxing.client.result.ProductResultParser;
+
+import java.util.List;
+
+import anetwork.channel.cache.CacheManager;
+
+import static com.giants3.hd.android.presenter.ProductDetailPresenter.REQUEST_PRODUCT_DETAIL_EDIT;
 
 
 /**
@@ -98,6 +112,84 @@ public class ProductListFragment extends ListFragment<AProduct> {
     }
 
 
+    @Override
+    protected boolean supportAdd() {
 
 
+        return AuthorityUtil.getInstance().editProduct() ;
+    }
+
+
+    @Override
+    protected void addNewOne() {
+
+
+        List<ProductDetail> demos = SharedPreferencesHelper.getInitData().demos;
+        ProductDetail detail;
+        if( demos !=null&& demos.size()>0)
+        {
+
+                  detail=demos.get(0);
+                detail=  (ProductDetail) ObjectUtils.deepCopy(detail);
+                detail.product.name="";
+
+
+//            }else
+//            {
+
+
+
+//                ProductTemplateDialog dialog=    new ProductTemplateDialog(getWindow()) ;
+//
+//                dialog.setVisible(true);
+//                ProductDetail detail=dialog.getResult();
+//                if(detail!=null)
+//                {
+//                    detail=  (ProductDetail) ObjectUtils.deepCopy(detail);
+//                    detail.product.name="";
+//                    HdSwingUtils.showDetailPanel(SwingUtilities.getWindowAncestor(getRoot()),detail );
+//                }
+
+//            }
+
+
+
+        }else
+        {
+            detail=new ProductDetail();
+
+        }
+        ProductDetailSingleton.getInstance().setProductDetail(detail);
+        Intent intent = new Intent(getActivity(), ProductDetailActivity.class);
+        intent.putExtra(ProductDetailPresenter.EXTRA_EDITABLE, true);
+
+      startActivityForResult(intent,REQUEST_PRODUCT_DETAIL_EDIT);
+
+
+
+
+
+
+
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode== Activity.RESULT_OK)
+        {
+            switch (requestCode)
+            {
+                case REQUEST_PRODUCT_DETAIL_EDIT:
+
+                    ProductDetail productDetail=ProductDetailSingleton.getInstance().getProductDetail();
+                    AProduct aProduct=new ProductParser().parse(productDetail.product);
+                    getAdapter().getDatas().add(0,aProduct);
+                    getAdapter().notifyDataSetChanged();
+
+                    break;
+            }
+        }
+    }
 }

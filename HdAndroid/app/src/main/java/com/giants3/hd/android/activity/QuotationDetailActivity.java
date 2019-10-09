@@ -20,12 +20,12 @@ import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.mvp.quotation.QuotationDetailMVP;
 import com.giants3.hd.android.mvp.quotation.QuotationDetailPresenterImpl;
 import com.giants3.hd.android.presenter.ProductDetailPresenter;
-import com.giants3.hd.appdata.AProduct;
 import com.giants3.hd.data.utils.GsonUtils;
 import com.giants3.hd.entity.Quotation;
 import com.giants3.hd.entity.QuotationItem;
 import com.giants3.hd.entity.QuotationXKItem;
 import com.giants3.hd.entity.QuoteAuth;
+import com.giants3.hd.entity.app.AProduct;
 import com.giants3.hd.noEntity.QuotationDetail;
 
 import butterknife.Bind;

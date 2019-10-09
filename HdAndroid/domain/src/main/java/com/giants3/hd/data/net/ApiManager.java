@@ -2,8 +2,7 @@ package com.giants3.hd.data.net;
 
 import android.util.Log;
 
-import com.giants3.hd.appdata.AProduct;
-import com.giants3.hd.appdata.AUser;
+
 import com.giants3.hd.data.utils.GsonUtils;
 import com.giants3.hd.entity.Customer;
 import com.giants3.hd.entity.ErpOrder;
@@ -20,6 +19,8 @@ import com.giants3.hd.entity.Quotation;
 import com.giants3.hd.entity.User;
 import com.giants3.hd.entity.WorkFlowArea;
 import com.giants3.hd.entity.WorkFlowMessage;
+import com.giants3.hd.entity.app.AProduct;
+import com.giants3.hd.entity.app.AUser;
 import com.giants3.hd.entity_erp.ErpWorkFlowItem;
 import com.giants3.hd.entity_erp.SampleState;
 import com.giants3.hd.entity_erp.WorkFlowMaterial;

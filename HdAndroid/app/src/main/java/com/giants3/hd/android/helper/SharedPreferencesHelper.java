@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.giants3.android.frame.util.StorageUtils;
+import com.giants3.hd.entity.app.AUser;
 import com.giants3.hd.noEntity.LoginHistory;
-import com.giants3.hd.appdata.AUser;
 import com.giants3.hd.data.utils.GsonUtils;
 import com.giants3.hd.exception.HdException;
 import com.giants3.hd.noEntity.BufferData;
@@ -94,7 +94,7 @@ public class SharedPreferencesHelper {
     }
 
 
-    public static   AUser getLoginUser()
+    public static AUser getLoginUser()
     {
 
         if(aUser==null)

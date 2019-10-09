@@ -10,8 +10,9 @@ import com.giants3.android.adapter.AbstractAdapter;
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.helper.ImageLoaderFactory;
 import com.giants3.hd.android.helper.ImageViewerHelper;
-import com.giants3.hd.appdata.AProduct;
+
 import com.giants3.hd.data.net.HttpUrl;
+import com.giants3.hd.entity.app.AProduct;
 
 /**
  * Created by david on 2016/2/14.

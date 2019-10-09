@@ -1,32 +1,29 @@
 package com.giants3.hd.server.controller;
 
 
-import com.giants3.hd.app.AProduct;
+
 import com.giants3.hd.entity.*;
+import com.giants3.hd.entity.app.AProduct;
 import com.giants3.hd.exception.HdException;
 import com.giants3.hd.noEntity.ProductDetail;
 import com.giants3.hd.noEntity.ProductListViewType;
 import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.entity.ProductValueHistory;
-import com.giants3.hd.server.parser.DataParser;
-import com.giants3.hd.server.parser.RemoteDataParser;
+import com.giants3.hd.parser.DataParser;
+import com.giants3.hd.parser.ProductParser;
+import com.giants3.hd.parser.RemoteDataParser;
 import com.giants3.hd.server.service.ProductRelateService;
 import com.giants3.hd.server.service.ProductService;
 import com.giants3.hd.server.utils.Constraints;
 import com.giants3.hd.server.utils.FileUtils;
 import com.giants3.hd.utils.StringUtils;
-import com.giants3.hd.utils.file.ImageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -62,9 +59,15 @@ public class ProductController extends BaseController {
     ProductRelateService productRelateService;
 
 
-    @Autowired
-    @Qualifier("productParser")
+
     private DataParser<Product, AProduct> dataParser;
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+        dataParser=new ProductParser() ;
+       // dataParser=new ProductParser() ;
+    }
 
     @RequestMapping(value = "/search", method = {RequestMethod.GET, RequestMethod.POST})
     public

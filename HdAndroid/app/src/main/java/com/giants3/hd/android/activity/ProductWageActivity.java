@@ -21,6 +21,8 @@ import com.giants3.hd.exception.HdException;
 import butterknife.Bind;
 import butterknife.OnClick;
 
+import static com.giants3.hd.android.activity.ProductMaterialActivity.PRODUCT_MATERIAL_TYPE;
+
 /**
  * 产品清单工资编辑界面
  * An activity representing a single ProductListActivity detail screen. This
@@ -31,14 +33,10 @@ import butterknife.OnClick;
 public class ProductWageActivity extends BaseActionBarActivity {
     private static final int REQUEST_PROCESS_SELECT = 12;
 
-        public static final String EXTRA_PRODUCT_WAGE = "EXTRA_PRODUCT_WAGE";
-    public static String PRODUCT_MATERIAL_TYPE = "PRODUCT_MATERIAL_TYPE";
+
    public static String PRODUCT_WAGE_POSITION = "PRODUCT_WAGE_POSITION";
 
-    public static final int PRODUCT_MATERIAL_CONCEPTUS = 1;
-        public static final int PRODUCT_MATERIAL_ASSEMBLE = 2;
-    public static final int PRODUCT_MATERIAL_PACK = 3;
-    public  static final int PRODUCT_WAGE_CONCEPTUS=2;
+
     ProductWage productWage;
 
 
@@ -86,7 +84,7 @@ public class ProductWageActivity extends BaseActionBarActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
 
-              productMaterialType = getIntent().getIntExtra(ProductWageActivity.PRODUCT_MATERIAL_TYPE, ProductWageActivity.PRODUCT_MATERIAL_CONCEPTUS);
+              productMaterialType = getIntent().getIntExtra(PRODUCT_MATERIAL_TYPE, ProductDetailSingleton.PRODUCT_MATERIAL_CONCEPTUS);
 
               wagePosition = getIntent().getIntExtra(ProductWageActivity.PRODUCT_WAGE_POSITION, 0);
             productWage = ProductDetailSingleton.getInstance().getProductWage(productMaterialType, wagePosition);
@@ -231,8 +229,10 @@ public class ProductWageActivity extends BaseActionBarActivity {
 
 
                     ProductProcess productProcess = GsonUtils.fromJson(data.getExtras().getString(ProductProcessSelectActivity.EXTRA_PRODUCT_PROCESS), ProductProcess.class);
-                    productWage.setProductProcess(productProcess);
-                    bindData(productWage);
+                    if(productProcess!=null) {
+                        productWage.setProductProcess(productProcess);
+                        bindData(productWage);
+                    }
 
 
                 break;

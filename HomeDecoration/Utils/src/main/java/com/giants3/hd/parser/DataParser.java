@@ -1,4 +1,4 @@
-package com.giants3.hd.server.parser;
+package com.giants3.hd.parser;
 
 
 /**

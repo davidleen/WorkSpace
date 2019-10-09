@@ -4,7 +4,7 @@ import com.giants3.hd.android.adapter.WorkFLowMainMenuAdapter;
 import com.giants3.hd.android.mvp.NewModel;
 import com.giants3.hd.android.mvp.NewPresenter;
 import com.giants3.hd.android.mvp.NewViewer;
-import com.giants3.hd.appdata.AUser;
+import com.giants3.hd.entity.app.AUser;
 import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.noEntity.FileInfo;
 

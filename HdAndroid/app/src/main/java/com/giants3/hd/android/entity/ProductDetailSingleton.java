@@ -1,9 +1,12 @@
 package com.giants3.hd.android.entity;
 
+import android.graphics.Paint;
+
 import com.giants3.hd.android.helper.SharedPreferencesHelper;
 import com.giants3.hd.data.utils.GsonUtils;
 import com.giants3.hd.entity.Flow;
 import com.giants3.hd.entity.GlobalData;
+import com.giants3.hd.entity.Material;
 import com.giants3.hd.entity.ProductMaterial;
 import com.giants3.hd.entity.ProductPaint;
 import com.giants3.hd.entity.ProductWage;
@@ -23,7 +26,7 @@ public class ProductDetailSingleton {
     public static final int PRODUCT_MATERIAL_ASSEMBLE = 2;
     public static final int PRODUCT_MATERIAL_PAINT = 3;
     public static final int PRODUCT_MATERIAL_PACK = 4;
-    private ProductDetail originProductDetail;
+    private String originProductDetail;
     private ProductDetail productDetail;
 
     private boolean isEdit;
@@ -43,7 +46,7 @@ public class ProductDetailSingleton {
         } else {
 
             try {
-                originProductDetail = GsonUtils.fromJson(GsonUtils.toJson(productDetail), ProductDetail.class);
+                originProductDetail = GsonUtils.toJson(productDetail)  ;
             } catch (Throwable e) {
                 e.printStackTrace();
             }
@@ -114,11 +117,16 @@ public class ProductDetailSingleton {
 
     public int addNewProductMaterial(int materialType) {
 
+        List<ProductMaterial> productMaterials = null;
+        List<ProductPaint> productPaints = null;
+
+
         switch (materialType) {
             case PRODUCT_MATERIAL_CONCEPTUS: {
                 ProductMaterial productMaterial = new ProductMaterial();
                 productMaterial.flowId = Flow.FLOW_CONCEPTUS;
                 productDetail.conceptusMaterials.add(productMaterial);
+                productMaterials=productDetail.conceptusMaterials;
                 return productDetail.conceptusMaterials.indexOf(productMaterial);
             }
             case PRODUCT_MATERIAL_PACK: {
@@ -128,7 +136,7 @@ public class ProductDetailSingleton {
 
 
                 productDetail.packMaterials.add(productMaterial);
-
+                productMaterials=productDetail.packMaterials;
                 return productDetail.packMaterials.indexOf(productMaterial);
             }
 
@@ -137,6 +145,7 @@ public class ProductDetailSingleton {
                 ProductMaterial productMaterial = new ProductMaterial();
                 productMaterial.flowId = Flow.FLOW_ASSEMBLE;
                 productDetail.assembleMaterials.add(productMaterial);
+                productMaterials=productDetail.assembleMaterials;
                 return productDetail.assembleMaterials.indexOf(productMaterial);
             }
 
@@ -144,11 +153,35 @@ public class ProductDetailSingleton {
                 ProductPaint productPaint = new ProductPaint();
                 productPaint.flowId = Flow.FLOW_PAINT;
                 productDetail.paints.add(productPaint);
+                productPaints=productDetail.paints;
                 return productDetail.paints.indexOf(productPaint);
             }
 
 
         }
+
+        if(productMaterials!=null) {
+            int size = productMaterials.size();
+                for (int i = 0; i < size; i++) {
+                    ProductMaterial productMaterial = productMaterials.get(i);
+                    productMaterial.itemIndex = i;
+                }
+
+
+
+        }
+
+
+
+        if(productPaints!=null) {
+            int size = productPaints.size();
+                for (int i = 0; i < size; i++) {
+                    ProductPaint productPaint = productPaints.get(i);
+                    productPaint.itemIndex = i;
+                }
+        }
+
+
         return -1;
 
     }
@@ -230,4 +263,103 @@ public class ProductDetailSingleton {
     }
 
 
+    public void updateProductStatistics() {
+
+
+
+
+        ProductAnalytics.updateProductStatistics(productDetail,getGlobalData());
+    }
+
+    public void updateProductPackRelateData() {
+
+        ProductAnalytics.updateProductPackRelateData(productDetail);
+    } public void updatePackDataOnPackMaterialClass(ProductMaterial  productMaterial) {
+
+        ProductAnalytics.updatePackDataOnPackMaterialClass(productDetail.packMaterials,productDetail.product,productMaterial);
+    }
+
+    public void deleteProductMaterial(int materialType, int position) {
+
+
+        List<ProductMaterial> materials=null;
+        List<ProductPaint> paints=null;
+        switch (materialType) {
+            case PRODUCT_MATERIAL_CONCEPTUS: {
+
+                materials= productDetail.conceptusMaterials ;
+                break;
+            }
+            case PRODUCT_MATERIAL_PACK: {
+
+                materials=  productDetail.packMaterials ;
+                break;
+
+            }
+                case PRODUCT_MATERIAL_PAINT: {
+
+                    paints=  productDetail.paints ;
+                break;
+
+            }
+
+
+            case PRODUCT_MATERIAL_ASSEMBLE: {
+
+                materials= productDetail.assembleMaterials ;
+                break;
+
+            }
+
+
+        }
+
+
+        if(materials!=null) {
+            int size = materials.size();
+            if (  size > position) {
+                materials.remove(position);
+                size = materials.size();
+                for (int i = 0; i < size; i++) {
+                    ProductMaterial productMaterial = materials.get(i);
+                    productMaterial.itemIndex = i;
+                }
+                ProductAnalytics.updateProductStatistics(productDetail, getGlobalData());
+            }
+
+        }
+
+
+
+        if(paints!=null) {
+            int size = paints.size();
+            if (  size > position) {
+                paints.remove(position);
+                ProductAnalytics.updateQuantityOfIngredient(productDetail.paints, getGlobalData());
+                size = paints.size();
+                for (int i = 0; i < size; i++) {
+                    ProductPaint productPaint = paints.get(i);
+                    productPaint.itemIndex = i;
+                }
+                ProductAnalytics.updateProductStatistics(productDetail, getGlobalData());
+            }
+
+        }
+
+
+    }
+
+    public void setMaterialToProductPaint(ProductPaint productPaint, Material material) {
+        GlobalData globalData = getGlobalData();
+        ProductAnalytics.setMaterialToProductPaint(productPaint,material, globalData);
+        ProductAnalytics.updateProductStatistics(productDetail,globalData);
+    }
+
+    public void updateQuantityOfIngredient() {
+
+        GlobalData globalData = getGlobalData();
+        ProductAnalytics.updateQuantityOfIngredient(productDetail.paints, globalData);
+        ProductAnalytics.updateProductStatistics(productDetail, globalData);
+
+    }
 }

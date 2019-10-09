@@ -16,8 +16,7 @@
 package com.giants3.hd.data.net;
 
 
-import com.giants3.hd.appdata.AProduct;
-import com.giants3.hd.appdata.AUser;
+
 import com.giants3.hd.data.exception.NetworkConnectionException;
 import com.giants3.hd.entity.Customer;
 import com.giants3.hd.entity.ErpOrder;
@@ -28,6 +27,8 @@ import com.giants3.hd.entity.Material;
 import com.giants3.hd.entity.OrderItemWorkFlowState;
 import com.giants3.hd.entity.OrderItemWorkMemo;
 import com.giants3.hd.entity.Product;
+import com.giants3.hd.entity.app.AProduct;
+import com.giants3.hd.entity.app.AUser;
 import com.giants3.hd.entity_erp.ErpWorkFlowItem;
 import com.giants3.hd.entity_erp.SampleState;
 import com.giants3.hd.noEntity.NameCard;

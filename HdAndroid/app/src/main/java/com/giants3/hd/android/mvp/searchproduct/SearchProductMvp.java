@@ -4,9 +4,9 @@ import com.giants3.hd.android.mvp.NewModel;
 import com.giants3.hd.android.mvp.NewPresenter;
 import com.giants3.hd.android.mvp.NewViewer;
 import com.giants3.hd.android.mvp.PageModel;
-import com.giants3.hd.appdata.AProduct;
 import com.giants3.hd.entity.ErpOrderItemProcess;
 import com.giants3.hd.entity.WorkFlowArea;
+import com.giants3.hd.entity.app.AProduct;
 
 import java.util.List;
 

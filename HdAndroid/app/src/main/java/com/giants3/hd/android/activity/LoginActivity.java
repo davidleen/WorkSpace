@@ -16,13 +16,13 @@ import android.widget.TextView;
 
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.SystemConst;
+import com.giants3.hd.entity.app.AUser;
 import com.giants3.hd.noEntity.LoginHistory;
 import com.giants3.hd.android.events.LoginSuccessEvent;
 import com.giants3.hd.android.fragment.ItemPickDialogFragment;
 import com.giants3.hd.android.helper.AndroidUtils;
 import com.giants3.hd.android.helper.SharedPreferencesHelper;
 import com.giants3.android.frame.util.ToastHelper;
-import com.giants3.hd.appdata.AUser;
 import com.giants3.hd.crypt.CryptUtils;
 import com.giants3.hd.crypt.DigestUtils;
 import com.giants3.hd.data.interractor.UseCaseFactory;

@@ -1,11 +1,14 @@
 package com.giants3.hd.server.service;
 
-import com.giants3.hd.app.AUser;
+
 import com.giants3.hd.entity.*;
+import com.giants3.hd.entity.app.AUser;
 import com.giants3.hd.entity.app.AppQuoteAuth;
 import com.giants3.hd.noEntity.RemoteData;
-import com.giants3.hd.server.parser.DataParser;
-import com.giants3.hd.server.parser.RemoteDataParser;
+import com.giants3.hd.parser.DataParser;
+import com.giants3.hd.parser.ProductParser;
+import com.giants3.hd.parser.RemoteDataParser;
+import com.giants3.hd.parser.UserParser;
 import com.giants3.hd.server.repository.*;
 import com.giants3.hd.utils.DateFormats;
 import com.giants3.hd.utils.DigestUtils;
@@ -57,9 +60,15 @@ public class AuthorityService extends AbstractService {
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    @Qualifier("CustomImplName")
+
     DataParser<User, AUser> dataParser;
+
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+        dataParser=new UserParser();
+    }
 
     public List<Authority> getAuthoritiesForUser(@RequestParam(value = "userId") long userId) {
         User user = userRepository.findOne(userId);
