@@ -12,6 +12,7 @@ import com.giants3.hd.entity.ProductValueHistory;
 import com.giants3.hd.parser.DataParser;
 import com.giants3.hd.parser.ProductParser;
 import com.giants3.hd.parser.RemoteDataParser;
+import com.giants3.hd.server.ServerConfig;
 import com.giants3.hd.server.service.ProductRelateService;
 import com.giants3.hd.server.service.ProductService;
 import com.giants3.hd.server.utils.Constraints;
@@ -39,11 +40,7 @@ import java.util.Set;
 public class ProductController extends BaseController {
 
 
-    /**
-     * 是否支持同步功能（从另外一个服务器复制数据）
-     */
-    @Value("${synchonize}")
-    private boolean synchonize;
+
 
     @Value("${filepath}")
     private String productFilePath;
@@ -67,6 +64,7 @@ public class ProductController extends BaseController {
         super.afterPropertiesSet();
         dataParser=new ProductParser() ;
        // dataParser=new ProductParser() ;
+
     }
 
     @RequestMapping(value = "/search", method = {RequestMethod.GET, RequestMethod.POST})
@@ -757,7 +755,7 @@ public class ProductController extends BaseController {
     ) {
 
 
-        if (!synchonize) {
+        if (!ServerConfig.getInstance().SYNCHRONISE_DATA) {
 
             return wrapError("当前服务器不支持同步复制操作。");
         }

@@ -27,6 +27,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 //import org.apache.commons.logging.Log;
 
@@ -77,6 +79,7 @@ public class Main extends BaseFrame {
 
         if (null != baseUrl) {
             HttpUrl.iniBaseUrl(baseUrl);
+            HttpUrl.setApiVersion(1);
             ResourceUrl.setBaseUrl(baseUrl.replace("Server","Resource"));
         }
 

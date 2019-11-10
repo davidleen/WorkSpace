@@ -1,7 +1,10 @@
 package com.giants3.hd.server.controller;
 
 import com.giants3.hd.entity.GlobalData;
+import com.giants3.hd.server.ServerConfig;
 import com.giants3.hd.server.service.*;
+import com.giants3.hd.utils.GsonUtils;
+import com.giants3.hd.utils.StringUtils;
 import com.giants3.report.ResourceUrl;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +12,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 /**
  * 应用程序启动初始化
@@ -55,16 +61,28 @@ public class InitData implements ApplicationListener<ContextRefreshedEvent> {
 
     @Autowired
     MaterialService materialService;
-    @Value("${PICTURE_BASE_URL}")
-    private String PICTURE_BASE_URL;
+    @Value("${rootConfig}")
+    private String rootConfig;
 
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if (!isStart) {
 
             final String applicationName = event.getApplicationContext().getApplicationName();
 
-//            ResourceUrl.setBaseUrl("http://127.0.0.1/" + applicationName + "/");
-            ResourceUrl.setBaseUrl(PICTURE_BASE_URL);
+
+            ServerConfig serverConfig= null;
+            try {
+                serverConfig = GsonUtils.fromInputStream(new FileInputStream(rootConfig), ServerConfig.class);
+            } catch (Throwable e) {
+                e.printStackTrace();
+                serverConfig=new ServerConfig();
+            }
+
+            ServerConfig.setConfig(serverConfig);
+
+
+            if(serverConfig!=null&& !StringUtils.isEmpty(serverConfig.PICTURE_BASE_URL))
+                 ResourceUrl.setBaseUrl(serverConfig.PICTURE_BASE_URL);
 
 //
 //            if(true)

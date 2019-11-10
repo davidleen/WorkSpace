@@ -6,6 +6,7 @@ import com.giants3.hd.entity.Material;
 import com.giants3.hd.entity.Product;
 import com.giants3.hd.noEntity.NameCard;
 import com.giants3.hd.noEntity.RemoteData;
+import com.giants3.hd.server.ServerConfig;
 import com.giants3.hd.server.service.AppService;
 import com.giants3.hd.server.service.ErpPhotoService;
 import com.giants3.hd.server.service.MaterialService;
@@ -35,11 +36,8 @@ import java.util.Calendar;
 @RequestMapping("/file")
 public class FileController extends BaseController {
 
-    /**
-     * 是否支持同步功能（从另外一个服务器复制数据）
-     */
-    @Value("${synchonize}")
-    private boolean synchonize;
+
+
 
 
     public static final String JPG = "jpg";
@@ -91,6 +89,7 @@ public class FileController extends BaseController {
     public void afterPropertiesSet() throws Exception {
 
         apiManager=new ApiManager();
+
     }
     @Override
     public void destroy() throws Exception {
@@ -564,7 +563,7 @@ public class FileController extends BaseController {
     RemoteData<Void> syncProductPicture(@RequestParam("remoteUrlHead") String remoteUrlHead,@RequestParam(value = "filterKey",required = false,defaultValue = "" ) String filterKey,
                                         @RequestParam(value = "shouldOverride",required = false,defaultValue = "false" ) boolean shouldOverride ) {
 
-        if(!synchonize)
+        if(!ServerConfig.getInstance().SYNCHRONISE_DATA)
         {
 
             return wrapError("当前服务器不支持同步复制操作。");

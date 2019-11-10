@@ -47,6 +47,8 @@ import okhttp3.ResponseBody;
  */
 
 public class ApiConnection {
+    private static final int MAX_RETRY_TIME = 3;
+    public static final long MAX_GET_TIME_OUT=15*1000;
     MediaType MEDIA_TYPE_IMG = MediaType.parse("image/*");
     private static final String CONTENT_TYPE_LABEL = "Content-Type";
     private static final String CONTENT_TYPE_VALUE_JSON = "application/json; charset=utf-8";
@@ -230,16 +232,29 @@ public class ApiConnection {
 
 
 
+        int retryCount=1;
 
+        long time=System.currentTimeMillis();
+        byte[] result=null;
+        do
+        {
 
+            try {
+                result=  getResponseBody(url).bytes();
+                break;
+            } catch (Throwable e) {
+                e.printStackTrace();
+                retryCount++;
+                if(retryCount>MAX_RETRY_TIME||System.currentTimeMillis()-time>MAX_GET_TIME_OUT)
+                {
 
-        try {
-            return  getResponseBody(url).bytes();
+                    throw HdException.create(e);
+                }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw HdException.create(e);
-        }
+            }
+        }while ( true);
+
+        return result;
     }
 
 

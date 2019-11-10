@@ -25,12 +25,18 @@ public class HttpUrl {
     //表示桌面端请求
 
     private static int versionCode;
+    private static int apiVersion;
 
     public static final void iniBaseUrl
             (String configUrl) {
         BaseUrl = configUrl;
     }
 
+
+    public static void setApiVersion(int apiVersion)
+    {
+        HttpUrl.apiVersion = apiVersion;
+    }
 
     public static String TOKEN = "";
 
@@ -44,12 +50,10 @@ public class HttpUrl {
     public static String additionInfo(String url) {
 
 
-        UrlFormatter urlFormatter = new UrlFormatter(url).append("appVersion", versionCode)
-                .append("client", ConstantData.CLIENT_DESK)
-                .append("token", TOKEN);
 
 
-        return urlFormatter.toUrl();
+
+        return additionInfo( new UrlFormatter(url));
 
 
     }
@@ -59,7 +63,8 @@ public class HttpUrl {
 
         urlFormatter.append("appVersion", versionCode)
                 .append("client", ConstantData.CLIENT_DESK)
-                .append("token", TOKEN);
+                .append("token", TOKEN)
+                .append("api", apiVersion);
 
 
         return urlFormatter.toUrl();

@@ -215,15 +215,6 @@ public class Client {
                T result = builder.execute(handler).get();
 
 
-               //特殊处理  避免请求结果太快返回，
-               if (Calendar.getInstance().getTimeInMillis() - time < 500) {
-                   try {
-                       Thread.sleep(500);
-                   } catch (Throwable t) {
-                   }
-               }
-
-
                Logger.getLogger(TAG).info("time user in :" + (Calendar.getInstance().getTimeInMillis() - time) + "in " + Thread.currentThread());
 
                return result

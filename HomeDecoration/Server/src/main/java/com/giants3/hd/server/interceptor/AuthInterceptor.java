@@ -4,7 +4,7 @@ package com.giants3.hd.server.interceptor;
 import com.giants3.hd.entity.Session;
 import com.giants3.hd.noEntity.ConstantData;
 import com.giants3.hd.noEntity.RemoteData;
-import com.giants3.hd.server.BootConfig;
+import com.giants3.hd.server.ServerConfig;
 import com.giants3.hd.server.repository.SessionRepository;
 import com.giants3.hd.server.service.AuthorityService;
 import com.giants3.hd.server.utils.Constraints;
@@ -40,8 +40,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     public long VALIDATE_TIME = 24l * 60 * 60 * 1000;
 
 
-    @Autowired
-    BootConfig bootConfig;
+
 
     @Autowired
     AuthorityService authorityService;
@@ -66,7 +65,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         }
 
         //签名验证
-        if(!bootConfig.isDebug()) {
+        if(!ServerConfig.getInstance().isDebug()) {
             if ( !UrlFormatter.validateSign(request.getQueryString())) {
                 writeErrorMessage(response.getOutputStream(), RemoteData.CODE_FAIL, "sign verify fail");
                 return false;

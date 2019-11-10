@@ -381,6 +381,7 @@ public class AppQuotationController extends BaseController {
     @RequestMapping(value = "/gjh_init", method = RequestMethod.GET)
     public
     @ResponseBody
+    @Deprecated
     RemoteData<Void> gjh_init(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user ) {
 
         if(!user.isAdmin())

@@ -63,22 +63,20 @@ public class Report_App_Quotation_XLXS_1 extends SimpleExcelReporter<QuotationDe
 
 
         addString(writableSheet, company.tel,2,3);
-        addString(writableSheet, company.fax,8,3);
+        addString(writableSheet, company.fax,10,3);
 
 
         final Quotation quotation = quotationDetail.quotation;
-        addString(writableSheet, quotation.email,13,3);
-        addString(writableSheet, quotation.booth,13,4);
-        addString(writableSheet, quotation.qNumber,12,7);
-        addString(writableSheet, quotation.qDate,12,9);
+        addString(writableSheet, quotation.email,17,3);
+        addString(writableSheet, quotation.booth,17,4);
+        addString(writableSheet, quotation.qNumber,17,7);
+        addString(writableSheet, quotation.qDate,17,9);
 
 
 
 
         addString(writableSheet, quotation.customerName,2,7);
         addString(writableSheet, quotation.customerAddress,2,9);
-        addString(writableSheet, quotation.qNumber,12,7);
-        addString(writableSheet, quotation.qDate,12,9);
 
         int rowIndex=startItemRow;
         for (int i = 0; i < dataSize; i++) {

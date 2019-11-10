@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * 文件上传控制类
@@ -48,7 +50,7 @@ public class FileController extends BaseController {
     @Value("${appfilepath}")
     private String appFilePath;
 
-    @Value("${SERVER_BASE_URL}")
+
     private String serverBaseUrl;
 
 
@@ -59,6 +61,16 @@ public class FileController extends BaseController {
     public void afterPropertiesSet() throws Exception {
 
         apiManager=new ApiManager();
+
+
+        try {
+            InetAddress addr = (InetAddress) InetAddress.getLocalHost();
+
+
+            serverBaseUrl="http://"+addr.getHostAddress()+":8080/Server/";
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
     }
     @Override
     public void destroy() throws Exception {

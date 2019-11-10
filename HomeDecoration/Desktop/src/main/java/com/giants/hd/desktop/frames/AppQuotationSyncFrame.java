@@ -108,23 +108,32 @@ public class AppQuotationSyncFrame extends BaseMVPFrame<AppQuotationSyncViewer> 
 
     @Override
     public void initData() {
-        final UseCase useCase = UseCaseFactory.getInstance().createInitGjhDataUseCase( );
 
-        useCase.execute(new RemoteDataSubscriber<Void>(getViewer()) {
-            @Override
-            protected void handleRemoteData(RemoteData data) {
 
-                if (data.isSuccess()) {
-                    getViewer().showMesssage("初始化成功" + data.message);
-                } else {
 
-                    getViewer().showMesssage(data.message);
-                }
 
-            }
+        getViewer().showMesssage("该功能已经取消， 将主服务器中yunfei数据库，复制并覆盖到从服务器上。");
+        return;
 
-        });
-
-        getViewer().showLoadingDialog();
+//        final UseCase useCase = UseCaseFactory.getInstance().createInitGjhDataUseCase( );
+//
+//        useCase.execute(new RemoteDataSubscriber<Void>(getViewer()) {
+//            @Override
+//            protected void handleRemoteData(RemoteData data) {
+//
+//
+//
+//                if (data.isSuccess()) {
+//                    getViewer().showMesssage("初始化成功" + data.message);
+//                } else {
+//
+//                    getViewer().showMesssage(data.message);
+//                }
+//
+//            }
+//
+//        });
+//
+//        getViewer().showLoadingDialog();
     }
 }

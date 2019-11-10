@@ -56,7 +56,7 @@ public class ProductListFragment extends ListFragment<AProduct> {
                 //调整act
                 Intent intent = new Intent(getActivity(), ProductDetailActivity.class);
                 intent.putExtra(ProductDetailPresenter.ARG_ITEM, GsonUtils.toJson(data));
-                startActivity(intent);
+                startActivityForResult(intent,REQUEST_PRODUCT_DETAIL_EDIT);
             }
         });
     }
@@ -176,7 +176,7 @@ public class ProductListFragment extends ListFragment<AProduct> {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+
         if(resultCode== Activity.RESULT_OK)
         {
             switch (requestCode)
@@ -188,8 +188,10 @@ public class ProductListFragment extends ListFragment<AProduct> {
                     getAdapter().getDatas().add(0,aProduct);
                     getAdapter().notifyDataSetChanged();
 
-                    break;
+                    return;
+
             }
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

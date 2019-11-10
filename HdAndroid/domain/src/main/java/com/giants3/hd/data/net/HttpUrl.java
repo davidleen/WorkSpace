@@ -65,6 +65,8 @@ public class HttpUrl {
     public static String KEY_ServiceName = "_ServiceName";
 
 
+    public static int apiVersion;
+
     public static final String BASE_URL_FORMAT = "http://%s:%s/%s/";
     public static String BASE_URL = "";
     static final String API_LOGIN = "/api/authority/aLogin2";
@@ -102,6 +104,7 @@ public class HttpUrl {
             e.printStackTrace();
         }
 
+        apiVersion=1;
 
     }
 
@@ -154,13 +157,10 @@ public class HttpUrl {
 
     public static String additionInfo(String url) {
 
-        UrlFormatter urlFormatter = new UrlFormatter(url).append("appVersion", versionCode)
-                .append("client", CLIENT_TYPE)
-                .append("token", token)
-                .append("versionName", versionName);
 
 
-        return urlFormatter.toUrl();
+
+        return  additionInfo(new UrlFormatter(url));
 
 
     }
@@ -171,6 +171,7 @@ public class HttpUrl {
         urlFormatter.append("appVersion", versionCode)
                 .append("client", CLIENT_TYPE)
                 .append("token", token)
+                .append("api", apiVersion)
                 .append("versionName", versionName);
 
 
