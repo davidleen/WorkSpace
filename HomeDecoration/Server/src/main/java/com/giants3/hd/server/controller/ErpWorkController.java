@@ -4,11 +4,14 @@ import com.giants3.hd.entity.*;
 import com.giants3.hd.entity_erp.*;
 import com.giants3.hd.exception.HdException;
 import com.giants3.hd.noEntity.RemoteData;
+import com.giants3.hd.noEntity.WorkFlowReportSummary;
 import com.giants3.hd.server.service.ErpSampleService;
 import com.giants3.hd.server.service.ErpWorkService;
 import com.giants3.hd.server.service.UserService;
+import com.giants3.hd.server.service.WorkFlowService;
 import com.giants3.hd.server.utils.Constraints;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,6 +35,7 @@ public class ErpWorkController extends BaseController {
 
     @Autowired
     ErpSampleService erpSampleService;
+
 
 
     /**
@@ -197,12 +201,24 @@ public class ErpWorkController extends BaseController {
      */
     @RequestMapping(value = "/findOrderItemReport", method = RequestMethod.GET)
     @ResponseBody
-    public RemoteData<ErpWorkFlowReport> findOrderItemReport(@RequestParam("os_no") String os_no, @RequestParam("itm") int itm
+    public RemoteData<ErpWorkFlowReport> findOrderItemReport(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user,@RequestParam("os_no") String os_no, @RequestParam("itm") int itm
 
     ) {
 
 
-        return erpWorkService.findErpWorkFlowReport(os_no, itm);
+        RemoteData<ErpWorkFlowReport> erpWorkFlowReport = erpWorkService.findErpWorkFlowReport(os_no, itm);
+        if(erpWorkFlowReport.isSuccess())
+        {
+
+
+
+
+            for ( ErpWorkFlowReport report:erpWorkFlowReport.datas)
+            {
+                report.summary=  erpWorkService.findSummaryForReport(user,report);
+            }
+        }
+        return erpWorkFlowReport;
     }
 
 
@@ -373,5 +389,46 @@ public class ErpWorkController extends BaseController {
     public RemoteData<ErpWorkFlowItem> findErpWorkFlowItems(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam("osNo") String osNo, @RequestParam(value = "itm") int itm, @RequestParam(value = "flowCode") String flowCode) {
         return erpWorkService.findErpWorkFlowItems(user, osNo, itm, flowCode);
 
+    }
+
+
+    /**
+     * 每天凌晨5点 自动启动订单生产流程
+     */
+//    @Scheduled(cron = "0 0 5 * * ?")
+//    @Scheduled(cron = "0 0/60 8-20 * * ?")   //早上8点到晚上22点之前  每小时执行一次。
+    //@Scheduled(fixedDelay = 1l*60*60*1000 ,corn=)  //没间隔一小时，执行一次
+   public void autoStartWorkFlow()
+    {
+
+        erpWorkService.autoStartWorkFlow();
+    }
+
+    /**
+     * 清除流程
+     *
+     * @return
+     */
+    @RequestMapping(value = "/reset", method = RequestMethod.GET)
+    @ResponseBody
+    public RemoteData<Void> resetWorkFlow(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam("osNO") String osNo, @RequestParam(value = "itm") int itm) {
+
+
+
+
+        RemoteData<Void> result = null;
+        try {
+            RemoteData<Void> voidRemoteData = erpWorkService.clearWorkFLow(user, osNo, itm);
+            result=voidRemoteData;
+//            if(!voidRemoteData.isSuccess())
+//                return voidRemoteData;
+//            result = erpWorkService.resetOrderItemWorkFlow(user, osNo, itm);
+        } catch (HdException e) {
+            e.printStackTrace();
+
+            return wrapError(e.getMessage());
+        }
+
+        return result;
     }
 }

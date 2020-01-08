@@ -8,15 +8,15 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.TextView;
 
-import com.giants3.hd.android.BuildConfig;
+import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.adapter.WorkFlowReportItemAdapter;
 import com.giants3.hd.android.fragment.SendWorkFlowFragment;
 import com.giants3.hd.android.helper.SharedPreferencesHelper;
 import com.giants3.hd.android.mvp.workFlow.WorkFlowListMvp;
-import com.giants3.hd.android.widget.ExpandableGridView;
 import com.giants3.hd.data.utils.GsonUtils;
 import com.giants3.hd.entity.ErpOrderItem;
 import com.giants3.hd.entity.ErpOrderItemProcess;
@@ -27,7 +27,6 @@ import com.giants3.hd.entity.ProductWorkMemo;
 import com.giants3.hd.entity.User;
 import com.giants3.hd.entity.WorkFlowMessage;
 import com.giants3.hd.entity_erp.SampleState;
-import com.giants3.hd.exception.HdException;
 import com.giants3.hd.utils.StringUtils;
 
 import java.util.List;
@@ -63,7 +62,7 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
 
 
     @Bind(R.id.workFlowReport)
-    ExpandableGridView workFlowReport;
+    GridView workFlowReport;
 
     @Bind(R.id.swipeLayout)
     SwipeRefreshLayout swipeLayout;
@@ -124,8 +123,19 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
 
 
         adapter = new WorkFlowReportItemAdapter(this);
-        workFlowReport.setAdapter(adapter);
+        adapter.setAdapterListener(new WorkFlowReportItemAdapter.WorkFlowAdapterListener() {
+            @Override
+            public void onSendWorkFlow(ErpWorkFlowReport workFlowReport) {
+                getPresenter().sendWorkFlow(workFlowReport.osNo, workFlowReport.itm, workFlowReport.workFlowStep);
+            }
 
+            @Override
+            public void onReceiveWorkFlow(ErpWorkFlowReport report) {
+                getPresenter().confirmCompletedWork(report);
+            }
+        });
+        workFlowReport.setAdapter(adapter);
+        workFlowReport.setNumColumns(3);
         workFlowReport.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -151,7 +161,7 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
             }
         });
 
-        workFlowReport.setExpanded(true);
+      //  workFlowReport.setExpanded(true);
 
         orderItemInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -217,18 +227,19 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
     }
 
     @Override
-    public void showSendWorkFlowDialog(final ErpWorkFlowReport workFlowReport, ProductWorkMemo productWorkMemo, OrderItemWorkMemo orderItemWorkMemo) {
+    public void showSendWorkFlowDialog(final ErpWorkFlowReport workFlowReport,final ErpWorkFlowReport nextWorkFlowReport, ProductWorkMemo productWorkMemo, OrderItemWorkMemo orderItemWorkMemo) {
 
         //是否生产设置备注的流程
 
 
         boolean unMemoStep = workFlowReport.workFlowStep == ErpWorkFlow.STEPS[0] || workFlowReport.workFlowStep == ErpWorkFlow.STEPS[ErpWorkFlow.STEPS.length - 1];
 
-        boolean canSend = getPresenter().canSendWorkFlow(workFlowReport);
-        boolean canReceive = getPresenter().canReceiveWorkFlow(workFlowReport) && workFlowReport.workFlowStep != ErpWorkFlow.FIRST_STEP;
+        boolean isWorkingStep=workFlowReport.workFlowStep<=ErpWorkFlow.LAST_STEP;
+        boolean canSend =workFlowReport.summary==null? isWorkingStep&&getPresenter().canSendWorkFlow(workFlowReport):false;
+        boolean canReceive =workFlowReport.summary==null?isWorkingStep&&nextWorkFlowReport!=null&& getPresenter().canReceiveWorkFlow(nextWorkFlowReport):false;
 
 
-        if (unMemoStep && !canSend && !canReceive) return;
+//        if (  !canSend && !canReceive) return;
 
         View inflate = getLayoutInflater().inflate(R.layout.layout_work_flow_info, null);
         TextView productMemoView = (TextView) inflate.findViewById(R.id.productMemo);
@@ -251,7 +262,7 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
         send.setVisibility(canSend ? View.VISIBLE : View.GONE);
         send.setVisibility(canSend ? View.VISIBLE : View.GONE);
 
-        send.setText(workFlowReport.workFlowStep == ErpWorkFlow.LAST_STEP ? "出 货" : "发起流程");
+        send.setText(workFlowReport.workFlowStep == ErpWorkFlow.STEP_CHENGPIN ? "出 货" : "生产结束");
 
 
         TextView receive = (TextView) inflate.findViewById(R.id.receive);
@@ -269,7 +280,7 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
         receive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getPresenter().receiveWorkFlow(workFlowReport.osNo, workFlowReport.itm, workFlowReport.workFlowStep);
+                getPresenter().receiveWorkFlow(nextWorkFlowReport.osNo, nextWorkFlowReport.itm, nextWorkFlowReport.workFlowStep);
 
             }
         });
@@ -344,12 +355,38 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
     public void showSendReceiveDialog(List<WorkFlowMessage> messageList) {
 
 
-        Intent intent = new Intent(this, WorkFlowMessageActivity.class);
-        startActivityForResult(intent, REQUEST_CODE);
 
+        if(messageList.size()>1) {
+            Intent intent = new Intent(this, WorkFlowMessageActivity.class);
+            startActivityForResult(intent, REQUEST_CODE);
+
+        }else
+        {
+            Intent intent = new Intent(this, WorkFlowMessageReceiveActivity.class);
+            intent.putExtra(WorkFlowMessageReceiveActivity.KEY_MESSAGE, GsonUtils.toJson(messageList.get(0)));
+            startActivityForResult(intent, REQUEST_CODE);
+        }
 
     }
 
+
+    @Override
+    public void showUnHandleWorkMessageDialog(List<WorkFlowMessage> messageList) {
+        if(messageList.size()>1) {
+            Intent intent = new Intent(this, WorkFlowMessageListActivity.class);
+            intent.putExtra(WorkFlowMessageListActivity.KEY_MESSAGE_LIST,GsonUtils.toJson(messageList));
+            startActivityForResult(intent, REQUEST_CODE);
+
+        }else if(messageList.size()==1)
+        {
+            Intent intent = new Intent(this, WorkFlowMessageReceiveActivity.class);
+            intent.putExtra(WorkFlowMessageReceiveActivity.KEY_MESSAGE, GsonUtils.toJson(messageList.get(0)));
+            startActivityForResult(intent, REQUEST_CODE);
+        }else
+        {
+            ToastHelper.show("没有发现可以确认的流程");
+        }
+    }
 
     @Override
     public void bindOrderIteWorkFlowReport(List<ErpWorkFlowReport> datas) {
@@ -406,12 +443,12 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
         {
             case R.id.clear:
 
-          new      AlertDialog.Builder(this).setTitle("是否确定清除流程数据!!!").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+          new      AlertDialog.Builder(this).setTitle("是否确定重置流程数据!!!").setPositiveButton("确定", new DialogInterface.OnClickListener() {
               @Override
               public void onClick(DialogInterface dialog, int which) {
 
                   dialog.dismiss();
-                   getPresenter().clearWorkFlow();
+                   getPresenter().resetWorkFlow();
               }
           }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
               @Override

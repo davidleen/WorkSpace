@@ -62,7 +62,8 @@ public class WorkFlowMessageViewerImpl extends BaseViewerImpl implements WorkFlo
 
     @Override
     public void hideWaiting() {
-        swipeLayout.setRefreshing(false);
+        if(swipeLayout!=null)
+         swipeLayout.setRefreshing(false);
     }
 
     @Override

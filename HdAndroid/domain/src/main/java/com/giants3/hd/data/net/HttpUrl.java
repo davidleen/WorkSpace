@@ -20,7 +20,7 @@ public class HttpUrl {
 
     public static final String CLIENT_TYPE = "ANDROID";
 
-    public static final String DEFAULT_IPAddress = "192.168.2.108";
+    public static final String DEFAULT_IPAddress = "192.168.10.198";
     public static final String DEFAULT_IPPort = "8080";
     public static final String DEFAULT_ServiceName = "Server";
     public static final String API_BASE_URL = "";
@@ -511,6 +511,9 @@ public class HttpUrl {
     public static String clearWorkFlow(String os_no, int itm) {
         return completeUrl(String.format("/api/erpWork/clear?osNO=%s&itm=%d", UrlFormatter.encode(os_no), itm));
     }
+ public static String resetWorkFlow(String os_no, int itm) {
+        return completeUrl(String.format("/api/erpWork/reset?osNO=%s&itm=%d", UrlFormatter.encode(os_no), itm));
+    }
 
 
     public static String adjustWorkFlowItem(String os_no, String prd_no, String pVersion, int itm) {
@@ -675,5 +678,11 @@ public class HttpUrl {
 
     public static String unVerifyQuotation(long quotationId) {
         return additionInfo(BASE_URL + "api/quotation/unVerify?quotationId=" + quotationId);
+    }
+
+    public static String getNeedConfirmWorkMessage(String osNo, int itm, int workFlowStep,int produceType) {
+
+        return completeUrl(String.format("api/workFlow/needConfirmWorkFLowMessage?os_no=" + UrlFormatter.encode(osNo) + "&itm=" + itm + "&workFlowStep=" + workFlowStep+ "&produceType=" + produceType));
+
     }
 }

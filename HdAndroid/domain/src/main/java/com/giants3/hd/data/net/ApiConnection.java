@@ -355,5 +355,7 @@ public class ApiConnection {
     }
 
 
-
+    public String delete(String url) {
+        return null;
+    }
 }

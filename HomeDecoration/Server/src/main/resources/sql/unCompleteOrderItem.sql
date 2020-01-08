@@ -17,8 +17,7 @@ FROM         (SELECT     TOP 99999999 os_no, os_dd, itm, bat_no, prd_no, prd_nam
                           (/*9 表示 订单生产中*/ SELECT osno, itm, workflowstate, maxworkflowstep, maxworkflowname, maxworkflowcode, workflowdescribe,currentOverDueDay,totalLimit,currentLimitDay,currentAlertDay
                             FROM          [yunfei].[dbo].[t_orderitemworkstate]
                             WHERE      workflowstate <> 0) AS b ON a.os_no = b.osno COLLATE chinese_prc_90_ci_ai AND a.itm = b.itm
-WHERE     (b.workflowstate IS NULL OR
-                      b.workflowstate <> 99 )and ( a.os_no like :os_no or a.prd_no like :prd_no  )
+WHERE     (b.workflowstate IS NULL OR b.workflowstate <> 99 )and ( a.os_no like :os_no or a.prd_no like :prd_no  )
 GROUP BY a.os_no, a.os_dd, a.itm, a.bat_no, a.prd_no, a.prd_name, a.id_no, a.up, a.qty, a.amt, b.workflowdescribe, isnull(b.workflowstate, 0), isnull(b.maxworkflowstep, 0),
                       isnull(b.maxworkflowname, ''), isnull(b.maxworkflowcode, ''),isnull(b.currentOverDueDay,0)   , isnull(b.totalLimit,0),isnull(b.currentLimitDay,0)   , isnull(b.currentAlertDay,0)
 
@@ -27,7 +26,7 @@ GROUP BY a.os_no, a.os_dd, a.itm, a.bat_no, a.prd_no, a.prd_name, a.id_no, a.up,
 
  SELECT a.*,isnull(d.ut,'')  as ut,
  isnull(d.idx1,'') as idx1,
-   isnull(pdc.producetype,-1) as producetype,
+   isnull(pdc.producetype,-1) as producetype, pdc.sys_date,
 
 
  isnull(c.modify_dd,0) as photoupdatetime
@@ -41,10 +40,10 @@ GROUP BY a.os_no, a.os_dd, a.itm, a.bat_no, a.prd_no, a.prd_name, a.id_no, a.up,
   left outer join
    (
        --排厂单
-      select   0 as producetype, so_no,est_itm ,'' as po_no from  mf_mo       where bil_Id = upper('MP') and so_no like upper('%yf%') and  ( so_no like :os_no or mrp_no like  :prd_no )     and mrp_no=MO_NO_ADD
+      select   0 as producetype, so_no,est_itm ,'' as po_no, sys_date  from  mf_mo       where bil_Id = upper('MP') and so_no like upper('%yf%') and  ( so_no like :os_no or mrp_no like  :prd_no )     and mrp_no=MO_NO_ADD
        union
        --外购单
-      select distinct 1 as producetype,oth_no as so_no,oth_itm1 as est_itm,os_no as po_no from  tf_pos   where  os_id=upper('po') and oth_no like upper('%yf%') and (OTH_NO like :os_no or prd_no like :prd_no )  and  os_dd >'2017-01-01'
+      select distinct 1 as producetype,oth_no as so_no,oth_itm1 as est_itm,os_no as po_no,  os_dd as sys_date from  tf_pos   where  os_id=upper('po') and oth_no like upper('%yf%') and (OTH_NO like :os_no or prd_no like :prd_no )  and  os_dd >'2017-01-01'
 
 
 

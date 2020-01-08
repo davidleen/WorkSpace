@@ -10,7 +10,7 @@ repositories {
 
 dependencies {
 
-     implementation project(":Utils")
+     implementation project(":Data")
 
 //    compile "com.giants3:dataLib:${DataLibVersion}"
     testCompile group: 'junit', name: 'junit', version: '4.11'

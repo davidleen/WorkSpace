@@ -6,7 +6,6 @@ import com.giants3.hd.logic.ProductAnalytics;
 import com.giants3.hd.noEntity.ProductDetail;
 import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.server.entity.ProductToUpdate;
-import com.giants3.hd.server.interceptor.EntityManagerHelper;
 import com.giants3.hd.server.repository.*;
 import com.giants3.hd.server.repository_erp.ErpPrdtRepository;
 import com.giants3.hd.server.utils.FileUtils;
@@ -72,7 +71,7 @@ public class MaterialService extends AbstractService {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        EntityManagerHelper helper = EntityManagerHelper.getErp();
+
 
 
         materialObjectPool = PoolCenter.getObjectPool(Material.class);

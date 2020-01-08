@@ -390,7 +390,7 @@ public class ErpWorkRepository extends ErpRepository {
 
 
     /**
-     * 查找已排产未出货的订单列表
+     * 查找流程未完成的订单列表
      *
      * @param key
      * @return
@@ -400,6 +400,25 @@ public class ErpWorkRepository extends ErpRepository {
 
         final String value = StringUtils.sqlLike(key);
         Query query = getEntityManager().createNativeQuery(SQL_ORDER_ITEM_UNCOMPLETE)
+                .setParameter("os_no", value)
+                .setParameter("prd_no", value)
+                .setParameter("firstRow", pageIndex * pageSize)
+                .setParameter("lastRow", (pageIndex + 1) * pageSize - 1);
+        return getORderItemsFromSQL(query, 0, 0);
+
+
+    }
+    /**
+     * 查找未排厂的订单款项
+     *
+     * @param key
+     * @return
+     */
+    public List<ErpOrderItem> searchUnStartOrderItems(String key, int pageIndex, int pageSize) {
+
+
+        final String value = StringUtils.sqlLike(key);
+        Query query = getEntityManager().createNativeQuery(SQL_ORDER_ITEM_UNCOMPLETE.replace("OR b.workflowstate <> 99","").replace("2017-01-01","2019-10-01"))//
                 .setParameter("os_no", value)
                 .setParameter("prd_no", value)
                 .setParameter("firstRow", pageIndex * pageSize)
@@ -471,6 +490,7 @@ public class ErpWorkRepository extends ErpRepository {
                 .addScalar("os_dd", StringType.INSTANCE)
                 .addScalar("amt", FloatType.INSTANCE)
                 .addScalar("produceType", IntegerType.INSTANCE)
+                .addScalar("sys_date", StringType.INSTANCE)
                 .addScalar("workFlowState", IntegerType.INSTANCE)
                 .addScalar("maxWorkFlowStep", IntegerType.INSTANCE)
                 .addScalar("maxWorkFlowName", StringType.INSTANCE)
@@ -563,6 +583,7 @@ public class ErpWorkRepository extends ErpRepository {
             item.pVersion = StringUtils.spliteId_no(item.id_no)[1];
             item.so_data = StringUtils.clipSqlDateData(item.so_data);
             item.os_dd = StringUtils.clipSqlDateData(item.os_dd);
+            item.sys_date = StringUtils.clipSqlDateData(item.sys_date);
 
             switch (item.produceType) {
                 case ProduceType.NOT_SET:
@@ -642,14 +663,18 @@ public class ErpWorkRepository extends ErpRepository {
         Query query = getEntityManager().createNativeQuery(SQL_ORDER_ITEM_ON_WORK_FLOW)
                 .setParameter("os_no", value)
                 .setParameter("prd_no", value)
+                .setParameter("firstRow", pageIndex * pageSize)
+                .setParameter("lastRow", (pageIndex + 1) * pageSize - 1)
                 .setParameter("workFlowStep", workFlowStep);
-        final List<ErpOrderItem> oRderItemsFromSQL = getORderItemsFromSQL(query, pageIndex, pageSize);
+        final List<ErpOrderItem> oRderItemsFromSQL = getORderItemsFromSQL(query, 0, 0);
 
 
         return oRderItemsFromSQL;
 
 
     }
+
+
 
 
     /**

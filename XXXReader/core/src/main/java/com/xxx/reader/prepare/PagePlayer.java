@@ -37,7 +37,7 @@ public class PagePlayer<C extends IChapter, P extends PageInfo, DP extends DrawP
     /**
      * 最大的缓存数量
      */
-    public static int MAX_CACHE_SIZE = 7;
+    public static int MAX_CACHE_SIZE = 5;
     /**
      * 当前页index
      */

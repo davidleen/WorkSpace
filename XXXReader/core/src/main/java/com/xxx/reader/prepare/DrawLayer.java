@@ -99,9 +99,13 @@ public class DrawLayer {
                 Bitmap bitmap = Bitmap.createBitmap(drawParam.width, drawParam.height, Bitmap.Config.ARGB_4444);
                 Canvas tempCanvas = new Canvas(bitmap);
                 pageTurner.onDraw(tempCanvas);
+                canvas.drawBitmap(bitmap,0,0,null);
+            }else
+            {
+                pageTurner.onDraw(canvas);
             }
 
-            pageTurner.onDraw(canvas);
+
         } else {
 
             BitmapHolder currentBitmap = drawCache.getCurrentBitmap();

@@ -53,7 +53,7 @@ public class PresenterImpl extends BasePresenter<Viewer, Model> implements Prese
         List<File> files = getModel().getFiles();
         if(files.size()< ErpWorkFlow.PICTURE_COUNT) {
 
-            getView().showMessage("需要上传三个图片");
+            getView().showMessage("需要上传至少"+ErpWorkFlow.PICTURE_COUNT+"张图片");
             return;
         }
 
@@ -82,7 +82,7 @@ public class PresenterImpl extends BasePresenter<Viewer, Model> implements Prese
                 if (remoteData.isSuccess()) {
 
 
-                    getView().showMessage("接收成功");
+                    getView().showMessage("已经确认");
                     getView().finishOk();
 
                 }else

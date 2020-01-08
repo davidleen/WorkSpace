@@ -137,6 +137,8 @@ public class InitData implements ApplicationListener<ContextRefreshedEvent> {
 
 
 
+         //erpWorkService.clearWorkFlowSince("2019-12-15");
+//         erpWorkService.autoStartWorkFlow();
 //            erpWorkService.updateWorkFlowReportSendingQty();
             // erpWorkService.correctAllWorkFlowReportData();
 //          erpWorkService.updateAllProducingWorkFlowReports();

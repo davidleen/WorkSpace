@@ -4,23 +4,20 @@
     package="com.giants3.hd.android"
     android:versionCode="3"
     android:versionName="v_1.0.3">
-
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
     <uses-feature android:name="android.hardware.camera" />
 
     <application
@@ -31,6 +28,9 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activity.WorkFlowMessageListActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            ></activity>
         <activity android:name=".activity.LoginActivity" />
         <activity
             android:name=".activity.ProductListActivity"
@@ -78,10 +78,10 @@
         <activity
             android:name=".activity.WorkFlowMainActivity"
             android:configChanges="orientation"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:screenOrientation="landscape"
             android:parentActivityName=".activity.BaseActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.giants3.hd.android.activity.BaseActivity" />
@@ -133,6 +133,7 @@
             android:name=".activity.WorkFlowMessageReceiveActivity"
             android:label="@string/title_activity_work_flow_message_receive"
             android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="landscape"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <meta-data
@@ -152,33 +153,19 @@
         <activity
             android:name=".activity.CustomerEditActivity"
             android:label="@string/title_activity_customer_edit"
-            android:theme="@style/AppTheme.NoActionBar"
-
-            >
-
-        </activity>
-
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".activity.ErpWorkFlowItemActivity"
             android:label="@string/title_activity_customer_edit"
-            android:theme="@style/AppTheme.NoActionBar"
-
-            >
-
-        </activity>
-
-
-
-
-
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <meta-data
             android:name="android.max_aspect"
-            android:value="2.1"></meta-data>
-
-        <!--所有嵌套依赖的支持包配置，全部替换为默认配置，避免support编译版本不一致问题。-->
-        <meta-data android:name="android.support.VERSION"  tools:replace="android:value" android:value="${ANDROID_SUPPORT_VERSION}"/>
-
+            android:value="2.1" /> <!-- 所有嵌套依赖的支持包配置，全部替换为默认配置，避免support编译版本不一致问题。 -->
+        <meta-data
+            android:name="android.support.VERSION"
+            android:value="${ANDROID_SUPPORT_VERSION}"
+            tools:replace="android:value" />
     </application>
 
 </manifest>

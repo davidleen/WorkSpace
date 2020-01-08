@@ -28,6 +28,7 @@ import com.xxx.reader.prepare.DrawLayer;
 import com.xxx.reader.prepare.PagePlayer;
 import com.xxx.reader.text.layout.BitmapProvider;
 import com.xxx.reader.turnner.ScrollPageTurner;
+import com.xxx.reader.turnner.SimulatePageTurner;
 import com.xxx.reader.turnner.sim.SimPageTurner;
 import com.xxx.reader.turnner.slide.SlidePageTurner;
 
@@ -155,7 +156,8 @@ public class ComicReadActivity extends BaseActivity {
         };
         IPageTurner pageTurner = null;
         //  pageTurner=new ScrollPageTurner(this,pageSwitchListener,readerView,provider);
-        pageTurner = new SimPageTurner(this, pageSwitchListener, readerView, provider);
+       // pageTurner = new SimPageTurner(this, pageSwitchListener, readerView, provider);
+        pageTurner = new SimulatePageTurner(this, pageSwitchListener, readerView, provider);
         // pageTurner = new SlidePageTurner(this, pageSwitchListener, readerView, provider);
 
         drawLayer.setPageTurner(pageTurner);

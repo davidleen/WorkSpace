@@ -61,7 +61,7 @@ public class ErpOrderRepository  extends ErpRepository{
     public  static final String AND_WHERE_PRD_LIKE_SQL =" and  prd_no like :PRD_NO ";
     private static final String OS_NO_CONDITION_EQUALS = " os_no = ";
     private static final String OS_NO_CONDITION_LIKE = " os_no like ";
-    public static String sql_item_1 = "   select os_no,os_dd,itm,bat_no,prd_no,prd_name,id_no, up,qty,amt from tf_pos  where os_id=:OS_ID and "+ OS_NO_CONDITION_EQUALS +":OS_NO " + OR_WHERE_PRD_LIKE_STUB;
+    public static String sql_item_1 = "   select os_no,os_dd,itm,bat_no,prd_no,prd_name,id_no, isnull(up,0) as up , isnull(qty,0)as qty, isnull(amt,0) as amt from tf_pos  where os_id=:OS_ID and "+ OS_NO_CONDITION_EQUALS +":OS_NO " + OR_WHERE_PRD_LIKE_STUB;
     public static String sql_item_2 = " select isnull(htxs,0) as htxs,isnull(so_zxs,0) as so_zxs ,khxg,isnull(xgtj,0) as xgtj , isnull(zxgtj,0) as zxgtj ,hpgg ,os_no,itm from tf_pos_z    where os_id=:OS_ID and "+ OS_NO_CONDITION_EQUALS +":OS_NO " ;
 
     /**

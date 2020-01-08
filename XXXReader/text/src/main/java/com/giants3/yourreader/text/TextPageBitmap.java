@@ -32,6 +32,7 @@ public class TextPageBitmap extends PageBitmap<TextPageInfo,DrawParam> {
     public TextPageBitmap(Context context,int screenWidth, int screenHeight, IDrawable iDrawable) {
         super(screenWidth, screenHeight, iDrawable);
         bitmap=Bitmap.createBitmap(screenWidth,screenHeight, Bitmap.Config.ARGB_8888);
+
     }
 
     @Override

@@ -23,7 +23,6 @@ import com.google.zxing.client.result.ProductResultParser;
 
 import java.util.List;
 
-import anetwork.channel.cache.CacheManager;
 
 import static com.giants3.hd.android.presenter.ProductDetailPresenter.REQUEST_PRODUCT_DETAIL_EDIT;
 

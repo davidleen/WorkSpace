@@ -29,7 +29,7 @@ public class WorkFlowArrangerUpdateDialog extends BaseMVPDialog<WorkFlowArranger
     public WorkFlowArrangerUpdateDialog(Window window, WorkFlowArranger workFlowWorker) {
         super(window, "流程工作人员配置");
         this.workFlowWorker = workFlowWorker;
-        setMinimumSize(new Dimension(400, 400));
+        setMinimumSize(new Dimension(600, 400));
 
         loadUsers();
 

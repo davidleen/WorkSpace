@@ -155,6 +155,7 @@ public class SimPageTurner extends AbsPageTurner {
                 lastTouch.y = eY;
                 setTouchDown(eX, eY, true);
                 turnMoveDirection = getTurnMoveDirection(eX, eY, action);
+               // turnMoveDirection=TURN_NONE;
 
                 break;
 
@@ -484,6 +485,7 @@ public class SimPageTurner extends AbsPageTurner {
     public void onTurn(Canvas mCanvas, BitmapProvider provider, int trun) throws Throwable {
         if (provider == null || provider.getCurrentBitmap() == null) return;
 
+
         mCanvas.save();
         calculate(trun);
         //获取当前页和底页
@@ -530,19 +532,6 @@ public class SimPageTurner extends AbsPageTurner {
     }
 
 
-//    public void onTurnRolling(Bitmap bit , Canvas mCanvas, PageBitmap mPageBitmapCurrent, PageBitmap mPageBitmapUnderside,int trun) throws Throwable{
-//        //mCanvas.save();
-//        
-//        if(mPageBitmapUnderside!=null){
-//            drawUndersidePageAreaRolling(mCanvas, mPageBitmapUnderside);
-//        }
-//        
-//        if(mPageBitmapCurrent!=null){
-//            drawCurrentPageAreaRolling( bit ,mCanvas, mPageBitmapCurrent);
-//        }
-//        
-//        //mCanvas.restore();
-//    }
 
 
 
@@ -565,14 +554,6 @@ public class SimPageTurner extends AbsPageTurner {
         return PageTurnHelper.getDistancePoint(mTouchUp, mCorner, mShape, turn);
     }
 
-    /**
-     * 计算翻页成功的目标坐标
-     *
-     * @return
-     */
-    public Point getDistancePointSlide(int turn) {
-        return PageTurnHelper.getDistancePointSlide(mTouchUp, mShape, turn);
-    }
 
     /**
      * 计算没有翻页成功的目标坐标
@@ -667,36 +648,7 @@ public class SimPageTurner extends AbsPageTurner {
         }
     }
 
-    private void calculateSlide(int trun) {
-        if (trun == TURN_PREVIOUS || trun == TURN_NO_PREVIOUS) {
-            PointF p = PageTurnHelper.excursionSlide(mShape, mTouchDown,
-                    mTouchMove);
-            mTouchMove.x = p.x;
-            mTouchMove.y = p.y;
-        }
 
-        mCornerTop.x = mShape.width;
-        mCornerTop.y = 0.0f;
-        mCornerBottom.x = mCornerTop.x;
-        mCornerBottom.y = mShape.height;
-
-        mFoldTop.x = (mTouchMove.x > mShape.width ? mShape.width : mTouchMove.x) - PageTurnHelper.getBookBoxRect().left;
-        mFoldTop.y = 0.0f;
-        mFoldBottom.x = mFoldTop.x;
-        mFoldBottom.y = mShape.height;
-
-        if (trun == TURN_NEXT) {
-            mTouchTop.x = mTouchMove.x > mShape.width ? mShape.width : (mTouchMove.x < mTouchDown.x ? mShape.width - (mTouchDown.x - mTouchMove.x) : mShape.width);
-        } else if (trun == TURN_NO_NEXT) {
-            mTouchTop.x = mShape.width;
-        } else {
-            mTouchTop.x = mTouchMove.x > mShape.width ? mShape.width : mTouchMove.x;
-        }
-
-        mTouchTop.y = 0;
-        mTouchBottom.x = mTouchTop.x;
-        mTouchBottom.y = mShape.height;
-    }
 
     /**
      * 当前页的显示区域
@@ -733,53 +685,7 @@ public class SimPageTurner extends AbsPageTurner {
     private boolean isXXhdpi() {
         return mShape.width > 1900 || mShape.height > 1900;
     }
-//    
-//    /**
-//     * 当前页的底页区域
-//     * (扣掉下一页显示区域和当前页的背影区域)
-//     * @param tempPath 
-//     */
-//    private Path drawUndersidePageAreaRolling(Canvas canvas, PageBitmap bottomPage) throws Throwable{
-//        
-//        if(canvas!=null){
-//            //下一页显示区域
-//            canvas.save();
-//            if (needSpeedUp && isXXhdpi()) {
-//                mPaint.setAntiAlias(mTouchMove.x < 0);
-//                mPaint.setSubpixelText(mTouchMove.x < 0);
-//            }
-//            bottomPage.drawHPage(canvas,  PageTurnHelper
-//                    .getBookBoxRectLeft(PageTurnHelper.getBookBoxRect().left) , 0, mPaint);
-//            canvas.restore();
-//        }
-//        
-//        return null;
-//    }
 
-//    /**
-//     * 当前页的显示区域
-//     * (扣掉下一页显示区域和当前页的背影区域)
-//     * @param tempPath 
-//     */
-//    private Path drawCurrentPageAreaRolling(Bitmap bit ,Canvas canvas, PageBitmap topPage) throws Throwable{
-//
-//        if(canvas!=null){
-//            //下一页显示区域和当前页的背影区域
-//            canvas.save();
-//
-//            if (needSpeedUp) {
-//                if (isXXhdpi()) {
-//                    mPaint.setAntiAlias(mTouchMove.x > 0);
-//                    mPaint.setSubpixelText(mTouchMove.x > 0);
-//                }
-//            }
-//            topPage.drawPageRolling(bit ,canvas, PageTurnHelper
-//                    .getBookBoxRectLeft(PageTurnHelper.getBookBoxRect().left) , mTouchMove.y , mPaint);
-//            canvas.restore();
-//        }
-//        
-//        return null;
-//    }
 
 
 
@@ -994,10 +900,10 @@ public class SimPageTurner extends AbsPageTurner {
 
 
         }
-
-        if (!(turnMoveDirection==TURN_NONE)&&(isInAnimation() || isTouched)) {
+        Log.e("trun"+turnMoveDirection);
+        if (!(turnMoveDirection==TURN_NONE)) {//&&(isInAnimation() || isTouched)
             try {
-
+                Log.e("trun======================"+turnMoveDirection);
                 onTurn(canvas, bitmapProvider, turnMoveDirection);
 
             } catch (Throwable throwable) {
@@ -1110,12 +1016,11 @@ public class SimPageTurner extends AbsPageTurner {
             if (scollEnd) {
 
                 setSpeedUpState(false);
-                pageSwitchListener.afterPageChanged(pageTurnType);
-                Log.e("doPageTurning！！！！！！！！！");
-
                 hasSwitch = true;
-
                 animating = false;
+                turnMoveDirection=TURN_NONE;
+                Log.e("doPageTurning！！！！！！！！！");
+                pageSwitchListener.afterPageChanged(pageTurnType);
             }
 
 

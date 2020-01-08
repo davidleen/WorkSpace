@@ -324,6 +324,17 @@ public class WorkFlowService extends AbstractService implements InitializingBean
 
     }
 
+    public RemoteData<WorkFlowMessage> getOrderItemWorkFlowFromMessage(User loginUser, String os_no, int itm, int fromWorkFlowStep) {
+
+
+        List<WorkFlowMessage> messages = workFlowMessageRepository.findByFromFlowStepEqualsAndOrderNameEqualsAndItmEqualsOrderByCreateTimeDesc(fromWorkFlowStep, os_no, itm);
+
+
+        return wrapData(messages);
+
+
+    }
+
     public RemoteData<WorkFlowEvent> findWorkFlowEvents() {
 
 
@@ -613,5 +624,29 @@ public class WorkFlowService extends AbstractService implements InitializingBean
         long limitMillis=24l*60*60*1000;
         List<WorkFlowMessage> workFlowMessages=workFlowMessageRepository.queryWorkFlowMessageReport(  dateStart,   dateEnd,unhandle,overdue,currentTime,limitMillis)  ;//,   unhandle,   overdue,currentTime
         return workFlowMessages;
+    }
+
+    public List<WorkFlowMessage> getNeedConfirmWorkFLowMessage(User user, String os_no, int itm, int workFlowStep,int produceType) {
+
+       ;
+        List<WorkFlowMessage> result=new ArrayList<>();
+        List<WorkFlowMessage> messages = workFlowMessageRepository.findByFromFlowStepEqualsAndOrderNameEqualsAndItmEqualsOrderByCreateTimeDesc(workFlowStep, os_no, itm);
+
+        //当前流程发出的未处理消息，并且当前用户负责目标流程的接受。则统计数+1
+
+            for (WorkFlowMessage message :messages) {
+                if (message.state == WorkFlowMessage.STATE_SEND || message.state == WorkFlowMessage.STATE_REWORK) {
+                    WorkFlowWorker worker = workFlowWorkerRepository.findFirstByUserIdEqualsAndProduceTypeEqualsAndWorkFlowCodeEqualsAndReceiveEquals(user.id, produceType, message.toFlowCode, true);
+
+                    //当前用户在目标流程有接收权限workFlowService
+                    if (worker != null) {
+                        result.add(message);
+                    }
+                }
+
+        }
+
+
+        return result;
     }
 }

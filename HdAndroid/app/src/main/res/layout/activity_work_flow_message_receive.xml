@@ -182,7 +182,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="提交流程" />
+                        android:text="完工流程" />
 
                     <TextView
                         android:id="@+id/fromFlow"
@@ -204,7 +204,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="目的部门" />
+                        android:text="下一道流程" />
 
                     <TextView
                         android:id="@+id/toFlow"
@@ -364,7 +364,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="发起人" />
+                        android:text="@string/title_sender" />
 
                     <TextView
                         android:id="@+id/sender"
@@ -387,7 +387,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="接收人" />
+                        android:text="@string/title_receiver" />
 
                     <TextView
                         android:id="@+id/receiver"
@@ -552,7 +552,7 @@
             android:id="@+id/receive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="接收" />
+            android:text="完工确认" />
 
         <Button
             android:id="@+id/reject"

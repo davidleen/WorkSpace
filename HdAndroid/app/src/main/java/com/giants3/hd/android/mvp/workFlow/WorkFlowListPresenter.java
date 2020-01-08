@@ -3,6 +3,7 @@ package com.giants3.hd.android.mvp.workFlow;
 import com.giants3.hd.android.mvp.BasePresenter;
 import com.giants3.hd.android.mvp.RemoteDataSubscriber;
 import com.giants3.hd.data.interractor.UseCaseFactory;
+import com.giants3.hd.data.net.HttpUrl;
 import com.giants3.hd.entity.ErpOrderItem;
 import com.giants3.hd.entity.ErpOrderItemProcess;
 import com.giants3.hd.entity.ErpWorkFlowReport;
@@ -57,7 +58,9 @@ public class WorkFlowListPresenter extends BasePresenter<WorkFlowListMvp.Viewer,
 
 
             @Override
-            protected void handleRemoteData(RemoteData<ErpWorkFlowReport> remoteData) {
+                protected void handleRemoteData(RemoteData<ErpWorkFlowReport> remoteData) {
+                    getModel().setWorkFlowReportData(remoteData.datas);
+
                 getView().bindOrderIteWorkFlowReport(remoteData.datas);
             }
         });
@@ -135,7 +138,7 @@ public class WorkFlowListPresenter extends BasePresenter<WorkFlowListMvp.Viewer,
 
 
         if (!hasUnDoMessage)
-            getView().showMessage("当前无流程可以接收");
+            getView().showMessage("当前无完工记录可以确认");
         else
             getView().showSendReceiveDialog(messageList);
 
@@ -226,31 +229,52 @@ public class WorkFlowListPresenter extends BasePresenter<WorkFlowListMvp.Viewer,
 
         ProductWorkMemo productWorkMemo = getModel().getSelectProductMemo(workFlowReport.workFlowStep);
         OrderItemWorkMemo orderItemWorkMemo = getModel().getSelectOrderItemMemo(workFlowReport.workFlowStep);
-        getView().showSendWorkFlowDialog(workFlowReport, productWorkMemo, orderItemWorkMemo);
+        ErpWorkFlowReport nextWorkFlowReport=getModel().getNextWorkFlowReport(workFlowReport);
+        getView().showSendWorkFlowDialog(workFlowReport,nextWorkFlowReport ,productWorkMemo, orderItemWorkMemo);
 
 
     }
 
     @Override
-    public void clearWorkFlow() {
+    public void resetWorkFlow() {
         //获取关联的流程信息
         ErpOrderItem selectOrderItem = getModel().getSelectOrderItem();
         if (selectOrderItem == null) return;
-        UseCaseFactory.getInstance().createGetClearWorkFlowUseCase(selectOrderItem.os_no, selectOrderItem.itm).execute(new RemoteDataSubscriber<Void>(this) {
+        UseCaseFactory.getInstance().createGetUseCase(HttpUrl.resetWorkFlow(selectOrderItem.os_no,selectOrderItem.itm) ,Void.class).execute(new RemoteDataSubscriber<Void>(this) {
+
+
 
             @Override
             protected void handleRemoteData(RemoteData<Void> data) {
                 if (data.isSuccess()) {
-                    getView().showMessage("清除成功");
+                    getView().showMessage("重置成功");
                     searchData();
-
-
                 } else {
-                    getView().showMessage("清除失败：" + data.message);
+                    getView().showMessage("重置失败：" + data.message);
                 }
 
             }
         });
+    }
+
+
+
+
+    @Override
+    public void confirmCompletedWork(ErpWorkFlowReport erpWorkFlowReport) {
+        UseCaseFactory.getInstance().createGetUseCase(HttpUrl.getNeedConfirmWorkMessage(erpWorkFlowReport.osNo,erpWorkFlowReport.itm,erpWorkFlowReport.workFlowStep,erpWorkFlowReport.produceType),WorkFlowMessage.class).execute(new RemoteDataSubscriber<WorkFlowMessage>(this) {
+            @Override
+            protected void handleRemoteData(RemoteData<WorkFlowMessage> data) {
+
+
+                if(data.isSuccess())
+
+                      getView().showUnHandleWorkMessageDialog(data.datas);
+
+            }
+
+        });
+
     }
 
     @Override

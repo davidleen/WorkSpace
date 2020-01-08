@@ -161,7 +161,7 @@ public class WorkFlowMessageAdapter
             String stateText = "";
             switch (data.state) {
                 case WorkFlowMessage.STATE_SEND:
-                    stateText = "待接收";
+                    stateText = "待确认";
                     break;
                 case WorkFlowMessage.STATE_RECEIVE:
                     stateText = "待审核";

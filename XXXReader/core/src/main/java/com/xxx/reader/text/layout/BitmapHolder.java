@@ -9,13 +9,10 @@ import android.view.MotionEvent;
  * Created by davidleen29 on 2018/3/21.
  */
 
-public interface BitmapHolder {
+public interface BitmapHolder  extends TouchEventListener{
 
 
 
-
-
-      boolean onTouchEvent(MotionEvent event);
 
 
 

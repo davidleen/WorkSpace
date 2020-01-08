@@ -14,6 +14,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
 
     List<User> findByNameEquals(String name);
+   User findFirstByNameEquals(String name);
 
     User  findFirstByCodeEqualsAndNameEquals(String code, String name);
     User  findFirstByCodeEquals(String code );

@@ -14,13 +14,14 @@ import com.giants3.net.UrlFormatter;
 public class HttpUrl {
     public static final String SHARE_FILE = "url_file";
     public static final String CLIENT_TYPE = "ANDROID";
-    public static final String DEFAULT_IPAddress = "192.168.1.99";
+    public static final String DEFAULT_IPAddress = "59.56.182.132";
     public static final String DEFAULT_IPPort = "8080";
     public static final String DEFAULT_ServiceName = "ReaderServer";
-    public static    String BASE_URL="http://127.0.0.1:8080/ReaderServer/";
+    public static String BASE_URL = "http://127.0.0.1:8080/ReaderServer/";
     private static String versionCode = "111";
     private static String versionName = "";
     public static String token = "";
+    public static int apiVer = 1;
     public static String IPAddress = DEFAULT_IPAddress;
     public static String IPPort = DEFAULT_IPPort;
     public static String ServiceName = DEFAULT_ServiceName;
@@ -62,46 +63,38 @@ public class HttpUrl {
     }
 
 
-
     public static String additionInfo(UrlFormatter urlFormatter) {
 
 
-
-        urlFormatter.append ( "appVersion",versionCode)
-                .append ( "client", CLIENT_TYPE)
-                .append( "token",token)
-                .append( "versionName",versionName);
-
-
-
-        return  urlFormatter.toUrl();
-
-
-    }
-    private static final void generateBaseUrl() {
-        BASE_URL = String.format(BASE_URL_FORMAT, IPAddress, IPPort, ServiceName);
-    }
-    public static String additionInfo(String url) {
-
-        UrlFormatter urlFormatter=new UrlFormatter(url).append ( "appVersion",versionCode)
-                .append ( "client", CLIENT_TYPE)
-                .append( "token",token)
-                .append( "versionName",versionName);
+        urlFormatter.append("appVersion", versionCode)
+                .append("client", CLIENT_TYPE)
+                .append("token", token)
+                .append("versionName", versionName)
+                .append("apiVer", apiVer);
 
 
         return urlFormatter.toUrl();
 
 
+    }
+
+    private static final void generateBaseUrl() {
+        BASE_URL = String.format(BASE_URL_FORMAT, IPAddress, IPPort, ServiceName);
+    }
+
+    public static String additionInfo(String url) {
+
+
+        return additionInfo(new UrlFormatter(url));
 
 
     }
 
-    public static String getComicBookList()
-    {
+    public static String getComicBookList() {
 
-        String url=BASE_URL+"api/book/listComic";
+        String url = BASE_URL + "api/book/listComic";
 
-        UrlFormatter formatter=new UrlFormatter(url);
+        UrlFormatter formatter = new UrlFormatter(url);
 
 
         return additionInfo(formatter);
@@ -110,14 +103,13 @@ public class HttpUrl {
 
     public static String getBookCategoryInfo(long bookId) {
 
-        String url=BASE_URL+"api/book/findComicChapters";
+        String url = BASE_URL + "api/book/findComicChapters";
 
-        UrlFormatter formatter=new UrlFormatter(url);
-        formatter.append("bookId",bookId);
+        UrlFormatter formatter = new UrlFormatter(url);
+        formatter.append("bookId", bookId);
 
 
         return additionInfo(formatter);
-
 
 
     }

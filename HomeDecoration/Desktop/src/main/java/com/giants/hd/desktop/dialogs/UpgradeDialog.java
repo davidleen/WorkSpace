@@ -149,7 +149,7 @@ public class UpgradeDialog extends BaseDialog {
                 File newFile = new File("temp_" + newAppVersion.appName);
 
                 BufferedInputStream bis = null;
-                FileOutputStream fos = null;
+                OutputStream fos = null;
 
                 try {
                     //打开URL通道
@@ -157,7 +157,7 @@ public class UpgradeDialog extends BaseDialog {
                         is =   url.openStream();
 
 
-                    byte[] buffer = new byte[1024];
+                    byte[] buffer = new byte[1024*16];
 
                     int size = 0;
 
@@ -165,8 +165,7 @@ public class UpgradeDialog extends BaseDialog {
                     bis = new BufferedInputStream(is);
                     fos = new FileOutputStream(newFile);
 
-
-
+                    long totalSize=0;
                     //保存文件
                     try {
 
@@ -174,6 +173,10 @@ public class UpgradeDialog extends BaseDialog {
                             //读取并刷新临时保存文件
                             fos.write(buffer, 0, size);
                             fos.flush();
+                            totalSize+=size;
+
+                            //System.out.println("download :"+totalSize+",allSize:"+newAppVersion.fileSize);
+
 
                         }
                     } catch (Exception ex4) {

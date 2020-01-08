@@ -8,8 +8,6 @@
 
 
     android:orientation="vertical"
-
-    tools:context=".activity.WorkFlowListActivity"
     tools:ignore="MergeRootFrame">
 
 
@@ -22,7 +20,7 @@
             android:id="@+id/clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="清除流程数据(系统管理员)"
+            android:text="重置流程数据(系统管理员)"
             android:visibility="gone" />
 
         <Button
@@ -84,15 +82,18 @@
         android:id="@+id/swipeLayout"
         android:layout_width="match_parent"
 
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
 
-        <com.giants3.hd.android.widget.ExpandableGridView
+        <GridView
             android:id="@+id/workFlowReport"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:verticalSpacing="5dp"
+            android:horizontalSpacing="5dp"
             android:numColumns="@integer/numOfWorkFlowReportColumn"
-
             />
 
 

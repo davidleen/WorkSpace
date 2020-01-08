@@ -9,6 +9,7 @@ import com.giants3.hd.exception.HdException;
 import com.giants3.hd.noEntity.ProduceType;
 import com.giants3.hd.noEntity.ProductType;
 import com.giants3.hd.noEntity.RemoteData;
+import com.giants3.hd.noEntity.WorkFlowReportSummary;
 import com.giants3.hd.server.repository.*;
 import com.giants3.hd.server.repository_erp.ErpWorkFlowRepository;
 import com.giants3.hd.server.repository_erp.ErpWorkRepository;
@@ -17,15 +18,20 @@ import com.giants3.hd.server.utils.FileUtils;
 import com.giants3.hd.utils.ArrayUtils;
 import com.giants3.hd.utils.DateFormats;
 import com.giants3.hd.utils.StringUtils;
+import com.sun.org.apache.xml.internal.utils.StringComparable;
 import de.greenrobot.common.DateUtils;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
+import java.awt.geom.Area;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -44,13 +50,16 @@ public class ErpWorkService extends AbstractErpService {
     @Autowired
     ErpWorkRepository erpWorkRepository;
     @Autowired
+    UserRepository userRepository;
+    @Autowired
     ErpWorkFlowRepository erpWorkFlowRepository;
 
     @Autowired
     ProductRepository productRepository;
     @Autowired
     ErpPrdtService erpPrdtService;
-
+    @Autowired
+    private WorkFlowService workFlowService;
     @Autowired
     OrderItemRepository orderItemRepository;
 
@@ -224,17 +233,22 @@ public class ErpWorkService extends AbstractErpService {
 
         }
 
-        return findErpWorkFlowReport(erpOrderItem);
+        RemoteData<ErpWorkFlowReport> erpWorkFlowReport = findErpWorkFlowReport(erpOrderItem);
+
+
+
+
+        return erpWorkFlowReport;
     }
 
     public RemoteData<ErpWorkFlowReport> findErpWorkFlowReport(ErpOrderItem erpOrderItem) {
 
-        return findErpWorkFlowReport(erpOrderItem.os_no,erpOrderItem.itm,erpOrderItem.prd_no,erpOrderItem.pVersion,erpOrderItem.produceType,erpOrderItem.produceTypeName);
+        return findErpWorkFlowReport(erpOrderItem.os_no,erpOrderItem.itm,erpOrderItem.prd_no,erpOrderItem.pVersion,erpOrderItem.produceType,erpOrderItem.produceTypeName,erpOrderItem.sys_date);
     }
     /**
      * 查找xxxx的进度报表
      */
-    public RemoteData<ErpWorkFlowReport> findErpWorkFlowReport(String os_no,int itm,String prd_no,String pVersion,int produceType,String produceTypeName) {
+    public RemoteData<ErpWorkFlowReport> findErpWorkFlowReport(String os_no,int itm,String prd_no,String pVersion,int produceType,String produceTypeName,String firstStepStartDate) {
 
 
         //查询本地数据库的报表记录
@@ -319,6 +333,18 @@ public class ErpWorkService extends AbstractErpService {
                     erpWorkFlowReport.productType = productType.type;
                     erpWorkFlowReport.productTypeName = productType.name;
 
+                    if(erpWorkFlowReport.workFlowStep == ErpWorkFlow.FIRST_STEP&&!StringUtils.isEmpty(firstStepStartDate))
+                    {
+                        try {
+                            erpWorkFlowReport.startDate =DateFormats.FORMAT_YYYY_MM_DD.parse(firstStepStartDate).getTime() ;
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        erpWorkFlowReport.startDateString =firstStepStartDate;
+
+                    }
+
+
 
                     erpWorkFlowReports.add(erpWorkFlowReport);
                 }
@@ -348,6 +374,12 @@ public class ErpWorkService extends AbstractErpService {
 
 
         }
+
+
+
+
+
+
 
 
         return wrapData(erpWorkFlowReports);
@@ -536,15 +568,23 @@ public class ErpWorkService extends AbstractErpService {
      * @return
      */
     public RemoteData<ErpOrderItemProcess> getAvailableOrderItemProcess(User loginUser, String os_no, int itm, int flowStep) {
-
-
         ErpOrderItem erpOrderItem = erpWorkRepository.findOrderItem(os_no, itm);
+        return getAvailableOrderItemProcess(loginUser,erpOrderItem,flowStep);
+    }  /**
+     * 查找指定节点可发送的订单流程数据
+     *
+     * @param erpOrderItem
+     * @param flowStep
+     * @return
+     */
+    public RemoteData<ErpOrderItemProcess> getAvailableOrderItemProcess(User loginUser,  ErpOrderItem erpOrderItem,int flowStep) {
+        String os_no=erpOrderItem.os_no;
+         int itm=erpOrderItem.itm;
+
         WorkFlowWorker workFlowWorker = workFlowWorkerRepository.findFirstByUserIdEqualsAndProduceTypeEqualsAndWorkFlowStepEquals(loginUser.id, erpOrderItem.produceType, flowStep);
 
         if (workFlowWorker == null)
-
             return wrapError("当前节点未配置工作人员");
-
         if (!workFlowWorker.send) {
             return wrapError("当前流程无发送权限");
         }
@@ -694,6 +734,21 @@ public class ErpWorkService extends AbstractErpService {
     @Transactional(rollbackFor = {HdException.class})
     public synchronized RemoteData<Void> sendWorkFlowMessage(User user, ErpOrderItemProcess erpOrderItemProcess, int tranQty, long areaId, String memo) throws HdException {
 
+        ErpOrderItem erpOrderItem = erpWorkRepository.findOrderItem(erpOrderItemProcess.osNo, erpOrderItemProcess.itm);
+
+        return    sendWorkFlowMessage(user,erpOrderItemProcess,erpOrderItem,tranQty,areaId,memo);
+
+    }/**
+ * 向指定流程发起生产提交
+ *
+ * @param user
+ * @param erpOrderItemProcess 订单项对应流程状态
+ * @param tranQty             传递数量
+ * @param memo                备注
+ */
+    @Transactional(rollbackFor = {HdException.class})
+    public synchronized RemoteData<Void> sendWorkFlowMessage(User user, ErpOrderItemProcess erpOrderItemProcess,  ErpOrderItem erpOrderItem, int tranQty, long areaId, String memo) throws HdException {
+
 
         //增加数据小验证
 
@@ -759,7 +814,7 @@ public class ErpWorkService extends AbstractErpService {
         }
 
 
-        ErpOrderItem erpOrderItem = erpWorkRepository.findOrderItem(erpOrderItemProcess.osNo, erpOrderItemProcess.itm);
+
 
         //验证人员
 
@@ -822,8 +877,21 @@ public class ErpWorkService extends AbstractErpService {
         workFlowMessage.toFlowStep = erpOrderItemProcess.nextWorkFlowStep;
         workFlowMessage.toFlowName = erpOrderItemProcess.nextWorkFlowName;
         workFlowMessage.toFlowCode = erpOrderItemProcess.nextWorkFlowCode;
-        workFlowMessage.createTime = Calendar.getInstance().getTimeInMillis();
-        workFlowMessage.createTimeString = DateFormats.FORMAT_YYYY_MM_DD_HH_MM.format(Calendar.getInstance().getTime());
+
+
+        if(erpOrderItemProcess.currentWorkFlowStep == ErpWorkFlow.FIRST_STEP&&!StringUtils.isEmpty(erpOrderItem.sys_date))
+        {
+            try {
+                workFlowMessage.createTime =DateFormats.FORMAT_YYYY_MM_DD.parse(erpOrderItem.sys_date).getTime() ;
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            workFlowMessage.createTimeString =erpOrderItem.sys_date;
+
+        }else {
+            workFlowMessage.createTime = Calendar.getInstance().getTimeInMillis();
+            workFlowMessage.createTimeString = DateFormats.FORMAT_YYYY_MM_DD_HH_MM.format(Calendar.getInstance().getTime());
+        }
         workFlowMessage.state = WorkFlowMessage.STATE_SEND;
 
         workFlowMessage.productName = erpOrderItemProcess.prdNo;
@@ -862,7 +930,7 @@ public class ErpWorkService extends AbstractErpService {
         generateWorkFlowReports(erpOrderItemProcess, erpOrderItem);
 
 
-        if (erpOrderItemProcess.currentWorkFlowStep == ErpWorkFlow.LAST_STEP) {
+        if (erpOrderItemProcess.currentWorkFlowStep == ErpWorkFlow.STEP_CHENGPIN) {
 
 
             //自动审核通过
@@ -937,25 +1005,29 @@ public class ErpWorkService extends AbstractErpService {
 
         if (workFlowReports.isSuccess()) {
 
-            WorkFlowTimeLimit.OrderItemType orderItemType = findOrderItemTypeForTimeLimit(erpOrderItemProcess, erpOrderItem);
-
-            WorkFlowTimeLimit timeLimit = workFlowTimeLimitRepository.findFirstByOrderItemTypeEquals(orderItemType.orderItemType);
-
-
-            for (ErpWorkFlowReport erpWorkFlowReport : workFlowReports.datas) {
-
-                erpWorkFlowReport.orderItemType = orderItemType.orderItemType;
-                erpWorkFlowReport.orderItemTypeName = orderItemType.orderItemTypeName;
-                erpWorkFlowReport.idx1 = orderItemType.idx1;
-                updateErpWorkFlowReport(erpWorkFlowReport, timeLimit);
-
-
-            }
-
-
-            erpWorkFlowReportRepository.save(workFlowReports.datas);
-            erpWorkFlowReportRepository.flush();
+            updateErpWorkFlowReports(erpOrderItemProcess, erpOrderItem, workFlowReports);
         }
+    }
+
+    private void updateErpWorkFlowReports(ErpOrderItemProcess erpOrderItemProcess, ErpOrderItem erpOrderItem, RemoteData<ErpWorkFlowReport> workFlowReports) {
+        WorkFlowTimeLimit.OrderItemType orderItemType = findOrderItemTypeForTimeLimit(erpOrderItemProcess, erpOrderItem);
+
+        WorkFlowTimeLimit timeLimit = workFlowTimeLimitRepository.findFirstByOrderItemTypeEquals(orderItemType.orderItemType);
+
+
+        for (ErpWorkFlowReport erpWorkFlowReport : workFlowReports.datas) {
+
+            erpWorkFlowReport.orderItemType = orderItemType.orderItemType;
+            erpWorkFlowReport.orderItemTypeName = orderItemType.orderItemTypeName;
+            erpWorkFlowReport.idx1 = orderItemType.idx1;
+            updateErpWorkFlowReport(erpWorkFlowReport, timeLimit);
+
+
+        }
+
+
+        erpWorkFlowReportRepository.save(workFlowReports.datas);
+        erpWorkFlowReportRepository.flush();
     }
 
 
@@ -983,7 +1055,7 @@ public class ErpWorkService extends AbstractErpService {
                     limitDay = workFlowTimeLimit.limit_tie_baipeijg;
                 }
                 break;
-            case ErpWorkFlow.LAST_STEP:
+            case ErpWorkFlow.STEP_CHENGPIN:
 
                 erpWorkFlowReport.isOverDue = false;
                 erpWorkFlowReport.overDueDay = 0;
@@ -1031,6 +1103,16 @@ public class ErpWorkService extends AbstractErpService {
 
 
         }
+
+        if( erpWorkFlowReport.workFlowStep== ErpWorkFlow.LAST_STEP) {
+
+            erpWorkFlowReport.isOverDue = false;
+            erpWorkFlowReport.overDueDay = 0;
+
+            alertDay = 0;
+            limitDay = 0;
+        }
+
         erpWorkFlowReport.limitDay = limitDay;
         erpWorkFlowReport.alertDay = alertDay;
 
@@ -1282,7 +1364,7 @@ public class ErpWorkService extends AbstractErpService {
 
         final int length = files.length;
         if (length < ErpWorkFlow.PICTURE_COUNT) {
-            return wrapError("接收，要传递三张图片");
+            return wrapError("确认，至少需要上传"+ErpWorkFlow.PICTURE_COUNT+"张图片");
         }
 
 
@@ -1481,8 +1563,8 @@ public class ErpWorkService extends AbstractErpService {
     public RemoteData<Void> rejectWorkFlowMessage(User loginUser, long workFlowMsgId, MultipartFile[] files, String memo) {
 
         final int length = files.length;
-        if (length < 3) {
-            return wrapError("接收，要传递三张图片");
+        if (length < ErpWorkFlow.PICTURE_COUNT) {
+            return wrapError("确认，要传递"+ ErpWorkFlow.PICTURE_COUNT+"张图片");
         }
 
         WorkFlowMessage message = workFlowMessageRepository.findOne(workFlowMsgId);
@@ -1627,7 +1709,7 @@ public class ErpWorkService extends AbstractErpService {
 
 
         if (!user.name.equals(User.ADMIN)) {
-            return wrapError("只有系统管理员才能清除流程数据");
+            return wrapError("只有系统管理员才能重置流程数据");
         }
         try {
             int count = workFlowMessageRepository.deleteByOsNoAndItm(osNo, itm);
@@ -1651,6 +1733,26 @@ public class ErpWorkService extends AbstractErpService {
 
     }
 
+
+    @Transactional
+    public void clearWorkFlowSince(String date) {
+        User user = userRepository.findFirstByNameEquals(User.ADMIN);
+        List<WorkFlowMessage> workFlowMessages = workFlowMessageRepository.findBySenderIdEqualsAndStateEquals(user.id, 0);
+        System.out.println("totalcount:" + workFlowMessages.size());
+        int size = 0;
+        for (WorkFlowMessage message : workFlowMessages) {
+
+            if (message.createTimeString.compareTo(date) > 0) {
+                size++;
+//                try {
+//                    clearWorkFLow(user, message.orderName, message.itm);
+//                } catch (HdException e) {
+//                    e.printStackTrace();
+//                }
+            }
+        }
+        System.out.println("totalcount:" + size);
+    }
     /**
      * 查询指定期间，流程已经结束，小工序未完工的单据。
      */
@@ -1899,4 +2001,101 @@ public class ErpWorkService extends AbstractErpService {
 
         return wrapData(result);
     }
+
+    public WorkFlowReportSummary findSummaryForReport(User user,ErpWorkFlowReport report) {
+        WorkFlowReportSummary    summary=new WorkFlowReportSummary();
+
+        if(report.workFlowStep>ErpWorkFlow.LAST_STEP)
+        {
+            summary.canSendMessageCount=0;
+            summary.canReceiveMessageCount=0;
+        }else {
+
+
+
+            List<WorkFlowMessage> needConfirmWorkFLowMessage = workFlowService.getNeedConfirmWorkFLowMessage(user, report.osNo, report.itm, report.workFlowStep, report.produceType);
+            summary.canReceiveMessageCount = needConfirmWorkFLowMessage==null?0:needConfirmWorkFLowMessage.size();
+            int canSendMessageCount=0;
+            if(report.percentage<1) {
+                RemoteData<ErpOrderItemProcess> availableOrderItemProcess = getAvailableOrderItemProcess(user, report.osNo, report.itm, report.workFlowStep);
+                canSendMessageCount=availableOrderItemProcess.isSuccess() ? availableOrderItemProcess.totalCount : 0;
+            }
+            summary.canSendMessageCount = canSendMessageCount;
+
+        }
+        return summary;
+    }
+
+
+    /**
+     * 每天凌晨5点 自动启动订单生产流程
+     */
+    @Transactional
+    public void autoStartWorkFlow()
+    {
+
+        long time=System.currentTimeMillis();
+        User loginUser=userRepository.findFirstByNameEquals(User.ADMIN);
+        WorkFlowArea area=workFlowAreaRepository.findAll().get(0);
+        List<ErpOrderItem> result= erpWorkRepository.searchUnStartOrderItems("", 0,10000);
+        logger.info("UnCompleteOrderItems:"+result.size());
+
+        if(result.size()>0)
+        {
+
+            for (ErpOrderItem orderItem:result)
+            {
+
+                logger.info(orderItem.os_no+orderItem.prd_name+orderItem.itm);
+                startOrderItemWorkFlow(loginUser, orderItem,area);
+
+            }
+
+        }
+
+
+        logger.info("use time in autoStart:"+(System.currentTimeMillis()-time));
+    }
+
+     public void startOrderItemWorkFlow(User loginUser,ErpOrderItem erpOrderItem,WorkFlowArea area)
+     {
+
+
+         RemoteData<ErpOrderItemProcess> itemProcessRemoteData=getAvailableOrderItemProcess(loginUser, erpOrderItem,ErpWorkFlow.FIRST_STEP);
+         if(!itemProcessRemoteData.isSuccess())
+         {
+             logger.info("itemProcessRemoteData:"+itemProcessRemoteData.message);
+         }else
+         if( itemProcessRemoteData.datas.size()>0)
+         {
+
+
+             for (ErpOrderItemProcess erpOrderItemProcess:itemProcessRemoteData.datas) {
+                 try {
+                     sendWorkFlowMessage(loginUser,erpOrderItemProcess,erpOrderItem,erpOrderItemProcess.qty,area.id,"系统自动发起");
+                     logger.info("itemProcessRemoteData:send Qty:"+erpOrderItemProcess.qty);
+                 } catch (HdException e) {
+                     e.printStackTrace();
+                     logger.info("itemProcessRemoteData:"+ e.getMessage());
+                 }
+             }
+         }else
+         {
+             logger.info("itemProcessRemoteData:"+ "no available ErpOrderItemProcess");
+         }
+
+     }
+
+
+     @Transactional(rollbackFor = HdException.class)
+     public RemoteData<Void> resetOrderItemWorkFlow(User loginUser,String osNo,int itm) throws HdException {
+
+
+
+         WorkFlowArea area=workFlowAreaRepository.findAll().get(0);
+         ErpOrderItem erpOrderItem = erpWorkRepository.findOrderItem(osNo, itm);
+         startOrderItemWorkFlow(loginUser,erpOrderItem,area);
+
+         return wrapMessageData("重置成功");
+     }
 }

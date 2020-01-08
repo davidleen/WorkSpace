@@ -32,7 +32,9 @@ import com.xxx.reader.prepare.PageBitmapCreator;
 import com.xxx.reader.prepare.PagePlayer;
 import com.xxx.reader.prepare.PagePlayerBuilder;
 import com.xxx.reader.turnner.ScrollPageTurner;
+import com.xxx.reader.turnner.SimulatePageTurner;
 import com.xxx.reader.turnner.sim.SimPageTurner;
+import com.xxx.reader.turnner.slide.SlidePageTurner;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -171,9 +173,10 @@ public class TextReadActivity extends BaseActivity {
 
 
         IPageTurner pageTurner = null;
-       // pageTurner = new ScrollPageTurner(this, pageSwitchListener, readerView, prepareLayer);
-         pageTurner=new SimPageTurner(this,pageSwitchListener,readerView,prepareLayer);
-        // pageTurner = new SlidePageTurner(this, pageSwitchListener, readerView, provider);
+      //  pageTurner = new ScrollPageTurner(this, pageSwitchListener, readerView, prepareLayer);
+        //    pageTurner=new SimPageTurner(this,pageSwitchListener,readerView,prepareLayer);
+     pageTurner=new SimulatePageTurner(this,pageSwitchListener,readerView,prepareLayer);
+        //   pageTurner = new SlidePageTurner(this, pageSwitchListener, readerView, prepareLayer);
 
         drawLayer.setPageTurner(pageTurner);
         readerView.setDrawLayer(drawLayer);

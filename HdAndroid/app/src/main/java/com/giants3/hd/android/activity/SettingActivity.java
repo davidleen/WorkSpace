@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.giants3.hd.android.BuildConfig;
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.helper.SharedPreferencesHelper;
 import com.giants3.hd.data.net.HttpUrl;
@@ -101,7 +102,7 @@ public class SettingActivity extends BaseActionBarActivity {
         });
 
         AUser loginUser = SharedPreferencesHelper.getLoginUser();
-        setOutUrl.setVisibility((loginUser == null || !loginUser.internet) ? View.GONE : View.VISIBLE);
+        setOutUrl.setVisibility(( BuildConfig.DEBUG ||(loginUser!=null&&loginUser.internet))? View.VISIBLE: View.GONE );
         etIp.setText(HttpUrl.IPAddress);
         etPort.setText(HttpUrl.IPPort);
         etService.setText(HttpUrl.ServiceName);

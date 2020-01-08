@@ -1,0 +1,5 @@
+com/umeng/message/provider/MessageProvider.class
+com/umeng/message/provider/MessageProvider$a.class
+com/umeng/message/provider/MessageProvider$b.class
+com/umeng/message/provider/a.class
+com/umeng/message/common/UmengMessageDeviceConfig.class

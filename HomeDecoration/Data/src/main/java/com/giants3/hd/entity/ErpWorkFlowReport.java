@@ -1,9 +1,8 @@
 package com.giants3.hd.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.giants3.hd.noEntity.WorkFlowReportSummary;
+
+import javax.persistence.*;
 
 /**流程报告数据
  * Created by davidleen29 on 2017/2/28.
@@ -101,4 +100,8 @@ public class ErpWorkFlowReport {
      * 已发送未接收数量
      */
     public int sendingQty;
+
+
+    @Transient
+    public WorkFlowReportSummary summary;
 }

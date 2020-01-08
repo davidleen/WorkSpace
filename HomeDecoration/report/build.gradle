@@ -7,7 +7,7 @@ sourceCompatibility = 1.7
 
 dependencies {
 
-    compileOnly project(":Utils")
+    compileOnly project(":Data")
 
     //底下都是 jasper 所需必要的依赖， 如果有缺失，去maven查找。
     compile fileTree(dir: 'libs', include: ['*.jar'])

@@ -1,6 +1,5 @@
 package com.giants3.hd.server.service;
 
-import com.giants3.hd.server.interceptor.EntityManagerHelper;
 
 import javax.persistence.EntityManager;
 

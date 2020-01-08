@@ -237,6 +237,31 @@ public class WorkFlowController extends BaseController {
         return workFlowService.getOrderItemWorkFlowMessage(user, os_no, itm, workFlowStep);
 
 
+    }  /**
+     *   获取当前流程已完工，当前用户是目标流程的接收人，并且未确认的信息
+     * cancelOrderWorkFlow?orderItemWorkFlowId
+     *
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/needConfirmWorkFLowMessage", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    RemoteData<WorkFlowMessage> needConfirmWorkFLowMessage(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user
+
+
+            , @RequestParam(value = "os_no") String os_no
+            , @RequestParam(value = "itm") int itm
+            , @RequestParam(value = "workFlowStep") int workFlowStep
+            , @RequestParam(value = "produceType") int produceType
+
+
+    ) {
+
+
+        return wrapData(workFlowService.getNeedConfirmWorkFLowMessage(user, os_no, itm, workFlowStep,produceType));
+
+
     }
 
     /**
@@ -442,8 +467,6 @@ public class WorkFlowController extends BaseController {
 
 
         return wrapData(workFlowService.getWorkFlowMessageReport(dateStart,dateEnd,unhandle,overdue));
-
-
     }
 
 

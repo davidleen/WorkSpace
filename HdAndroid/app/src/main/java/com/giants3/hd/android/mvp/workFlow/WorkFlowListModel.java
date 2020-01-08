@@ -2,6 +2,7 @@ package com.giants3.hd.android.mvp.workFlow;
 
 import com.giants3.hd.android.helper.SharedPreferencesHelper;
 import com.giants3.hd.entity.ErpOrderItem;
+import com.giants3.hd.entity.ErpWorkFlow;
 import com.giants3.hd.entity.ErpWorkFlowReport;
 import com.giants3.hd.entity.OrderItemWorkMemo;
 import com.giants3.hd.entity.ProductWorkMemo;
@@ -19,6 +20,7 @@ public class WorkFlowListModel implements WorkFlowListMvp.Model {
 
     private List<OrderItemWorkMemo> orderItemWorkMemos;
     private List<ProductWorkMemo> productWorkMemos;
+    private List<ErpWorkFlowReport> datas;
 
     @Override
     public boolean canSendWorkFlow(ErpWorkFlowReport workFlowStep) {
@@ -41,6 +43,10 @@ public class WorkFlowListModel implements WorkFlowListMvp.Model {
 
     @Override
     public boolean canReceiveWorkFlow(ErpWorkFlowReport erpWorkFlowReport) {
+
+
+
+
         List<WorkFlowWorker> workFlowWorkers = SharedPreferencesHelper.getInitData().workFlowWorkers;
 
         for (WorkFlowWorker workFlowWorker : workFlowWorkers) {
@@ -116,6 +122,26 @@ public class WorkFlowListModel implements WorkFlowListMvp.Model {
         return null;
     }
 
+
+    @Override
+    public void setWorkFlowReportData(List<ErpWorkFlowReport> datas) {
+
+
+        this.datas = datas;
+    }
+
+
+    @Override
+    public ErpWorkFlowReport getNextWorkFlowReport(ErpWorkFlowReport workFlowReport) {
+
+
+        int index = datas.indexOf(workFlowReport);
+        if(index==-1||index>=datas.size()-1) return null
+        ;
+        return datas.get(index+1);
+
+
+    }
 
     @Override
     public void setSelectOrderItem(ErpOrderItem orderItem) {

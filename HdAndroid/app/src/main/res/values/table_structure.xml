@@ -389,12 +389,12 @@
         <item>订单数量||orderItemQty||1||80</item>
         <item>交接数量||transportQty||1||80</item>
         <item>制令单||mrpNo||1||80</item>
-        <item>发起流程||fromFlowName||1||80</item>
-        <item>发起人||senderName||1||80</item>
+        <item>当前流程||fromFlowName||1||80</item>
+        <item>完工人||senderName||1||80</item>
         <item>发起时间||createTimeString||1||80</item>
         <item>交接区域||area||1||80</item>
         <item>接收流程||toFlowName||1||80</item>
-        <item>接收人||receiverName||1||80</item>
+        <item>完工确认人||receiverName||1||80</item>
         <item>接收时间||receiveTimeString||1||80</item>
 
     </string-array>

@@ -1,8 +1,20 @@
+with query as (
+
+   SELECT     ROW_NUMBER() OVER (ORDER BY  osNo DESC, itm ASC ) AS __rowindex__, osNo,itm from  [yunfei].[dbo].[T_OrderItemWorkState] where workflowstate<>VALUE_COMPLETE_STATE and   maxWorkFlowStep=:workFlowStep and (osNo like :os_no or prdNo like :prd_no)
+
+
+   GROUP BY osNo, itm
+)
+
+
+
+
+
 select a.os_no,a.os_dd,a.itm,a.bat_no,a.prd_no,a.prd_name,a.id_no,
- a.up,isnull(d.ut,'') as ut,
+ isnull(a.up,0) as up ,isnull(d.ut,'') as ut,
 
 isnull(d.idx1,'') as idx1,
- a.qty,a.amt , isnull(pdc.produceType,-1) as produceType,
+ a.qty,isnull(a.amt,0) as amt , isnull(pdc.produceType,-1) as produceType, pdc.sys_date,
 
 b.workFlowDescribe, isnull(b.workflowState,0) as workflowState,
  isnull(b.maxWorkFlowStep,0 )  as maxWorkFlowStep , isnull(b.maxWorkFlowName,'') as maxWorkFlowName,
@@ -17,14 +29,14 @@ b.workFlowDescribe, isnull(b.workflowState,0) as workflowState,
 ,g.cus_no
 ,k.cus_no as factory
 ,e.hpgg,e.khxg, isnull(e.so_zxs,0) as  so_zxs    from
-
-
-
+(
+    select   * from  query    WHERE __rowindex__ BETWEEN :firstRow AND  :lastRow  ) as query inner join
  (
 --9 表示 订单生产中
 select osNo,itm,workflowstate,maxWorkFlowStep,maxWorkFlowName, maxWorkFlowCode,workFlowDescribe ,currentOverDueDay,totalLimit ,currentLimitDay,currentAlertDay from  [yunfei].[dbo].[T_OrderItemWorkState] where workflowstate<>VALUE_COMPLETE_STATE and   maxWorkFlowStep=:workFlowStep and (osNo like :os_no or prdNo like :prd_no)
 
-) as b  inner join
+) as b   on query.osNo=b.osNo and query.itm=b.itm
+ inner join
  (
 
 
@@ -37,10 +49,10 @@ and  os_dd >'2017-01-01' and (os_no like :os_no or prd_no like :prd_no)
    left outer join
    (
        --排厂单
-      select  distinct  0 as produceType, SO_NO,EST_ITM ,'' as po_no from  MF_MO    where   bil_Id = upper('MP') and  so_no like upper('%YF%') and so_no like :os_no and mrp_no=MO_NO_ADD
+      select  distinct  0 as produceType, SO_NO,EST_ITM ,'' as po_no , sys_date from  MF_MO    where   bil_Id = upper('MP') and  so_no like upper('%YF%') and so_no like :os_no and mrp_no=MO_NO_ADD
        union
        --外购单
-      select distinct 1 as produceType,OTH_NO as so_no,oth_itm1 as est_itm,os_no as po_no from  tf_POS   where  os_id=upper('PO') and OTH_NO like upper('%YF%')  and OTH_NO like :os_no and  os_dd >'2017-01-01'
+      select distinct 1 as produceType,OTH_NO as so_no,oth_itm1 as est_itm,os_no as po_no, os_dd as sys_date  from  tf_POS   where  os_id=upper('PO') and OTH_NO like upper('%YF%')  and OTH_NO like :os_no and  os_dd >'2017-01-01'
 
 
 
@@ -87,7 +99,7 @@ and  os_dd >'2017-01-01' and (os_no like :os_no or prd_no like :prd_no)
 
 
 
-order by a.os_no  DESC,a.itm   ASC
+order by  query.__rowindex__
 
 
 

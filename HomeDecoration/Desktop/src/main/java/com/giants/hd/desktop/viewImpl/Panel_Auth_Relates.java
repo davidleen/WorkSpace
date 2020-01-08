@@ -269,6 +269,7 @@ public class Panel_Auth_Relates extends BasePanel implements AuthRelateDetailVie
 
     @Override
     public void showOrderRow(int showRow) {
+        if(showRow>=0&&tb_order.getRowCount()>0&&showRow<tb_order.getRowCount())
         tb_order.setRowSelectionInterval(showRow,showRow);
     }
 

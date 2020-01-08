@@ -31,12 +31,17 @@ android {
         applicationId "com.giants3.hd.android"
         minSdkVersion project.ANDROID_MIN_VERSION
         targetSdkVersion project.ANDROID_TARGET_VERSION
-        versionCode 76
-        versionName "1.7.6"
+        versionCode 78
+        versionName "1.7.8"
 
         buildConfigField "boolean", "AUTO_UPDATES", "true"
 
         multiDexEnabled true
+
+
+        multiDexKeepProguard file('multiDexKeep.pro') // keep specific classes using proguard syntax
+        multiDexKeepFile file('multiDexKeep.txt') // keep specific classe
+
         manifestPlaceholders = [ANDROID_SUPPORT_VERSION: "${ANDROID_SUPPORT_V7_VERSION}"]
 
         javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
@@ -72,9 +77,14 @@ android {
         useNewCruncher = false
 
     }
+
     dexOptions {
         javaMaxHeapSize "4g"
-        jumboMode = true
+        preDexLibraries = false
+        additionalParameters += '--multi-dex'
+        additionalParameters += '--set-max-idx-number=48000'
+//每个包内方法数上限（根据实际项目配置这个数，来适配4.0-4.4一些低端机型，因为拆分的dex太大，这些低端机型加载不了dex）
+        additionalParameters += '--minimal-main-dex'
     }
     lintOptions {
         abortOnError false
@@ -106,13 +116,12 @@ android {
 }
 
 
-
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
 dependencies {
 
-    compile 'com.android.support:multidex:1.0.1'
+    implementation 'com.android.support:multidex:1.0.1'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile('com.nostra13.universalimageloader:universal-image-loader:1.9.4') {
         exclude group: 'com.android.support'
@@ -129,12 +138,12 @@ dependencies {
     compile "com.android.support:design:${ANDROID_SUPPORT_V7_VERSION}"
     compile "com.android.support:recyclerview-v7:${ANDROID_SUPPORT_V7_VERSION}"
     compile "com.jakewharton:butterknife:${BUTTERKNIFE_VERSION}"
-    compile 'de.greenrobot:eventbus:2.4.1'
-    compile 'com.wefika:flowlayout:0.4.1'
+    implementation 'de.greenrobot:eventbus:2.4.1'
+    implementation 'com.wefika:flowlayout:0.4.1'
     // compile 'com.android.support:support-v4:23.4.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
-    compile 'com.lcodecorex:tkrefreshlayout:1.0.7'
+    implementation 'com.lcodecorex:tkrefreshlayout:1.0.7'
 //    compile project(':zxing')
     compile project(':zxing_yipianfengye')
 //     debugCompile project(':zxing_no_op')
@@ -145,7 +154,7 @@ dependencies {
 
     releaseCompile project(':PushSDK')
     releaseCompile project(path: ':umenganalysis')
-    debugCompile project(':PushSDK')
+    debugCompile project(':PushSDK_no_op')
     debugCompile project(path: ':umenganalysis')
 
 
@@ -155,7 +164,6 @@ dependencies {
 
     }
     annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:${PERMISSIONSDISPATCHER_VERSION}"
-
 
 
 }

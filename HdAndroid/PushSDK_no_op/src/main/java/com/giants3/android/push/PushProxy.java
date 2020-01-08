@@ -2,6 +2,7 @@ package com.giants3.android.push;
 
 import android.content.Context;
 
+import com.giants3.android.api.push.MessageCallback;
 import com.giants3.android.api.push.RegisterCallback;
 
 /**
@@ -11,7 +12,7 @@ import com.giants3.android.api.push.RegisterCallback;
 
 public class PushProxy {
 
-    public static  void config(Context context, final RegisterCallback callback){}
+    public static  void config(Context context, final RegisterCallback callback, final MessageCallback messageCallback){}
 
     public static void onAppStart( )
     {

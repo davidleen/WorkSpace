@@ -876,4 +876,25 @@ public class ApiManager {
 
         return remoteData;
     }
+
+
+    public <T> RemoteData<T> getData(String url,Class<T> tClass)throws HdException
+    {
+        String result = apiConnection.getString(url);
+        RemoteData<T> remoteData = invokeByReflect(result,tClass);
+        return remoteData;
+    }
+
+    public <T> RemoteData<T> postData(String url, T data, Class<T> tClass) throws HdException {
+        String result = apiConnection.post(url, com.giants3.hd.utils.GsonUtils.toJson(data));
+        RemoteData<T> remoteData = invokeByReflect(result,tClass);
+        return remoteData;
+    }
+
+
+    public <T> RemoteData<T> deleteData(String url,  Class<T> tClass) throws HdException {
+        String result = apiConnection.delete(url );
+        RemoteData<T> remoteData = invokeByReflect(result,tClass);
+        return remoteData;
+    }
 }

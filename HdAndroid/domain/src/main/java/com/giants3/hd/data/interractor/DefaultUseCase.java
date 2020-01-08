@@ -1,5 +1,7 @@
 package com.giants3.hd.data.interractor;
 
+import com.google.inject.Guice;
+
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -15,6 +17,8 @@ public abstract class DefaultUseCase  extends  UseCase{
 
     protected DefaultUseCase( ) {
         super(  Schedulers.newThread(), AndroidSchedulers.mainThread());
+
+        Guice.createInjector().injectMembers(this);
     }
 
 

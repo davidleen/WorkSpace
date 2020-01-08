@@ -35,8 +35,8 @@
             <colspec value="left:20px:noGrow"/>
             <colspec value="fill:61px:noGrow"/>
             <colspec value="left:20px:noGrow"/>
-            <colspec value="fill:131px:noGrow"/>
-            <colspec value="left:50dlu:noGrow"/>
+            <colspec value="fill:184px:noGrow"/>
+            <colspec value="left:87dlu:noGrow"/>
             <constraints/>
             <properties/>
             <border type="none"/>
@@ -90,7 +90,7 @@
                   <forms/>
                 </constraints>
                 <properties>
-                  <text value="接收"/>
+                  <text value="接收(上一道的完工确认)"/>
                 </properties>
               </component>
               <component id="77929" class="javax.swing.JCheckBox" binding="send">
@@ -99,7 +99,7 @@
                   <forms/>
                 </constraints>
                 <properties>
-                  <text value="发送"/>
+                  <text value="发送（完工）"/>
                 </properties>
               </component>
               <component id="f238c" class="javax.swing.JButton" binding="btn_delete">

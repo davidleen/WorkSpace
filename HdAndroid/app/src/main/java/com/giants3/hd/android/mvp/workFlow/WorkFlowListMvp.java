@@ -5,6 +5,7 @@ import com.giants3.hd.android.mvp.NewPresenter;
 import com.giants3.hd.android.mvp.NewViewer;
 import com.giants3.hd.entity.ErpOrderItem;
 import com.giants3.hd.entity.ErpOrderItemProcess;
+import com.giants3.hd.entity.ErpWorkFlow;
 import com.giants3.hd.entity.ErpWorkFlowReport;
 import com.giants3.hd.entity.OrderItemWorkMemo;
 import com.giants3.hd.entity.ProductWorkMemo;
@@ -38,6 +39,10 @@ public interface WorkFlowListMvp {
         ProductWorkMemo getSelectProductMemo(int workFlowStep);
 
         OrderItemWorkMemo getSelectOrderItemMemo(int workFlowStep);
+
+        void setWorkFlowReportData(List<ErpWorkFlowReport> datas);
+
+        ErpWorkFlowReport getNextWorkFlowReport(ErpWorkFlowReport workFlowReport);
     }
 
     interface Presenter extends NewPresenter<Viewer> {
@@ -63,9 +68,16 @@ public interface WorkFlowListMvp {
         void chooseWorkFlowReport(ErpWorkFlowReport workFlowReport);
 
 
-        void clearWorkFlow();
+        void resetWorkFlow();
 
         void adjustWorkFlow();
+
+        /**
+         *  对完工的信息进行确认
+         * @param workFlowReport
+
+         */
+        void confirmCompletedWork(ErpWorkFlowReport workFlowReport);
     }
 
     interface Viewer extends NewViewer {
@@ -79,9 +91,11 @@ public interface WorkFlowListMvp {
 
         void showSendReceiveDialog(List<WorkFlowMessage> messageList);
 
-        void showSendWorkFlowDialog(ErpWorkFlowReport workFlowReport, ProductWorkMemo productWorkMemo, OrderItemWorkMemo orderItemWorkMemo);
+        void showSendWorkFlowDialog(ErpWorkFlowReport workFlowReport,ErpWorkFlowReport nextWorkFlowReport, ProductWorkMemo productWorkMemo, OrderItemWorkMemo orderItemWorkMemo);
 
         void showSampleState(SampleState sampleState);
+
+        void showUnHandleWorkMessageDialog(List<WorkFlowMessage> datas);
     }
 
 }

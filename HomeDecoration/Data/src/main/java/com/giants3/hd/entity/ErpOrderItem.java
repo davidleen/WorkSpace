@@ -345,6 +345,12 @@ public class ErpOrderItem {
 
 
     /**
+     * 系統時間
+     */
+    public  String sys_date;
+
+
+    /**
      * 生产产品的类型   铁件mjxx  xx表示某种具体分类。mj06 家具类  mj07 灯具类
      */
     public String idx1;

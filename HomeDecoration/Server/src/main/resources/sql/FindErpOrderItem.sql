@@ -2,7 +2,7 @@ select a.os_no,a.os_dd,a.itm,a.bat_no,a.prd_no,a.prd_name,a.id_no, a.up,
 isnull(d.ut,'') as ut,
 isnull(d.idx1,'') as idx1,
 
-isnull(a.qty,0) as qty , isnull(a.amt ,0) as amt, isnull(pdc.produceType,-1) as produceType,
+isnull(a.qty,0) as qty , isnull(a.amt ,0) as amt, isnull(pdc.produceType,-1) as produceType, pdc.sys_date,
 
 b.workFlowDescribe, isnull(b.workflowState,0) as workflowState,
  isnull(b.maxWorkFlowStep,0 )  as maxWorkFlowStep , isnull(b.maxWorkFlowName,'') as maxWorkFlowName,
@@ -27,11 +27,11 @@ and  os_dd >'2017-01-01' and (os_no = :os_no and itm= :itm)
   left outer join
    (
        --排厂单 内厂制令单 含有成品数据，才能认为是排给内厂的。（ and mrp_no=MO_NO_ADD  成品数据判断）
-      select  distinct  0 as produceType, SO_NO,EST_ITM ,'' as po_no from  MF_MO    where    bil_Id = upper('MP') and  so_no like upper('%YF%') and so_no like :os_no and mrp_no=MO_NO_ADD
+      select  distinct  0 as produceType, SO_NO,EST_ITM ,'' as po_no   , sys_date   from  MF_MO    where    bil_Id = upper('MP') and  so_no like upper('%YF%') and so_no like :os_no and mrp_no=MO_NO_ADD
 
        union
        --外购单
-      select distinct 1 as produceType,OTH_NO as so_no,oth_itm1 as est_itm,os_no as po_no from  tf_POS   where  os_id=upper('PO') and OTH_NO like upper('%YF%')   and  os_dd >'2017-01-01'
+      select distinct 1 as produceType,OTH_NO as so_no,oth_itm1 as est_itm,os_no as po_no , os_dd as sys_date from  tf_POS   where  os_id=upper('PO') and OTH_NO like upper('%YF%')   and  os_dd >'2017-01-01'
 
 
 

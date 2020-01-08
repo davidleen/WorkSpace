@@ -118,7 +118,7 @@ public class UnCompleteOrderItemFragment extends BaseMvpFragment<UnCompleteOrder
 //                if((SharedPreferencesHelper.getLoginUser().position& CompanyPosition.PRIVILAGE_WORKFLOW_MEMO)==CompanyPosition.PRIVILAGE_WORKFLOW_MEMO)
 //                {
                 //有备注权限
-                AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setItems(new String[]{"生产备注", "生产交接记录", "生产进度查看"}, new DialogInterface.OnClickListener() {
+                AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setItems(new String[]{"生产备注", "生产完工记录", "生产进度查看"}, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 

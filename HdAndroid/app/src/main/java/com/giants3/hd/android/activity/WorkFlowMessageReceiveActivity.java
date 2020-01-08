@@ -162,7 +162,7 @@ public class WorkFlowMessageReceiveActivity extends BaseHeadViewerActivity<Prese
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("流程接收");
+        setTitle("完工确认");
         WorkFlowMessage workFlowMessage = null;
         try {
             workFlowMessage = GsonUtils.fromJson(getIntent().getStringExtra(KEY_MESSAGE), WorkFlowMessage.class);
@@ -400,7 +400,7 @@ public class WorkFlowMessageReceiveActivity extends BaseHeadViewerActivity<Prese
         String stateText = "";
         switch (data.state) {
             case WorkFlowMessage.STATE_SEND:
-                stateText = "待接收";
+                stateText = "待确认";
                 break;
             case WorkFlowMessage.STATE_RECEIVE:
                 stateText = "待审核";

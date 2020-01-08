@@ -54,7 +54,7 @@ public abstract class AbsPageTurner implements IPageTurner, GestureDetector.OnGe
         scroller = new Scroller(context);
 
         gestureDetector = new GestureDetector(context, this);
-
+//        gestureDetector.setIsLongpressEnabled(false);
 
         this.pageSwitchListener = pageSwitchListener;
         this.drawable = drawable;
@@ -126,7 +126,6 @@ public abstract class AbsPageTurner implements IPageTurner, GestureDetector.OnGe
 
     @Override
     public void onLongPress(MotionEvent e) {
-
     }
 
     @Override

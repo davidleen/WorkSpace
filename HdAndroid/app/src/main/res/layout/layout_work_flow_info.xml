@@ -70,7 +70,7 @@
         android:background="@drawable/button_white_round_selector"
 
         android:layout_marginTop="10dp"
-        android:text="发送流程" />
+        android:text="@string/title_complete_flow" />
 
     <TextView
         android:id="@+id/receive"
@@ -83,7 +83,7 @@
         android:layout_marginTop="10dp"
         android:background="@drawable/button_white_round_selector"
 
-        android:text="接收流程" />
+        android:text="@string/title_confirm_flow" />
 
     <TextView
         android:id="@+id/viewMaterial"

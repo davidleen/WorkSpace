@@ -428,7 +428,6 @@ public class PageTurnHelper {
     /**
      * 按照动画模式设置坐标
      *
-     * @param mShape
      * @param point
      * @param x
      * @param y
@@ -736,6 +735,24 @@ public class PageTurnHelper {
             matrix.reset();
         }
 
+//        float dis = (float) Math.hypot(corner.x - bezierHorizontal.control.x, bezierVertical.control.y - corner.y);
+//        float f8 = (corner.x - bezierHorizontal.control.x) / dis;
+//        float f9 = (bezierVertical.control.y - corner.y) / dis;
+//        matrixArray[0] = 1 - 2 * f9 * f9;
+//        matrixArray[1] = 2 * f8 * f9;
+//        matrixArray[3] = matrixArray[1];
+//        matrixArray[4] = 1 - 2 * f8 * f8;
+//
+//        matrix.setValues(matrixArray);
+//        matrix.preTranslate(-bezierHorizontal.control.x, -bezierHorizontal.control.y);
+//        matrix.postTranslate(bezierHorizontal.control.x, bezierHorizontal.control.y);
+        getCurrentBackAreaMatrix(matrix,corner,bezierHorizontal,bezierVertical);
+        return matrix;
+    }
+
+    public static void getCurrentBackAreaMatrix(Matrix output,PointF corner, Bezier bezierHorizontal, Bezier bezierVertical)
+    {
+        output.reset();
         float dis = (float) Math.hypot(corner.x - bezierHorizontal.control.x, bezierVertical.control.y - corner.y);
         float f8 = (corner.x - bezierHorizontal.control.x) / dis;
         float f9 = (bezierVertical.control.y - corner.y) / dis;
@@ -744,11 +761,11 @@ public class PageTurnHelper {
         matrixArray[3] = matrixArray[1];
         matrixArray[4] = 1 - 2 * f8 * f8;
 
-        matrix.setValues(matrixArray);
-        matrix.preTranslate(-bezierHorizontal.control.x, -bezierHorizontal.control.y);
-        matrix.postTranslate(bezierHorizontal.control.x, bezierHorizontal.control.y);
+        output.setValues(matrixArray);
+        output.preTranslate(-bezierHorizontal.control.x, -bezierHorizontal.control.y);
+        output.postTranslate(bezierHorizontal.control.x, bezierHorizontal.control.y);
 
-        return matrix;
+
     }
 
     public static ColorMatrixColorFilter getColorMatrixColorFilter() {
@@ -889,6 +906,30 @@ public class PageTurnHelper {
          * 结束点
          */
         public PointF end = new PointF();
+
+        /**
+         * 计算贝塞尔曲线的顶点
+         */
+        public void calculateVertex() {
+
+            vertex.x = (start.x + 2 * control.x + end.x) * 0.25f;
+            vertex.y = (2 * control.y + start.y + end.y) * 0.25f;
+        }
+
+        public void draw(Canvas canvas, Paint paint) {
+
+
+
+            int radius=10;
+            canvas.drawCircle(start.x,start.y,radius,paint);
+            canvas.drawCircle(end.x,end.y,radius,paint);
+            canvas.drawCircle(control.x,control.y,radius,paint);
+            canvas.drawCircle(vertex.x,vertex.y,radius,paint);
+
+
+
+
+        }
     }
 
     private static ShadowDrawable getShadowDrawable() {

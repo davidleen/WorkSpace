@@ -15,7 +15,7 @@ repositories {
 dependencies {
 
 
-    compile project(":Utils")
+    compile project(":Data")
 
     compile project(":common")
     providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.0.1'
