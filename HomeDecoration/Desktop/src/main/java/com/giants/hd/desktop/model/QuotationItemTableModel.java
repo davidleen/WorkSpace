@@ -35,14 +35,15 @@ public class QuotationItemTableModel extends BaseTableModel<QuotationItem> {
     public static final String COLUMN_COST = "cost";
     public static final String COLUMN_PRICE = "price";
     public static final String COLUMN_COST_PRICE_RATIO = "cost_price_ratio";
-    public static String[] columnNames = new String[]{"*内盒*", "*每箱数*", "客户箱规", "单位", "成本价", "成本利润比", "FOB", "立方数", "净重", "货品规格", "材质", "镜面尺寸", "备注"};
-    public static int[] columnWidths = new int[]{50, 60, 120, 40, 50, 50, 50, 50, 50, 100, 120, 80, 400};
+    public static String[] columnNames = new String[]{"*内盒*", "*每箱数*", "客户箱规", "单位", "成本价", "成本利润比", "FOB", "立方数", "KD","净重", "货品规格", "材质", "镜面尺寸", "备注"};
+    public static int[] columnWidths = new int[]{50, 60, 120, 40, 50, 50, 50, 50, 50,50, 100, 120, 80, 400};
 
     public static final String MEMO = "memo";
-    public static String[] fieldName = new String[]{"inBoxCount", "packQuantity", "packageSize", "unit", COLUMN_COST, COLUMN_COST_PRICE_RATIO, COLUMN_PRICE, "volumeSize", "weight", COLUMN_SPEC, "constitute", "mirrorSize", MEMO};
-    public static Class[] classes = new Class[]{};
+    public static final String COLUMN_KD = "kd";
+    public static String[] fieldName = new String[]{"inBoxCount", "packQuantity", "packageSize", "unit", COLUMN_COST, COLUMN_COST_PRICE_RATIO, COLUMN_PRICE, "volumeSize", COLUMN_KD, "weight", COLUMN_SPEC, "constitute", "mirrorSize", MEMO};
+    public static Class[] classes = new Class[]{Object.class,Object.class,Object.class,Object.class,Object.class,Object.class,Object.class,Object.class,String.class};
 
-    public static boolean[] editables = new boolean[]{false, false, false, false, false, false, false, false, false, false, false, true};
+    public static boolean[] editables = new boolean[]{false, false, false, false, false, false, false, false, true,false,false,false, false, true};
 
 
     QuoteAuth quoteAuth = CacheManager.getInstance().bufferData.quoteAuth;
@@ -88,6 +89,10 @@ public class QuotationItemTableModel extends BaseTableModel<QuotationItem> {
             return "***";
         }
 
+        if (fieldName[columnIndex].equals(COLUMN_KD) ) {
+            return item.kd?"Y":"N";
+        }
+
         if (fieldName[columnIndex].equals(COLUMN_COST_PRICE_RATIO)) {
             if (quoteAuth.fobVisible) {
                 if (item.cost_price_ratio > 0) return item.cost_price_ratio;
@@ -130,7 +135,14 @@ public class QuotationItemTableModel extends BaseTableModel<QuotationItem> {
                     quotationItem.cost_price_ratio = newValue;
                 }
                 break;
-            case 11:
+            case 8:
+
+                try {
+                    quotationItem.kd =  aValue.toString().equalsIgnoreCase("Y");
+                }catch (Throwable t)
+                {}
+                break;
+                case 12:
 
                 quotationItem.memo = aValue.toString();
                 break;

@@ -88,6 +88,12 @@ public class QuotationItem implements Serializable,Valuable {
      */
     @Basic
     public float volumeSize;
+
+    /**
+     * 是否开模？
+     */
+    @Basic
+    public boolean kd;
     /**
      *净重
      */

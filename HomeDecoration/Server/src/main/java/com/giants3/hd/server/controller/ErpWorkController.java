@@ -396,8 +396,8 @@ public class ErpWorkController extends BaseController {
      * 每天凌晨5点 自动启动订单生产流程
      */
 //    @Scheduled(cron = "0 0 5 * * ?")
-//    @Scheduled(cron = "0 0/60 8-20 * * ?")   //早上8点到晚上22点之前  每小时执行一次。
-    //@Scheduled(fixedDelay = 1l*60*60*1000 ,corn=)  //没间隔一小时，执行一次
+    @Scheduled(cron = "0 0/60 8-20 * * ?")   //早上8点到晚上22点之前  每小时执行一次。
+//    @Scheduled(fixedDelay = 1l*60*60*1000 )  //没间隔一小时，执行一次
    public void autoStartWorkFlow()
     {
 
@@ -418,7 +418,7 @@ public class ErpWorkController extends BaseController {
 
         RemoteData<Void> result = null;
         try {
-            RemoteData<Void> voidRemoteData = erpWorkService.clearWorkFLow(user, osNo, itm);
+            RemoteData<Void> voidRemoteData = erpWorkService.resetOrderItemWorkFlow(user, osNo, itm);
             result=voidRemoteData;
 //            if(!voidRemoteData.isSuccess())
 //                return voidRemoteData;

@@ -17,6 +17,7 @@ import android.graphics.drawable.GradientDrawable;
 
 import com.giants3.android.frame.util.Log;
 import com.xxx.reader.Utils;
+import com.xxx.reader.core.DrawParam;
 
 import java.lang.ref.SoftReference;
 
@@ -238,6 +239,12 @@ public class PageTurnHelper {
      * 是否属于右上左下
      */
     public static boolean isRightTopOrLeftBottom(Shape shape, PointF corner) {
+
+        return (corner.x == 0 && corner.y == shape.height) || (corner.x == shape.width && corner.y == 0) ? true : false;
+    } /**
+     * 是否属于右上左下
+     */
+    public static boolean isRightTopOrLeftBottom(DrawParam shape, PointF corner) {
 
         return (corner.x == 0 && corner.y == shape.height) || (corner.x == shape.width && corner.y == 0) ? true : false;
     }
@@ -585,6 +592,14 @@ public class PageTurnHelper {
     }
 
     public static Rect getUndersideShadowRect(boolean isRtLb, Bezier bezierHorizontal, float diagonal, float touch2Corner) {
+
+        Rect rect=new Rect();
+        getUndersideShadowRect(rect, isRtLb,   bezierHorizontal,   diagonal,   touch2Corner);
+        return rect;
+    }
+
+
+    public static void getUndersideShadowRect(Rect outRect,boolean isRtLb, Bezier bezierHorizontal, float diagonal, float touch2Corner) {
         int left = 0, right = 0;
 
         if (isRtLb) {
@@ -595,7 +610,7 @@ public class PageTurnHelper {
             right = (int) bezierHorizontal.start.x;
         }
 
-        return new Rect(left, (int) bezierHorizontal.start.y, right, (int) (diagonal + bezierHorizontal.start.y));
+          outRect.set(left, (int) bezierHorizontal.start.y, right, (int) (diagonal + bezierHorizontal.start.y));
     }
 
     public static Rect getUndersideShadowRect(boolean isLeft, PointF move, PointF fold, Shape shape) {
@@ -617,6 +632,14 @@ public class PageTurnHelper {
         int right = (int) (fold.x + (fold.x - move.x) * 0.3f);
 
         return new Rect(left, 0, right, shape.height);
+    }
+
+
+    public static void getUndersideShadowRect(Rect outRect,PointF move, PointF fold, DrawParam shape) {
+        int left = (int) (fold.x - (fold.x - move.x) * 0.15f);
+        int right = (int) (fold.x + (fold.x - move.x) * 0.3f);
+
+          outRect.set(left, 0, right, shape.height);
     }
 
     public static Rect getUndersideShadowRectSlide(PointF move, Shape shape) {
@@ -661,7 +684,37 @@ public class PageTurnHelper {
         return new Rect(left, 0, right, shape.height);
     }
 
+    public static Rect getCurrentHorizontalShadowRect(PointF move, PointF fold, float touch2Corner, DrawParam shape) {
+        int left = (int) (move.x - getLenghtShadow(touch2Corner));
+        int right = (int) move.x;
+
+        return new Rect(left, 0, right, shape.height);
+    }
+
     public static Rect getCurrentVerticalShadowRect(boolean isRtLb, Bezier bezierVertical, float diagonal, float touch2Corner, Shape shape) {
+        Rect rect = new Rect();
+
+        int top = 0, bottom = 0;
+
+        if (isRtLb) {
+            top = (int) (bezierVertical.control.y - 1);
+            bottom = (int) (bezierVertical.control.y + getLenghtShadow(touch2Corner));
+        } else {
+            top = (int) (bezierVertical.control.y - getLenghtShadow(touch2Corner));
+            bottom = (int) (bezierVertical.control.y + 1);
+        }
+
+        float temp = (float) Math.hypot(bezierVertical.control.x,
+                bezierVertical.control.y < 0 ? bezierVertical.control.y - shape.height : bezierVertical.control.y);
+        if (temp > diagonal) {
+            rect.set((int) (bezierVertical.control.x - getLenghtShadow(touch2Corner) - temp), top,
+                    (int) (bezierVertical.control.x + diagonal - temp), bottom);
+        } else {
+            rect.set((int) (bezierVertical.control.x - diagonal), top, (int) (bezierVertical.control.x), bottom);
+        }
+
+        return rect;
+    } public static Rect getCurrentVerticalShadowRect(boolean isRtLb, Bezier bezierVertical, float diagonal, float touch2Corner, DrawParam shape) {
         Rect rect = new Rect();
 
         int top = 0, bottom = 0;

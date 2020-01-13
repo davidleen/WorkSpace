@@ -7,6 +7,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.graphics.Region;
 import android.view.MotionEvent;
 
@@ -30,6 +31,7 @@ public class SimulatePageTurner extends AbsPageTurner {
 
     private Path currentPageArea=new Path();
     private Path downPageArea =new Path();
+    private Rect downPageShadowRect=new Rect();
     private Path currentBackArea=new Path();
     Simulate simulate;
 
@@ -68,17 +70,23 @@ public class SimulatePageTurner extends AbsPageTurner {
             }
 
 
+
+
+
             Path lastPath = null;
             if (topPage != null) {
 
 
+
+
+                //绘制上面页
                 simulate.generateCurrentPageArea(currentPageArea);
                 canvas.save();
                 canvas.clipPath(currentPageArea, Region.Op.XOR);
                 topPage.draw(canvas);
                 canvas.restore();
 
-
+                //绘制上面页的背面
                 simulate.generateCurrentBackPageArea(currentBackArea);
 
                 canvas.save();
@@ -93,7 +101,7 @@ public class SimulatePageTurner extends AbsPageTurner {
                // canvas.drawColor(Color.parseColor("#88ff0000") );
                 canvas.restore();
 
-                simulate.drawCurrentHorizontalPageShadow(canvas,currentPageArea);
+               // simulate.drawCurrentHorizontalPageShadow(canvas,currentPageArea);
             }
 
 
@@ -101,12 +109,16 @@ public class SimulatePageTurner extends AbsPageTurner {
 
                 simulate.generateDownPageArea(downPageArea);
                 canvas.save();
+                canvas.clipPath(currentPageArea);
                 canvas.clipPath(downPageArea, Region.Op.INTERSECT);
                 bottomPage.draw(canvas);
+
+
+                simulate.drawUndersidePageShadow(canvas,downPageShadowRect  );
                 canvas.restore();
-             // drawUndersidePageAreaAndShadow(mCanvas, bottomPage, lastPath);
 
             }
+
 
             simulate.drawCurrentPageShadow(canvas,currentPageArea);
 
@@ -271,6 +283,8 @@ public class SimulatePageTurner extends AbsPageTurner {
             simulate.mCornerTop.y = 0;
             simulate.mCornerBottom.x = drawParam.width;
             simulate.mCornerBottom.y = drawParam.height;
+
+
 
 
         } else if (direction == TURN_PREVIOUS) {

@@ -243,12 +243,12 @@ public class ErpWorkService extends AbstractErpService {
 
     public RemoteData<ErpWorkFlowReport> findErpWorkFlowReport(ErpOrderItem erpOrderItem) {
 
-        return findErpWorkFlowReport(erpOrderItem.os_no,erpOrderItem.itm,erpOrderItem.prd_no,erpOrderItem.pVersion,erpOrderItem.produceType,erpOrderItem.produceTypeName,erpOrderItem.sys_date);
+        return findErpWorkFlowReport(erpOrderItem.os_no,erpOrderItem.itm,erpOrderItem.prd_no,erpOrderItem.pVersion,erpOrderItem.produceType,erpOrderItem.produceTypeName );
     }
     /**
      * 查找xxxx的进度报表
      */
-    public RemoteData<ErpWorkFlowReport> findErpWorkFlowReport(String os_no,int itm,String prd_no,String pVersion,int produceType,String produceTypeName,String firstStepStartDate) {
+    public RemoteData<ErpWorkFlowReport> findErpWorkFlowReport(String os_no,int itm,String prd_no,String pVersion,int produceType,String produceTypeName ) {
 
 
         //查询本地数据库的报表记录
@@ -333,16 +333,7 @@ public class ErpWorkService extends AbstractErpService {
                     erpWorkFlowReport.productType = productType.type;
                     erpWorkFlowReport.productTypeName = productType.name;
 
-                    if(erpWorkFlowReport.workFlowStep == ErpWorkFlow.FIRST_STEP&&!StringUtils.isEmpty(firstStepStartDate))
-                    {
-                        try {
-                            erpWorkFlowReport.startDate =DateFormats.FORMAT_YYYY_MM_DD.parse(firstStepStartDate).getTime() ;
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        erpWorkFlowReport.startDateString =firstStepStartDate;
 
-                    }
 
 
 
@@ -523,14 +514,7 @@ public class ErpWorkService extends AbstractErpService {
         List<ErpOrderItemProcess> orderItemProcesses = erpWorkRepository.findPurchaseOrderItemProcesses(os_no, itm);
 
 
-        for (ErpOrderItemProcess process : orderItemProcesses) {
 
-            ErpOrderItemProcess localProcess = erpOrderItemProcessRepository.findFirstByOsNoEqualsAndItmEqualsAndMoNoEqualsAndMrpNoEquals(process.osNo, process.itm, process.moNo, process.mrpNo);
-            if (localProcess != null)
-                attachData(process, localProcess);
-
-
-        }
 
 
         //下一个节点
@@ -549,10 +533,17 @@ public class ErpWorkService extends AbstractErpService {
             process.unSendQty = process.qty;
 
 
+
+
+            ErpOrderItemProcess localProcess = erpOrderItemProcessRepository.findFirstByOsNoEqualsAndItmEqualsAndMoNoEqualsAndMrpNoEquals(process.osNo, process.itm, process.moNo, process.mrpNo);
+            if (localProcess != null)
+                attachData(process, localProcess);
+
             process.nextWorkFlowCode = nextFlow == null ? "" : nextFlow.code;
             process.nextWorkFlowStep = nextFlow == null ? 0 : nextFlow.step;
             process.nextWorkFlowName = nextFlow == null ? "" : nextFlow.name;
-            result.add(process);
+            if(process.unSendQty>0)
+                result.add(process);
         }
 
 
@@ -1020,6 +1011,19 @@ public class ErpWorkService extends AbstractErpService {
             erpWorkFlowReport.orderItemType = orderItemType.orderItemType;
             erpWorkFlowReport.orderItemTypeName = orderItemType.orderItemTypeName;
             erpWorkFlowReport.idx1 = orderItemType.idx1;
+
+
+            if(erpWorkFlowReport.workFlowStep == ErpWorkFlow.FIRST_STEP&&!StringUtils.isEmpty(erpOrderItem.sys_date))
+            {
+                try {
+                    erpWorkFlowReport.startDate =DateFormats.FORMAT_YYYY_MM_DD.parse(erpOrderItem.sys_date).getTime() ;
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                erpWorkFlowReport.startDateString =erpOrderItem.sys_date;
+
+            }
+
             updateErpWorkFlowReport(erpWorkFlowReport, timeLimit);
 
 
@@ -2070,15 +2074,9 @@ public class ErpWorkService extends AbstractErpService {
          {
 
 
-             for (ErpOrderItemProcess erpOrderItemProcess:itemProcessRemoteData.datas) {
-                 try {
-                     sendWorkFlowMessage(loginUser,erpOrderItemProcess,erpOrderItem,erpOrderItemProcess.qty,area.id,"系统自动发起");
-                     logger.info("itemProcessRemoteData:send Qty:"+erpOrderItemProcess.qty);
-                 } catch (HdException e) {
-                     e.printStackTrace();
-                     logger.info("itemProcessRemoteData:"+ e.getMessage());
-                 }
-             }
+            for (ErpOrderItemProcess itemProcess:itemProcessRemoteData.datas) {
+                generateWorkFlowReports(itemProcess, erpOrderItem);
+            }
          }else
          {
              logger.info("itemProcessRemoteData:"+ "no available ErpOrderItemProcess");

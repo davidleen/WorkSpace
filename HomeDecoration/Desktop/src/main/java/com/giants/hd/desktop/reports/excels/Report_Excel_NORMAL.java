@@ -148,20 +148,24 @@ public class Report_Excel_NORMAL extends ExcelReportor {
             addNumber(writableSheet, item.volumeSize, 17, rowUpdate);
 
 
+            //是否开模
+            addString(writableSheet, item.kd?"Y":"N", 18, rowUpdate);
+
+
             //产品规格
-            addString(writableSheet, item.spec.trim(), 18, rowUpdate);
+            addString(writableSheet, item.spec.trim(), 19, rowUpdate);
 
 
             //镜面尺寸
-            addString(writableSheet, item.mirrorSize.trim(), 20, rowUpdate);
+            addString(writableSheet, item.mirrorSize.trim(), 21, rowUpdate);
 
 
             //净重
-            addNumber(writableSheet, item.weight, 21, rowUpdate);
+            addNumber(writableSheet, item.weight, 22, rowUpdate);
 
 
             //备注
-            addString(writableSheet, item.memo.trim(), 23, rowUpdate);
+            addString(writableSheet, item.memo.trim(), 24, rowUpdate);
 
 
         }

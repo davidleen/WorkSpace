@@ -643,6 +643,12 @@ public class Panel_QuotationDetail extends BasePanel implements QuotationDetailV
 
         DefaultCellEditor editor = new DefaultCellEditor(jtf);
         fixedTable.setDefaultEditor(Product.class, editor);
+
+        JComboBox<String> ComboBox = new JComboBox<>();
+        ComboBox.addItem("Y");
+        ComboBox.addItem("N");
+        DefaultCellEditor booleanEditor=new DefaultCellEditor(ComboBox);
+        tb.setDefaultEditor(String.class,booleanEditor);
     }
 
 
