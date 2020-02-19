@@ -44,8 +44,13 @@ public class SimulatePageTurner extends AbsPageTurner {
         super(context, pageSwitchListener, drawable, bitmapProvider);
         simulate = new Simulate();
         mPaint=new Paint();
+        strokePaint=new Paint();
+        strokePaint.setColor(Color.parseColor("#33ff0000"));
+        strokePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        strokePaint.setStrokeWidth(3);
     }
     Paint mPaint;
+    Paint strokePaint;
     Matrix currentBackMatrix=new Matrix();
     @Override
     public void onDraw(Canvas canvas) {
@@ -91,14 +96,16 @@ public class SimulatePageTurner extends AbsPageTurner {
 
                 canvas.save();
 
+
                 canvas.clipPath(currentBackArea, Region.Op.INTERSECT);
 
 
-                 mPaint.setColorFilter(PageTurnHelper.getColorMatrixColorFilter());
+             mPaint.setColorFilter(PageTurnHelper.getColorMatrixColorFilter());
                 simulate.generateCurrentBackMatrix(currentBackMatrix);
                 canvas.setMatrix(currentBackMatrix);
                 topPage.draw(canvas,mPaint);
-               // canvas.drawColor(Color.parseColor("#88ff0000") );
+                canvas.drawColor(Color.parseColor("#33ffff00"));
+                //canvas.drawPath(currentBackArea,strokePaint);
                 canvas.restore();
 
                // simulate.drawCurrentHorizontalPageShadow(canvas,currentPageArea);

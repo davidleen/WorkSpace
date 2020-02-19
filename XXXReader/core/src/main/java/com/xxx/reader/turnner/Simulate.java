@@ -55,6 +55,24 @@ public class Simulate {
     private boolean mIsRtLb=true;       //是否属于右上左下
     private float mDiagonal;     //对角线
 
+
+    /**
+     * 拖拽点阴影顶点位置。
+     */
+    PointF shadowVertexPoint =new PointF();
+
+    /**
+     * 贝塞尔曲线  阴影路径
+     */
+    Path BezierShadowPath=new Path();
+
+    /**
+     * 翻起页阴影区域
+     */
+    Rect currentBezierShadowRect=new Rect();
+
+
+
     public Simulate() {
         if (BuildConfig.DEBUG) {
             paint = new Paint();
@@ -186,6 +204,9 @@ public class Simulate {
             mBezierVertical.draw(canvas, paint);
             mBezierHorizontal.draw(canvas, paint);
 
+
+            canvas.drawCircle(shadowVertexPoint.x, shadowVertexPoint.y, 3, paint);
+
         }
 
     }
@@ -301,8 +322,9 @@ public class Simulate {
             canvas.clipRect(0, 0, drawParam.width, drawParam.height);
             if (!PageTurnHelper.isDayModeTitleLineColor()) {
                 GradientDrawable mCurrentPageShadow = PageTurnHelper.getFrontShadowDrawableVRL();
-                mCurrentPageShadow.setBounds(PageTurnHelper.getCurrentHorizontalShadowRect(mDragBottom,
-                        mFoldBottom, mTouch2Corner * 0.17f, drawParam));
+                  PageTurnHelper.getCurrentHorizontalShadowRect(currentBezierShadowRect,mDragBottom,
+                        mFoldBottom, mTouch2Corner * 0.17f, drawParam);
+                mCurrentPageShadow.setBounds(currentBezierShadowRect);
 
                 mCurrentPageShadow.draw(canvas);
             }
@@ -344,7 +366,9 @@ public class Simulate {
         if (canvas != null && lastPath != null) {
             float touch2Corner = mTouch2Corner * 0.17f, degrees = 0.0f;
 
-            PointF shadowVertexPoint = PageTurnHelper.getShadowVertexPoint(mBezierHorizontal, mDrag, mIsRtLb, touch2Corner);
+            PageTurnHelper.getShadowVertexPoint(shadowVertexPoint,mBezierHorizontal, mDrag, mIsRtLb, touch2Corner);
+
+
 
             GradientDrawable mCurrentPageShadow = null;
 
@@ -353,17 +377,24 @@ public class Simulate {
             if (mCorner.y == mShape.height && degrees > -89 || mCorner.y == 0 && (degrees < -95 || degrees > 0)) {
                 canvas.save();
                 canvas.clipPath(lastPath, Region.Op.XOR);
-                canvas.clipPath(PageTurnHelper.drawPolygon(shadowVertexPoint, mDrag,
-                        mBezierHorizontal.control, mBezierHorizontal.start), Region.Op.INTERSECT);
+
+                drawPolygon(BezierShadowPath,shadowVertexPoint, mDrag,
+                        mBezierHorizontal.control, mBezierHorizontal.start);
+                canvas.clipPath(BezierShadowPath, Region.Op.INTERSECT);
                 canvas.clipRect(0, 0, mShape.width, mShape.height);
                 if (!PageTurnHelper.isDayModeTitleLineColor()) {
                     mCurrentPageShadow = mIsRtLb ? PageTurnHelper.getFrontShadowDrawableVLR() : PageTurnHelper.getFrontShadowDrawableVRL();
-                    mCurrentPageShadow.setBounds(PageTurnHelper.getCurrentHorizontalShadowRect(mIsRtLb,
-                            mBezierHorizontal, mDiagonal, touch2Corner));
+
+                     PageTurnHelper.getCurrentHorizontalShadowRect(currentBezierShadowRect,mIsRtLb,
+                            mBezierHorizontal, mDiagonal, touch2Corner);
+
+                    mCurrentPageShadow.setBounds(currentBezierShadowRect);
 
                     canvas.rotate(PageTurnHelper.getDegrees(mDrag.x - mBezierHorizontal.control.x, mBezierHorizontal.control.y - mDrag.y),
                             mBezierHorizontal.control.x, mBezierHorizontal.control.y);
                     mCurrentPageShadow.draw(canvas);
+
+                    canvas.drawRect(currentBezierShadowRect,paint);
                 }
                 canvas.restore();
             }
@@ -373,16 +404,19 @@ public class Simulate {
             if (mCorner.y == mShape.height && degrees < 85 || mCorner.y == 0 && degrees > -85) {
                 canvas.save();
                 canvas.clipPath(lastPath, Region.Op.XOR);
-                canvas.clipPath(PageTurnHelper.drawPolygon(shadowVertexPoint, mDrag,
-                        mBezierVertical.control, mBezierVertical.start), Region.Op.INTERSECT);
+                drawPolygon(BezierShadowPath,shadowVertexPoint, mDrag,
+                        mBezierVertical.control, mBezierVertical.start);
+                canvas.clipPath(BezierShadowPath, Region.Op.INTERSECT);
                 canvas.clipRect(0, 0, mShape.width, mShape.height);
                 if (!PageTurnHelper.isDayModeTitleLineColor()) {
                     mCurrentPageShadow = mIsRtLb ? PageTurnHelper.getFrontShadowDrawableHTB() : PageTurnHelper.getFrontShadowDrawableHBT();
-                    mCurrentPageShadow.setBounds(PageTurnHelper.getCurrentVerticalShadowRect(mIsRtLb,
-                            mBezierVertical, mDiagonal, touch2Corner, mShape));
+                      PageTurnHelper.getCurrentVerticalShadowRect(currentBezierShadowRect,mIsRtLb,
+                            mBezierVertical, mDiagonal, touch2Corner, mShape);
+                    mCurrentPageShadow.setBounds(currentBezierShadowRect);
 
                     canvas.rotate(degrees, mBezierVertical.control.x, mBezierVertical.control.y);
                     mCurrentPageShadow.draw(canvas);
+                   // canvas.drawRect(currentBezierShadowRect,paint);
                 }
                 canvas.restore();
             }
@@ -393,8 +427,6 @@ public class Simulate {
     /**
      * 绘制下一页阴影部分
      * @param canvas
-     * @param bottomPage
-     * @param downPageArea
      */
     public void drawUndersidePageShadow(Canvas canvas, Rect bottomShadowRect) {
         if(isHorizontalTurning)

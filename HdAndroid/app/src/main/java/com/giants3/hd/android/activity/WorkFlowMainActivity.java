@@ -93,7 +93,6 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         setBackEnable(false);
 
 //        menuTitles = getResources().getStringArray(R.array.menu_title);

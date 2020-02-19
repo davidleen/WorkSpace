@@ -100,9 +100,9 @@ android {
             signingConfig signingConfigs.debug
         }
         debug {
-//               minifyEnabled true
-//               zipAlignEnabled true
-//            proguardFiles 'proguard-rules.pro'
+               minifyEnabled true
+               zipAlignEnabled true
+            proguardFiles 'proguard-rules.pro'
             signingConfig signingConfigs.debug
         }
     }
@@ -120,13 +120,13 @@ tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
 dependencies {
+//    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:multidex:1.0.3'
 
-    implementation 'com.android.support:multidex:1.0.1'
-    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile('com.nostra13.universalimageloader:universal-image-loader:1.9.4') {
         exclude group: 'com.android.support'
     }
-    //     compile 'com.giants3:dataLib:1.0.6'
+    // compile 'com.giants3:dataLib:1.0.6'
     compile project(':domain')
     compile project(':library-android')
 
@@ -165,5 +165,6 @@ dependencies {
     }
     annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:${PERMISSIONSDISPATCHER_VERSION}"
 
+//    api project(':thief')
 
 }

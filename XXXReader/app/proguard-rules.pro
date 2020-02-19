@@ -23,3 +23,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep public class com.nostra13.universalimageloader.core.assist.ws.LibContext {
+    public static void  init(android.content.Context);
+}

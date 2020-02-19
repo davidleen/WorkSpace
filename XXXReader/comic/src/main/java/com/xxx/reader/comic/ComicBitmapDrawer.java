@@ -104,8 +104,8 @@ public class ComicBitmapDrawer {
     private static final int SCALE_SIZE_OF_ORIGIN = 8;
     int reloadTextLength;
 
-    //    Bitmap tempBitmap;
-//    Canvas tempCanvas;
+        Bitmap tempBitmap;
+    Canvas tempCanvas;
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public ComicBitmapDrawer(Context context, BitmapHolder holder, IDrawable iDrawable, DownloadListener listener) {
 
@@ -126,8 +126,8 @@ public class ComicBitmapDrawer {
         options = new BitmapFactory.Options();
         loadBitmap = ((BitmapDrawable) context.getResources().getDrawable(R.mipmap.tag_loading_3)).getBitmap();
 
-//        tempBitmap= Bitmap.createBitmap(wh[0], wh[1], Bitmap.Config.RGB_565);
-//        tempCanvas=new Canvas(tempBitmap);
+        tempBitmap= Bitmap.createBitmap(wh[0], wh[1], Bitmap.Config.RGB_565);
+        tempCanvas=new Canvas(tempBitmap);
         options.inBitmap = bitmap;
 
         options.inScaled = true;
@@ -160,7 +160,7 @@ public class ComicBitmapDrawer {
 
                 sourceRect.set(0, 0, decodeRect.width() / inSampleSize, decodeRect.height() / inSampleSize);
                 Log.e("sourceRect:=" + sourceRect + ",decodeRect:=" + decodeRect + ",drawRect:=" + drawRect);
-//                tempCanvas.drawBitmap(bitmap, sourceRect, drawRect, null);
+                tempCanvas.drawBitmap(bitmap, sourceRect, drawRect, null);
 
                 canvas.drawBitmap(bitmap, sourceRect, drawRect, null);
 

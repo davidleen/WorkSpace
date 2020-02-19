@@ -20,6 +20,7 @@ import com.giants3.hd.data.net.HttpUrl;
 import com.giants3.hd.data.utils.GsonUtils;
 import com.giants3.hd.exception.HdException;
 import com.giants3.hd.noEntity.app.PushMessage;
+import com.nostra13.universalimageloader.core.LibContext;
 
 ;
 
@@ -93,7 +94,7 @@ public class HdApplication extends Application {
             }
         });
 
-
+        LibContext.init(this);
     }
 
 

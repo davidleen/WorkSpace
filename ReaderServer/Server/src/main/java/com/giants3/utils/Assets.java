@@ -11,8 +11,11 @@ public class Assets {
     public static final String PATH_DIVIDER_ON_URL="__";
 
 
+    public static   String ServerName;
+
     public static void init(String ip,String serverName)
     {
+        ServerName=serverName;
         ASSETS_URL="http://"+ip+":8080/"+serverName+"/api/file/";
     }
 
@@ -26,6 +29,5 @@ public class Assets {
 
     public static String urlToPath(String urlPath) {
         return   urlPath.replace(PATH_DIVIDER_ON_URL,File.separator);
-
     }
 }

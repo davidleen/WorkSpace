@@ -52,6 +52,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 
         String url = request.getRequestURI();
 
+        if(url.contains("api/msg")) return true;
 
         //签名验证
 

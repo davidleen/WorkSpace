@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.giants3.android.reader.R;
+
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.RuntimePermissions;
@@ -17,12 +19,12 @@ import permissions.dispatcher.RuntimePermissions;
 public class SplashActivity extends BaseActivity {
 
 
-    public static final int SPLASH_TIME = 300;
+    public static final int SPLASH_TIME = 3000;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_splash);
 
         SplashActivityPermissionsDispatcher.doCreateWithPermissionCheck(this, savedInstanceState);
     }

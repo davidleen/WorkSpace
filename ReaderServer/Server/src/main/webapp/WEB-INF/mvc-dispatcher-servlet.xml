@@ -123,17 +123,7 @@
         <property name="defaultTargetDataSource" ref="slaveDataSource"/><!-- or master -->
 
     </bean>
-    <!--<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"-->
 
-    <!--&gt;-->
-         <!---->
-       <!--<property name="persistenceUnitName" value="MASTER_0"/>-->
-
-
-
-
-
-    <!--</bean>-->
 
       <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
 

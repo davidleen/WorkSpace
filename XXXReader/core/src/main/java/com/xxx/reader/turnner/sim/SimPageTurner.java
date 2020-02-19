@@ -90,7 +90,7 @@ public class SimPageTurner extends AbsPageTurner {
 
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setStrokeWidth(0.0f);
+        mPaint.setStrokeWidth(3.0f);
 
     }
 
@@ -803,11 +803,14 @@ public class SimPageTurner extends AbsPageTurner {
                 canvas.clipRect(0, 0, mShape.width, mShape.height);
                 if (!PageTurnHelper.isDayModeTitleLineColor()) {
                     mCurrentPageShadow = mIsRtLb ? PageTurnHelper.getFrontShadowDrawableHTB() : PageTurnHelper.getFrontShadowDrawableHBT();
-                    mCurrentPageShadow.setBounds(PageTurnHelper.getCurrentVerticalShadowRect(mIsRtLb,
-                            mBezierVertical, mDiagonal, touch2Corner, mShape));
+                    Rect currentVerticalShadowRect = PageTurnHelper.getCurrentVerticalShadowRect(mIsRtLb,
+                            mBezierVertical, mDiagonal, touch2Corner, mShape);
+
+                    mCurrentPageShadow.setBounds(currentVerticalShadowRect);
 
                     canvas.rotate(degrees, mBezierVertical.control.x, mBezierVertical.control.y);
                     mCurrentPageShadow.draw(canvas);
+                    canvas.drawRect(currentVerticalShadowRect,mPaint);
                 }
                 canvas.restore();
             }

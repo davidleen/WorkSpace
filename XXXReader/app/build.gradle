@@ -22,7 +22,8 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -66,4 +67,7 @@ dependencies {
     debugCompile 'com.facebook.stetho:stetho:1.5.0'
     compile project(':epub')
     compile project(path: ':text')
+
+
+    api project(path:':thief')
 }

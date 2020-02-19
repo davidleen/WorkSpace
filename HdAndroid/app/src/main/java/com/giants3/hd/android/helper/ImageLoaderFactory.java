@@ -99,6 +99,7 @@ public class ImageLoaderFactory {
             L.writeLogs(false);
             L.writeDebugLogs(false);
             ImageLoader.getInstance().init(config);
+
             imageLoader=imageLoader.getInstance();
         }
         return imageLoader;

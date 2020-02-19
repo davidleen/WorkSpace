@@ -17,7 +17,7 @@ public class ComicChapterFile {
     public long id;
     public long chapterId;
     public long bookId;
-    public int  index;
+    public int  itemIndex;
     public String url;
     public int width;
     public int height;

@@ -101,6 +101,19 @@ public class HttpUrl {
 
     }
 
+    public static String getAuthCodes() {
+
+        String url = BASE_URL + "api/authcodes";
+
+        UrlFormatter formatter = new UrlFormatter(url);
+
+
+        return additionInfo(formatter);
+
+    }
+
+
+
     public static String getBookCategoryInfo(long bookId) {
 
         String url = BASE_URL + "api/book/findComicChapters";

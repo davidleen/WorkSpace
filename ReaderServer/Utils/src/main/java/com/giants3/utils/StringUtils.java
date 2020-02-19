@@ -255,10 +255,12 @@ public class StringUtils {
 
 
         StringBuilder stringBuilder=new StringBuilder();
-        for(String s:strings)
-            stringBuilder.append(s).append(separator);
-        if(stringBuilder.length()>0)
-            stringBuilder.setLength(stringBuilder.length()-1);
+        for (int i = 0, stringsLength = strings.length; i < stringsLength; i++) {
+            stringBuilder.append(strings[i]) ;
+            if(i<stringsLength-1)
+                stringBuilder.append(separator);
+        }
+
 
         return stringBuilder.toString();
     } public static final String combine(int[] intArrays )
@@ -266,10 +268,13 @@ public class StringUtils {
 
 
         StringBuilder stringBuilder=new StringBuilder();
-        for(int s:intArrays)
-            stringBuilder.append(s).append(STRING_SPLIT_SEMICOLON);
-        if(stringBuilder.length()>0)
-            stringBuilder.setLength(stringBuilder.length()-1);
+        for (int i = 0, intArraysLength = intArrays.length; i < intArraysLength; i++) {
+            int s = intArrays[i];
+            stringBuilder.append(s);
+            if(i<intArraysLength-1)
+                stringBuilder.append(STRING_SPLIT_SEMICOLON);
+        }
+
 
         return stringBuilder.toString();
     }

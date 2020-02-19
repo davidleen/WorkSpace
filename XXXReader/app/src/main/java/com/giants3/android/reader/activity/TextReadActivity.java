@@ -174,7 +174,7 @@ public class TextReadActivity extends BaseActivity {
 
         IPageTurner pageTurner = null;
       //  pageTurner = new ScrollPageTurner(this, pageSwitchListener, readerView, prepareLayer);
-        //    pageTurner=new SimPageTurner(this,pageSwitchListener,readerView,prepareLayer);
+//        pageTurner=new SimPageTurner(this,pageSwitchListener,readerView,prepareLayer);
      pageTurner=new SimulatePageTurner(this,pageSwitchListener,readerView,prepareLayer);
         //   pageTurner = new SlidePageTurner(this, pageSwitchListener, readerView, prepareLayer);
 

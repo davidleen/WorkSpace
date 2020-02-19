@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.giants3.android.reader.ComicListActivity;
 import com.giants3.android.reader.R;
+import com.nostra13.universalimageloader.core.assist.ws.LibContext;
 
 import butterknife.Bind;
 
@@ -27,6 +28,8 @@ public class HomeActivity extends  BaseActivity implements View.OnClickListener 
         setContentView(R.layout.activity_home);
         comic.setOnClickListener(this);
         text.setOnClickListener(this);
+        LibContext.init(this);
+
     }
 
     @Override

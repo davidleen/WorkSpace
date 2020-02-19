@@ -19,3 +19,7 @@ include   ':xunfeinamecard'
 
 include  ':api'
 include ':openApiLib_Demo_onlineAuth'
+
+
+include ':thief'
+project(':thief').projectDir = new File('../modules/thief')

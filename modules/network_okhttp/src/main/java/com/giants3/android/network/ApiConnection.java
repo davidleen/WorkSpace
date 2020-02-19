@@ -16,6 +16,8 @@
 package com.giants3.android.network;
 
 
+import android.util.Log;
+
 import com.giants3.io.FileUtils;
 import com.giants3.net.ResApi;
 
@@ -79,6 +81,9 @@ public class ApiConnection implements ResApi {
 
     private ResponseBody request(String method, String url, RequestBody body) throws IOException {
 
+
+        if(BuildConfig.DEBUG)
+            Log.e(TAG,"url:"+url);
         Request request = null;
         try {
             Request.Builder builder = new Request.Builder()

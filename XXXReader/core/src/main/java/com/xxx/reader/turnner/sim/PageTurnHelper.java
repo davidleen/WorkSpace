@@ -250,6 +250,12 @@ public class PageTurnHelper {
     }
 
     public static PointF getShadowVertexPoint(Bezier mBezierHorizontal, PointF mTouch, boolean isRtLb, float touch2Corner) {
+
+        PointF outPut = new PointF();
+        getShadowVertexPoint(outPut,mBezierHorizontal,mTouch,isRtLb,touch2Corner);
+        return outPut;
+    }
+    public static void getShadowVertexPoint(PointF outoup,Bezier mBezierHorizontal, PointF mTouch, boolean isRtLb, float touch2Corner) {
         double degree = 0.0d;
         if (isRtLb) {
             degree = Math.PI * 0.25f - Math.atan2(mBezierHorizontal.control.y - mTouch.y, mTouch.x - mBezierHorizontal.control.x);
@@ -264,7 +270,7 @@ public class PageTurnHelper {
         float x = mTouch.x + d1;//阴影顶点X坐标
         float y = isRtLb ? mTouch.y + d2 : mTouch.y - d2;//阴影顶点Y坐标
 
-        return new PointF(x, y);
+          outoup.set(x, y);
     }
 
     /**
@@ -543,6 +549,15 @@ public class PageTurnHelper {
     public static Path drawPolygon(PointF... points) {
         Path tempPath = new Path();
 
+        drawPolygon(tempPath,points);
+
+        return tempPath;
+    }  /**
+     * 绘制多边形
+     */
+    public  static void drawPolygon(Path tempPath,PointF... points) {
+
+        tempPath.reset();
         int length = points.length;
         if (points != null && length > 1) {
             tempPath.moveTo(points[0].x, points[0].y);
@@ -552,7 +567,7 @@ public class PageTurnHelper {
             tempPath.close();
         }
 
-        return tempPath;
+
     }
 
     /**
@@ -650,6 +665,13 @@ public class PageTurnHelper {
     }
 
     public static Rect getCurrentHorizontalShadowRect(boolean isRtLb, Bezier bezierHorizontal, float diagonal, float touch2Corner) {
+
+        Rect rect=new Rect();
+
+        getCurrentHorizontalShadowRect(  rect,  isRtLb,   bezierHorizontal,   diagonal,   touch2Corner);
+        return rect;
+    }
+    public static void getCurrentHorizontalShadowRect(Rect output,boolean isRtLb, Bezier bezierHorizontal, float diagonal, float touch2Corner) {
         int left = 0, right = 0;
 
         if (isRtLb) {
@@ -660,7 +682,7 @@ public class PageTurnHelper {
             right = (int) bezierHorizontal.control.x + 1;
         }
 
-        return new Rect(left, (int) (bezierHorizontal.control.y - diagonal), right, (int) (bezierHorizontal.control.y));
+          output.set(left, (int) (bezierHorizontal.control.y - diagonal), right, (int) (bezierHorizontal.control.y));
     }
 
     public static Rect getCurrentHorizontalShadowRect(boolean isLeft, PointF move, PointF fold, float touch2Corner, Shape shape) {
@@ -685,10 +707,16 @@ public class PageTurnHelper {
     }
 
     public static Rect getCurrentHorizontalShadowRect(PointF move, PointF fold, float touch2Corner, DrawParam shape) {
+        Rect rect=new Rect();
+        getCurrentHorizontalShadowRect(rect,move,fold,touch2Corner,shape);
+        return rect;
+    }
+    public static void getCurrentHorizontalShadowRect(Rect outPut,PointF move, PointF fold, float touch2Corner, DrawParam shape) {
+
         int left = (int) (move.x - getLenghtShadow(touch2Corner));
         int right = (int) move.x;
 
-        return new Rect(left, 0, right, shape.height);
+          outPut.set(left, 0, right, shape.height);
     }
 
     public static Rect getCurrentVerticalShadowRect(boolean isRtLb, Bezier bezierVertical, float diagonal, float touch2Corner, Shape shape) {
@@ -714,8 +742,17 @@ public class PageTurnHelper {
         }
 
         return rect;
-    } public static Rect getCurrentVerticalShadowRect(boolean isRtLb, Bezier bezierVertical, float diagonal, float touch2Corner, DrawParam shape) {
+    }
+
+    public static Rect getCurrentVerticalShadowRect(boolean isRtLb, Bezier bezierVertical, float diagonal, float touch2Corner, DrawParam shape)
+    {
         Rect rect = new Rect();
+        getCurrentVerticalShadowRect(rect,isRtLb,
+                bezierVertical, diagonal, touch2Corner, shape);
+        return rect;
+    }
+    public static void getCurrentVerticalShadowRect(Rect ouput,boolean isRtLb, Bezier bezierVertical, float diagonal, float touch2Corner, DrawParam shape) {
+        Rect rect = ouput;
 
         int top = 0, bottom = 0;
 
@@ -736,7 +773,6 @@ public class PageTurnHelper {
             rect.set((int) (bezierVertical.control.x - diagonal), top, (int) (bezierVertical.control.x), bottom);
         }
 
-        return rect;
     }
 
     public static Rect getCurrentBackShadowRect(boolean isRtLb, Bezier mBezierHorizontal, Bezier mBezierVertical, float diagonal) {

@@ -156,7 +156,7 @@ public class ComicReadActivity extends BaseActivity {
         };
         IPageTurner pageTurner = null;
         //  pageTurner=new ScrollPageTurner(this,pageSwitchListener,readerView,provider);
-       // pageTurner = new SimPageTurner(this, pageSwitchListener, readerView, provider);
+//        pageTurner = new SimPageTurner(this, pageSwitchListener, readerView, provider);
         pageTurner = new SimulatePageTurner(this, pageSwitchListener, readerView, provider);
         // pageTurner = new SlidePageTurner(this, pageSwitchListener, readerView, provider);
 
