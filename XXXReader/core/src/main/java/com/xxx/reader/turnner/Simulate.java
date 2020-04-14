@@ -113,22 +113,22 @@ public class Simulate {
             mBezierHorizontal.control.x = mMidle.x - (mMidle.y - mDragCorner.y) * (mMidle.y - mDragCorner.y) / (mDragCorner.x - mMidle.x);
             mBezierHorizontal.control.y = mDragCorner.y;
             //计算起点（）
-            mBezierHorizontal.start.x = mBezierHorizontal.control.x - (mDragCorner.x - mBezierHorizontal.control.x) * 0.5f;
+            mBezierHorizontal.start.x =  mBezierHorizontal.control.x - (mDragCorner.x - mBezierHorizontal.control.x) * 0.5f;
             mBezierHorizontal.start.y = mDragCorner.y;
 
 
             //翻页限制检查
-            if (mBezierHorizontal.start.x < -0.1f) {
-
-                float width = mDragCorner.x - mBezierHorizontal.start.x;
-                float radio = (mPinedPoint.x - mBezierHorizontal.start.x) / width;
-                float newOffsetX = mDrag.x + (mDragCorner.x - mDrag.x) * radio;
-                float newOffsetY = mDrag.y + (mDragCorner.y - mDrag.y) * radio;
-                // Log.e("newOffsetX:"+newOffsetX+",newOffsetY:"+newOffsetY+",mBezierHorizontal.start.x:"+mBezierHorizontal.start.x);
-                calculatePoints(newOffsetX, newOffsetY);
-                return;
-
-            }
+//            if (mBezierHorizontal.start.x < -0.1f) {
+//
+//                float width = mDragCorner.x - mBezierHorizontal.start.x;
+//                float radio = (mPinedPoint.x - mBezierHorizontal.start.x) / width;
+//                float newOffsetX = mDrag.x + (mDragCorner.x - mDrag.x) * radio;
+//                float newOffsetY = mDrag.y + (mDragCorner.y - mDrag.y) * radio;
+//                // Log.e("newOffsetX:"+newOffsetX+",newOffsetY:"+newOffsetY+",mBezierHorizontal.start.x:"+mBezierHorizontal.start.x);
+//                calculatePoints(newOffsetX, newOffsetY);
+//                return;
+//
+//            }
 
 
             //计算控制点。
@@ -452,6 +452,13 @@ public class Simulate {
             }
 
         }
+    }
+
+    public void getDestPoint(int direction) {
+
+
+
+
     }
 //    /**
 //     * 绘制翻起页

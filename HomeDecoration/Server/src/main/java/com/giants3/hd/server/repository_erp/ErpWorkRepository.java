@@ -1,5 +1,6 @@
 package com.giants3.hd.server.repository_erp;
 
+import com.giants3.hd.entity.ErpOrdItm;
 import com.giants3.hd.entity.ErpOrderItem;
 import com.giants3.hd.entity.ErpOrderItemProcess;
 import com.giants3.hd.entity.ErpWorkFlow;
@@ -418,7 +419,7 @@ public class ErpWorkRepository extends ErpRepository {
 
 
         final String value = StringUtils.sqlLike(key);
-        Query query = getEntityManager().createNativeQuery(SQL_ORDER_ITEM_UNCOMPLETE.replace("OR b.workflowstate <> 99","").replace("2017-01-01","2019-10-01"))//
+        Query query = getEntityManager().createNativeQuery(SQL_ORDER_ITEM_UNCOMPLETE.replace("OR b.workflowstate <> 99","").replace("2019-01-01","2019-10-01"))//
                 .setParameter("os_no", value)
                 .setParameter("prd_no", value)
                 .setParameter("firstRow", pageIndex * pageSize)
@@ -601,6 +602,60 @@ public class ErpWorkRepository extends ErpRepository {
         return workFlowOrderItemListQuery;
     }
 
+    private List<ErpOrdItm> getOrdItemsFromSQL(Query query, int pageIndex, int pageSize) {
+
+        //增加字段 up
+
+        final SQLQuery sqlQuery = query.unwrap(SQLQuery.class)
+                .addScalar("os_no", StringType.INSTANCE)
+                .addScalar("itm", IntegerType.INSTANCE)
+
+                .addScalar("bat_no", StringType.INSTANCE)
+                .addScalar("prd_no", StringType.INSTANCE)
+                .addScalar("prd_name", StringType.INSTANCE)
+                .addScalar("id_no", StringType.INSTANCE)
+                .addScalar("qty", IntegerType.INSTANCE)
+                .addScalar("photoUpdateTime", LongType.INSTANCE)
+                .addScalar("ut", StringType.INSTANCE)
+                .addScalar("up", FloatType.INSTANCE)
+                .addScalar("amt", FloatType.INSTANCE)
+                .addScalar("hpgg", StringType.INSTANCE)
+                .addScalar("khxg", StringType.INSTANCE)
+                .addScalar("so_zxs", IntegerType.INSTANCE)
+                .addScalar("so_data", StringType.INSTANCE)
+                .addScalar("cus_no", StringType.INSTANCE)
+                .addScalar("factory", StringType.INSTANCE)
+                .addScalar("os_dd", StringType.INSTANCE)
+                .addScalar("amt", FloatType.INSTANCE)
+                .addScalar("produceType", IntegerType.INSTANCE)
+                .addScalar("sys_date", StringType.INSTANCE)
+                .addScalar("idx1", StringType.INSTANCE) ;
+
+        List<ErpOrdItm> erpOrdItms = listQuery(sqlQuery, ErpOrdItm.class, pageIndex, pageSize);
+
+        for (ErpOrdItm item : erpOrdItms) {
+
+            item.pVersion = StringUtils.spliteId_no(item.id_no)[1];
+            item.so_data = StringUtils.clipSqlDateData(item.so_data);
+            item.os_dd = StringUtils.clipSqlDateData(item.os_dd);
+            item.sys_date = StringUtils.clipSqlDateData(item.sys_date);
+
+            switch (item.produceType) {
+                case ProduceType.NOT_SET:
+                    item.produceTypeName = ProduceType.NOT_SET_NAME;
+                    break;
+                case ProduceType.SELF_MADE:
+                    item.produceTypeName = ProduceType.SELF_MADE_NAME;
+                    break;
+                case ProduceType.PURCHASE:
+                    item.produceTypeName = ProduceType.PURCHASE_NAME;
+                    break;
+            }
+
+        }
+        return erpOrdItms;
+    }
+
 
     /**
      * 查找订单数据
@@ -616,6 +671,27 @@ public class ErpWorkRepository extends ErpRepository {
                 .setParameter("os_no", os_no)
                 .setParameter("itm", itm);
         final List<ErpOrderItem> oRderItemsFromSQL = getORderItemsFromSQL(query, 0, 0);
+        if (oRderItemsFromSQL != null && oRderItemsFromSQL.size() > 0) return oRderItemsFromSQL.get(0);
+        return null;
+    }
+
+
+
+    /**
+     * 查找订单数据
+     * 簡略版數據
+     *
+     * @param os_no
+     * @param itm
+     * @return
+     */
+    public ErpOrdItm findOrdItm(String os_no, int itm) {
+
+
+        Query query = getEntityManager().createNativeQuery(SqlScriptHelper.readScript("FindErpOrdItm.sql"))
+                .setParameter("os_no", os_no)
+                .setParameter("itm", itm);
+        final List<ErpOrdItm> oRderItemsFromSQL = getOrdItemsFromSQL(query, 0, 0);
         if (oRderItemsFromSQL != null && oRderItemsFromSQL.size() > 0) return oRderItemsFromSQL.get(0);
         return null;
     }
@@ -727,4 +803,29 @@ public class ErpWorkRepository extends ErpRepository {
     }
 
 
+    /**
+     * 更新erp 系統製令單完成时间。
+     * @param osNo
+     * @param itm
+     * @param mrpNo
+     */
+    public int updateErpWorkFlowTime(String osNo, int itm, String mrpNo) {
+
+
+        EntityManager entityManager = getEntityManager();
+        entityManager.getTransaction().begin();
+        Query query = entityManager.createNativeQuery("UPDATE MF_TZ SET CHK_MAN='DD',CLS_DATE= convert(char(10),GetDate(),121)  WHERE SO_NO= :param_osno AND EST_ITM= :param_itm AND MRP_NO= :param_mrp")
+                .setParameter("param_osno", osNo)
+                .setParameter("param_itm", itm)
+                .setParameter("param_mrp", mrpNo);
+
+      int count=   query.executeUpdate();
+        entityManager.getTransaction().commit();
+      return count;
+
+
+
+
+
+    }
 }

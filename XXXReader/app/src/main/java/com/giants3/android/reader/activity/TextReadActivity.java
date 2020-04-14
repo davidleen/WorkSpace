@@ -2,6 +2,7 @@ package com.giants3.android.reader.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,8 +12,8 @@ import com.giants3.android.frame.util.StorageUtils;
 import com.giants3.android.frame.util.StringUtil;
 import com.giants3.android.reader.R;
 import com.giants3.file.FileContentType;
+import com.giants3.io.FileUtils;
 import com.giants3.reader.book.EpubChapter;
-import com.giants3.reader.book.EpubParser;
 import com.giants3.tool.zip.ZipJNIInterface;
 import com.giants3.yourreader.text.TextPageBitmap;
 import com.giants3.yourreader.text.TextPageInfo;
@@ -20,6 +21,7 @@ import com.giants3.yourreader.text.TextPrepareJob;
 import com.xxx.reader.ReaderView;
 import com.xxx.reader.Url2FileMapper;
 import com.xxx.reader.Utils;
+import com.xxx.reader.book.BookFactory;
 import com.xxx.reader.book.IBook;
 import com.xxx.reader.book.IChapter;
 import com.xxx.reader.book.TextBook;
@@ -39,11 +41,10 @@ import com.xxx.reader.turnner.slide.SlidePageTurner;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.Bind;
-
-import static com.giants3.reader.book.EpubParser.GBK;
 
 public class TextReadActivity extends BaseActivity {
     @Bind(R.id.reader)
@@ -63,6 +64,12 @@ public class TextReadActivity extends BaseActivity {
         String bookId = intent.getStringExtra("bookId");
         String bookUrl = intent.getStringExtra("bookUrl");
 
+
+
+
+        SharedPreferences sharedPreferences = getSharedPreferences("setting", Context.MODE_PRIVATE);
+         sharedPreferences.edit().putLong("lastcliptime", Calendar.getInstance().getTimeInMillis()).apply();
+
         final Context context = this;
         final int[] wh = Utils.getScreenDimension(this);
         PagePlayerBuilder<IChapter, TextPageInfo, DrawParam, TextPageBitmap> builder = new PagePlayerBuilder();
@@ -80,24 +87,20 @@ public class TextReadActivity extends BaseActivity {
 
                 if (iChapter instanceof EpubChapter) {
 
-                    if (StringUtil.isEmpty(iChapter.getFilePath())) {
 
-
-                        ((EpubChapter) iChapter).setSrcFilePath(EpubParser.getEpubOutputPath() + ((EpubChapter) iChapter).getSrc());
-                    }
-                    File file = new File(iChapter.getFilePath());
-                    if (!file.exists()) {
-
-                        file.getParentFile().mkdirs();
+                    String filePath=StorageUtils.getFilePath(iChapter.getFilePath());
+                    if(!new File( filePath).exists()) {
                         try {
-                            ZipJNIInterface.UnZip(((EpubChapter) iChapter).getBookPath(), ((EpubChapter) iChapter).getSrc(),iChapter.getFilePath() ,GBK);
+
+                            FileUtils.writeToFile(filePath, ((EpubChapter) iChapter).getData());
+
                         } catch (Exception e) {
-                            Log.e(e);
+                            e.printStackTrace();
                         }
-
                     }
+                    return filePath;
 
-                    return file.getPath();
+
                 }else  if (iChapter instanceof TextChapter)
                 {
 
@@ -180,31 +183,32 @@ public class TextReadActivity extends BaseActivity {
 
         drawLayer.setPageTurner(pageTurner);
         readerView.setDrawLayer(drawLayer);
+        String contentType = FileContentType.getContentType(new File(filePath));
+        final BookFactory bookFactory;
+        switch (contentType) {
+            case FileContentType.EPUB: {
+                bookFactory = new EpubBookFactory();
+            }
+            break;
+            case FileContentType.TEXT:
+            {
 
+                bookFactory=new TextBookFactory();
+            }break;
+            default:
+                bookFactory = null;
 
+        }
+
+        if(bookFactory==null){
+            finish();
+            return;
+        }
         new AsyncTask<Void, Void, IBook>() {
             @Override
             protected IBook doInBackground(Void[] objects) {
 
-                IBook iBook = null;
-                String contentType = FileContentType.getContentType(new File(filePath));
-
-                switch (contentType) {
-                    case FileContentType.EPUB:
-                        iBook = EpubParser.getEpubParser(filePath).getEpub();
-                        Log.e(iBook.getName());
-
-                        break;
-
-                        case FileContentType.TEXT:
-                            TextBook  textBook = new TextBook() ;
-                            TextChapter textChapter=new TextChapter(filePath);
-                            textBook.addChapter(textChapter);
-                            iBook=textBook;
-                        Log.e(iBook.getName());
-
-                        break;
-                }
+                IBook iBook =   bookFactory.create(filePath);;
 
 
                 return iBook;

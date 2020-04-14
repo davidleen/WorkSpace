@@ -49,6 +49,12 @@ public class FileUtils {
 
 
     public static void writeStringToFile(String data, String filePath) throws Exception {
+        byte[] bytes = data.getBytes();
+        writeToFile(filePath, bytes);
+
+    }
+
+    public  static void writeToFile(String filePath, byte[] bytes) throws Exception {
         FileOutputStream fileOutputStream = null;
         try {
             File file = new File(filePath);
@@ -58,7 +64,8 @@ public class FileUtils {
             }
 
             fileOutputStream = new FileOutputStream(filePath);
-            fileOutputStream.write(data.getBytes());
+
+            fileOutputStream.write(bytes);
         } catch (FileNotFoundException e) {
             throw new Exception(e);
 
@@ -71,7 +78,6 @@ public class FileUtils {
         }
 
         FileUtils.safeClose(fileOutputStream);
-
     }
 
     public static String readStringFromFile(String filePath) {

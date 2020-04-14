@@ -21,7 +21,9 @@ android {
 dependencies {
 
 
-    compile project(':library-java')
+    api project(':library-java')
+
+    api "com.android.support:appcompat-v7:${ANDROID_SUPPORT_V7_VERSION}"
 
 
 }

@@ -238,6 +238,81 @@ public class ErpWorkController extends BaseController {
     }
 
 
+
+
+
+    /**
+     * 流程审核拒绝  返工
+     * sendWorkFlowMessage?orderItemId=%d%flowStep=%d&tranQty=%d
+     *
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/syncErpStockDataToReport", method = {RequestMethod.GET, RequestMethod.POST})
+    public
+    @ResponseBody
+    RemoteData<Void> syncErpStockDataToReport(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam("os_no") String osNo, @RequestParam("itm") int itm, @RequestParam("workflowstep") int workflowstep) {
+        return erpWorkService.syncErpStockDataToReport(user, osNo, itm, workflowstep);
+
+    }
+    /**
+     * 更新流程的生产期限参数
+     *
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/updateWorkFlowTimeLimit", method = {RequestMethod.GET, RequestMethod.POST})
+    public
+    @ResponseBody
+    RemoteData<Void> updateWorkFlowTimeLimit(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam("erpWorkFLowReportId") long erpWorkFLowReportId, @RequestParam("limitDay") int limitDay, @RequestParam("alertDay") int alertDay) {
+        return erpWorkService.updateWorkFlowTimeLimit(user, erpWorkFLowReportId, limitDay, alertDay);
+
+    }
+
+
+
+
+    /**
+     * 更新流程的生产期限参数
+     *
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/setReportMonitorState", method = {RequestMethod.GET, RequestMethod.POST})
+    public
+    @ResponseBody
+    RemoteData<Void> setReportMonitorState(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam("erpWorkFLowReportId") long erpWorkFLowReportId, @RequestParam("monitorState") int monitorState ) {
+        return erpWorkService.setReportMonitorState(user, erpWorkFLowReportId, monitorState );
+
+    }
+
+
+
+
+
+    /**
+     * 更新流程的生产期限参数
+     *
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/searchMonitorList", method = {RequestMethod.GET})
+    public
+    @ResponseBody
+    RemoteData<ErpWorkFlowReport> searchMonitorList(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam("key") String key
+
+            , @RequestParam(value = "pageIndex", defaultValue = "0", required = false) int pageIndex
+            , @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize
+
+    ) {
+        return erpWorkService.listMonitorReport(user,key, pageIndex, pageSize);
+
+    }
+
+
+
+
+
     /**
      * 查询订单的生产备注
      *
@@ -418,11 +493,16 @@ public class ErpWorkController extends BaseController {
 
         RemoteData<Void> result = null;
         try {
-            RemoteData<Void> voidRemoteData = erpWorkService.resetOrderItemWorkFlow(user, osNo, itm);
-            result=voidRemoteData;
+
+             result = erpWorkService.clearWorkFLow(user, osNo, itm);
+
+            if(result.isSuccess()) {
+                RemoteData<Void> voidRemoteData = erpWorkService.resetOrderItemWorkFlow(user, osNo, itm);
+                result = voidRemoteData;
 //            if(!voidRemoteData.isSuccess())
 //                return voidRemoteData;
 //            result = erpWorkService.resetOrderItemWorkFlow(user, osNo, itm);
+            }
         } catch (HdException e) {
             e.printStackTrace();
 

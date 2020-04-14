@@ -1,5 +1,7 @@
 package com.giants3.hd.entity;
 
+import com.giants3.hd.noEntity.ProduceType;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +44,7 @@ public class ErpWorkFlow {
 
     public static final int STEP_YANSE = 3000;
     public static final int STEP_BAOZHUANG = 5000;
-    public static final int LAST_STEP =STEP_PEITI ;
+    public static final int LAST_STEP =STEP_CHENGPIN ;
     public static int[] STEPS = new int[]{FIRST_STEP, STEP_PEITI, STEP_YANSE, STEP_BAOZHUANG, STEP_CHENGPIN};
 
 
@@ -159,21 +161,20 @@ public class ErpWorkFlow {
 
     }
 
-
-
-    public static ErpWorkFlow findPurchaseNext(int workflowStep)
+    public static ErpWorkFlow findNext(int workflowStep,int produceType)
     {
 
+        List<ErpWorkFlow> workFlows=produceType== ProduceType.SELF_MADE?WorkFlows:purchaseWorkFLows;
 
-        final int size = purchaseWorkFLows.size();
+        final int size = workFlows.size();
         for (int i = 0; i < size; i++) {
-            ErpWorkFlow erpWorkFlow = purchaseWorkFLows.get(i);
+            ErpWorkFlow erpWorkFlow = workFlows.get(i);
 
             if (erpWorkFlow.step == workflowStep) {
 
                 if(i+1<size)
                 {
-                    return purchaseWorkFLows.get(i+1);
+                    return workFlows.get(i+1);
                 }
 
 
@@ -181,6 +182,21 @@ public class ErpWorkFlow {
         }
 
         return null;
+    }
+
+
+    public static ErpWorkFlow findSSelfMadeNext( int workflowStep)
+    {
+        return findNext(workflowStep,ProduceType.SELF_MADE);
+    }
+
+
+
+
+    public static ErpWorkFlow findPurchaseNext(int workflowStep)
+    {
+        return findNext(workflowStep,ProduceType.PURCHASE);
+
 
     }
 

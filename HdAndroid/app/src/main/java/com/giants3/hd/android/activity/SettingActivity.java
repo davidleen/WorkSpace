@@ -76,8 +76,8 @@ public class SettingActivity extends BaseActionBarActivity {
             @Override
             public void onClick(View v) {
 
-                etIp.setText("yexuxi.eicp.net");
-                etPort.setText("31696");
+                etIp.setText("fzyunfei.gnway.cc");
+                etPort.setText("8079");
                 etService.setText("Server");
             }
         });

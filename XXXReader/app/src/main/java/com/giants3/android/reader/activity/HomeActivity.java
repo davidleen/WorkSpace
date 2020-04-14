@@ -44,7 +44,7 @@ public class HomeActivity extends  BaseActivity implements View.OnClickListener 
                 break;
                 case R.id.text: {
                     Intent intent = new Intent(HomeActivity.this, TextReadActivity.class);
-                    intent.putExtra("filePath", "/storage/emulated/0/各格式书籍/1.恐惧炸弹(语言 下部).txt");
+                    intent.putExtra("filePath", "/sdcard/Download/2222222222222.epub");
                     startActivity(intent);
                 }
 

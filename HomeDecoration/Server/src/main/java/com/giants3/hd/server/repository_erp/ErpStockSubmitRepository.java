@@ -1,5 +1,6 @@
 package com.giants3.hd.server.repository_erp;
 
+import com.giants3.hd.entity_erp.ErpStockOutItem;
 import com.giants3.hd.server.utils.SqlScriptHelper;
 import com.giants3.hd.entity_erp.ErpStockOut;
 import com.giants3.hd.utils.StringUtils;
@@ -140,7 +141,24 @@ public class ErpStockSubmitRepository  extends  ErpRepository{
         return orders;
 
     }
+    /*
+     *    查询出指定货款的出入仓库记录
+     */
+    public List<StockSubmit> getOrderItemStockSubmitList(String os_no,int itm ) {
 
+
+
+
+        Query query = getEntityManager().createNativeQuery(SqlScriptHelper.readScript("stockinandsubmit_by_os_itm.sql"))
+
+                .setParameter("so_no",os_no)
+                .setParameter("itm", itm);
+        List<StockSubmit> orders = getStockSubmits(query);
+
+
+        return orders;
+
+    }
 
     /*
     *    查询出库到柜记录  日期参数格式 "2016-07-11"
@@ -262,7 +280,22 @@ public class ErpStockSubmitRepository  extends  ErpRepository{
 
         return orders;
     }
+    /*
+     *   指定货款的出库记录
+     */
+    public List<StockSubmit> getStockXiaokuList(String os_no, int itm) {
 
+
+        Query query = getEntityManager().createNativeQuery(SqlScriptHelper.readScript("stockoutitem_by_osno_itm.sql"))
+
+                .setParameter("os_no",os_no)
+                .setParameter("itm", itm);
+        List<StockSubmit> orders = getStockSubmits(query);
+
+
+        return orders;
+
+    }
     /*
       *   查询出库单明细列表
        */

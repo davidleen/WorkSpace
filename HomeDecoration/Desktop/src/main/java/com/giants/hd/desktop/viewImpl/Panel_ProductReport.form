@@ -23,16 +23,6 @@
           </component>
         </children>
       </scrollpane>
-      <component id="4bd9b" class="javax.swing.JButton" binding="export1">
-        <constraints>
-          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
-            <preferred-size width="0" height="0"/>
-          </grid>
-        </constraints>
-        <properties>
-          <text value="批量导出格式1"/>
-        </properties>
-      </component>
       <tabbedpane id="5bad6" binding="tabbedPane1" default-binding="true">
         <constraints>
           <grid row="0" column="0" row-span="2" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
@@ -171,33 +161,6 @@
           </grid>
         </children>
       </tabbedpane>
-      <component id="ac948" class="javax.swing.JButton" binding="export2">
-        <constraints>
-          <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
-            <preferred-size width="0" height="0"/>
-          </grid>
-        </constraints>
-        <properties>
-          <text value="批量导出格式2"/>
-        </properties>
-      </component>
-      <component id="7706e" class="javax.swing.JButton" binding="btn_report3">
-        <constraints>
-          <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="批量导出格式3"/>
-        </properties>
-      </component>
-      <component id="50f0" class="javax.swing.JButton" binding="export4">
-        <constraints>
-          <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="批量导出格式4"/>
-          <toolTipText value="4个产品展示一页，标记上名称单位"/>
-        </properties>
-      </component>
       <component id="9d10a" class="javax.swing.JButton" binding="printQR">
         <constraints>
           <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
@@ -229,6 +192,20 @@
         <properties>
           <text value="产品价格历史记录查询"/>
         </properties>
+      </component>
+      <component id="8a8f3" class="javax.swing.JButton" binding="export">
+        <constraints>
+          <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="导出"/>
+        </properties>
+      </component>
+      <component id="5bfb0" class="javax.swing.JComboBox" binding="cb_export">
+        <constraints>
+          <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
       </component>
     </children>
   </grid>

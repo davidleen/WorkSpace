@@ -4,6 +4,11 @@ package com.giants3.reader.book;
 import com.xxx.reader.book.IChapter;
 
 import java.io.File;
+import java.io.IOException;
+
+import nl.siegmann.epublib.domain.Book;
+import nl.siegmann.epublib.domain.Resource;
+import nl.siegmann.epublib.domain.SpineReference;
 
 /**
  * Epub章节数据
@@ -30,10 +35,6 @@ public class EpubChapter implements IChapter {
     private String srcFilePath;
 
 
-    /**
-     * 在epub中的顺序
-     */
-    private int playOrder;
 
     private int pri = 0;
 
@@ -41,6 +42,8 @@ public class EpubChapter implements IChapter {
 
     private boolean expanded = false;
     private String path;
+    private Book book;
+    private SpineReference resource;
 
     public void setHasChild(boolean hasChild) {
         this.mHasChild = hasChild;
@@ -92,38 +95,12 @@ public class EpubChapter implements IChapter {
         this.pri = pri;
     }
 
-    public int getPlayOrder() {
-        return playOrder;
+
+    EpubChapter(Book book, SpineReference resource) {
+        this.book = book;
+        this.resource = resource;
     }
 
-    public void setPlayOrder(int playOrder) {
-        this.playOrder = playOrder;
-    }
-
-
-    EpubChapter() {
-    }
-
-    /**
-     * 判断章节对应的文件是否存在
-     *
-     * @return
-     */
-    public boolean hasChapterFile() {
-
-        return new File(srcFilePath).exists();
-
-    }
-
-    /**
-     * 设置章节文件的绝对路径
-     *
-     * @param relPath
-     */
-    public void setSrcFilePath(String relPath) {
-
-        srcFilePath = relPath;
-    }
 
     @Override
     public String getId() {
@@ -132,22 +109,22 @@ public class EpubChapter implements IChapter {
 
     @Override
     public String getName() {
-        return text;
+        return resource.getResource().getTitle();
     }
 
     @Override
     public String getUrl() {
-        return src;
+        return resource.getResource().getHref();
     }
 
     @Override
     public String getFilePath() {
-        return srcFilePath;
+        return book.getTitle()+File.separator+resource.getResource().getHref();
     }
 
     @Override
     public int getIndex() {
-        return playOrder;
+        return 0;
     }
 
     @Override
@@ -162,5 +139,9 @@ public class EpubChapter implements IChapter {
     public String getBookPath()
     {
         return path;
+    }
+
+    public byte[] getData() throws IOException {
+        return resource.getResource().getData();
     }
 }

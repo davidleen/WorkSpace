@@ -8,7 +8,7 @@ isnull(b.maxworkflowcode, '') AS maxworkflowcode,
  ,isnull(b.currentAlertDay,0) as currentAlertDay
 FROM         (SELECT     TOP 99999999 os_no, os_dd, itm, bat_no, prd_no, prd_name, id_no, up, qty, amt
                        FROM          [DB_YF01].[dbo].tf_pos
-                       WHERE      os_id = upper('so') /*订单起止日期  降低查询范围*/ AND os_dd > '2017-01-01'
+                       WHERE      os_id = upper('so') /*订单起止日期  降低查询范围*/ AND os_dd > '2019-01-01'
                        ORDER BY os_no DESC, itm ASC) AS a
                        --关联上所有已经审核订单，有CLS_Date 值表示已经审核。
                         inner join (select os_no    from  [DB_YF01].[dbo].MF_POS  where CLS_DATE is not  null ) AS aa on a.os_no=aa.os_no
@@ -43,14 +43,14 @@ GROUP BY a.os_no, a.os_dd, a.itm, a.bat_no, a.prd_no, a.prd_name, a.id_no, a.up,
       select   0 as producetype, so_no,est_itm ,'' as po_no, sys_date  from  mf_mo       where bil_Id = upper('MP') and so_no like upper('%yf%') and  ( so_no like :os_no or mrp_no like  :prd_no )     and mrp_no=MO_NO_ADD
        union
        --外购单
-      select distinct 1 as producetype,oth_no as so_no,oth_itm1 as est_itm,os_no as po_no,  os_dd as sys_date from  tf_pos   where  os_id=upper('po') and oth_no like upper('%yf%') and (OTH_NO like :os_no or prd_no like :prd_no )  and  os_dd >'2017-01-01'
+      select distinct 1 as producetype,oth_no as so_no,oth_itm1 as est_itm,os_no as po_no,  os_dd as sys_date from  tf_pos   where  os_id=upper('po') and oth_no like upper('%yf%') and (OTH_NO like :os_no or prd_no like :prd_no )  and  os_dd >'2019-01-01'
 
 
 
    ) as pdc on a.os_no=pdc.so_no    and a.itm=pdc.est_itm
 
   --厂商数据抓取
-  left outer join   (select os_no as po_no, cus_no   from  V_mf_pos where os_id=upper('po')   and  os_dd >'2017-01-01') as k on pdc.po_no=k.po_no
+  left outer join   (select os_no as po_no, cus_no   from  V_mf_pos where os_id=upper('po')   and  os_dd >'2019-01-01') as k on pdc.po_no=k.po_no
 
  
 
@@ -83,7 +83,7 @@ GROUP BY a.os_no, a.os_dd, a.itm, a.bat_no, a.prd_no, a.prd_name, a.id_no, a.up,
 
              left outer join (
 
-                            select os_no, cus_no   from  V_mf_pos where os_id=upper ('so')   and  os_dd >'2017-01-01'
+                            select os_no, cus_no   from  V_mf_pos where os_id=upper ('so')   and  os_dd >'2019-01-01'
 
                             ) g  on  a.os_no=g.os_no
 

@@ -19,6 +19,9 @@ allprojects {
     repositories {
 
         maven{ url LOCAL_MAVEN_URL}
+        maven {
+            url 'https://github.com/psiegman/mvn-repo/raw/master/releases'
+        }
         google()
         jcenter()
     }

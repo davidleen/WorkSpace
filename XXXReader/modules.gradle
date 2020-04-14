@@ -1,0 +1,20 @@
+ext {
+
+    BaseModulePath = ''
+
+    modules = [
+
+            thief  : [
+                    name: 'thief',
+                    path: "../modules/thief"
+
+            ], epub: [
+            name: 'epub',
+            path: "../modules/books/epub"
+
+    ]
+
+    ]
+
+
+}

@@ -412,4 +412,27 @@
 
     </string-array>
 
+
+
+
+    <string-array name="table_monitor_work_flow_report" >
+
+        <item>图片||thumbnail||2||91</item>
+        <item>订单||osNo||1||91</item>
+        <item>货号||prdNo||1||91</item>
+        <item>配方||pVersion||1||91</item>
+        <item>监控流程||workFlowCode||1||91</item>
+        <item>监控流程||workFlowName||1||91</item>
+        <item>生产期限||limitDay||1||60</item>
+        <item>预警天数||alertDay||1||60</item>
+        <item>流程开始日期||startDateString||1||120</item>
+        <item>流程结束日期||endDateString||1||120</item>
+        <item>超期天数||overDueDay||1||60</item>
+        <item>是否超期||isOverDue||1||60</item>
+
+
+
+
+    </string-array>
+
 </resources>

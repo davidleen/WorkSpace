@@ -1,0 +1,35 @@
+apply from: 'ModuleConfig.gradle'
+ext
+        {
+
+            andreader=[
+
+                    modules:[],
+                    dept:[]
+
+
+            ]
+
+
+            def   modules = []
+            modules+=must_include_modules
+            
+            if (COMPILE_ADVERTISE_MODULE) {
+                modules += [
+                        Modules.Advertise.Baidu
+                           ]
+            }
+            if (COMPILE_CLOUD_MESSAGE) {
+                modules += [Modules.CloudMessage.Umeng]
+            }
+
+
+            andreader.modules = modules
+
+
+
+
+
+        }
+
+

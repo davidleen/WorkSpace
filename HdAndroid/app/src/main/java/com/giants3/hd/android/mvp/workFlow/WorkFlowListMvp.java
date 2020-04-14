@@ -78,6 +78,18 @@ public interface WorkFlowListMvp {
 
          */
         void confirmCompletedWork(ErpWorkFlowReport workFlowReport);
+
+        /**
+         * 同步erp的进出库数据（更新流程进度）
+         * @param workFlowReport
+         */
+        void syncErpStockData(ErpWorkFlowReport workFlowReport);
+
+        void updateWorkFlowTimeLimit(ErpWorkFlowReport workFlowReport, int limitDay, int alertDay);
+
+        void removeReportFromMonitor(ErpWorkFlowReport data);
+
+        void addReportToMonitor(ErpWorkFlowReport data);
     }
 
     interface Viewer extends NewViewer {

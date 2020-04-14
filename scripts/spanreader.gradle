@@ -1,0 +1,34 @@
+apply from: 'ModuleConfig.gradle'
+ext
+        {
+
+            spanreader=[
+
+                    modules:[],
+                    dept:[]
+
+
+            ]
+
+
+            def   modules = []
+            modules+=must_include_modules
+            modules += Modules.Analytics.Kochava
+            if (COMPILE_ADVERTISE_MODULE) {
+                modules += [Modules.Advertise.FaceBook,
+                            Modules.Advertise.Admob]
+            }
+            if (COMPILE_CLOUD_MESSAGE) {
+                modules += [Modules.CloudMessage.FCM]
+            }
+
+
+            spanreader.modules = modules
+
+
+
+
+
+        }
+
+

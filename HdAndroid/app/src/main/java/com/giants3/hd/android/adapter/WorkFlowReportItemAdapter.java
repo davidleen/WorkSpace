@@ -1,14 +1,21 @@
 package com.giants3.hd.android.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.giants3.android.adapter.AbstractAdapter;
+import com.giants3.android.frame.util.StringUtil;
+import com.giants3.android.kit.GradientDrawableFactory;
+import com.giants3.android.kit.ResourceExtractor;
 import com.giants3.hd.android.R;
+import com.giants3.hd.android.activity.WorkFlowListActivity;
 import com.giants3.hd.entity.ErpWorkFlowReport;
 import com.giants3.hd.utils.StringUtils;
 
@@ -45,7 +52,7 @@ public class WorkFlowReportItemAdapter extends AbstractAdapter<ErpWorkFlowReport
         public void onClick(View v) {
 
             if (v.getTag() instanceof ErpWorkFlowReport) {
-                ErpWorkFlowReport data= (ErpWorkFlowReport) v.getTag();
+                final ErpWorkFlowReport data= (ErpWorkFlowReport) v.getTag();
                 switch (v.getId()) {
                     case R.id.btn_confirm:
                         adapterListener.onReceiveWorkFlow(data);
@@ -53,6 +60,29 @@ public class WorkFlowReportItemAdapter extends AbstractAdapter<ErpWorkFlowReport
                     case R.id.btn_complete:
 
                         adapterListener.onSendWorkFlow(data);
+                        break;
+
+                        case R.id.monitor:
+
+
+
+                                final AlertDialog dialog = new AlertDialog.Builder(context).setMessage(data.state==ErpWorkFlowReport.STATE_MONITOR?"当前流程在生产计划中，是否取消?":"是否将当前流程加入生产计划中？").setNegativeButton("取消",null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        if(data.state==ErpWorkFlowReport.STATE_MONITOR)
+                                        {
+                                            adapterListener.removeReportFromMonitor(data);
+                                        }else
+                                            adapterListener.addReportToMonitor(data);
+                                        dialog.dismiss();
+
+                                    }
+                                }).create();
+                                    dialog.show();
+
+
+
                         break;
                 }
 
@@ -84,6 +114,10 @@ public class WorkFlowReportItemAdapter extends AbstractAdapter<ErpWorkFlowReport
         public TextView btn_complete;
         @Bind(R.id.btn_confirm)
         public TextView btn_confirm;
+        @Bind(R.id.addition_msg)
+        public TextView addition_msg;
+        @Bind(R.id.monitor)
+        public ImageView monitor;
 
 
         public ViewHolder(View view, View.OnClickListener onClickListener) {
@@ -94,6 +128,11 @@ public class WorkFlowReportItemAdapter extends AbstractAdapter<ErpWorkFlowReport
                 btn_confirm.setOnClickListener(onClickListener);
                 btn_complete.setOnClickListener(onClickListener);
             }
+
+            monitor.setOnClickListener(onClickListener);
+
+             monitor.setImageDrawable( GradientDrawableFactory.createSelectDrawable(ResourceExtractor.getDrawable(R.mipmap.icon_monitor),ResourceExtractor.getDrawable(R.mipmap.icon_monitor_select)));
+
         }
 
 
@@ -161,12 +200,21 @@ public class WorkFlowReportItemAdapter extends AbstractAdapter<ErpWorkFlowReport
             endDate.setText("结束时间:" + (StringUtils.isEmpty(data.endDateString) ? "" : data.endDateString));
 
 
+            boolean showAdditionMessage=data.summary!=null&& !StringUtil.isEmpty(data.summary.errorMessage);
+            addition_msg.setVisibility(showAdditionMessage?View.VISIBLE:View.GONE);
+            if(showAdditionMessage)
+            {
+                addition_msg.setText(data.summary.errorMessage);
+            }
+
             boolean canSend = data.summary != null && data.summary.canSendMessageCount > 0;
             boolean canReceive = data.summary != null && data.summary.canReceiveMessageCount > 0;
             btn_complete.setVisibility(canSend ? View.VISIBLE : View.INVISIBLE);
             btn_confirm.setVisibility(canReceive ? View.VISIBLE : View.INVISIBLE);
             btn_confirm.setTag(data);
             btn_complete.setTag(data);
+            monitor.setSelected(data.state==ErpWorkFlowReport.STATE_MONITOR);
+            monitor.setTag(data);
         }
 
         @Override
@@ -178,9 +226,12 @@ public class WorkFlowReportItemAdapter extends AbstractAdapter<ErpWorkFlowReport
 
    public interface WorkFlowAdapterListener {
         void onSendWorkFlow(ErpWorkFlowReport report);
-
         void onReceiveWorkFlow(ErpWorkFlowReport report);
-    }
+
+       void removeReportFromMonitor(ErpWorkFlowReport data);
+
+       void addReportToMonitor(ErpWorkFlowReport data);
+   }
 
 
 }

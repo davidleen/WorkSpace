@@ -685,4 +685,35 @@ public class HttpUrl {
         return completeUrl(String.format("api/workFlow/needConfirmWorkFLowMessage?os_no=" + UrlFormatter.encode(osNo) + "&itm=" + itm + "&workFlowStep=" + workFlowStep+ "&produceType=" + produceType));
 
     }
+
+    public static String syncErpStockData(String osNo, int itm, int workFlowStep) {
+
+
+
+        return completeUrl(String.format("api/erpWork/syncErpStockDataToReport?os_no=" + UrlFormatter.encode(osNo) + "&itm=" + itm + "&workflowstep=" + workFlowStep ));
+
+    }
+
+    public static String updateWorkFlowTimeLimit(long erpWorkFLowReportId, int limitDay, int alertDay) {
+
+        return completeUrl(String.format("api/erpWork/updateWorkFlowTimeLimit?erpWorkFLowReportId=" +erpWorkFLowReportId+ "&limitDay=" + limitDay + "&alertDay=" + alertDay ));
+
+    }
+
+    public static String setReportMonitorState(long erpWorkFLowReportId, int monitorState) {
+
+        return completeUrl(String.format("api/erpWork/setReportMonitorState?erpWorkFLowReportId=" +erpWorkFLowReportId+ "&monitorState=" + monitorState   ));
+
+
+    }
+
+    public static String getMonitorWorkFlowReports(String key, int pageIndex, int pageSize) {
+
+        String apiUrl = BASE_URL + "/api/erpWork/searchMonitorList";
+        UrlFormatter formatter = new UrlFormatter(apiUrl)
+                .append("key", key)
+                .append("pageIndex", pageIndex)
+                .append("pageSize", pageSize);
+        return additionInfo(formatter);
+    }
 }

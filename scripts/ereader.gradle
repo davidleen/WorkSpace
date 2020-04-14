@@ -1,0 +1,28 @@
+apply from: 'ModuleConfig.gradle'
+ext
+        {
+
+            ereader=[
+
+                    modules:[],
+                    dept:[]
+
+
+            ]
+
+
+            def modules = []
+
+            modules+=must_include_modules
+
+            modules += Modules.Analytics.Kochava
+            if (COMPILE_ADVERTISE_MODULE) {
+                modules += [Modules.Advertise.FaceBook,
+                            Modules.Advertise.Admob
+                            , Modules.Advertise.Baidu]
+            }
+            if (COMPILE_CLOUD_MESSAGE) {
+                modules += [Modules.CloudMessage.FCM]
+            }
+            ereader.modules = modules
+        }

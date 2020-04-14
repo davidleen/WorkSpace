@@ -100,7 +100,7 @@ public class AuthorityUtil {
         return false;
     }
 
-    private boolean isAdmin() {
+    public  boolean isAdmin() {
         AUser loginUser = SharedPreferencesHelper.getLoginUser();
         if(loginUser==null)return false;
         return loginUser.name.equals(User.ADMIN);

@@ -11,4 +11,5 @@ public class WorkFlowReportSummary {
     public   int  canReceiveMessageCount;
 
 
+    public String errorMessage;
 }

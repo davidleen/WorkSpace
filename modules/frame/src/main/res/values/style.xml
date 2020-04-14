@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+<style name="popupwindow">
+    <item name="android:windowEnterAnimation">@anim/pop_in</item>
+    <item name="android:windowExitAnimation">@anim/pop_out</item>
+
+</style>
+
+</resources>

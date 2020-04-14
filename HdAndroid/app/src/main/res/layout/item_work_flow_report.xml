@@ -31,6 +31,15 @@
             android:layout_centerVertical="true"
             android:textSize="13sp" />
 
+
+        <ImageView
+            android:id="@+id/monitor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:src="@mipmap/icon_monitor_select"/>
+
     </RelativeLayout>
 
     <ProgressBar
@@ -69,6 +78,12 @@
         android:text="" />
 
 
+
+    <TextView
+        android:id="@+id/addition_msg"
+        android:layout_width="match_parent"
+        android:textColor="@color/orange2"
+        android:layout_height="wrap_content"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

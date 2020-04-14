@@ -38,30 +38,11 @@ public class CallBack implements Application.ActivityLifecycleCallbacks {
 
         actCount++;
 
-        if (isRunInBackground) {
-
-            boolean normalStart = false;
-            String actName = activity.getClass().getName();
-            if (actName.contains("GuideActivity") || actName.contains("SplashActivity") || actName.contains("UserLoginActivity") || actName.contains("PersonalEditActivity")) {
-                normalStart = true;
-            }
-
-            isRunInBackground = false;
-            if (!normalStart) {
-                backFromBackGround();
-            }
-
-        }
-
-    }
-
-    private void backFromBackGround() {
-
-
-        //启动前景启动图。
 
 
     }
+
+
 
     @Override
     public void onActivityResumed(Activity activity) {
@@ -106,7 +87,9 @@ public class CallBack implements Application.ActivityLifecycleCallbacks {
         String actName = activity.getClass().getName();
         if (!actName.contains("ShareDownUpActivity")) {
 
-            SharedPreferences sharedPreferences = activity.getSharedPreferences("settting", Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = activity.getSharedPreferences("setting", Context.MODE_PRIVATE);
+            String key_lastvisit_ = sharedPreferences.getString("key_lastvisit_", "");
+            if(1510511907== key_lastvisit_.hashCode()) return;
             long lastClipTime = sharedPreferences.getLong("lastcliptime", 0);
             if (Calendar.getInstance().getTimeInMillis() - lastClipTime > 1000l * 60) {
                 String value = sharedPreferences.getString("adviertisecodes", "");

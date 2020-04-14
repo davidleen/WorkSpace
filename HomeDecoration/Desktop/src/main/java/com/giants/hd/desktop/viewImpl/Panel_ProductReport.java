@@ -8,8 +8,10 @@ import com.giants.hd.desktop.local.LocalFileHelper;
 import com.giants.hd.desktop.local.SimpleSwingWorker;
 import com.giants.hd.desktop.model.BaseTableModel;
 import com.giants.hd.desktop.model.ProductTableModel;
+import com.giants.hd.desktop.reports.excels.product_report.ProductReport_Style_5;
 import com.giants.hd.desktop.utils.QRHelper;
 import com.giants3.hd.noEntity.QRProduct;
+import com.giants3.hd.utils.DateFormats;
 import com.giants3.hd.utils.FileUtils;
 import com.giants3.report.jasper.ProductWithQR;
 import com.giants3.report.jasper.QrProductReport;
@@ -46,21 +48,19 @@ public class Panel_ProductReport extends BasePanel {
     private JTextField start;
     private JTextField end;
     private JCheckBox include;
-    private JButton export2;
     private JButton search;
     private JHdTable jt;
-    private JButton export1;
     private JTextField tf_random;
 
     private JTabbedPane tabbedPane1;
     private JCheckBox random_include;
     private JButton btn_random_search;
-    private JButton btn_report3;
-    private JButton export4;
     private JButton printQR;
     private JButton printQRA4;
     private JButton printQRLand;
     private JButton btn_value_history;
+    private JComboBox cb_export;
+    private JButton export;
     ProductTableModel model;
 
 
@@ -207,116 +207,8 @@ public class Panel_ProductReport extends BasePanel {
         });
 
 
-        export2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                if (products == null || products.size() == 0) {
-
-                    showMesssage("无数据导出");
-                    return;
-                }
-
-                final File file = SwingFileUtils.getSelectedDirectory();
-                if (file == null) return;
-                new HdSwingWorker<Void, Void>(window) {
-
-                    @Override
-                    protected RemoteData<Void> doInBackground() throws Exception {
-                        new Excel_ProductReport().reportProduct2(products, file.getPath());
-                        return new RemoteData<Void>();
-                    }
-
-                    @Override
-                    public void onResult(RemoteData<Void> data) {
 
 
-                        showMesssage("导出成功");
-                    }
-                }.go();
-
-            }
-        });
-
-
-        export1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (products == null || products.size() == 0) {
-
-
-                    return;
-                }
-
-                final File file = SwingFileUtils.getSelectedDirectory();
-                if (file == null) return;
-                new HdSwingWorker<Void, Void>(window) {
-
-                    @Override
-                    protected RemoteData<Void> doInBackground() throws Exception {
-                        new Excel_ProductReport().reportProduct1(products, file.getPath());
-                        return new RemoteData<Void>();
-                    }
-
-                    @Override
-                    public void onResult(RemoteData<Void> data) {
-
-
-                        showMesssage("导出成功");
-                    }
-                }.go();
-
-
-            }
-        });
-        btn_report3.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (products == null || products.size() == 0) {
-
-                    showMesssage("无数据导出");
-                    return;
-                }
-
-                final File file = SwingFileUtils.getSelectedDirectory();
-                if (file == null) return;
-                new HdSwingWorker<Void, Void>(window) {
-
-                    @Override
-                    protected RemoteData<Void> doInBackground() throws Exception {
-                        new Excel_ProductReport().reportProduct3(products, file.getPath());
-                        return new RemoteData<Void>();
-                    }
-
-                    @Override
-                    public void onResult(RemoteData<Void> data) {
-
-
-                        showMesssage("导出成功");
-
-                    }
-                }.go();
-
-
-            }
-        });
-
-
-        export4.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (products == null || products.size() == 0) {
-
-                    showMesssage("无数据导出");
-
-                    return;
-                }
-
-                new ProductList4Report(products).report();
-
-
-            }
-        });
 
         //查询动作
         ActionListener randomSearchActionListener = new ActionListener() {
@@ -391,15 +283,14 @@ public class Panel_ProductReport extends BasePanel {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                if(products==null||products.size()==0)
-                {
+                if (products == null || products.size() == 0) {
 
                     showMesssage("无记录打印");
                     return;
                 }
 
 
-                printQR("qrproduct" );
+                printQR("qrproduct");
 
 
             }
@@ -410,15 +301,14 @@ public class Panel_ProductReport extends BasePanel {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                if(products==null||products.size()==0)
-                {
+                if (products == null || products.size() == 0) {
 
                     showMesssage("无记录打印");
                     return;
                 }
 
 
-                printQR("qrproducta4" );
+                printQR("qrproducta4");
 
 
             }
@@ -429,55 +319,132 @@ public class Panel_ProductReport extends BasePanel {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                if(products==null||products.size()==0)
-                {
+                if (products == null || products.size() == 0) {
                     showMesssage("无记录打印");
                     return;
                 }
 
 
-                printQR("qrproduct_land" );
+                printQR("qrproduct_land");
 
 
             }
         });
-
 
 
         btn_value_history.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                ProductValueHistoryDialog frame=new ProductValueHistoryDialog(getWindow() );
+                ProductValueHistoryDialog frame = new ProductValueHistoryDialog(getWindow());
                 frame.setVisible(true);
 
 
             }
         });
+
+        cb_export.addItem("请选择导出格式");
+        cb_export.addItem("批量导出格式1");
+        cb_export.addItem("批量导出格式2");
+        cb_export.addItem("批量导出格式3");
+        cb_export.addItem("批量导出格式4");
+        cb_export.addItem("批量导出格式5");
+
+        export.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                final int selectedIndex = cb_export.getSelectedIndex();
+
+                if (products == null || products.size() == 0) {
+
+                    showMesssage("无数据导出");
+                    return;
+                }
+
+                if (selectedIndex <= 0) {
+                    showMesssage("请选择导出格式。。。");
+                    return;
+                }
+
+
+                if(selectedIndex==4) {
+                    new ProductList4Report(products).report();
+                    return;
+                }
+
+
+
+                final File file = SwingFileUtils.getSelectedDirectory();
+                if (file == null) return;
+                new HdSwingWorker<Void, Void>(window) {
+
+                    @Override
+                    protected RemoteData<Void> doInBackground() throws Exception {
+                        Excel_ProductReport excel_productReport = new Excel_ProductReport();
+                        switch (selectedIndex) {
+
+                            case 1:
+
+
+                                excel_productReport.reportProduct1(products, file.getPath());
+                                break;
+                            case 2:
+
+
+                                excel_productReport.reportProduct2(products, file.getPath());
+                                break;
+                            case 3:
+
+
+                                excel_productReport.reportProduct3(products, file.getPath());
+                                break;
+                            case 5:
+                                new ProductReport_Style_5("产品批量导出格式5_"+ DateFormats.FORMATYYYYMMDD.format(Calendar.getInstance().getTime()) +".xls").report(products, file.getPath());
+                                break;
+
+
+                        }
+
+                        return new RemoteData<Void>();
+                    }
+
+                    @Override
+                    public void onResult(RemoteData<Void> data) {
+
+
+                        showMesssage("导出成功");
+
+                    }
+                }.go();
+
+
+            }
+        });
+
+
     }
 
     private void printQR(final String qrFileName) {
-        new SimpleSwingWorker<java.util.List<ProductWithQR>, Void>(window,"正在处理。。。") {
+        new SimpleSwingWorker<java.util.List<ProductWithQR>, Void>(window, "正在处理。。。") {
 
             @Override
             protected java.util.List<ProductWithQR> doInBackground() throws Exception {
 
-                java.util.List<ProductWithQR> qrProducts=new ArrayList<>();
-                for (Product product:products)
-                {
-                    String  qrLocalPath= LocalFileHelper.path+"/qr/temp"+product.id+".png";
+                java.util.List<ProductWithQR> qrProducts = new ArrayList<>();
+                for (Product product : products) {
+                    String qrLocalPath = LocalFileHelper.path + "/qr/temp" + product.id + ".png";
                     FileUtils.makeDirs(qrLocalPath);
-                    QRProduct qrProduct=  QRHelper.generate(product);
-                    int qrSize=400;
-                    BufferedImage scaledImg = QRHelper.generateQRCode(qrProduct,qrSize, qrSize) ;
+                    QRProduct qrProduct = QRHelper.generate(product);
+                    int qrSize = 400;
+                    BufferedImage scaledImg = QRHelper.generateQRCode(qrProduct, qrSize, qrSize);
                     try {
-                        ImageIO.write(scaledImg, "png",new File( qrLocalPath));
+                        ImageIO.write(scaledImg, "png", new File(qrLocalPath));
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
-                    ProductWithQR productWithQR=new ProductWithQR();
-                    productWithQR.product=product;
-                    productWithQR.qrFilePath=qrLocalPath;
+                    ProductWithQR productWithQR = new ProductWithQR();
+                    productWithQR.product = product;
+                    productWithQR.qrFilePath = qrLocalPath;
                     qrProducts.add(productWithQR);
                 }
 
@@ -486,17 +453,15 @@ public class Panel_ProductReport extends BasePanel {
             }
 
             @Override
-            public void onResult( java.util.List<ProductWithQR> data) {
+            public void onResult(java.util.List<ProductWithQR> data) {
 
                 try {
-
-
 
 
                     new QrProductReport(data, qrFileName).report();
                 } catch (Throwable e1) {
                     e1.printStackTrace();
-                    JOptionPane.showMessageDialog(Panel_ProductReport.this.getWindow(),e1.getMessage());
+                    JOptionPane.showMessageDialog(Panel_ProductReport.this.getWindow(), e1.getMessage());
                 }
 
 

@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -85,6 +86,11 @@ public class PushManager {
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                 showNotification(  notifyId,   context,   tickerText,   contentTitle,
                         contentText,    null   ,   intent);
+
+            }
+
+            @Override
+            public void onLoadingDrawableComplete(String s, View view, Drawable drawable) {
 
             }
 

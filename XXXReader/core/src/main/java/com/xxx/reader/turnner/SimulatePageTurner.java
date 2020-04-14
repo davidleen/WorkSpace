@@ -10,6 +10,9 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.view.MotionEvent;
+import android.view.animation.CycleInterpolator;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 
 import com.giants3.android.frame.util.Log;
 import com.xxx.reader.core.DrawParam;
@@ -29,11 +32,15 @@ public class SimulatePageTurner extends AbsPageTurner {
     private boolean scrolling = false;
 
 
+    Interpolator interpolator=new CycleInterpolator(0.5f);
+    boolean useInter=true;
+
     private Path currentPageArea=new Path();
     private Path downPageArea =new Path();
     private Rect downPageShadowRect=new Rect();
     private Path currentBackArea=new Path();
     Simulate simulate;
+
 
 
     private boolean hasStartScroll = false;
@@ -165,6 +172,7 @@ public class SimulatePageTurner extends AbsPageTurner {
     public boolean onDown(MotionEvent e) {
 
         abortAnimation();
+        useInter=false;
         hasStartScroll = false;
         isDirectionSetting = false;
         float eX = e.getX();
@@ -245,12 +253,36 @@ public class SimulatePageTurner extends AbsPageTurner {
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
+
+
+        int turnMoveDirection = getTurnMoveDirection(e.getX(), e.getY(),true);
+        if(turnMoveDirection==TURN_NONE) return false;
+        if(turnMoveDirection==TURN_PREVIOUS&&!canTurnPrevious()) return false;
+        if(turnMoveDirection==TURN_NEXT&&!canTurnNext()) return false;
+
+
+        isDirectionSetting=true;
+        direction=turnMoveDirection;
+        hasStartScroll=true;
+
+        simulate.getDestPoint(direction);
+
+        //scroller.startScroll(startX,startY,-drawParam.width-startX,drawParam.height-startY,3000);
+        int startX= drawParam.width;
+        int startY= drawParam.height;
+        setDirection(startX,startY);
+        useInter=true;
+        scroller.startScroll(startX,startY,-drawParam.width-startX,drawParam.height*2/3-startY,3000);
+        computeScroll();
+
+
+
         return false;
     }
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        Log.e("scroller:" + scroller.getStartX() + ",e2.getx()" + e2.getX() + ",e2.getY()" + e2.getY() + ", scroller.getFinalX():" + scroller.getFinalX() + ", scroller.getFinalY():" + scroller.getFinalY() + ",distanceX:" + distanceX);
+        Log.e("scroller:" + scroller.getStartX() + ",e2.getx()" + e2.getX() + ",e2.getY()" + e2.getY() + ", scroller.getFinalX():" + scroller.getFinalX() + ", scroller.getFinalY():" + scroller.getFinalY() + ",distanceX:" + distanceX+","+(e2.getAction()==MotionEvent.ACTION_UP));
 
         if (Math.abs(distanceX) > PAGGING_SLOP || Math.abs(distanceY) > PAGGING_SLOP)
 
@@ -353,7 +385,38 @@ public class SimulatePageTurner extends AbsPageTurner {
      * @return
      */
     public int getTurnMoveDirection(float x, float y) {
+
+        return getTurnMoveDirection(x,y,false);
+
+    }
+
+
+    /**
+     * 翻页趋势
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public int getTurnMoveDirection(float x, float y,boolean singleTap) {
         int turn = TURN_NONE;
+
+        if(singleTap)
+        {
+
+
+            if (x < drawParam.width / 3) {
+
+                turn = TURN_PREVIOUS;
+            } else
+                if(x>drawParam.width*2/3) {
+                    turn = TURN_NEXT;
+                }
+
+                return turn;
+
+
+        }
 
         float difference = firstTouch.x - x;
         if (!isDirectionSetting && difference != 0) {
@@ -374,7 +437,6 @@ public class SimulatePageTurner extends AbsPageTurner {
 
         return turn;
     }
-
     @Override
     public void onLongPress(MotionEvent e) {
 
@@ -415,6 +477,42 @@ public class SimulatePageTurner extends AbsPageTurner {
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+
+
+
         return false;
+    }
+
+    @Override
+    protected void onActionUp(MotionEvent event) {
+
+
+
+
+
+        //未开始滚动 不处理，单点击时间 由onSingleTapUp 处理
+        if(hasStartScroll)
+        {
+            return;
+        }
+
+        int startX;int startY;
+        if(!scroller.isFinished())
+        {
+            scroller.forceFinished(true);
+            startX=   scroller.getCurrX();
+            startY=scroller.getCurrY();
+        }else
+        {
+            startX= (int) event.getX();
+            startY= (int) event.getY();
+        }
+
+
+        //scroller.startScroll(startX,startY,-drawParam.width-startX,drawParam.height-startY,3000);
+        scroller.startScroll(startX,startY,drawParam.width-startX,drawParam.height-startY,3000);
+        computeScroll();
+
+
     }
 }

@@ -9,16 +9,22 @@ import com.giants3.hd.server.utils.AttachFileUtils;
 import com.giants3.hd.server.utils.FileUtils;
 import com.giants3.hd.utils.ArrayUtils;
 import com.giants3.hd.utils.StringUtils;
+import org.hibernate.SQLQuery;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.object.SqlQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -28,6 +34,7 @@ import java.util.List;
 @Service
 public class ErpService extends AbstractErpService {
 
+
     @Autowired
     ErpOrderRepository repository;
 
@@ -36,6 +43,10 @@ public class ErpService extends AbstractErpService {
 
     @Autowired
     ErpPrdtService erpPrdtService; ;
+
+
+    @Autowired
+    MaterialService materialService; ;
 
 
 
@@ -102,6 +113,7 @@ public class ErpService extends AbstractErpService {
 
     @Override
     protected void onEntityManagerCreate(EntityManager manager) {
+
 
     }
 
@@ -572,35 +584,56 @@ public class ErpService extends AbstractErpService {
         }
 
 
-        if (salesNos == null || salesNos.size() == 0) return wrapData();
+        int size = salesNos.size();
+        if (salesNos == null || size == 0) return wrapData();
 
-        List<OrderItem> orderItems = orderItemRepository.findByVerifyDateGreaterThanEqualAndVerifyDateLessThanEqual(dateStart, dateEnd);
-
-
-        List<OrderReportItem> items = new ArrayList<>();
-        for (OrderItem orderitem : orderItems) {
-            Order order = orderRepository.findFirstByOsNoEquals(orderitem.osNo);
-            if (order != null) {
-                //所有人并且是管理员的 所有记录都通过。 否则只接受指定业务员记录
-                if ((salesId == -1 && loginUser.isAdmin()) || salesNos.indexOf(order.sal_no) > -1) {
-                    OrderReportItem orderReportItem = new OrderReportItem();
-                    bindReportData(orderReportItem, orderitem, order);
-
-                    //读取
-
-                    String id_no = repository.findId_noByOrderItem(orderitem.osNo, orderitem.itm);
-                    orderReportItem.id_no = id_no;
-                    orderReportItem.thumbnail = orderReportItem.url = com.giants3.hd.server.utils.FileUtils.getErpProductPictureUrl(id_no, "");
-
-
-                    items.add(orderReportItem);
-                }
-
-            }
+//
+//        Query nativeQuery = em.createNativeQuery(" select * from T_OrderItem where verifyDate >= :startDate and verifyDate <= :endDate ");
+//        nativeQuery.setParameter("startDate",dateStart).setParameter("endDate",dateEnd);
+//        List<OrderReportItem> list = nativeQuery.unwrap(SQLQuery.class).setResultTransformer(Transformers.aliasToBean(OrderReportItem.class)).list();
+        Pageable pageable=constructPageSpecification(0,100);//
+        String[] sales=new String[size];
+        for (int i = 0; i <size; i++) {
+            sales[i]=salesNos.get(i);
         }
+        List< Object> orderItems = orderItemRepository.findByVerifyDateGreaterThanEqualAndVerifyDateLessThanEqual(dateStart,dateEnd,salesId == -1 && loginUser.isAdmin()?1:0, sales );
+        List<OrderReportItem> items = new ArrayList<>();
+        for (Object orderitem : orderItems) {
+
+            OrderReportItem orderReportItem = new OrderReportItem(orderitem);
+            orderReportItem.thumbnail = orderReportItem.url = com.giants3.hd.server.utils.FileUtils.getErpProductPictureUrl(orderReportItem.id_no, "");
+            items.add(orderReportItem);
 
 
-        return wrapData(items);
+
+
+        }
+        return wrapData( items );
+
+//        List<OrderReportItem> items = new ArrayList<>();
+//        for (OrderItem orderitem : orderItems) {
+//            Order order = orderRepository.findFirstByOsNoEquals(orderitem.osNo);
+//            if (order != null) {
+//                //所有人并且是管理员的 所有记录都通过。 否则只接受指定业务员记录
+//                if ((salesId == -1 && loginUser.isAdmin()) || salesNos.indexOf(order.sal_no) > -1) {
+//                    OrderReportItem orderReportItem = new OrderReportItem();
+//                    bindReportData(orderReportItem, orderitem, order);
+//
+//                    //读取
+//
+//                    String id_no = repository.findId_noByOrderItem(orderitem.osNo, orderitem.itm);
+//                    orderReportItem.id_no = id_no;
+//                    orderReportItem.thumbnail = orderReportItem.url = com.giants3.hd.server.utils.FileUtils.getErpProductPictureUrl(id_no, "");
+//
+//
+//                    items.add(orderReportItem);
+//                }
+//
+//            }
+//        }
+//
+//
+//        return wrapData(items);
     }
 
     /**
@@ -947,5 +980,40 @@ public class ErpService extends AbstractErpService {
 
     }
 
+    /**
+     * 同步erp材料到报价系统
+     * @return
+     */
+    public RemoteData<Void> syncErpMaterial()
+    {
 
+        long time= Calendar.getInstance().getTimeInMillis();
+        RemoteData<Void> voidRemoteData = materialService.copyMaterialFromErp();
+        logger.info("time use in copyMaterialFromErp:"+(Calendar.getInstance().getTimeInMillis()-time));
+
+        time= Calendar.getInstance().getTimeInMillis();
+        boolean hasMorePrdt=false;
+        do{
+
+            hasMorePrdt=materialService.updateErpMaterial();
+        }while (hasMorePrdt);
+        logger.info("time use in updateErpMaterial:"+(Calendar.getInstance().getTimeInMillis()-time));
+
+
+//        //最后 执行产品相关的材料更新
+        new Thread(){
+            @Override
+            public void run() {
+
+               long  time= Calendar.getInstance().getTimeInMillis();
+                materialService.updateProductData();
+                logger.info("time use in updateProductData:"+(Calendar.getInstance().getTimeInMillis()-time));
+
+            }
+        }.start();
+
+
+        return wrapData();
+
+    }
 }

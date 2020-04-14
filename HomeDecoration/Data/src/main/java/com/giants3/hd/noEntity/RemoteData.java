@@ -18,6 +18,10 @@ public class RemoteData<T> implements Serializable{
     public int code;
 
 
+
+    public int msgCode;
+
+
     /**
      * 状态的消息说明
      */

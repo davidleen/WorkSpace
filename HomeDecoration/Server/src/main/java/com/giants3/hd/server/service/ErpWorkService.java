@@ -6,30 +6,27 @@ import com.giants3.hd.entity_erp.Sub_workflow_state;
 import com.giants3.hd.entity_erp.WorkFlowMaterial;
 import com.giants3.hd.entity_erp.Zhilingdan;
 import com.giants3.hd.exception.HdException;
-import com.giants3.hd.noEntity.ProduceType;
-import com.giants3.hd.noEntity.ProductType;
-import com.giants3.hd.noEntity.RemoteData;
-import com.giants3.hd.noEntity.WorkFlowReportSummary;
+import com.giants3.hd.noEntity.*;
 import com.giants3.hd.server.repository.*;
+import com.giants3.hd.server.repository_erp.ErpStockSubmitRepository;
 import com.giants3.hd.server.repository_erp.ErpWorkFlowRepository;
 import com.giants3.hd.server.repository_erp.ErpWorkRepository;
 import com.giants3.hd.server.service_third.MessagePushService;
+import com.giants3.hd.server.utils.Constraints;
 import com.giants3.hd.server.utils.FileUtils;
 import com.giants3.hd.utils.ArrayUtils;
 import com.giants3.hd.utils.DateFormats;
 import com.giants3.hd.utils.StringUtils;
-import com.sun.org.apache.xml.internal.utils.StringComparable;
 import de.greenrobot.common.DateUtils;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
-import java.awt.geom.Area;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
@@ -56,6 +53,8 @@ public class ErpWorkService extends AbstractErpService {
 
     @Autowired
     ProductRepository productRepository;
+    @Autowired
+    ErpStockSubmitRepository erpStockSubmitRepository;
     @Autowired
     ErpPrdtService erpPrdtService;
     @Autowired
@@ -236,19 +235,18 @@ public class ErpWorkService extends AbstractErpService {
         RemoteData<ErpWorkFlowReport> erpWorkFlowReport = findErpWorkFlowReport(erpOrderItem);
 
 
-
-
         return erpWorkFlowReport;
     }
 
     public RemoteData<ErpWorkFlowReport> findErpWorkFlowReport(ErpOrderItem erpOrderItem) {
 
-        return findErpWorkFlowReport(erpOrderItem.os_no,erpOrderItem.itm,erpOrderItem.prd_no,erpOrderItem.pVersion,erpOrderItem.produceType,erpOrderItem.produceTypeName );
+        return findErpWorkFlowReport(erpOrderItem.os_no, erpOrderItem.itm, erpOrderItem.prd_no, erpOrderItem.pVersion, erpOrderItem.url, erpOrderItem.produceType, erpOrderItem.produceTypeName);
     }
+
     /**
      * 查找xxxx的进度报表
      */
-    public RemoteData<ErpWorkFlowReport> findErpWorkFlowReport(String os_no,int itm,String prd_no,String pVersion,int produceType,String produceTypeName ) {
+    public RemoteData<ErpWorkFlowReport> findErpWorkFlowReport(String os_no, int itm, String prd_no, String pVersion, String url, int produceType, String produceTypeName) {
 
 
         //查询本地数据库的报表记录
@@ -326,15 +324,13 @@ public class ErpWorkService extends AbstractErpService {
                     erpWorkFlowReport.itm = itm;
                     erpWorkFlowReport.prdNo = findProcess.prdNo;
                     erpWorkFlowReport.pVersion = findProcess.pVersion;
+                    erpWorkFlowReport.productUrl = findProcess.photoUrl;
                     erpWorkFlowReport.typeCount = typeSet.size();
                     erpWorkFlowReport.percentage = 0;
 
 
                     erpWorkFlowReport.productType = productType.type;
                     erpWorkFlowReport.productTypeName = productType.name;
-
-
-
 
 
                     erpWorkFlowReports.add(erpWorkFlowReport);
@@ -349,7 +345,7 @@ public class ErpWorkService extends AbstractErpService {
 
                     for (ErpWorkFlow erpWorkFlow : ErpWorkFlow.purchaseWorkFLows) {
 
-                        ErpWorkFlowReport erpWorkFlowReport = createErpWorkFlowFromProcess(erpWorkFlow, os_no,itm,prd_no,pVersion);
+                        ErpWorkFlowReport erpWorkFlowReport = createErpWorkFlowFromProcess(erpWorkFlow, os_no, itm, prd_no, pVersion, url);
                         erpWorkFlowReports.add(erpWorkFlowReport);
                     }
 
@@ -367,12 +363,6 @@ public class ErpWorkService extends AbstractErpService {
         }
 
 
-
-
-
-
-
-
         return wrapData(erpWorkFlowReports);
     }
 
@@ -383,7 +373,7 @@ public class ErpWorkService extends AbstractErpService {
      * @param erpWorkFlow
      * @return
      */
-    private ErpWorkFlowReport createErpWorkFlowFromProcess(ErpWorkFlow erpWorkFlow,String osNo,int itm,String prdNo,String pVersion ) {
+    private ErpWorkFlowReport createErpWorkFlowFromProcess(ErpWorkFlow erpWorkFlow, String osNo, int itm, String prdNo, String pVersion, String photoUrl) {
         ErpWorkFlowReport erpWorkFlowReport = new ErpWorkFlowReport();
         erpWorkFlowReport.workFlowCode = erpWorkFlow.code;
 
@@ -393,6 +383,7 @@ public class ErpWorkService extends AbstractErpService {
         erpWorkFlowReport.itm = itm;
         erpWorkFlowReport.prdNo = prdNo;
         erpWorkFlowReport.pVersion = pVersion;
+        erpWorkFlowReport.productUrl = photoUrl;
         erpWorkFlowReport.typeCount = 1;
         erpWorkFlowReport.percentage = 0;
 
@@ -514,9 +505,6 @@ public class ErpWorkService extends AbstractErpService {
         List<ErpOrderItemProcess> orderItemProcesses = erpWorkRepository.findPurchaseOrderItemProcesses(os_no, itm);
 
 
-
-
-
         //下一个节点
         ErpWorkFlow nextFlow = flowStep == ErpWorkFlow.LAST_STEP ? null : ErpWorkFlow.findPurchaseNext(flowStep);
         ErpWorkFlow workFlow = ErpWorkFlow.findPurchaseByStep(flowStep);
@@ -533,8 +521,6 @@ public class ErpWorkService extends AbstractErpService {
             process.unSendQty = process.qty;
 
 
-
-
             ErpOrderItemProcess localProcess = erpOrderItemProcessRepository.findFirstByOsNoEqualsAndItmEqualsAndMoNoEqualsAndMrpNoEquals(process.osNo, process.itm, process.moNo, process.mrpNo);
             if (localProcess != null)
                 attachData(process, localProcess);
@@ -542,7 +528,7 @@ public class ErpWorkService extends AbstractErpService {
             process.nextWorkFlowCode = nextFlow == null ? "" : nextFlow.code;
             process.nextWorkFlowStep = nextFlow == null ? 0 : nextFlow.step;
             process.nextWorkFlowName = nextFlow == null ? "" : nextFlow.name;
-            if(process.unSendQty>0)
+            if (process.unSendQty > 0)
                 result.add(process);
         }
 
@@ -560,17 +546,19 @@ public class ErpWorkService extends AbstractErpService {
      */
     public RemoteData<ErpOrderItemProcess> getAvailableOrderItemProcess(User loginUser, String os_no, int itm, int flowStep) {
         ErpOrderItem erpOrderItem = erpWorkRepository.findOrderItem(os_no, itm);
-        return getAvailableOrderItemProcess(loginUser,erpOrderItem,flowStep);
-    }  /**
+        return getAvailableOrderItemProcess(loginUser, erpOrderItem, flowStep);
+    }
+
+    /**
      * 查找指定节点可发送的订单流程数据
      *
      * @param erpOrderItem
      * @param flowStep
      * @return
      */
-    public RemoteData<ErpOrderItemProcess> getAvailableOrderItemProcess(User loginUser,  ErpOrderItem erpOrderItem,int flowStep) {
-        String os_no=erpOrderItem.os_no;
-         int itm=erpOrderItem.itm;
+    public RemoteData<ErpOrderItemProcess> getAvailableOrderItemProcess(User loginUser, ErpOrderItem erpOrderItem, int flowStep) {
+        String os_no = erpOrderItem.os_no;
+        int itm = erpOrderItem.itm;
 
         WorkFlowWorker workFlowWorker = workFlowWorkerRepository.findFirstByUserIdEqualsAndProduceTypeEqualsAndWorkFlowStepEquals(loginUser.id, erpOrderItem.produceType, flowStep);
 
@@ -642,7 +630,7 @@ public class ErpWorkService extends AbstractErpService {
             for (ErpOrderItemProcess process : result) {
 
                 if (StringUtils.isEmpty(process.jgh)) {
-                    return wrapError("当前流程未排厂加工户");
+                    return wrapError("当前流程未排厂加工户", MSG_CODE_ERP);
                 }
             }
         }
@@ -671,7 +659,7 @@ public class ErpWorkService extends AbstractErpService {
 
                     || process.mrpNo.startsWith(ErpWorkFlow.FIRST_STEP_CODE)  //第一道也增加鐵木
 
-                    ) {
+            ) {
 
                 String code = process.mrpNo.substring(1, 2);
                 if (code.equals(ErpWorkFlow.CODE_MU) || code.equals(ErpWorkFlow.CODE_TIE)) {
@@ -727,18 +715,20 @@ public class ErpWorkService extends AbstractErpService {
 
         ErpOrderItem erpOrderItem = erpWorkRepository.findOrderItem(erpOrderItemProcess.osNo, erpOrderItemProcess.itm);
 
-        return    sendWorkFlowMessage(user,erpOrderItemProcess,erpOrderItem,tranQty,areaId,memo);
+        return sendWorkFlowMessage(user, erpOrderItemProcess, erpOrderItem, tranQty, areaId, memo);
 
-    }/**
- * 向指定流程发起生产提交
- *
- * @param user
- * @param erpOrderItemProcess 订单项对应流程状态
- * @param tranQty             传递数量
- * @param memo                备注
- */
+    }
+
+    /**
+     * 向指定流程发起生产提交
+     *
+     * @param user
+     * @param erpOrderItemProcess 订单项对应流程状态
+     * @param tranQty             传递数量
+     * @param memo                备注
+     */
     @Transactional(rollbackFor = {HdException.class})
-    public synchronized RemoteData<Void> sendWorkFlowMessage(User user, ErpOrderItemProcess erpOrderItemProcess,  ErpOrderItem erpOrderItem, int tranQty, long areaId, String memo) throws HdException {
+    public synchronized RemoteData<Void> sendWorkFlowMessage(User user, ErpOrderItemProcess erpOrderItemProcess, ErpOrderItem erpOrderItem, int tranQty, long areaId, String memo) throws HdException {
 
 
         //增加数据小验证
@@ -805,8 +795,6 @@ public class ErpWorkService extends AbstractErpService {
         }
 
 
-
-
         //验证人员
 
         WorkFlowWorker workFlowWorker = workFlowWorkerRepository.findFirstByUserIdEqualsAndProduceTypeEqualsAndWorkFlowCodeEqualsAndSendEquals(user.id, erpOrderItem.produceType, erpOrderItemProcess.currentWorkFlowCode, true);
@@ -870,16 +858,15 @@ public class ErpWorkService extends AbstractErpService {
         workFlowMessage.toFlowCode = erpOrderItemProcess.nextWorkFlowCode;
 
 
-        if(erpOrderItemProcess.currentWorkFlowStep == ErpWorkFlow.FIRST_STEP&&!StringUtils.isEmpty(erpOrderItem.sys_date))
-        {
+        if (erpOrderItemProcess.currentWorkFlowStep == ErpWorkFlow.FIRST_STEP && !StringUtils.isEmpty(erpOrderItem.sys_date)) {
             try {
-                workFlowMessage.createTime =DateFormats.FORMAT_YYYY_MM_DD.parse(erpOrderItem.sys_date).getTime() ;
+                workFlowMessage.createTime = DateFormats.FORMAT_YYYY_MM_DD.parse(erpOrderItem.sys_date).getTime();
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            workFlowMessage.createTimeString =erpOrderItem.sys_date;
+            workFlowMessage.createTimeString = erpOrderItem.sys_date;
 
-        }else {
+        } else {
             workFlowMessage.createTime = Calendar.getInstance().getTimeInMillis();
             workFlowMessage.createTimeString = DateFormats.FORMAT_YYYY_MM_DD_HH_MM.format(Calendar.getInstance().getTime());
         }
@@ -1013,14 +1000,13 @@ public class ErpWorkService extends AbstractErpService {
             erpWorkFlowReport.idx1 = orderItemType.idx1;
 
 
-            if(erpWorkFlowReport.workFlowStep == ErpWorkFlow.FIRST_STEP&&!StringUtils.isEmpty(erpOrderItem.sys_date))
-            {
+            if (erpWorkFlowReport.workFlowStep == ErpWorkFlow.FIRST_STEP && !StringUtils.isEmpty(erpOrderItem.sys_date)) {
                 try {
-                    erpWorkFlowReport.startDate =DateFormats.FORMAT_YYYY_MM_DD.parse(erpOrderItem.sys_date).getTime() ;
+                    erpWorkFlowReport.startDate = DateFormats.FORMAT_YYYY_MM_DD.parse(erpOrderItem.sys_date).getTime();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                erpWorkFlowReport.startDateString =erpOrderItem.sys_date;
+                erpWorkFlowReport.startDateString = erpOrderItem.sys_date;
 
             }
 
@@ -1044,97 +1030,90 @@ public class ErpWorkService extends AbstractErpService {
     private void updateErpWorkFlowReport(ErpWorkFlowReport erpWorkFlowReport, WorkFlowTimeLimit workFlowTimeLimit) {
 
 
-        String idx1 = erpWorkFlowReport.idx1;
-        //铁木判定
-        boolean isMu = idx1.toLowerCase().startsWith("mj");
-        int alertDay = 0;
-        int limitDay = 0;
-        switch (erpWorkFlowReport.workFlowStep) {
-            case ErpWorkFlow.FIRST_STEP:
-                if (isMu) {
-                    alertDay = workFlowTimeLimit.alert_mu_baipeijg;
-                    limitDay = workFlowTimeLimit.limit_mu_baipeijg;
-                } else {
-                    alertDay = workFlowTimeLimit.alert_tie_baipeijg;
-                    limitDay = workFlowTimeLimit.limit_tie_baipeijg;
+        if (!erpWorkFlowReport.hasUpdateLimit) {
+
+            String idx1 = erpWorkFlowReport.idx1;
+            //铁木判定
+            boolean isMu = idx1.toLowerCase().startsWith("mj");
+            int alertDay = 0;
+            int limitDay = 0;
+            switch (erpWorkFlowReport.workFlowStep) {
+                case ErpWorkFlow.FIRST_STEP:
+                    if (isMu) {
+                        alertDay = workFlowTimeLimit.alert_mu_baipeijg;
+                        limitDay = workFlowTimeLimit.limit_mu_baipeijg;
+                    } else {
+                        alertDay = workFlowTimeLimit.alert_tie_baipeijg;
+                        limitDay = workFlowTimeLimit.limit_tie_baipeijg;
+                    }
+                    break;
+                case ErpWorkFlow.STEP_CHENGPIN:
+
+                    erpWorkFlowReport.isOverDue = false;
+                    erpWorkFlowReport.overDueDay = 0;
+
+                    alertDay = 0;
+                    limitDay = 0;
+                    break;
+
+                case ErpWorkFlow.STEP_PEITI:
+                    if (isMu) {
+                        alertDay = workFlowTimeLimit.alert_mu_baipei;
+                        limitDay = workFlowTimeLimit.limit_mu_baipei;
+                    } else {
+                        alertDay = workFlowTimeLimit.alert_tie_baipei;
+                        limitDay = workFlowTimeLimit.limit_tie_baipei;
+                    }
+                    break;
+                case ErpWorkFlow.STEP_YANSE:
+
+                    if (isMu) {
+                        alertDay = workFlowTimeLimit.alert_mu_yanse;
+                        limitDay = workFlowTimeLimit.limit_mu_yanse;
+                    } else {
+                        alertDay = workFlowTimeLimit.alert_tie_yanse;
+                        limitDay = workFlowTimeLimit.limit_tie_yanse;
+                    }
+                    break;
+                case ErpWorkFlow.STEP_BAOZHUANG: {
+
+
+                    if (isMu) {
+                        alertDay = workFlowTimeLimit.alert_baozhuang;
+                        limitDay = workFlowTimeLimit.limit_baozhuang;
+                    } else {
+                        alertDay = workFlowTimeLimit.alert_tie_baozhuang;
+                        limitDay = workFlowTimeLimit.limit_tie_baozhuang;
+                    }
+
+
                 }
+
                 break;
-            case ErpWorkFlow.STEP_CHENGPIN:
+
+
+            }
+
+            if (erpWorkFlowReport.workFlowStep == ErpWorkFlow.LAST_STEP) {
 
                 erpWorkFlowReport.isOverDue = false;
                 erpWorkFlowReport.overDueDay = 0;
 
                 alertDay = 0;
                 limitDay = 0;
-                break;
-
-            case ErpWorkFlow.STEP_PEITI:
-                if (isMu) {
-                    alertDay = workFlowTimeLimit.alert_mu_baipei;
-                    limitDay = workFlowTimeLimit.limit_mu_baipei;
-                } else {
-                    alertDay = workFlowTimeLimit.alert_tie_baipei;
-                    limitDay = workFlowTimeLimit.limit_tie_baipei;
-                }
-                break;
-            case ErpWorkFlow.STEP_YANSE:
-
-                if (isMu) {
-                    alertDay = workFlowTimeLimit.alert_mu_yanse;
-                    limitDay = workFlowTimeLimit.limit_mu_yanse;
-                } else {
-                    alertDay = workFlowTimeLimit.alert_tie_yanse;
-                    limitDay = workFlowTimeLimit.limit_tie_yanse;
-                }
-                break;
-            case ErpWorkFlow.STEP_BAOZHUANG:
-
-            {
-
-
-                if (isMu) {
-                    alertDay = workFlowTimeLimit.alert_baozhuang;
-                    limitDay = workFlowTimeLimit.limit_baozhuang;
-                } else {
-                    alertDay = workFlowTimeLimit.alert_tie_baozhuang;
-                    limitDay = workFlowTimeLimit.limit_tie_baozhuang;
-                }
-
-
             }
 
-            break;
-
+            erpWorkFlowReport.limitDay = limitDay;
+            erpWorkFlowReport.alertDay = alertDay;
 
         }
 
-        if( erpWorkFlowReport.workFlowStep== ErpWorkFlow.LAST_STEP) {
 
-            erpWorkFlowReport.isOverDue = false;
-            erpWorkFlowReport.overDueDay = 0;
-
-            alertDay = 0;
-            limitDay = 0;
-        }
-
-        erpWorkFlowReport.limitDay = limitDay;
-        erpWorkFlowReport.alertDay = alertDay;
-
-
-        if (limitDay > 0) {
+        if (erpWorkFlowReport.limitDay > 0) {
 
 
             if (erpWorkFlowReport.startDate > 0) {
-                final long now = Calendar.getInstance().getTimeInMillis();
-
-                long endDate = erpWorkFlowReport.endDate;
-                if (endDate == 0) {
-                    endDate = now;
-                }
-
-                int daybetween = DateUtils.getDayDifference(erpWorkFlowReport.startDate, endDate);
-                erpWorkFlowReport.isOverDue = daybetween > erpWorkFlowReport.limitDay;
-                erpWorkFlowReport.overDueDay = daybetween - erpWorkFlowReport.limitDay;
+                updateWorkFlowReportOverDueState(erpWorkFlowReport);
             } else {
                 erpWorkFlowReport.isOverDue = false;
                 erpWorkFlowReport.overDueDay = 0;
@@ -1149,6 +1128,28 @@ public class ErpWorkService extends AbstractErpService {
 
     }
 
+
+    private void updateWorkFlowReportOverDueState(ErpWorkFlowReport erpWorkFlowReport) {
+
+        if (erpWorkFlowReport.startDate <= 0) {
+            erpWorkFlowReport.isOverDue = false;
+            erpWorkFlowReport.overDueDay = 0;
+
+
+        } else {
+            final long now = Calendar.getInstance().getTimeInMillis();
+
+
+            long endDate = erpWorkFlowReport.endDate;
+            if (endDate == 0) {
+                endDate = now;
+            }
+
+            int daybetween = DateUtils.getDayDifference(erpWorkFlowReport.startDate, endDate);
+            erpWorkFlowReport.isOverDue = daybetween > erpWorkFlowReport.limitDay;
+            erpWorkFlowReport.overDueDay = daybetween - erpWorkFlowReport.limitDay;
+        }
+    }
 
     /**
      * 更新所有已完成产品的进度数据
@@ -1368,7 +1369,7 @@ public class ErpWorkService extends AbstractErpService {
 
         final int length = files.length;
         if (length < ErpWorkFlow.PICTURE_COUNT) {
-            return wrapError("确认，至少需要上传"+ErpWorkFlow.PICTURE_COUNT+"张图片");
+            return wrapError("确认，至少需要上传" + ErpWorkFlow.PICTURE_COUNT + "张图片");
         }
 
 
@@ -1382,7 +1383,6 @@ public class ErpWorkService extends AbstractErpService {
         }
 
 
-
         ErpOrderItemProcess erpOrderItemProcess = erpOrderItemProcessRepository.findOne(message.orderItemProcessId);
         if (erpOrderItemProcess == null) {
             return wrapError("未找到对应的流程状态信息");
@@ -1391,16 +1391,14 @@ public class ErpWorkService extends AbstractErpService {
 
         ErpWorkFlowReport workFlowReport = erpWorkFlowReportRepository.findFirstByOsNoEqualsAndItmEqualsAndWorkFlowStepEquals(message.orderName, message.itm, message.fromFlowStep);
 
-        if(workFlowReport==null)
-        {
+        if (workFlowReport == null) {
 
 
             ErpOrderItem erpOrderItem = erpWorkRepository.findOrderItem(message.orderName, message.itm);
-            generateWorkFlowReports(erpOrderItemProcess,erpOrderItem);
+            generateWorkFlowReports(erpOrderItemProcess, erpOrderItem);
             workFlowReport = erpWorkFlowReportRepository.findFirstByOsNoEqualsAndItmEqualsAndWorkFlowStepEquals(message.orderName, message.itm, message.fromFlowStep);
         }
-        if(workFlowReport==null)
-        {
+        if (workFlowReport == null) {
             throw HdException.create("系统异常，未找到流程数据");
         }
         //人员验证
@@ -1413,8 +1411,6 @@ public class ErpWorkService extends AbstractErpService {
         }
 
 
-
-
         //上流程 数量整理
         erpOrderItemProcess.sendingQty -= message.transportQty;
 //        erpOrderItemProcess.unSendQty -= message.transportQty;
@@ -1423,7 +1419,11 @@ public class ErpWorkService extends AbstractErpService {
 
         erpOrderItemProcessRepository.save(erpOrderItemProcess);
 
-
+        if (erpOrderItemProcess.sentQty == erpOrderItemProcess.qty) {
+            //修改erp數據的狀態  //当前流程完工
+            int updateCount = erpWorkRepository.updateErpWorkFlowTime(erpOrderItemProcess.osNo, erpOrderItemProcess.itm, erpOrderItemProcess.mrpNo);
+            logger.info("update erp mrp_no time success:" + updateCount);
+        }
         //更新生产进度
         workFlowReport.percentage += (float) message.transportQty / erpOrderItemProcess.orderQty / (workFlowReport.typeCount == 0 ? 1 : workFlowReport.typeCount);
 
@@ -1504,10 +1504,14 @@ public class ErpWorkService extends AbstractErpService {
                 orderItem.maxWorkFlowCode = message.toFlowCode;
                 orderItem.maxWorkFlowName = message.toFlowName;
                 orderItemWorkStateRepository.save(orderItem);
+
+
             }
 
 
         }
+
+
 //        if(1==1)
 //            throw HdException.create("测试") ;
 
@@ -1568,7 +1572,7 @@ public class ErpWorkService extends AbstractErpService {
 
         final int length = files.length;
         if (length < ErpWorkFlow.PICTURE_COUNT) {
-            return wrapError("确认，要传递"+ ErpWorkFlow.PICTURE_COUNT+"张图片");
+            return wrapError("确认，要传递" + ErpWorkFlow.PICTURE_COUNT + "张图片");
         }
 
         WorkFlowMessage message = workFlowMessageRepository.findOne(workFlowMsgId);
@@ -1757,6 +1761,7 @@ public class ErpWorkService extends AbstractErpService {
         }
         System.out.println("totalcount:" + size);
     }
+
     /**
      * 查询指定期间，流程已经结束，小工序未完工的单据。
      */
@@ -1998,7 +2003,7 @@ public class ErpWorkService extends AbstractErpService {
 
             if (item.mrpNo.startsWith(flowCode)) {
 
-                item.tz_dd=StringUtils.clipSqlDateData(item.tz_dd);
+                item.tz_dd = StringUtils.clipSqlDateData(item.tz_dd);
                 result.add(item);
             }
         }
@@ -2006,25 +2011,26 @@ public class ErpWorkService extends AbstractErpService {
         return wrapData(result);
     }
 
-    public WorkFlowReportSummary findSummaryForReport(User user,ErpWorkFlowReport report) {
-        WorkFlowReportSummary    summary=new WorkFlowReportSummary();
+    public WorkFlowReportSummary findSummaryForReport(User user, ErpWorkFlowReport report) {
+        WorkFlowReportSummary summary = new WorkFlowReportSummary();
 
-        if(report.workFlowStep>ErpWorkFlow.LAST_STEP)
-        {
-            summary.canSendMessageCount=0;
-            summary.canReceiveMessageCount=0;
-        }else {
-
+        if (report.workFlowStep > ErpWorkFlow.LAST_STEP) {
+            summary.canSendMessageCount = 0;
+            summary.canReceiveMessageCount = 0;
+        } else {
 
 
             List<WorkFlowMessage> needConfirmWorkFLowMessage = workFlowService.getNeedConfirmWorkFLowMessage(user, report.osNo, report.itm, report.workFlowStep, report.produceType);
-            summary.canReceiveMessageCount = needConfirmWorkFLowMessage==null?0:needConfirmWorkFLowMessage.size();
-            int canSendMessageCount=0;
-            if(report.percentage<1) {
+            summary.canReceiveMessageCount = needConfirmWorkFLowMessage == null ? 0 : needConfirmWorkFLowMessage.size();
+            int canSendMessageCount = 0;
+            String errorMessage = null;
+            if (report.percentage < 1) {
                 RemoteData<ErpOrderItemProcess> availableOrderItemProcess = getAvailableOrderItemProcess(user, report.osNo, report.itm, report.workFlowStep);
-                canSendMessageCount=availableOrderItemProcess.isSuccess() ? availableOrderItemProcess.totalCount : 0;
+                canSendMessageCount = availableOrderItemProcess.isSuccess() ? availableOrderItemProcess.totalCount : 0;
+                errorMessage = availableOrderItemProcess.isSuccess() ? "" : (availableOrderItemProcess.msgCode == MSG_CODE_ERP ? availableOrderItemProcess.message : "");
             }
             summary.canSendMessageCount = canSendMessageCount;
+            summary.errorMessage = errorMessage;
 
         }
         return summary;
@@ -2035,65 +2041,352 @@ public class ErpWorkService extends AbstractErpService {
      * 每天凌晨5点 自动启动订单生产流程
      */
     @Transactional
-    public void autoStartWorkFlow()
-    {
+    public void autoStartWorkFlow() {
 
-        long time=System.currentTimeMillis();
-        User loginUser=userRepository.findFirstByNameEquals(User.ADMIN);
-        WorkFlowArea area=workFlowAreaRepository.findAll().get(0);
-        List<ErpOrderItem> result= erpWorkRepository.searchUnStartOrderItems("", 0,10000);
-        logger.info("UnCompleteOrderItems:"+result.size());
+        long time = System.currentTimeMillis();
+        User loginUser = userRepository.findFirstByNameEquals(User.ADMIN);
+        WorkFlowArea area = workFlowAreaRepository.findAll().get(0);
+        List<ErpOrderItem> result = erpWorkRepository.searchUnStartOrderItems("", 0, 10000);
+        logger.info("UnCompleteOrderItems:" + result.size());
 
-        if(result.size()>0)
-        {
+        if (result.size() > 0) {
 
-            for (ErpOrderItem orderItem:result)
-            {
+            for (ErpOrderItem orderItem : result) {
 
-                logger.info(orderItem.os_no+orderItem.prd_name+orderItem.itm);
-                startOrderItemWorkFlow(loginUser, orderItem,area);
+                logger.info(orderItem.os_no + orderItem.prd_name + orderItem.itm);
+                startOrderItemWorkFlow(loginUser, orderItem, area);
 
             }
 
         }
 
 
-        logger.info("use time in autoStart:"+(System.currentTimeMillis()-time));
+        logger.info("use time in autoStart:" + (System.currentTimeMillis() - time));
     }
 
-     public void startOrderItemWorkFlow(User loginUser,ErpOrderItem erpOrderItem,WorkFlowArea area)
-     {
+
+    /**
+     * 启动生产流程数据
+     *
+     * @param loginUser
+     * @param erpOrderItem
+     * @param area
+     * @return
+     */
+    public RemoteData startOrderItemWorkFlow(User loginUser, ErpOrderItem erpOrderItem, WorkFlowArea area) {
 
 
-         RemoteData<ErpOrderItemProcess> itemProcessRemoteData=getAvailableOrderItemProcess(loginUser, erpOrderItem,ErpWorkFlow.FIRST_STEP);
-         if(!itemProcessRemoteData.isSuccess())
-         {
-             logger.info("itemProcessRemoteData:"+itemProcessRemoteData.message);
-         }else
-         if( itemProcessRemoteData.datas.size()>0)
-         {
+        RemoteData<ErpOrderItemProcess> itemProcessRemoteData = getAvailableOrderItemProcess(loginUser, erpOrderItem, ErpWorkFlow.FIRST_STEP);
+        if (!itemProcessRemoteData.isSuccess()) {
+            logger.info("itemProcessRemoteData:" + itemProcessRemoteData.message);
+
+        } else if (itemProcessRemoteData.datas.size() > 0) {
 
 
-            for (ErpOrderItemProcess itemProcess:itemProcessRemoteData.datas) {
+            for (ErpOrderItemProcess itemProcess : itemProcessRemoteData.datas) {
                 generateWorkFlowReports(itemProcess, erpOrderItem);
+                OrderItemWorkState orderitemState = orderItemWorkStateRepository.findFirstByOsNoEqualsAndItmEquals(itemProcess.osNo, itemProcess.itm);
+
+                if (orderitemState == null) {
+                    orderitemState = new OrderItemWorkState();
+                    orderitemState.osNo = itemProcess.osNo;
+                    orderitemState.itm = itemProcess.itm;
+                    orderitemState.url = itemProcess.photoUrl;
+                    orderitemState.prdNo = itemProcess.prdNo;
+                    orderitemState.pVersion = itemProcess.pVersion;
+                    orderitemState.maxWorkFlowStep = itemProcess.currentWorkFlowStep;
+                    orderitemState.maxWorkFlowCode = itemProcess.currentWorkFlowCode;
+                    orderitemState.maxWorkFlowName = itemProcess.currentWorkFlowName;
+                }
+                //标记当前订单生产状态
+                orderitemState.workFlowState = ErpWorkFlow.STATE_WORKING;
+                orderitemState.workFlowDescribe = "系统自动发起";
+                orderItemWorkStateRepository.save(orderitemState);
+
             }
-         }else
-         {
-             logger.info("itemProcessRemoteData:"+ "no available ErpOrderItemProcess");
-         }
-
-     }
 
 
-     @Transactional(rollbackFor = HdException.class)
-     public RemoteData<Void> resetOrderItemWorkFlow(User loginUser,String osNo,int itm) throws HdException {
+        } else {
+            logger.info("itemProcessRemoteData:" + "no available ErpOrderItemProcess");
+        }
+        return itemProcessRemoteData;
+    }
+
+
+    @Transactional(rollbackFor = HdException.class)
+    public RemoteData<Void> resetOrderItemWorkFlow(User loginUser, String osNo, int itm) throws HdException {
+
+
+        WorkFlowArea area = workFlowAreaRepository.findAll().get(0);
+        ErpOrderItem erpOrderItem = erpWorkRepository.findOrderItem(osNo, itm);
+        RemoteData remoteData = startOrderItemWorkFlow(loginUser, erpOrderItem, area);
+
+        return wrapMessageData("重置成功" + (remoteData == null || remoteData.isSuccess() ? "" : ("，数据有异常:" + remoteData.message)));
+    }
+
+
+    public static final int MSG_CODE_ERP = 77;
 
 
 
-         WorkFlowArea area=workFlowAreaRepository.findAll().get(0);
-         ErpOrderItem erpOrderItem = erpWorkRepository.findOrderItem(osNo, itm);
-         startOrderItemWorkFlow(loginUser,erpOrderItem,area);
 
-         return wrapMessageData("重置成功");
-     }
+
+    /**
+     * 自动完成產品出庫流程
+     */
+    @Transactional
+    public void autoCompleteStockOut() {
+        //成品出库处理
+        List<ErpWorkFlowReport> reports = erpWorkFlowReportRepository.findUnCompletedStep(ErpWorkFlow.STEP_CHENGPIN);
+        for (ErpWorkFlowReport report : reports) {
+            updateReportOnStockOut(report);
+
+        }
+
+    }
+    /**
+     * 自动完成外购产品入库流程
+     */
+    @Transactional
+    public void autoCompletePurchaseStockIn() {
+        //外厂进仓处理
+        List<ErpWorkFlowReport> reports = erpWorkFlowReportRepository.findUnCompletedStep(ErpWorkFlow.FIRST_STEP, ProduceType.PURCHASE);
+        for (ErpWorkFlowReport report : reports) {
+            updateReportOnStockInPurchase(report);
+        }
+    }
+    /**
+     * 自动自制产品入库流程
+     */
+    @Transactional
+    public void autoCompleteSelfMadeStockIn() {
+        //自制进仓处理
+        List<ErpWorkFlowReport> reports = erpWorkFlowReportRepository.findUnCompletedStep(ErpWorkFlow.STEP_BAOZHUANG, ProduceType.SELF_MADE);
+
+        for (ErpWorkFlowReport report : reports) {
+
+            updateReportOnStockInSelfMade(report);
+        }
+    }
+
+
+    private void updateReportOnStock(ErpWorkFlowReport report, int i, List<StockSubmit> stockList) {
+        ErpOrdItm erpOrderItem = erpWorkRepository.findOrdItm(report.osNo, report.itm);
+        if(erpOrderItem==null) return;
+        int count = 0;
+        String dateString = "";
+        for (StockSubmit stockSubmit : stockList) {
+            if (stockSubmit.type == i) {
+                count += stockSubmit.qty;
+                if (stockSubmit.dd.compareTo(dateString) > 0) {
+                    dateString = stockSubmit.dd;
+                }
+            }
+
+        }
+        if (count == 0) return;
+        float percentage = (float) count / erpOrderItem.qty;
+        if (Float.compare(percentage, report.percentage) == 0) return;
+        report.percentage = percentage;
+        updateWorkFlowQty(report, dateString);
+
+
+        OrderItemWorkState orderItemState = orderItemWorkStateRepository.findFirstByOsNoEqualsAndItmEquals(erpOrderItem.os_no, erpOrderItem.itm);
+        if (orderItemState != null) {
+            boolean needUpdate = false;
+            if (report.startDate > 0 && report.endDate <= 0) {
+                orderItemState.maxWorkFlowStep = report.workFlowStep;
+                orderItemState.maxWorkFlowCode = report.workFlowCode;
+                orderItemState.maxWorkFlowName = report.workFlowName;
+                needUpdate = true;
+            }
+            //最后一道如果已经完成 标记订单完成
+            if (report.workFlowStep == ErpWorkFlow.STEP_CHENGPIN && report.percentage >= 1) {
+
+
+                //最后一个流程完成  该货款生产结束
+                orderItemState.workFlowState = ErpWorkFlow.STATE_COMPLETE;
+                orderItemState.workFlowDescribe = ErpWorkFlow.STATE_NAME_COMPLETE;
+
+
+                needUpdate = true;
+            }
+
+
+            if (needUpdate) {
+                orderItemWorkStateRepository.save(orderItemState);
+            }
+        }
+
+    }
+
+
+    private void updateReportOnStockInSelfMade(ErpWorkFlowReport report) {
+        if (Float.compare(report.percentage, 1) == 0) return;
+        updateReportOnStock(report, 1, erpStockSubmitRepository.getOrderItemStockSubmitList(report.osNo, report.itm));
+    }
+
+    private void updateReportOnStockInPurchase(ErpWorkFlowReport report) {
+        if (Float.compare(report.percentage, 1) == 0) return;
+        updateReportOnStock(report, 2, erpStockSubmitRepository.getOrderItemStockSubmitList(report.osNo, report.itm));
+    }
+
+
+    @Transactional
+    public  void updateReportOnStockOut(ErpWorkFlowReport report) {
+        if (Float.compare(report.percentage, 1) == 0) return;
+        updateReportOnStock(report, 3, erpStockSubmitRepository.getStockXiaokuList(report.osNo, report.itm));
+    }
+
+
+    @Transactional
+    public RemoteData<Void> syncErpStockDataToReport(User user, String os_no, int itm, int flowStep) {
+
+        ErpWorkFlowReport workFlowReport = erpWorkFlowReportRepository.findFirstByOsNoEqualsAndItmEqualsAndWorkFlowStepEquals(os_no, itm, flowStep);
+        if (workFlowReport == null)
+            return wrapError("没找到对应流程数据");
+
+
+        if (flowStep == ErpWorkFlow.STEP_CHENGPIN) {
+
+
+            //同步自制入库 组装-成品
+            if (workFlowReport.produceType == ProduceType.SELF_MADE) {
+                ErpWorkFlowReport stepBaozhuang = erpWorkFlowReportRepository.findFirstByOsNoEqualsAndItmEqualsAndWorkFlowStepEquals(workFlowReport.osNo, workFlowReport.itm, ErpWorkFlow.STEP_BAOZHUANG);
+                if (stepBaozhuang != null) {
+                    updateReportOnStockInSelfMade(stepBaozhuang);
+                }
+            } else {
+                //外厂 外厂加工进仓 白胚加工-成品
+                ErpWorkFlowReport stepFirst = erpWorkFlowReportRepository.findFirstByOsNoEqualsAndItmEqualsAndWorkFlowStepEquals(workFlowReport.osNo, workFlowReport.itm, ErpWorkFlow.FIRST_STEP);
+                if (stepFirst != null) {
+                    updateReportOnStockInPurchase(stepFirst);
+                }
+            }
+
+            //同步仓库出库
+            updateReportOnStockOut(workFlowReport);
+
+
+            return wrapMessageData("同步完成");
+
+
+        }
+
+
+        return wrapError("当前流程不支持同步");
+
+
+    }
+
+
+    public void updateWorkFlowQty(ErpWorkFlowReport report, String dateString) {
+        long timeInMillis = 0;
+        try {
+            if (!StringUtils.isEmpty(dateString))
+                timeInMillis = DateFormats.FORMAT_YYYY_MM_DD.parse(dateString).getTime();
+        } catch (Throwable t) {
+        }
+        if (timeInMillis == 0) {
+            timeInMillis = Calendar.getInstance().getTimeInMillis();
+        }
+        if (report.percentage >= 1) {
+            report.endDate = timeInMillis;
+            report.endDateString = DateFormats.FORMAT_YYYY_MM_DD.format(report.endDate);
+            updateWorkFlowReportOverDueState(report);
+            ErpWorkFlow nextFlow = report.workFlowStep == ErpWorkFlow.LAST_STEP ? null : ErpWorkFlow.findNext(report.workFlowStep, report.produceType);
+            if (nextFlow != null) {
+                ErpWorkFlowReport erpWorkFlowReport = erpWorkFlowReportRepository.findFirstByOsNoEqualsAndItmEqualsAndWorkFlowStepEquals(report.osNo, report.itm, nextFlow.step);
+                if (erpWorkFlowReport != null) {
+
+                    erpWorkFlowReport.startDate = timeInMillis;
+                    erpWorkFlowReport.startDateString = report.endDateString;
+                    WorkFlowTimeLimit timeLimit = workFlowTimeLimitRepository.findFirstByOrderItemTypeEquals(erpWorkFlowReport.orderItemType);
+                    updateErpWorkFlowReport(erpWorkFlowReport, timeLimit);
+                    erpWorkFlowReportRepository.save(erpWorkFlowReport);
+                }
+            }
+
+
+        }
+        WorkFlowTimeLimit timeLimit = workFlowTimeLimitRepository.findFirstByOrderItemTypeEquals(report.orderItemType);
+        updateErpWorkFlowReport(report, timeLimit);
+        erpWorkFlowReportRepository.save(report);
+
+
+    }
+
+    @Transactional
+    public RemoteData<Void> updateWorkFlowTimeLimit(User user, long erpWorkFLowReportId, int limitDay, int alertDay) {
+
+        if (!user.isAdmin() && user.position != CompanyPosition.FACTORY_DIRECTOR_CODE) {
+
+
+            return wrapError("只有管理员,厂长可以调整工期");
+        }
+
+
+        ErpWorkFlowReport report = erpWorkFlowReportRepository.findOne(erpWorkFLowReportId);
+        if (report == null) {
+            return wrapError("未找到流程数据");
+
+        }
+
+        report.limitDay = limitDay;
+        report.alertDay = alertDay;
+        report.hasUpdateLimit = true;
+        updateWorkFlowReportOverDueState(report);
+
+        erpWorkFlowReportRepository.save(report);
+
+
+        return wrapMessageData("工期已经设置");
+
+
+    }
+
+    public RemoteData<Void> setReportMonitorState(User user, long erpWorkFLowReportId, int monitorState) {
+        if (!user.isAdmin() && user.position != CompanyPosition.FACTORY_DIRECTOR_CODE) {
+
+
+            return wrapError("只有管理员,厂长可以进行生产计划调整");
+        }
+
+        ErpWorkFlowReport report = erpWorkFlowReportRepository.findOne(erpWorkFLowReportId);
+        if (report == null) {
+            return wrapError("未找到流程数据");
+
+        }
+
+        report.state = monitorState;
+        if(report.state==ErpWorkFlowReport.STATE_MONITOR)
+        {
+
+            report.monitorTime = Calendar.getInstance().getTimeInMillis();
+            report.monitorTimeString = DateFormats.FORMAT_YYYY_MM_DD_HH_MM.format(Calendar.getInstance().getTime());
+        }
+        if (StringUtils.isEmpty(report.productUrl)) {
+
+
+            Product product = productRepository.findFirstByNameEqualsAndPVersionEquals(report.prdNo, report.pVersion);
+            if (product != null) {
+                report.thumbnail = product.thumbnail;
+                report.productUrl = product.url;
+            }
+        }
+        erpWorkFlowReportRepository.save(report);
+
+        return wrapMessageData("生产计划已经调整");
+    }
+
+    public RemoteData<ErpWorkFlowReport> listMonitorReport(User user,String key, int pageIndex, int pageSize) {
+
+
+        String sqlKey = StringUtils.sqlLike(key);
+        Pageable pageable = constructPageSpecification(pageIndex, pageSize);
+        Page<ErpWorkFlowReport> page = erpWorkFlowReportRepository.findMonitoredWorkFlowReports(sqlKey , ErpWorkFlowReport.STATE_MONITOR,pageable);
+        return wrapData(pageable, page);
+
+
+    }
 }

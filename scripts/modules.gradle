@@ -1,0 +1,85 @@
+
+apply from: "ereader.gradle"
+apply from: "stories.gradle"
+apply from: "spanreader.gradle"
+apply from: "changdu.gradle"
+apply from: "andreader.gradle"
+
+ext{
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    MODULE_OF_EXTERNAL = []
+
+    if (IS_GP_PRODUCT) {
+        MODULE_OF_EXTERNAL +=  ereader.modules
+        MODULE_OF_EXTERNAL += stories.modules
+        MODULE_OF_EXTERNAL += spanreader.modules
+
+    } else {
+
+        MODULE_OF_EXTERNAL += changdu.modules
+        MODULE_OF_EXTERNAL += andreader.modules
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+

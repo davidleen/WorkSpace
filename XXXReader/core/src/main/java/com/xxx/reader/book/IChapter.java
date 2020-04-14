@@ -17,4 +17,10 @@ public interface IChapter {
     int getIndex();
 
     boolean hasPay();
+
+    /**
+     * 获取卷名
+     * @return
+     */
+  //  String getVolume();
 }

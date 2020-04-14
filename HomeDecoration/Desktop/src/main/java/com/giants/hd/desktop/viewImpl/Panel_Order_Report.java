@@ -66,11 +66,11 @@ public class Panel_Order_Report extends BasePanel implements OrderReportViewer {
             }
         });
 
-        date_start.getJFormattedTextField().setText("2015-01-01");
+        date_start.getJFormattedTextField().setText("2017-01-01");
         try {
             date_end.getJFormattedTextField().setText(new HdDateComponentFormatter().valueToString(Calendar.getInstance()));
         } catch (ParseException e) {
-            date_end.getJFormattedTextField().setText("2017-01-01");
+            date_end.getJFormattedTextField().setText("2020-01-01");
         }
 
 

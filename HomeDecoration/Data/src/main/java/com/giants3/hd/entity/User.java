@@ -69,6 +69,10 @@ public class User implements Serializable,Valuable {
     public boolean internet;
 
 
+    /**
+     * 账号是否停用
+     */
+    public boolean  stopped;
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -79,6 +83,7 @@ public class User implements Serializable,Valuable {
         if (id != user.id) return false;
         if (isSalesman != user.isSalesman) return false;
         if (internet != user.internet) return false;
+        if (stopped != user.stopped) return false;
         if (code != null ? !code.equals(user.code) : user.code != null) return false;
         if (name != null ? !name.equals(user.name) : user.name != null) return false;
         if (chineseName != null ? !chineseName.equals(user.chineseName) : user.chineseName != null) return false;

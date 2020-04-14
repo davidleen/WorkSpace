@@ -320,6 +320,10 @@ public class AuthorityService extends AbstractService {
             return wrapError("存在重名用户，请联系管理员");
 
         User findUser = userList.get(0);
+        if(findUser.stopped)
+        {
+            return wrapError("当前账号已经停用，请联系管理员");
+        }
 
         final RemoteData<User> userRemoteData = doLogin2(findUser, passwordMd5, client, version, loginIp, device_token);
         return userRemoteData;

@@ -3,7 +3,7 @@ select  count(*)   from (
 
 select   os_no,os_dd,itm,prd_no from  tf_pos  where os_id=upper('SO')
 --订单起止日期  降低查询范围
-and  os_dd >'2017-01-01' and (os_no like :os_no or prd_no like :prd_no)
+and  os_dd >'2019-01-01' and (os_no like :os_no or prd_no like :prd_no)
  ) as  a
 
 

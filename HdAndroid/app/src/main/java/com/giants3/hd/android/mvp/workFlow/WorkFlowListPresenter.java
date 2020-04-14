@@ -1,5 +1,6 @@
 package com.giants3.hd.android.mvp.workFlow;
 
+import com.giants3.android.frame.util.StringUtil;
 import com.giants3.hd.android.mvp.BasePresenter;
 import com.giants3.hd.android.mvp.RemoteDataSubscriber;
 import com.giants3.hd.data.interractor.UseCaseFactory;
@@ -246,8 +247,9 @@ public class WorkFlowListPresenter extends BasePresenter<WorkFlowListMvp.Viewer,
 
             @Override
             protected void handleRemoteData(RemoteData<Void> data) {
+
                 if (data.isSuccess()) {
-                    getView().showMessage("重置成功");
+                    getView().showMessage(StringUtil.isEmpty(data.message)?"重置成功":data.message);
                     searchData();
                 } else {
                     getView().showMessage("重置失败：" + data.message);
@@ -275,6 +277,23 @@ public class WorkFlowListPresenter extends BasePresenter<WorkFlowListMvp.Viewer,
 
         });
 
+    }
+
+    @Override
+    public void syncErpStockData(ErpWorkFlowReport workFlowReport) {
+        UseCaseFactory.getInstance().createGetUseCase(HttpUrl.syncErpStockData(workFlowReport.osNo,workFlowReport.itm,workFlowReport.workFlowStep ),Void.class).execute(new RemoteDataSubscriber<Void>(this) {
+            @Override
+            protected void handleRemoteData(RemoteData<Void> data) {
+
+
+                getView().showMessage(data.message);
+                if(data.isSuccess())
+
+                    //重新读取数据
+                    searchData();
+            }
+
+        });
     }
 
     @Override
@@ -337,5 +356,65 @@ public class WorkFlowListPresenter extends BasePresenter<WorkFlowListMvp.Viewer,
 
             }
         });
+    }
+
+    @Override
+    public void updateWorkFlowTimeLimit(ErpWorkFlowReport workFlowReport, int limitDay, int alertDay) {
+
+
+        UseCaseFactory.getInstance().createGetUseCase(HttpUrl.updateWorkFlowTimeLimit(workFlowReport.id,limitDay,alertDay  ),Void.class).execute(new RemoteDataSubscriber<Void>(this) {
+            @Override
+            protected void handleRemoteData(RemoteData<Void> data) {
+
+
+                getView().showMessage(data.message);
+                if(data.isSuccess())
+
+                    //重新读取数据
+                    searchData();
+            }
+
+        });
+
+    }
+
+
+    @Override
+    public void removeReportFromMonitor(ErpWorkFlowReport data) {
+
+
+
+        UseCaseFactory.getInstance().createGetUseCase(HttpUrl.setReportMonitorState(data.id,ErpWorkFlowReport.STATE_NONE),Void.class).execute(new RemoteDataSubscriber<Void>(this) {
+            @Override
+            protected void handleRemoteData(RemoteData<Void> data) {
+
+
+                getView().showMessage(data.message);
+                if(data.isSuccess())
+
+                    //重新读取数据
+                    searchData();
+            }
+
+        });
+    }
+
+    @Override
+    public void addReportToMonitor(ErpWorkFlowReport data) {
+
+        UseCaseFactory.getInstance().createGetUseCase(HttpUrl.setReportMonitorState(data.id,ErpWorkFlowReport.STATE_MONITOR ),Void.class).execute(new RemoteDataSubscriber<Void>(this) {
+            @Override
+            protected void handleRemoteData(RemoteData<Void> data) {
+
+
+                getView().showMessage(data.message);
+                if(data.isSuccess())
+
+                    //重新读取数据
+                    searchData();
+            }
+
+        });
+
     }
 }

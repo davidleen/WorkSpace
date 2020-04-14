@@ -63,6 +63,9 @@ public class HdTask implements Serializable {
     public static final int TYPE_UPDATE_WORK_FLOW_STATE=102;
     public static final String NAME_UPDATE_WORK_FLOW_STATE="在产货款状态更新";
 
+    public static final int TYPE_AUTO_COMPLETE_ERP_STEP=103;
+    public static final String NAME_AUTO_COMPLETE_ERP_STEP="遍历ERP自动完成组装，成品流程";
+
     /**
      * 任务是否暂停
      */

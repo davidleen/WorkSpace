@@ -1,6 +1,8 @@
 package com.giants3.hd.server.repository;
 
 import com.giants3.hd.entity.ErpWorkFlowReport;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -13,6 +15,16 @@ import java.util.List;
  */
 public interface ErpWorkFlowReportRepository extends JpaRepository<ErpWorkFlowReport, Long> {
 
+    @Query(value = "SELECT   distinct    a.*    FROM ( select * from T_ErpWorkFlowReport  where    workFlowStep=:currentUnCompletedStep and produceType=:produceType and percentage<1  ) a   inner join ( select osNo,itm from T_ErpWorkFlowReport   where  workFlowStep=:previousCompletedStep and produceType=:produceType and percentage>=1 )b  on a.osNo=b.osNo and a.itm=b.itm",nativeQuery = true)
+   List<ErpWorkFlowReport> findWorkingStep( @Param("previousCompletedStep") int previousCompletedStep  , @Param("currentUnCompletedStep") int currentUnCompletedStep,@Param("produceType") int produceType);
+
+    @Query(value = "SELECT  P from T_ErpWorkFlowReport    P where    p.workFlowStep=:currentUnCompletedStep and p.produceType=:produceType and p.percentage<1  and p.startDate>0   " )
+   List<ErpWorkFlowReport> findUnCompletedStep(  @Param("currentUnCompletedStep") int currentUnCompletedStep,@Param("produceType") int produceType);
+
+
+  @Query(value = "SELECT  P from T_ErpWorkFlowReport    P where    p.workFlowStep=:currentUnCompletedStep  and p.percentage<1  and p.startDate>0   " )
+  List<ErpWorkFlowReport> findUnCompletedStep(  @Param("currentUnCompletedStep") int currentUnCompletedStep );
+
 
     List<ErpWorkFlowReport> findByOsNoEqualsAndPrdNoEquals(String os_no, String prd_no);
 
@@ -23,7 +35,8 @@ public interface ErpWorkFlowReportRepository extends JpaRepository<ErpWorkFlowRe
     List<ErpWorkFlowReport> findByOsNoEqualsAndItmEqualsOrderByWorkFlowStepAsc(String os_no, int itm);
 
     List<ErpWorkFlowReport> findByPercentageLessThanAndStartDateGreaterThan(float percentage, long createTime);
-
+    @Query(value = "SELECT  P from T_ErpWorkFlowReport    P where    p.state=:state  and  ( p.osNo like :key or p.prdNo like :key or p.pVersion like :key)   " )
+    Page<ErpWorkFlowReport> findMonitoredWorkFlowReports( @Param("key") String key,@Param("state") int state, Pageable pageable);
     ErpWorkFlowReport findFirstByOsNoEqualsAndItmEqualsAndWorkFlowStepEquals(String osNo, int itm, int fromFlowStep);
 
     @Modifying

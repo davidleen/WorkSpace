@@ -1,6 +1,6 @@
 package com.giants3.hd.server.repository_erp;
 
-import com.giants3.hd.entity_erp.Prdt;
+import com.giants3.hd.entity.Prdt;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.springframework.data.domain.Pageable;
@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -81,7 +80,7 @@ public   class ErpPrdtRepository  extends ErpRepository   {
 
 
 
-        List result=   getEntityManager().createNativeQuery("select CAST(p.prd_no AS varchar) as prd_no ,CAST(p.name AS varchar) as name ,CAST(p.ut AS varchar) as ut ,CAST(p.spc AS varchar) as  spec ,CAST(p.rem AS varchar) as rem ,cs.price,p.nouse_dd from (select * from  prdt  where prdt.knd='4') p inner join ("+sql_find_distinct_cst_std+") cs on p.prd_no=cs.prd_no  " ).getResultList();
+        List result=   getEntityManager().createNativeQuery("select CAST(p.prd_no AS varchar) as prd_no ,CAST(p.name AS varchar) as name ,CAST(p.ut AS varchar) as ut ,CAST(p.spc AS varchar) as  spec ,CAST(p.rem AS varchar) as rem ,cs.price,p.nouse_dd from (select * from  prdt  where prdt.knd='4') p inner join ("+sql_find_distinct_cst_std+") cs on p.prd_no=cs.prd_no  " ).getResultList(); // where p.prd_no='22030001'
 
 
       return  convertToPojo(result);

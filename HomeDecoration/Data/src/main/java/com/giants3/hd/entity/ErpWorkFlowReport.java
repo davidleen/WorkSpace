@@ -8,6 +8,13 @@ import javax.persistence.*;
  * Created by davidleen29 on 2017/2/28.
  */
 @Entity(name="T_ErpWorkFlowReport")
+
+@Table(
+        indexes = {@Index(name = "workFlowStep", columnList = "workFlowStep", unique = false),
+                @Index(name = "osNo_itm", columnList = "osNo，itm", unique = false),
+                @Index(name = "produceType", columnList = "produceType", unique = false)
+                , @Index(name = "state", columnList = "state", unique = false)}
+)
 public class ErpWorkFlowReport {
 
 
@@ -21,6 +28,11 @@ public class ErpWorkFlowReport {
     public String prdNo;
     public int itm;
     public String pVersion;
+
+
+
+    public String thumbnail;
+    public String productUrl;
     /**
      * 完成百分比。
      */
@@ -104,4 +116,27 @@ public class ErpWorkFlowReport {
 
     @Transient
     public WorkFlowReportSummary summary;
+
+
+    /**
+     * 是否已经重新设置了工期
+     */
+
+
+    public boolean hasUpdateLimit
+            ;
+
+
+    /**
+     * 状态
+     */
+
+
+    public int state;
+
+    public long monitorTime;
+    public String monitorTimeString;
+
+    public static final int  STATE_NONE=0;//无
+    public static final int  STATE_MONITOR=1;//生产计划中
 }

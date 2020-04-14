@@ -1,10 +1,14 @@
 package com.giants3.hd.server.service;
 
+import com.giants3.hd.entity.ErpWorkFlow;
+import com.giants3.hd.entity.ErpWorkFlowReport;
 import com.giants3.hd.entity.HdTask;
 import com.giants3.hd.entity.HdTaskLog;
 import com.giants3.hd.exception.HdException;
 import com.giants3.hd.noEntity.RemoteData;
+import com.giants3.hd.server.controller.MaterialController;
 import com.giants3.hd.server.interf.Job;
+import com.giants3.hd.server.repository.ErpWorkFlowReportRepository;
 import com.giants3.hd.server.repository.QuotationRepository;
 import com.giants3.hd.server.repository.TaskLogRepository;
 import com.giants3.hd.server.repository.TaskRepository;
@@ -17,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -38,8 +43,6 @@ public class ScheduleService extends AbstractService {
     @Autowired
     ErpWorkService erpWorkService;
 
-    @Autowired
-    MaterialService materialService;
 
     @Autowired
     TaskLogRepository taskLogRepository;
@@ -48,6 +51,9 @@ public class ScheduleService extends AbstractService {
     @Autowired
     Job taskJob;
 
+
+    @Autowired
+    ErpWorkFlowReportRepository erpWorkFlowReportRepository;
     /**
      * 更新附件路径  定时将附件
      */
@@ -97,6 +103,31 @@ public class ScheduleService extends AbstractService {
             @Override
             public void run() {
                 erpWorkService.updateAllProducingWorkFlowReports();
+            }
+        });
+
+
+    }
+    /**
+     * 每日4点执行 未完成货款的进度数据的更新
+     */
+//
+    @Scheduled(fixedDelay = 2*60*60*1000l)
+//  @Scheduled(fixedDelay =  60*1000l)
+//    @Scheduled(cron = "0 0/120 9-17 * * ?")
+//    @Scheduled(fixedDelay = 20*1000l)
+    public void autoCompleteWorkFlowFromErp() {
+        executeTask(HdTask.NAME_AUTO_COMPLETE_ERP_STEP, new Runnable() {
+            @Override
+            public void run() {
+                int i = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+                if(i>7&&i<21) {
+                    erpWorkService.autoCompleteSelfMadeStockIn();
+                    erpWorkService.autoCompletePurchaseStockIn();
+                   erpWorkService.autoCompleteStockOut();
+
+
+                }
             }
         });
 
@@ -161,7 +192,7 @@ public class ScheduleService extends AbstractService {
         executeTask(HdTask.NAME_SYNC_ERP, new Runnable() {
             @Override
             public void run() {
-                materialService.syncERP();
+                erpService.syncErpMaterial();
             }
         });
 
@@ -174,6 +205,7 @@ public class ScheduleService extends AbstractService {
         createTask(HdTask.TYPE_UPDATE_WORK_FLOW_STATE, HdTask.NAME_UPDATE_WORK_FLOW_STATE, "每天凌晨一点半", "系统", 0, "定时更新在产货款的进度状态");
         createTask(HdTask.TYPE_UPDATE_ATTACH, HdTask.NAME_UPDATE_ATTACH, "每天凌晨一点", "系统", 0, "附件上传在临时文件夹，定时整理数据");
         createTask(HdTask.TYPE_SYNC_ERP, HdTask.NAME_SYNC_ERP, "每天凌晨二点", "系统", 0, "erp材料数据单价改变同步到报价系统");
+        createTask(HdTask.TYPE_AUTO_COMPLETE_ERP_STEP, HdTask.NAME_AUTO_COMPLETE_ERP_STEP, "每2小时自动更新", "系统", 0, "自动抓取erp数据，完成组装包装，成品出库流程");
 
     }
 
@@ -216,6 +248,9 @@ public class ScheduleService extends AbstractService {
                 break;
             case HdTask.TYPE_UPDATE_WORK_FLOW_STATE:
                     updateOrderItemWorkFlowState();
+                break;
+            case HdTask.TYPE_AUTO_COMPLETE_ERP_STEP:
+                    autoCompleteWorkFlowFromErp();
                 break;
 
         }

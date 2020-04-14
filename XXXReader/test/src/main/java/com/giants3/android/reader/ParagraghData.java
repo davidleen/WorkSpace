@@ -2,7 +2,7 @@ package com.giants3.android.reader;
 
 import android.util.SparseIntArray;
 
-import com.changdu.changdulib.util.Log;
+import com.xxx.reader.file.TXTReader;
 
 
 public class ParagraghData {

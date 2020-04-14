@@ -6,6 +6,7 @@ import com.giants3.hd.entity.MaterialClass;
 import com.giants3.hd.entity.MaterialEquation;
 import com.giants3.hd.entity.MaterialType;
 import com.giants3.hd.noEntity.RemoteData;
+import com.giants3.hd.server.service.ErpService;
 import com.giants3.hd.server.service.MaterialRelateService;
 import com.giants3.hd.server.service.MaterialService;
 import com.giants3.hd.server.utils.FileUtils;
@@ -34,6 +35,8 @@ public class MaterialController extends BaseController {
 
     @Autowired
     private MaterialRelateService materialRelateService;
+    @Autowired
+    private ErpService erpService;
 
 
     @Autowired
@@ -107,7 +110,7 @@ public class MaterialController extends BaseController {
     RemoteData<Void> syncERP() {
 
         try {
-            return materialService.syncERP();
+            return erpService.syncErpMaterial();
         } catch (Exception e) {
 
             logger.error(this, e);

@@ -425,7 +425,7 @@ public class StockService extends AbstractService {
 
         final List<StockSubmit> stockXiaokuItemList = erpStockSubmitRepository.getStockXiaokuItemList(key, startDate, endDate);
 
-        updateStockSubmitList(stockXiaokuItemList);
+         updateStockSubmitList(stockXiaokuItemList);
         return wrapData(stockXiaokuItemList);
     }
 

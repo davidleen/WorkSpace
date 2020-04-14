@@ -109,6 +109,33 @@
         android:text="明细项目" />
 
 
+
+
+    <TextView
+        android:id="@+id/syncErpStockData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="5dp"
+        android:textSize="16sp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_white_round_selector"
+        android:text="同步ERP进出成品库数据" />
+
+
+    <TextView
+        android:id="@+id/adjust_limit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:gravity="center"
+        android:padding="5dp"
+        android:textSize="16sp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_white_round_selector"
+        android:text="工期调整" />
+
+
 </LinearLayout>
 
 

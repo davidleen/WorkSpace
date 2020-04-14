@@ -315,9 +315,13 @@ public class LoginActivity extends BaseActivity {
                     if(lastLoginUser!=null) {
 
                         for (User user : users) {
-                            if (user.name.equals(lastLoginUser.name)) {
-                                bindUser(user);
-                                return;
+                            try {
+                                if (user.name.equals(lastLoginUser.name)) {
+                                    bindUser(user);
+                                    return;
+                                }
+                            } catch (Throwable e) {
+                                e.printStackTrace();
                             }
                         }
                     }
@@ -342,11 +346,15 @@ public class LoginActivity extends BaseActivity {
         {
             for(LoginHistory loginHistory:histories)
             {
-                if(loginHistory.name.equals(loginUser.name))
-                {
-                    findHistory=loginHistory;
+                try {
+                    if(loginHistory.name.equals(loginUser.name))
+                    {
+                        findHistory=loginHistory;
 
-                    break;
+                        break;
+                    }
+                } catch (Throwable e) {
+                    e.printStackTrace();
                 }
             }
         }

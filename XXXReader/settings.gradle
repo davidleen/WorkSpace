@@ -1,3 +1,6 @@
+apply from :'modules.gradle'
+
+
 include ':network'
 project(':network').projectDir = new File('../modules/network_okhttp')
 
@@ -25,3 +28,5 @@ project(':epub').projectDir = new File('../modules/books/epub')
 
 include ':thief'
 project(':thief').projectDir = new File('../modules/thief')
+
+

@@ -8,13 +8,16 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
 
 import com.giants3.android.frame.util.ToastHelper;
+import com.giants3.hd.android.BuildConfig;
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.adapter.WorkFlowReportItemAdapter;
 import com.giants3.hd.android.fragment.SendWorkFlowFragment;
+import com.giants3.hd.android.helper.AuthorityUtil;
 import com.giants3.hd.android.helper.SharedPreferencesHelper;
 import com.giants3.hd.android.mvp.workFlow.WorkFlowListMvp;
 import com.giants3.hd.data.utils.GsonUtils;
@@ -27,6 +30,7 @@ import com.giants3.hd.entity.ProductWorkMemo;
 import com.giants3.hd.entity.User;
 import com.giants3.hd.entity.WorkFlowMessage;
 import com.giants3.hd.entity_erp.SampleState;
+import com.giants3.hd.noEntity.CompanyPosition;
 import com.giants3.hd.utils.StringUtils;
 
 import java.util.List;
@@ -132,6 +136,19 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
             @Override
             public void onReceiveWorkFlow(ErpWorkFlowReport report) {
                 getPresenter().confirmCompletedWork(report);
+            }
+
+            @Override
+            public void removeReportFromMonitor(ErpWorkFlowReport data) {
+
+
+                getPresenter().removeReportFromMonitor(data);
+            }
+
+            @Override
+            public void addReportToMonitor(ErpWorkFlowReport data) {
+                getPresenter().addReportToMonitor(data);
+
             }
         });
         workFlowReport.setAdapter(adapter);
@@ -242,6 +259,8 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
 //        if (  !canSend && !canReceive) return;
 
         View inflate = getLayoutInflater().inflate(R.layout.layout_work_flow_info, null);
+        final AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setView(inflate).create();
         TextView productMemoView = (TextView) inflate.findViewById(R.id.productMemo);
         TextView title_productMemoView = (TextView) inflate.findViewById(R.id.title_product_memo);
         productMemoView.setText(productWorkMemo == null ? "" : productWorkMemo.memo);
@@ -263,6 +282,33 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
         send.setVisibility(canSend ? View.VISIBLE : View.GONE);
 
         send.setText(workFlowReport.workFlowStep == ErpWorkFlow.STEP_CHENGPIN ? "出 货" : "生产结束");
+
+
+        View syncErpStockData = inflate.findViewById(R.id.syncErpStockData);
+        syncErpStockData.setVisibility(workFlowReport.workFlowStep==ErpWorkFlow.LAST_STEP&&(AuthorityUtil.getInstance().isAdmin() || BuildConfig.DEBUG) ? View.VISIBLE : View.GONE);
+
+        syncErpStockData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                getPresenter().syncErpStockData(workFlowReport);
+            }
+        });
+
+        View adjust_limit = inflate.findViewById(R.id.adjust_limit);
+        adjust_limit.setVisibility( (AuthorityUtil.getInstance().isAdmin()  || BuildConfig.DEBUG||SharedPreferencesHelper.getLoginUser().position != CompanyPosition.FACTORY_DIRECTOR_CODE) ? View.VISIBLE : View.GONE);
+        adjust_limit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+
+                showUpdateLimitDialog(workFlowReport);
+                alertDialog.dismiss();
+            }
+
+
+        });
 
 
         TextView receive = (TextView) inflate.findViewById(R.id.receive);
@@ -335,8 +381,7 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
 
             }
         });
-        final AlertDialog alertDialog = new AlertDialog.Builder(this)
-                .setView(inflate).create();
+
         alertDialog.setCanceledOnTouchOutside(true);
         alertDialog.show();
     }
@@ -480,5 +525,59 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
 
 
         }
+    }
+
+
+    private void showUpdateLimitDialog(final ErpWorkFlowReport workFlowReport) {
+
+        View inflate = getLayoutInflater().inflate(R.layout.layout_work_flow_limit_update, null);
+        final AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setView(inflate).create();
+        final EditText limit=inflate.findViewById(R.id.limit);
+        final EditText alert=inflate.findViewById(R.id.alert);
+
+        limit.setText(String.valueOf(workFlowReport.limitDay));
+        alert.setText(String.valueOf(workFlowReport.alertDay));
+
+
+
+        View update=inflate.findViewById(R.id.update);
+        update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                int limitDay=-1;
+                int alertDay=-1;
+                try {
+                    limitDay = Integer.valueOf(limit.getText().toString());
+                    alertDay = Integer.valueOf(alert.getText().toString());
+                } catch (Throwable t){
+
+                }
+                if(limitDay<0||limitDay<0)
+                {
+                    showMessage("输入异常，必须是整数>0");
+                    return;
+                }
+                getPresenter().updateWorkFlowTimeLimit(workFlowReport,limitDay,alertDay);
+
+
+
+
+            }
+        });
+        View close=inflate.findViewById(R.id.close);
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                alertDialog.dismiss();
+            }
+        });
+
+
+        alertDialog.show();
+
     }
 }

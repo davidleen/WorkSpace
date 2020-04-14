@@ -8,6 +8,7 @@ import com.giants3.android.api.push.MessageCallback;
 import com.giants3.android.api.push.RegisterCallback;
 import com.giants3.android.frame.util.StorageUtils;
 import com.giants3.android.frame.util.Utils;
+import com.giants3.android.kit.ResourceExtractor;
 import com.giants3.android.push.PushProxy;
 import com.giants3.hd.android.helper.AndroidUtils;
 import com.giants3.hd.android.helper.BitmapToolkit;
@@ -20,7 +21,6 @@ import com.giants3.hd.data.net.HttpUrl;
 import com.giants3.hd.data.utils.GsonUtils;
 import com.giants3.hd.exception.HdException;
 import com.giants3.hd.noEntity.app.PushMessage;
-import com.nostra13.universalimageloader.core.LibContext;
 
 ;
 
@@ -50,6 +50,7 @@ public class HdApplication extends Application {
         ToastHelper.init(this);
         BitmapToolkit.init(this);
         SharedPreferencesHelper.init(this);
+        ResourceExtractor.context=this;
 
 
         ConnectionHelper.init(this);
@@ -94,7 +95,7 @@ public class HdApplication extends Application {
             }
         });
 
-        LibContext.init(this);
+       // LibContext.init(this);
     }
 
 

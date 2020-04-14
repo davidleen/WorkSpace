@@ -131,6 +131,7 @@ public class InitData implements ApplicationListener<ContextRefreshedEvent> {
              authorityService.initAppQuoteAuths();
             authorityService.initQuoteAuths();
 
+//           scheduleService.autoCompleteWorkFlowFromErp();
 
 
 //            productService.updateSortFieldValue();
@@ -148,7 +149,7 @@ public class InitData implements ApplicationListener<ContextRefreshedEvent> {
 
 
         //开启检查是否有未完成的产品统计数据计算
-        materialService.updateProductData();
+//        materialService.updateProductData();
 
 
         isStart = true;

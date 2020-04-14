@@ -1,0 +1,103 @@
+apply from: 'modules.gradle'
+
+
+
+
+for(Map module:MODULE_OF_EXTERNAL){
+    println module
+    if(module==null) continue
+    include ":${module.name}"
+    project(":${module.name}").projectDir = new File("${module.path}")
+
+}
+//include ':Changdu_360'
+// include ':temp'
+//include ':Share_SDK'
+//include ':ChangduLib'
+// include ':firebaseanalyticssdk'
+//include ':UmengPushSDK'
+
+include ':Changdu'
+
+
+//include'Changdu3.1.9'
+
+include ':ComicLib'
+
+include ':huaweisdk'
+
+include ':reycyclerview_v7'
+project(':reycyclerview_v7').projectDir = new File('../ChangduLibs/recyclerview_v7')
+include ':giflib'
+project(':giflib').projectDir = new File('../ChangduLibs/giflib_target26')
+
+//
+//include ':kochava'
+//project(':kochava').projectDir = new File('../ChangduLibs/kochava')
+
+
+include ':androidcompat'
+project(':androidcompat').projectDir = new File('../ChangduLibs/androidcompat')
+include ':tencentadvertise'
+project(':tencentadvertise').projectDir = new File('../ChangduLibs/tencentadvertise')
+
+include ':toutiaoAdvertise'
+project(':toutiaoAdvertise').projectDir = new File('../ChangduLibs/toutiaoAdvertise')
+include ':baiduAdvertise'
+project(':baiduAdvertise').projectDir = new File('../ChangduLibs/baiduAdvertise')
+//include ':ximalayaopensdk'
+
+
+include ':iflyadvertise'
+project(':iflyadvertise').projectDir = new File('../ChangduLibs/iflyadvertise_upgrade')
+
+include ':mu_pdf'
+project(':mu_pdf').projectDir = new File('../ChangduLibs/mu_pdf')
+
+include ':monitor_gt'
+project(':monitor_gt').projectDir = new File('../ChangduLibs/monitor_gt')
+
+include ':monitor_no_op'
+project(':monitor_no_op').projectDir = new File('../ChangduLibs/monitor_no_op')
+
+include ':tts_xunfei'
+project(':tts_xunfei').projectDir = new File('../ChangduLibs/tts_xunfei_refract')
+
+
+
+include ':tts_baidu'
+project(':tts_baidu').projectDir = new File('../ChangduLibs/tts_baidu_online')
+
+
+
+
+
+include ':umengpush'
+project(':umengpush').projectDir = new File('../ChangduLibs/umengpush')
+
+include ':umengAnalyticsSdk'
+project(':umengAnalyticsSdk').projectDir = new File('../ChangduLibs/umengAnalyticsSdk')
+
+
+include ':admobAdvertise'
+project(':admobAdvertise').projectDir = new File('../ChangduLibs/admobAdvertise')
+
+
+
+
+
+
+
+
+include  ':analyticsSdk'
+project(':analyticsSdk').projectDir = new File('../ChangduLibs/firebaseAnalyticsSdk')
+include  ':facebookSdk'
+project(':facebookSdk').projectDir = new File('../ChangduLibs/facebookSdk_5.6')
+
+include ':googleAnalyticsSdk'
+project(':googleAnalyticsSdk').projectDir = new File('../ChangduLibs/googleAnalyticsSdk')
+
+
+
+include ':aliecsdk'
+project(':aliecsdk').projectDir = new File('../ChangduLibs/AliECSdk_new')

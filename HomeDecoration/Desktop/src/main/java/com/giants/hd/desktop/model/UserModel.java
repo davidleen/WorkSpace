@@ -12,13 +12,13 @@ import java.util.List;
  */
 public class UserModel extends BaseTableModel<User> {
 
-    public static String[] columnNames = new String[]{"编号 ", "名称", "中文名称      ", "密码", "电话", "邮件", "是否业务员", "  职位  ", "外网连接"};
-    public static int[] columnWidth = new int[]{80, 100, 120, 80, 80, 80, 80, 100, 60};
+    public static String[] columnNames = new String[]{"编号 ", "名称", "中文名称      ", "密码", "电话", "邮件", "是否业务员", "  职位  ", "外网连接","停用"};
+    public static int[] columnWidth = new int[]{80, 100, 120, 80, 80, 80, 50, 100, 50,50};
 
     private static final String POSITION = "positionName";
-    public static String[] fieldName = new String[]{"code", "name", "chineseName", "password", "tel", "email", "isSalesman", POSITION, "internet"};
+    public static String[] fieldName = new String[]{"code", "name", "chineseName", "password", "tel", "email", "isSalesman", POSITION, "internet","stopped"};
 
-    public static Class[] classes = new Class[]{Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Boolean.class, CompanyPosition.class, Boolean.class};
+    public static Class[] classes = new Class[]{Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Boolean.class, CompanyPosition.class, Boolean.class,Boolean.class};
 
 
     @Inject
@@ -77,6 +77,15 @@ public class UserModel extends BaseTableModel<User> {
             case 8:
                 try {
                     customer.internet = Boolean.valueOf(aValue.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                break;
+
+                case 9:
+                try {
+                    customer.stopped = Boolean.valueOf(aValue.toString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

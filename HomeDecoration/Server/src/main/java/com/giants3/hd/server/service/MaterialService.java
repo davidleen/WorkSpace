@@ -1,9 +1,8 @@
 package com.giants3.hd.server.service;
 
 import com.giants3.hd.entity.*;
-import com.giants3.hd.entity_erp.Prdt;
+import com.giants3.hd.entity.Prdt;
 import com.giants3.hd.logic.ProductAnalytics;
-import com.giants3.hd.noEntity.ProductDetail;
 import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.server.entity.ProductToUpdate;
 import com.giants3.hd.server.repository.*;
@@ -38,6 +37,9 @@ public class MaterialService extends AbstractService {
     private static final Logger logger = Logger.getLogger(MaterialService.class);
     @Autowired
     ErpPrdtRepository erpPrdtRepository;
+
+    @Autowired
+    PrdtTempRepository prdtTempRepository;
 
     @Autowired
     private ProductService productService;
@@ -297,6 +299,112 @@ public class MaterialService extends AbstractService {
 
 
     }
+    /**
+     * 从erp数据库 复制有改动的材料
+     *
+     * @return
+     */
+    public
+    @Transactional
+    RemoteData<Void> copyMaterialFromErp()
+    {
+
+        if(prdtTempRepository.findAll().size()>0) return wrapData();
+
+        List<Prdt> datas = erpPrdtRepository.list();
+//        List<Prdt> datas = erpPrdtRepository.findByPrd_noEquals("22030001",null);
+
+        //int size = Math.min(datas.size(),1000);
+        int size =  datas.size() ;
+        logger.info("copyMaterialFromErp total  material size :" + size);
+
+        int  copiedSize=0;
+        List<MaterialClass> materialClasses = materialClassRepository.findAll();
+        for (int i = 0; i < size; i++) {
+            Prdt prdt = datas.get(i);
+            String classId;
+            int length = prdt.prd_no.length();
+            if (length < 5) continue;
+            if (prdt.prd_no.startsWith("C") || prdt.prd_no.startsWith("c"))
+                classId = prdt.prd_no.substring(1, 5);
+            else
+                classId = prdt.prd_no.substring(0, 4);
+
+
+
+            for (MaterialClass materialClass : materialClasses) {
+
+
+                if (materialClass.code.equals(classId)) {
+                    //数据附加
+                    prdt.wLong = materialClass.wLong;
+                    prdt.wWidth = materialClass.wWidth;
+                    prdt.wHeight = materialClass.wHeight;
+                    prdt.available = materialClass.available;
+                    prdt.discount = materialClass.discount;
+                    prdt.classId = materialClass.code;
+                    prdt.className = materialClass.name;
+                    prdt.type = materialClass.type;
+
+
+                    break;
+                }
+            }
+            Material oldData = materialRepository.findFirstByCodeEquals(prdt.prd_no);
+            boolean isNew = oldData == null;
+            prdt.isNew=isNew;
+            if (!isNew)  {
+
+
+                //单价比较调整
+                prdt.isPriceChange= Math.abs(oldData.price - prdt.price) > 0.01f;
+                prdt.isMemoChange = !StringUtils.equals(oldData.memo, prdt.rem);
+                prdt.isDataChang =!compare(oldData, prdt);
+
+
+
+            }
+            if(prdt.isNew||prdt.isDataChang||prdt.isPriceChange||prdt.isMemoChange)
+            {
+                prdtTempRepository.save(prdt);
+                copiedSize++;
+                if(copiedSize%10==0) prdtTempRepository.flush();
+            }
+
+        }
+        logger.info("copyMaterialFromErp total  material copied size  :" + copiedSize);
+            return wrapData();
+
+
+    }
+
+
+
+
+    public @Transactional
+    boolean   updateErpMaterial()
+    {
+
+
+        Page<Prdt> datas = prdtTempRepository.findAll(constructPageSpecification(0, 5));
+        boolean hasMore = datas.hasNext();
+        final Set<Long> relateProductIds = new HashSet<>();
+        try {
+
+
+            for (Prdt prdt : datas)
+                updateErpPrdtToMaterial(prdt, relateProductIds);
+        } catch (Throwable t) {
+            logger.error("updateErpMaterial", t);
+        }
+
+        prdtTempRepository.delete(datas);
+        logger.info("   relateProduct Count :" + relateProductIds.size());
+        saveProductIdsToUpdate(relateProductIds);
+
+
+        return hasMore;
+    }
 
 
     /**
@@ -367,40 +475,8 @@ public class MaterialService extends AbstractService {
 
 
         if (relateProductIds.size() > 0) {
-
             logger.info("   relateProduct Count :" + relateProductIds.size());
-
-            List<ProductToUpdate> productToUpdates=new ArrayList<>();
-
-
-            int i=0;
-            for(long productId:relateProductIds)
-            {
-                ProductToUpdate productToUpdate=new ProductToUpdate();
-                productToUpdate.productId=productId;
-                productToUpdate.updateWay="ERP材料同步";
-                productToUpdates.add(productToUpdate);
-                i++;
-
-                if(i>100 )
-                {
-
-                    productToUpdateRepository.save(productToUpdates);
-                    productToUpdateRepository.flush();
-                    i=0;
-                    productToUpdates.clear();
-                }
-
-
-            }
-
-            if(productToUpdates.size()>0)
-            {
-                productToUpdateRepository.save(productToUpdates);
-                productToUpdateRepository.flush();
-            }
-
-
+            saveProductIdsToUpdate(relateProductIds);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -413,6 +489,40 @@ public class MaterialService extends AbstractService {
 
         return wrapData();
     }
+
+
+    public void saveProductIdsToUpdate(Set<Long> relateProductIds)
+    {
+
+
+
+
+        List<ProductToUpdate> productToUpdates=new ArrayList<>();
+
+
+        int i=0;
+        for(long productId:relateProductIds)
+        {
+
+
+            if (productToUpdateRepository.findFirstByProductIdEquals(productId)!=null) continue;
+
+            ProductToUpdate productToUpdate=new ProductToUpdate();
+            productToUpdate.productId=productId;
+            productToUpdate.updateWay="ERP材料同步";
+            productToUpdates.add(productToUpdate);
+        }
+
+        if(productToUpdates.size()>0)
+        {
+            productToUpdateRepository.save(productToUpdates);
+            productToUpdateRepository.flush();
+        }
+
+
+    }
+
+
 
 
     /**
@@ -470,6 +580,43 @@ public class MaterialService extends AbstractService {
 
         if (isNew || !isSameData)
             logger.info("material :" + prdt.prd_no + ",isNew=" + isNew + ",isSame:" + isSameData);
+
+
+    }
+
+
+    public void updateErpPrdtToMaterial(Prdt prdt,Set<Long> productIds)
+    {
+        Material material =materialRepository.findFirstByCodeEquals(prdt.prd_no);
+        if (prdt.isNew) {
+
+            if (material == null) {
+
+                material = materialObjectPool.newObject();
+                material.id = -1;
+                convert(material, prdt);
+                materialRepository.save(material);
+                return;
+            }
+
+        }
+        if (material != null) {
+                convert(material, prdt);
+                if (prdt.isPriceChange) {
+                    updatePriceRelateData(material, productIds);
+                } else if (prdt.isMemoChange) {
+                    productMaterialRepository.updateMemoOnMaterialId(prdt.rem, material.id);
+                    productPaintRepository.updateMemoOnMaterialId(prdt.rem, material.id);
+                }
+                materialRepository.save(material);
+
+
+
+
+        }
+
+
+
 
 
     }

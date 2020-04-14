@@ -28,7 +28,7 @@ public class UrlFormatter {
                 return url+param+ PARAM_EQUAL + encode(value.toString());
 
         }
-        url+=param+ PARAM_EQUAL + value;
+        url+=param+ PARAM_EQUAL + (value==null?"":value);
         return url;
 
 
