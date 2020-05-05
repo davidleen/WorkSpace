@@ -1,17 +1,22 @@
 package com.giants.hd.desktop.dialogs;
 
+import com.giants.hd.desktop.model.OutFactoryModel;
+import com.giants.hd.desktop.mvp.RemoteDataSubscriber;
 import com.giants.hd.desktop.mvp.presenter.WorkFlowWorkerUpdateIPresenter;
 import com.giants.hd.desktop.mvp.viewer.WorkFlowWorkerUpdateViewer;
 import com.giants.hd.desktop.viewImpl.Panel_WorkFlowWorkerUpdate;
+import com.giants3.hd.domain.api.HttpUrl;
 import com.giants3.hd.domain.interractor.UseCaseFactory;
+import com.giants3.hd.entity.OutFactory;
 import com.giants3.hd.utils.GsonUtils;
 import com.giants3.hd.noEntity.RemoteData;
-import com.giants3.hd.entity.ErpWorkFlow;
 import com.giants3.hd.entity.User;
 import com.giants3.hd.entity.WorkFlowWorker;
 import rx.Subscriber;
 
+import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * 产品关联的生产流程数据
@@ -21,6 +26,7 @@ import java.awt.*;
 public class WorkFlowWorkerUpdateDialog extends BaseMVPDialog<WorkFlowWorker, WorkFlowWorkerUpdateViewer> implements WorkFlowWorkerUpdateIPresenter {
 
 
+    public static final String DIVIDER = ",";
     private String oldData;
     private WorkFlowWorker data;
     private WorkFlowWorker workFlowWorker;
@@ -40,8 +46,7 @@ public class WorkFlowWorkerUpdateDialog extends BaseMVPDialog<WorkFlowWorker, Wo
 
     }
 
-    private void loadUsers()
-    {
+    private void loadUsers() {
         UseCaseFactory.getInstance().createGetUserListUseCase().execute(new Subscriber<java.util.List<User>>() {
             @Override
             public void onCompleted() {
@@ -124,8 +129,6 @@ public class WorkFlowWorkerUpdateDialog extends BaseMVPDialog<WorkFlowWorker, Wo
     }
 
 
-
-
     @Override
     public void save() {
 
@@ -162,8 +165,7 @@ public class WorkFlowWorkerUpdateDialog extends BaseMVPDialog<WorkFlowWorker, Wo
                     getViewer().showMesssage("保存成功");
                     dispose();
 
-                }else
-                {
+                } else {
                     getViewer().showMesssage(remoteData.message);
                 }
 
@@ -176,7 +178,80 @@ public class WorkFlowWorkerUpdateDialog extends BaseMVPDialog<WorkFlowWorker, Wo
     }
 
     @Override
+    public void pickjgh() {
+
+
+//        OutFactoryDialog dialog = new OutFactoryDialog(this);
+//        dialog.setLocationRelativeTo(getRootPane());
+//        dialog.setVisible(true);
+
+
+        UseCaseFactory.getInstance().createGetUseCase(HttpUrl.getOutFactories(), OutFactory.class).execute(new RemoteDataSubscriber<OutFactory>(getViewer()) {
+            @Override
+            protected void handleRemoteData(RemoteData<OutFactory> data) {
+
+                java.util.List<OutFactory> preItems = null;
+                if (workFlowWorker.jghncodes != null) {
+                    String[] split = workFlowWorker.jghncodes.split(DIVIDER);
+                    if (split.length > 0) {
+                        preItems = new ArrayList<>();
+                        for (OutFactory outFactory : data.datas) {
+                            for (String s : split) {
+                                if (outFactory.dep.equalsIgnoreCase(s)) {
+                                    preItems.add(outFactory);
+                                    break;
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+
+                ItemPickDialog<OutFactory> itemPickDialog = new ItemPickDialog(WorkFlowWorkerUpdateDialog.this, "挑选加工户", data.datas, preItems, new OutFactoryModel());
+                itemPickDialog.setMinimumSize(new Dimension(600, 600));
+                itemPickDialog.setVisible(true);
+                java.util.List<OutFactory> result = itemPickDialog.getResult();
+                if (result != null) {
+
+
+                    StringBuilder names = new StringBuilder();
+                    StringBuilder codes = new StringBuilder();
+                    int size = result.size();
+                    for (OutFactory outFactory : result) {
+                        codes.append(outFactory.dep)
+                                .append(DIVIDER);
+                        names.append(outFactory.name).append(DIVIDER);
+                    }
+                    if (size > 0) {
+                        names.setLength(names.length() - DIVIDER.length());
+                        codes.setLength(codes.length() - DIVIDER.length());
+
+                    }
+
+                    workFlowWorker.jghnames = names.toString();
+                    workFlowWorker.jghncodes = codes.toString();
+                    getViewer().bindData(workFlowWorker);
+
+
+                }
+            }
+
+
+        });
+        getViewer().showLoadingDialog();
+
+
+    }
+
+    @Override
     public void delete() {
+
+
+        int res = JOptionPane.showConfirmDialog(this, "是否删除当前流程人员？", "删除数据", JOptionPane.OK_CANCEL_OPTION);
+        if (res != JOptionPane.YES_OPTION) {
+            return;
+        }
 
         UseCaseFactory.getInstance().createDeleteWorkFlowWorkerUseCase(data.id).execute(new Subscriber<RemoteData<Void>>() {
             @Override

@@ -1,6 +1,10 @@
 package com.giants3.hd.android.mvp.workFlow;
 
+import android.content.Intent;
+
 import com.giants3.android.frame.util.StringUtil;
+import com.giants3.hd.android.activity.WorkFlowMessageActivity;
+import com.giants3.hd.android.fragment.MyWorkFlowMessageFragment;
 import com.giants3.hd.android.mvp.BasePresenter;
 import com.giants3.hd.android.mvp.RemoteDataSubscriber;
 import com.giants3.hd.data.interractor.UseCaseFactory;
@@ -154,6 +158,59 @@ public class WorkFlowListPresenter extends BasePresenter<WorkFlowListMvp.Viewer,
 
 
         searchSampleData();
+
+    }
+
+    @Override
+    public void loadOrderItem(String osNo, int itm) {
+
+
+
+
+        getView().showWaiting();
+        UseCaseFactory.getInstance().createGetUseCase(HttpUrl.findErpOrderItem(osNo,itm),ErpOrderItem.class).execute(new RemoteDataSubscriber<ErpOrderItem>(this) {
+            @Override
+            protected void handleRemoteData(RemoteData<ErpOrderItem> data) {
+
+
+                if(data.isSuccess())
+                setSelectOrderItem(data.datas.get(0));
+            }
+
+            @Override
+            protected void handleFail(RemoteData<ErpOrderItem> data) {
+                super.handleFail(data);
+                getView().finish();
+            }
+        });
+
+
+
+
+
+
+    }
+
+
+    @Override
+    public void showMessageRecord(final ErpWorkFlowReport workFlowReport) {
+
+
+        getView().showWaiting();
+        UseCaseFactory.getInstance().createGetUseCase(HttpUrl.getOrderItemWorkFlowMessage(workFlowReport.osNo,workFlowReport.itm,workFlowReport.workFlowStep),WorkFlowMessage.class).execute(new RemoteDataSubscriber<WorkFlowMessage>(this) {
+            @Override
+            protected void handleRemoteData(RemoteData<WorkFlowMessage> data) {
+
+
+                getView().showWorkFlowMessage(workFlowReport,data.datas);
+
+            }
+
+        });
+
+
+
+
 
     }
 

@@ -5,6 +5,7 @@ import com.giants3.hd.entity_erp.*;
 import com.giants3.hd.exception.HdException;
 import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.noEntity.WorkFlowReportSummary;
+import com.giants3.hd.server.repository.ErpWorkFlowReportRepository;
 import com.giants3.hd.server.service.ErpSampleService;
 import com.giants3.hd.server.service.ErpWorkService;
 import com.giants3.hd.server.service.UserService;
@@ -252,9 +253,31 @@ public class ErpWorkController extends BaseController {
     public
     @ResponseBody
     RemoteData<Void> syncErpStockDataToReport(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam("os_no") String osNo, @RequestParam("itm") int itm, @RequestParam("workflowstep") int workflowstep) {
+
+//        testSyncAll();
+//        return wrapData();
+
         return erpWorkService.syncErpStockDataToReport(user, osNo, itm, workflowstep);
 
     }
+
+
+//    @Autowired
+//    ErpWorkFlowReportRepository erpWorkFlowReportRepository;
+//
+//    private void testSyncAll()
+//    {
+//        List<ErpWorkFlowReport> reports=erpWorkFlowReportRepository.findAllByOrderStateEqualsAndFlowStepEquals(ErpWorkFlow.STATE_WORKING,ErpWorkFlow.STEP_CHENGPIN);
+//        for(ErpWorkFlowReport erpWorkFlowReport:reports)
+//        {
+//            try {
+//                erpWorkService.syncOnErpWorkFlowReport(erpWorkFlowReport);
+//            } catch (Throwable e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//    }
     /**
      * 更新流程的生产期限参数
      *
@@ -455,7 +478,7 @@ public class ErpWorkController extends BaseController {
     }
 
     /**
-     * 校正流程的item字段信息
+     *
      *
      * @return
      */
@@ -463,6 +486,25 @@ public class ErpWorkController extends BaseController {
     @ResponseBody
     public RemoteData<ErpWorkFlowItem> findErpWorkFlowItems(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam("osNo") String osNo, @RequestParam(value = "itm") int itm, @RequestParam(value = "flowCode") String flowCode) {
         return erpWorkService.findErpWorkFlowItems(user, osNo, itm, flowCode);
+
+    }
+
+
+    /**
+     * 校正流程的item字段信息
+     *
+     * @return
+     */
+    @RequestMapping(value = "/findErpOrderItem", method = RequestMethod.GET)
+    @ResponseBody
+    public RemoteData<ErpOrderItem> findErpWorkFlowItems(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam("osNo") String osNo, @RequestParam(value = "itm") int itm ) {
+        ErpOrderItem orderItem = erpWorkService.findOrderItem(osNo, itm);
+        if(orderItem==null)
+        {
+            return wrapError("没找到osNo="+osNo+",item="+itm+"的订单款项");
+
+        }
+        return wrapData(orderItem);
 
     }
 

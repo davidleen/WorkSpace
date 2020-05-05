@@ -90,6 +90,10 @@ public interface WorkFlowListMvp {
         void removeReportFromMonitor(ErpWorkFlowReport data);
 
         void addReportToMonitor(ErpWorkFlowReport data);
+
+        void loadOrderItem(String osNo, int itm);
+
+        void showMessageRecord(ErpWorkFlowReport workFlowReport);
     }
 
     interface Viewer extends NewViewer {
@@ -108,6 +112,10 @@ public interface WorkFlowListMvp {
         void showSampleState(SampleState sampleState);
 
         void showUnHandleWorkMessageDialog(List<WorkFlowMessage> datas);
+
+        void finish();
+
+        void showWorkFlowMessage(ErpWorkFlowReport workFlowReport, List<WorkFlowMessage> datas);
     }
 
 }

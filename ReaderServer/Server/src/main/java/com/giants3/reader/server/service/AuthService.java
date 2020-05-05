@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -86,5 +87,20 @@ public class AuthService extends AbstractService {
     {
         List<Settings> all = settingsRepository.findAll();
         return all==null||all.size()==0?null:all.get(0);
+    }
+
+    @Transactional
+    public void logAuthCodeReadTime() {
+
+
+
+        Settings settings=getSettings();
+        if(settings==null) {
+            settings=new Settings();
+        }
+        settings.authCodeRequestTime++;
+        settingsRepository.save(settings);
+
+
     }
 }

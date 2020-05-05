@@ -31,6 +31,12 @@
               <text value="全选"/>
             </properties>
           </component>
+          <component id="34fdb" class="javax.swing.JButton" binding="clear">
+            <constraints/>
+            <properties>
+              <text value="全不选"/>
+            </properties>
+          </component>
           <hspacer id="2aa00">
             <constraints/>
           </hspacer>

@@ -1,6 +1,7 @@
 package com.giants3.hd.server.repository;
 
 import com.giants3.hd.entity.ErpWorkFlowReport;
+import com.giants3.hd.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -36,7 +37,11 @@ public interface ErpWorkFlowReportRepository extends JpaRepository<ErpWorkFlowRe
 
     List<ErpWorkFlowReport> findByPercentageLessThanAndStartDateGreaterThan(float percentage, long createTime);
     @Query(value = "SELECT  P from T_ErpWorkFlowReport    P where    p.state=:state  and  ( p.osNo like :key or p.prdNo like :key or p.pVersion like :key)   " )
-    Page<ErpWorkFlowReport> findMonitoredWorkFlowReports( @Param("key") String key,@Param("state") int state, Pageable pageable);
+    Page<ErpWorkFlowReport> findAllMonitoredWorkFlowReports( @Param("key") String key,@Param("state") int state, Pageable pageable);
+
+
+    @Query(value = "SELECT  P from T_ErpWorkFlowReport    P where    p.state=:state  and  ( p.osNo like :key or p.prdNo like :key or p.pVersion like :key)   and  p.workFlowStep in  (select distinct  workFlowStep from T_WorkFlowWorker where userId=:user_id )" )
+    Page<ErpWorkFlowReport> findMonitoredWorkFlowReports(@Param("key") String key, @Param("state") int state, @Param("user_id") long  userId, Pageable pageable);
     ErpWorkFlowReport findFirstByOsNoEqualsAndItmEqualsAndWorkFlowStepEquals(String osNo, int itm, int fromFlowStep);
 
     @Modifying
@@ -46,4 +51,8 @@ public interface ErpWorkFlowReportRepository extends JpaRepository<ErpWorkFlowRe
     @Modifying
     @Query("update T_ErpWorkFlowReport p set p.itm=:itm where   p.osNo=:os_no and p.prdNo=:prd_no  and p.pVersion=:pVersion   ")
     int  updateItmByOsNoAndPrdNo(@Param("os_no") String osNo, @Param("prd_no") String prdNo, @Param("pVersion") String pVersion, @Param("itm") int itm);
+
+
+  @Query(value = "SELECT  a.* from (select * from T_ErpWorkFlowReport where  workFlowStep=:flowstep)  as a inner join (select * from T_OrderItemWorkState where workFlowState=:orderState) as e on a.osNo=e.osNo and a.itm=e.itm  " ,nativeQuery = true)//and a.osNo='19YF499' and a.itm=2
+   List<ErpWorkFlowReport> findAllByOrderStateEqualsAndFlowStepEquals(@Param("orderState")int orderItemState,@Param("flowstep") int flowStep);
 }

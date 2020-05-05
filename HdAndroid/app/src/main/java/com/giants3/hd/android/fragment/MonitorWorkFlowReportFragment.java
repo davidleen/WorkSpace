@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.giants3.hd.android.R;
+import com.giants3.hd.android.activity.WorkFlowListActivity;
 import com.giants3.hd.android.adapter.ItemListAdapter;
 import com.giants3.hd.android.adapter.MonitorWorkFlowReportAdapter;
 import com.giants3.hd.android.mvp.MonitorWorkFlowReportMVP;
@@ -104,10 +105,11 @@ public class MonitorWorkFlowReportFragment extends BaseMvpFragment<MonitorWorkFl
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
 
-//                ErpWorkFlowReport report = (ErpWorkFlowReport) parent.getItemAtPosition(position);
-//                Intent intent = new Intent(getActivity(), WorkFlowListActivity.class);
-//                intent.putExtra(WorkFlowListActivity.KEY_ORDER_ITEM, GsonUtils.toJson(erpOrderItem));
-//                startActivityForResult(intent, REQUEST_MESSAGE_OPERATE);
+                ErpWorkFlowReport report = (ErpWorkFlowReport) parent.getItemAtPosition(position);
+                Intent intent = new Intent(getActivity(), WorkFlowListActivity.class);
+                intent.putExtra(WorkFlowListActivity.KEY_ORDER_NAME,  report.osNo);
+                intent.putExtra(WorkFlowListActivity.KEY_ITEM, report.itm);
+                startActivityForResult(intent, REQUEST_MESSAGE_OPERATE);
 
 
             }
@@ -156,7 +158,7 @@ public class MonitorWorkFlowReportFragment extends BaseMvpFragment<MonitorWorkFl
 
     @Override
     public void showWaiting() {
-        swipeLayout.startRefresh( );
+
     }
 
     @Override
@@ -168,7 +170,7 @@ public class MonitorWorkFlowReportFragment extends BaseMvpFragment<MonitorWorkFl
     @Override
     public void bindData(RemoteData<ErpWorkFlowReport> data) {
 
-
+        swipeLayout.setEnableLoadmore(data.hasNext());
         adapter.setDataArray(data.datas);
     }
 

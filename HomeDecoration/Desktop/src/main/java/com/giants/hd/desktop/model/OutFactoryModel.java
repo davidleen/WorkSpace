@@ -43,7 +43,6 @@ public class OutFactoryModel extends  BaseTableModel<OutFactory> {
     @Override
     public void setDatas(List<OutFactory> newDatas) {
 
-        MiniRowCount=newDatas.size()+20;
         super.setDatas(newDatas);
     }
 }

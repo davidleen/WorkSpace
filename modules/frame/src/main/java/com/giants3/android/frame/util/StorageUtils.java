@@ -96,4 +96,9 @@ public class StorageUtils {
 
         FileUtils.makeDirs(path);
     }
+
+    public static String getRootPath() {
+
+        return getFilePath(root);
+    }
 }

@@ -121,7 +121,7 @@ public class ScheduleService extends AbstractService {
             @Override
             public void run() {
                 int i = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-                if(i>7&&i<21) {
+                if(i>7&&i<20) {
                     erpWorkService.autoCompleteSelfMadeStockIn();
                     erpWorkService.autoCompletePurchaseStockIn();
                    erpWorkService.autoCompleteStockOut();

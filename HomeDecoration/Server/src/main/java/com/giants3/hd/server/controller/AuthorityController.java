@@ -64,7 +64,10 @@ public class AuthorityController extends BaseController {
     @RequestMapping(value = "/aLogin2", method = RequestMethod.POST)
     public
     @ResponseBody
-    RemoteData<AUser> aLogin2(HttpServletRequest request, @RequestBody Map<String, String> params) {
+    RemoteData<AUser> aLogin2(HttpServletRequest request, @RequestBody Map<String, String> params
+            , @RequestParam(value = "uuid", required = false, defaultValue = "") String uuid
+
+    ) {
 
 
         String userName = params.get("userName");
@@ -82,7 +85,7 @@ public class AuthorityController extends BaseController {
         versionName = StringUtils.isEmpty(versionName) ? "" : versionName;
 
         final String remoteAddr = request.getRemoteAddr();
-        RemoteData<AUser> result = authorityService.doLogin2Service(userName, password, client, version, device_token, remoteAddr);
+        RemoteData<AUser> result = authorityService.doLogin2Service(userName, password, client, version, device_token, remoteAddr,uuid);
 
 
         return result;
@@ -102,15 +105,19 @@ public class AuthorityController extends BaseController {
     @RequestMapping(value = "/login2", method = RequestMethod.POST)
     public
     @ResponseBody
-    RemoteData<User> login2(HttpServletRequest request, @RequestBody User user, @RequestParam(value = "appVersion", required = false, defaultValue = "0") int appVersion, @RequestParam(value = "client", required = false, defaultValue = "DESKTOP") String client) {
+    RemoteData<User> login2(HttpServletRequest request, @RequestBody User user, @RequestParam(value = "appVersion", required = false, defaultValue = "0") int appVersion
+            , @RequestParam(value = "client", required = false, defaultValue = "DESKTOP") String client
+            , @RequestParam(value = "uuid", required = false, defaultValue = "") String uuid
 
-        return doLogin2(user.name, user.password, client, appVersion, request.getRemoteAddr());
+    ) {
+
+        return doLogin2(user.name, user.password, client, appVersion, request.getRemoteAddr(),uuid);
     }
 
-    private RemoteData<User> doLogin2(String userName, String passwordMd5, String client, int version, String loginIp) {
+    private RemoteData<User> doLogin2(String userName, String passwordMd5, String client, int version, String loginIp,String uuid) {
 
 
-        return authorityService.doLogin2(userName, passwordMd5, client, version, loginIp, "");
+        return authorityService.doLogin2(userName, passwordMd5, client, version, loginIp, "",uuid);
     }
 
 
@@ -131,11 +138,12 @@ public class AuthorityController extends BaseController {
                            @RequestParam(value = "appVersion", required = false, defaultValue = "0") int appVersion
             , @RequestParam(value = "client", required = false, defaultValue = "DESKTOP") String client
             , @RequestParam(value = "device_token", required = false, defaultValue = "") String device_token
+            , @RequestParam(value = "uuid", required = false, defaultValue = "") String uuid
 
     ) {
 
 
-        final RemoteData<User> userRemoteData = authorityService.doLogin2(userId, password, client, appVersion, request.getRemoteAddr(), device_token);
+        final RemoteData<User> userRemoteData = authorityService.doLogin2(userId, password, client, appVersion, request.getRemoteAddr(), device_token,uuid);
         return userRemoteData;
     }
 

@@ -35,6 +35,7 @@ public class HtmlController {
         model.addAttribute("server", Assets.ServerName);
         Settings settings = authService.getSettings();
         model.addAttribute("rate", settings==null?0:settings.rate);
+        model.addAttribute("requestCodeTime", settings==null?0:settings.authCodeRequestTime);
         return "auth_codes";
     } @RequestMapping(value = "table_test", method = RequestMethod.GET)
     public String table_test(ModelMap model) {

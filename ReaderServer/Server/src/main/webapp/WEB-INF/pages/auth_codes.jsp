@@ -61,6 +61,11 @@
 <button type="button" id="btn_reload">搜索</button>
 <table id="example" class="display" style="width:100%">
 </table>
+<br/>
+<br/>
+
+口令被请求总次数: ${requestCodeTime}<br/>
+
 
 <script type="text/javascript">
 

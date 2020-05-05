@@ -152,6 +152,9 @@ public class InitData implements ApplicationListener<ContextRefreshedEvent> {
 //        materialService.updateProductData();
 
 
+
+//          erpWorkService.syncAllUncompletedErpStockData();
+        erpWorkService.fixWorkFlowMessageBug();
         isStart = true;
 
 

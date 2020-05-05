@@ -35,6 +35,8 @@ public class Panel_WorkFlowWorkerUpdate extends BasePanel implements WorkFlowWor
     private JComboBox cb_user;
     private JRadioButton rb_self;
     private JRadioButton rb_purchase;
+    private JButton jb_jgh;
+    private JLabel jgh;
     private List<User> users;
 //    private List<ErpWorkFlow> workFlows;
     private WorkFlowWorker workFlowWorker;
@@ -68,6 +70,15 @@ public class Panel_WorkFlowWorkerUpdate extends BasePanel implements WorkFlowWor
 
 
 
+        jb_jgh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+
+
+                presenter.pickjgh();
+            }
+        });
 
 
 //        ButtonGroup buttonGroup=new ButtonGroup();
@@ -195,6 +206,7 @@ public class Panel_WorkFlowWorkerUpdate extends BasePanel implements WorkFlowWor
         setPeitiEnable(rb_self.isSelected());
          rb_purchase.addItemListener(rb_purchaseitemListener);
         rb_self.addItemListener(itemListener);
+        jgh.setText(workFlowWorker.jghnames);
 
 
     }

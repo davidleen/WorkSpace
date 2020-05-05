@@ -22,4 +22,10 @@ public class Settings {
      * 几率， 【0，100】
      */
     public int rate;
+
+
+    /**
+     * 口令请求次数
+     */
+    public long authCodeRequestTime;
 }

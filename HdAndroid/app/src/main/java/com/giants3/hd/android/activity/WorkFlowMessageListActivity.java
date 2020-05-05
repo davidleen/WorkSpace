@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.giants3.android.frame.util.StringUtil;
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.adapter.WorkFlowMessageAdapter;
 import com.giants3.hd.android.mvp.NewPresenter;
@@ -24,6 +25,7 @@ public class WorkFlowMessageListActivity extends BaseHeadViewerActivity<NewPrese
 
     private static final int REQUEST_MESSAGE_OPERATE = 999;
     public static final String KEY_MESSAGE_LIST = "KEY_MESSAGE_LIST";
+    public static String KEY_TITLE="KEY_TITLE";
     @Bind(R.id.list)
     ListView listView;
     private WorkFlowMessageAdapter adapter;
@@ -52,7 +54,14 @@ public class WorkFlowMessageListActivity extends BaseHeadViewerActivity<NewPrese
     @Override
     protected void initEventAndData(Bundle savedInstance) {
 
+
+
         setTitle("任务列表");
+        String title = getIntent().getStringExtra(KEY_TITLE);
+        if(!StringUtil.isEmpty(title))
+        {
+            setTitle(title);
+        }
 
         adapter = new WorkFlowMessageAdapter(this);
 

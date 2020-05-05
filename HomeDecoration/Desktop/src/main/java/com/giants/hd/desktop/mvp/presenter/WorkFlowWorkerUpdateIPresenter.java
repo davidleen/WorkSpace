@@ -9,4 +9,9 @@ public interface WorkFlowWorkerUpdateIPresenter extends IPresenter {
     void save();
 
     void delete();
+
+    /**
+     * 挑选配置加工户
+     */
+    void pickjgh();
 }

@@ -909,15 +909,7 @@ public class ErpWorkService extends AbstractErpService {
 
 
         if (erpOrderItemProcess.currentWorkFlowStep == ErpWorkFlow.STEP_CHENGPIN) {
-
-
-            //自动审核通过
-            workFlowMessage.state = WorkFlowMessage.STATE_PASS;
-            workFlowMessage.receiveTime = Calendar.getInstance().getTimeInMillis();
-            workFlowMessage.receiveTimeString = DateFormats.FORMAT_YYYY_MM_DD_HH_MM.format(Calendar.getInstance().getTime());
-
-            workFlowMessage.receiverId = user.id;
-            workFlowMessage.receiverName = user.toString();
+            markMessageComplete(user, workFlowMessage);
 
 
             workFlowMessageRepository.save(workFlowMessage);
@@ -975,6 +967,16 @@ public class ErpWorkService extends AbstractErpService {
         return wrapData();
 
 
+    }
+
+    private void markMessageComplete(User user, WorkFlowMessage workFlowMessage) {
+        //自动审核通过
+        workFlowMessage.state = WorkFlowMessage.STATE_PASS;
+        workFlowMessage.receiveTime = Calendar.getInstance().getTimeInMillis();
+        workFlowMessage.receiveTimeString = DateFormats.FORMAT_YYYY_MM_DD_HH_MM.format(Calendar.getInstance().getTime());
+
+        workFlowMessage.receiverId = user.id;
+        workFlowMessage.receiverName = user.toString();
     }
 
     public void generateWorkFlowReports(ErpOrderItemProcess erpOrderItemProcess, ErpOrderItem erpOrderItem) {
@@ -2246,8 +2248,25 @@ public class ErpWorkService extends AbstractErpService {
         if (workFlowReport == null)
             return wrapError("没找到对应流程数据");
 
+        if (flowStep== ErpWorkFlow.STEP_CHENGPIN) {
 
-        if (flowStep == ErpWorkFlow.STEP_CHENGPIN) {
+            syncOnErpWorkFlowReport(workFlowReport);
+
+            return wrapMessageData("同步完成");
+
+
+        }
+
+
+        return wrapError("当前流程不支持同步");
+
+
+    }
+
+    @Transactional
+    public  void syncOnErpWorkFlowReport(ErpWorkFlowReport workFlowReport)
+    {
+
 
 
             //同步自制入库 组装-成品
@@ -2266,15 +2285,18 @@ public class ErpWorkService extends AbstractErpService {
 
             //同步仓库出库
             updateReportOnStockOut(workFlowReport);
+    }
 
 
-            return wrapMessageData("同步完成");
+    @Transactional
+    public void syncAllUncompletedErpStockData()
+    {
 
-
+        List<ErpWorkFlowReport> reports=erpWorkFlowReportRepository.findAllByOrderStateEqualsAndFlowStepEquals(ErpWorkFlow.STATE_WORKING,ErpWorkFlow.STEP_CHENGPIN);
+        for(ErpWorkFlowReport erpWorkFlowReport:reports)
+        {
+            syncOnErpWorkFlowReport(erpWorkFlowReport);
         }
-
-
-        return wrapError("当前流程不支持同步");
 
 
     }
@@ -2381,11 +2403,55 @@ public class ErpWorkService extends AbstractErpService {
 
     public RemoteData<ErpWorkFlowReport> listMonitorReport(User user,String key, int pageIndex, int pageSize) {
 
-
         String sqlKey = StringUtils.sqlLike(key);
         Pageable pageable = constructPageSpecification(pageIndex, pageSize);
-        Page<ErpWorkFlowReport> page = erpWorkFlowReportRepository.findMonitoredWorkFlowReports(sqlKey , ErpWorkFlowReport.STATE_MONITOR,pageable);
-        return wrapData(pageable, page);
+
+        if(user.isAdmin()|| user.position == CompanyPosition.FACTORY_DIRECTOR_CODE)
+        {
+
+            Page<ErpWorkFlowReport> page = erpWorkFlowReportRepository.findAllMonitoredWorkFlowReports(sqlKey, ErpWorkFlowReport.STATE_MONITOR, pageable);
+            return wrapData(pageable, page);
+
+        }else
+        {
+            List<User> users=new ArrayList<>();
+            Page<ErpWorkFlowReport> page = erpWorkFlowReportRepository.findMonitoredWorkFlowReports(sqlKey, ErpWorkFlowReport.STATE_MONITOR,user.id
+                    ,pageable);
+            return wrapData(pageable,page);
+
+        }
+
+
+
+
+    }
+
+
+    /**
+     * 将流程message 未处理， 但是当前生产状态已经完成的自动结束处理
+     */
+    public  void  fixWorkFlowMessageBug()
+    {
+        User loginUser = userRepository.findFirstByNameEquals(User.ADMIN);
+//        List<OrderItemWorkState> orderitemStates = orderItemWorkStateRepository.findByWorkFlowStateEquals(ErpWorkFlow.STATE_COMPLETE);
+//            for (OrderItemWorkState orderItemWorkState:orderitemStates)
+//            {
+
+
+            List<WorkFlowMessage> workFlowMessages=workFlowMessageRepository.findByOrderFlowStateEqualsAndReceiverIdEquals(0,ErpWorkFlow.STATE_COMPLETE);
+            for (WorkFlowMessage message:workFlowMessages)
+            {
+
+                markMessageComplete(loginUser,message);
+                message.memo="遗留漏单，系统补全";
+            }
+            workFlowMessageRepository.save(workFlowMessages);
+            workFlowMessageRepository.flush();
+
+
+//        }
+
+
 
 
     }

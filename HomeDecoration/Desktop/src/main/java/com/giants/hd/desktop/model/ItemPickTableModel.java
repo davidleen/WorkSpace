@@ -154,12 +154,25 @@ public     class ItemPickTableModel<T> extends AbstractTableModel implements Cel
 
     public void selectAll() {
 
+        setAllState(true);
+    }
+
+    public void clearAll() {
+
+        setAllState(false);
+
+    }
+
+
+    private void setAllState(boolean selected)
+    {
 
         if(selectedState==null) return ;
         for (int i = 0; i < selectedState.length; i++) {
-            selectedState[i]=true;
+            selectedState[i]=selected;
         }
 
         fireTableDataChanged();
+
     }
 }

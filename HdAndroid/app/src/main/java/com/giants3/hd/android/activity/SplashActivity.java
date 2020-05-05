@@ -5,8 +5,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 
+import com.giants3.android.frame.util.Installation;
+import com.giants3.android.frame.util.StorageUtils;
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.helper.SharedPreferencesHelper;
 import com.giants3.android.frame.util.ToastHelper;
@@ -38,6 +41,10 @@ public class SplashActivity extends BaseActivity {
     @NeedsPermission( {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE})
     protected  void requestSD()
     {
+
+        String uuid = Installation.id(this, StorageUtils.getRootPath());
+        HttpUrl.uuid=uuid;
+        HttpUrl.android_id=Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         SplashActivityPermissionsDispatcher.requestCameraWithPermissionCheck(this);
     }

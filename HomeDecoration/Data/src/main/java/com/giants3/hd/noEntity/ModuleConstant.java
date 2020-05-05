@@ -166,7 +166,8 @@ public class ModuleConstant {
     public static final String NAME_UNHANDLE_MESSAGE_REPORT = "UNHANDLE_MESSAGE_REPORT";
 
 
-
+    public static final String NAME_APP_PRODUCE_MANAGER = "HD_APP_PRODUCE_MANAGER";
+    public static final String TITLE_APP_PRODUCE_MANAGER = "APP生产管理";
 
     public static String[] TITLES = new String[]{TITLE_MATERIAL, TITLE_PRODUCT, TITLE_PRODUCT_PICTURE, TITLE_MATERIAL_PICTURE,
             TITLE_PRODUCT_REPORT,
@@ -202,6 +203,7 @@ public class ModuleConstant {
             ,TITLE_UNHANDLE_MESSAGE_REPORT
             ,TITLE_APP_QUOTATION_SYNC
             ,TITLE_APP_QUOTATION_REPORT
+            ,TITLE_APP_PRODUCE_MANAGER
 
 
 
@@ -247,6 +249,7 @@ public class ModuleConstant {
             ,NAME_UNHANDLE_MESSAGE_REPORT
             ,NAME_APP_QUOTATION_SYNC
             ,NAME_APP_QUOTATION_REPORT
+            ,NAME_APP_PRODUCE_MANAGER
 
 
 

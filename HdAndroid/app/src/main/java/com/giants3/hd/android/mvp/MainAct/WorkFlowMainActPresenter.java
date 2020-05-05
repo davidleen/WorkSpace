@@ -2,6 +2,7 @@ package com.giants3.hd.android.mvp.MainAct;
 
 import android.app.Activity;
 import android.content.res.Resources;
+import android.os.Build;
 
 import com.giants3.hd.android.BuildConfig;
 import com.giants3.hd.android.R;
@@ -15,6 +16,7 @@ import com.giants3.hd.data.interractor.UseCaseFactory;
 import com.giants3.hd.entity.app.AUser;
 import com.giants3.hd.noEntity.FileInfo;
 import com.giants3.hd.noEntity.MessageInfo;
+import com.giants3.hd.noEntity.ModuleConstant;
 import com.giants3.hd.noEntity.RemoteData;
 
 import java.util.ArrayList;
@@ -156,8 +158,12 @@ public class WorkFlowMainActPresenter extends BasePresenter<WorkFlowMainActMvp.V
 
         List<WorkFLowMainMenuAdapter.MenuItem> menuItems = new ArrayList<>();
 
+        boolean viewAll=AuthorityUtil.getInstance().isAdmin()
+                //|| BuildConfig.DEBUG
+                ;
+        boolean viewAppQuotation=AuthorityUtil.getInstance().isViewable(ModuleConstant.NAME_APP_QUOTATION);
         Resources resources = getView().getContext().getResources();
-        if (loginUser.isSalesman || BuildConfig.DEBUG) {
+        if (viewAppQuotation||loginUser.isSalesman || viewAll) {
 
             String[] menuTitles = resources.getStringArray(R.array.quotation_menu_title);
             String[] menuFragmentClass = resources.getStringArray(R.array.quotation_menu_fragemnt_class);
@@ -182,7 +188,7 @@ public class WorkFlowMainActPresenter extends BasePresenter<WorkFlowMainActMvp.V
         {
             t.printStackTrace();
         }
-        if (canSeeQuotation ) {
+        if (canSeeQuotation||viewAll ) {
 
             String[] menuTitles = resources.getStringArray(R.array.quotation_inner_menu_title);
             String[] menuFragmentClass = resources.getStringArray(R.array.quotation_inner_menu_fragemnt_class);
@@ -196,8 +202,8 @@ public class WorkFlowMainActPresenter extends BasePresenter<WorkFlowMainActMvp.V
 
         }
 
-
-        {
+        boolean canViewProduceManager=AuthorityUtil.getInstance().isViewable(ModuleConstant.NAME_APP_PRODUCE_MANAGER);
+        if(canViewProduceManager||viewAll){
             String[] menuTitles = resources.getStringArray(R.array.menu_title);
             String[] menuFragmentClass = resources.getStringArray(R.array.menu_fragemnt_class);
 
@@ -210,9 +216,27 @@ public class WorkFlowMainActPresenter extends BasePresenter<WorkFlowMainActMvp.V
             }
         }
 
-        {
+        boolean canViewProduct=AuthorityUtil.getInstance().isViewable(ModuleConstant.NAME_PRODUCT);
+
+        if(canViewProduct||viewAll)  {
             String[] menuTitles = resources.getStringArray(R.array.product_menu_title);
             String[] menuFragmentClass = resources.getStringArray(R.array.product_menu_fragemnt_class);
+
+            for (int i = 0; i < menuTitles.length; i++) {
+                WorkFLowMainMenuAdapter.MenuItem item = new WorkFLowMainMenuAdapter.MenuItem();
+                item.title = menuTitles[i];
+                item.fragmentClass = menuFragmentClass[i];
+                menuItems.add(item);
+
+            }
+        }
+
+
+        boolean canViewMaterial=AuthorityUtil.getInstance().isViewable(ModuleConstant.NAME_MATERIAL);
+
+        if(canViewMaterial||viewAll)  {
+            String[] menuTitles = resources.getStringArray(R.array.material_menu_title);
+            String[] menuFragmentClass = resources.getStringArray(R.array.material_menu_fragemnt_class);
 
             for (int i = 0; i < menuTitles.length; i++) {
                 WorkFLowMainMenuAdapter.MenuItem item = new WorkFLowMainMenuAdapter.MenuItem();

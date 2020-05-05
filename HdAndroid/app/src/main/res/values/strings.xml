@@ -82,6 +82,12 @@
 
     <string-array name="product_menu_title">
         <item>@string/product_list</item>
+
+    </string-array>
+
+
+    <string-array name="material_menu_title">
+
         <item>@string/material_list</item>
 
     </string-array>
@@ -102,6 +108,9 @@
 
     <string-array name="product_menu_fragemnt_class">
         <item>com.giants3.hd.android.fragment.ProductListFragment</item>
+
+    </string-array>
+    <string-array name="material_menu_fragemnt_class">
         <item>com.giants3.hd.android.fragment.MaterialListFragment</item>
 
     </string-array>

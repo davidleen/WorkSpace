@@ -2,7 +2,6 @@ package com.giants3.hd.domain.api;
 
 import com.ning.http.client.*;
 import com.ning.http.client.multipart.FilePart;
-import org.jboss.netty.handler.codec.http.HttpResponse;
 
 import javax.activation.MimetypesFileTypeMap;
 import java.io.File;

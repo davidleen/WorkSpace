@@ -23,14 +23,39 @@ public class ItemPickDialog<S> extends BaseDialog<List<S>> {
     private JHdTable jt;
     private JButton confirm;
     private JButton select;
+    private JButton clear;
     private final List<S> items;
 
-    public ItemPickDialog(Window window, String title, final List<S> items, AbsTableModel<S> tableModel) {
+
+    public ItemPickDialog(Window window, String title, final List<S> items, AbsTableModel<S> tableModel){
+
+        this(window,title,items,null,tableModel);
+
+    }
+
+    public ItemPickDialog(Window window, String title, final List<S> items,final List<S> preSelectItems, AbsTableModel<S> tableModel) {
         super(window, title);
         setContentPane(root);
         this.items = items;
         tableModel.setDatas(items);
         final ItemPickTableModel<S> dataModel = new ItemPickTableModel<>(tableModel);
+
+        if (preSelectItems!=null) {
+
+
+            for(S item:preSelectItems)
+            {
+                int index=items.indexOf(item);
+                if(index>-1)
+                {
+                    dataModel.updateSelected(index);
+                }
+            }
+
+
+
+        }
+
         jt.setModel(dataModel);
 
         jt.addMouseListener(new MouseAdapter() {
@@ -65,7 +90,7 @@ public class ItemPickDialog<S> extends BaseDialog<List<S>> {
                 for (int i = 0; i < length; i++) {
 
                     if(selectState[i])
-                    selectItems.add(items.get(i));
+                         selectItems.add(items.get(i));
                 }
                 setResult(selectItems);
 
@@ -81,6 +106,15 @@ public class ItemPickDialog<S> extends BaseDialog<List<S>> {
             public void actionPerformed(ActionEvent e) {
 
                 dataModel.selectAll();
+
+            }
+        });
+
+        clear.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                dataModel.clearAll();
 
             }
         });

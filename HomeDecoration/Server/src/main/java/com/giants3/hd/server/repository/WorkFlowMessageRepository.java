@@ -28,6 +28,7 @@ public interface WorkFlowMessageRepository extends JpaRepository<WorkFlowMessage
     List<WorkFlowMessage> findByFromFlowStepInOrderByCreateTimeDesc(int[] flowSteps);
 
     List<WorkFlowMessage> findByOrderNameEqualsAndItmEqualsOrderByCreateTimeDesc(String osNo, int itm);
+    List<WorkFlowMessage> findByOrderNameEqualsAndItmEqualsAndReceiverIdEqualsOrderByCreateTimeDesc(String osNo, int itm,long receiverId);
 
     List<WorkFlowMessage> findByToFlowStepEqualsAndOrderNameEqualsAndProductNameEqualsAndPVersionEqualsOrderByCreateTimeDesc(int flowStep, String os_no, String prd_no, String pVersion);
 
@@ -94,7 +95,7 @@ public interface WorkFlowMessageRepository extends JpaRepository<WorkFlowMessage
 
     @Query(value= " select  a.* from ( select * from  t_workflowmessage   where  state in :states and toFlowStep in :workflowSteps    and receiverId =0 and ( orderName like :key or productName like :key )  ) as a  \n" +
             " \n" +
-            "left outer  join (select   UserId, mu,tie ,ProduceType,WorkFlowStep from T_WorkflowWorker where userId= :userId) e on  e.ProduceType=a.produceType and e.WorkFlowStep=a.toFlowStep \n" +
+            "inner     join (select   UserId, mu,tie ,ProduceType,WorkFlowStep ,jghnames from T_WorkflowWorker where userId= :userId) e on  e.ProduceType=a.produceType and e.WorkFlowStep=a.toFlowStep and ( e.jghnames is null or e.jghnames='' or   CHARINDEX(a.factoryName,e.jghnames)>0) \n" +
             "\n" +
             "where    ToFlowStep not in (2000,3000) \n" +
             "  or (    not (((a.mrpType='T' or (a.mrpType<>'M' and a.mrpType<>'T' and a.prdType='TJ')) and e.tie=0) or ((a.mrpType='M' or   (a.mrpType<>'M' and a.mrpType<>'T' and a.prdType='MJ')) and e.mu=0)  ) )   order by orderName desc ,itm   " ,nativeQuery = true
@@ -127,4 +128,11 @@ public interface WorkFlowMessageRepository extends JpaRepository<WorkFlowMessage
     int  updateItmByOsNoAndPrdNo(@Param("os_no") String osNo, @Param("prd_no") String prdNo, @Param("pVersion") String pVersion, @Param("itm") int itm);
 
     List<WorkFlowMessage> findBySenderIdEqualsAndStateEquals(long senderId, int state);
+
+
+
+    @Query(value= "  select  a.* from ( select * from  t_workflowmessage   where   receiverId =:userId ) as a   inner join  (select osNo,itm from T_OrderItemWorkState   where  WorkFlowState=:workFlowState )  as b on a.orderName=b.osNo and a.itm=b.itm  order by a.createTime desc " ,nativeQuery = true
+
+    )
+    List<WorkFlowMessage> findByOrderFlowStateEqualsAndReceiverIdEquals(@Param("userId") long userId,@Param("workFlowState") int workFlowState);
 }

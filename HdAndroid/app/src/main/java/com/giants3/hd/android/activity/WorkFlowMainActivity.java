@@ -86,7 +86,6 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
 
     //    List<String> menuTitleList = null;
 //    List<String> menuFragmentClassList;
-    List<WorkFLowMainMenuAdapter.MenuItem> menuItems = new ArrayList<>();
     WorkFLowMainMenuAdapter adapter;
 
     @Override
@@ -407,7 +406,7 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
 
 
         String destTitle = getResources().getString(R.string.work_need_finish);
-        for (WorkFLowMainMenuAdapter.MenuItem item : menuItems) {
+        for (WorkFLowMainMenuAdapter.MenuItem item : adapter.getDatas()) {
 
             if (destTitle.equals(item.title)) {
                 item.msgCount = count;

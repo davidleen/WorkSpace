@@ -32,7 +32,9 @@
         <activity android:name=".activity.WorkFlowMessageListActivity"
             android:theme="@style/AppTheme.NoActionBar"
             ></activity>
-        <activity android:name=".activity.LoginActivity" />
+        <activity android:name=".activity.LoginActivity"
+            android:launchMode="singleInstance"
+            />
         <activity
             android:name=".activity.ProductListActivity"
             android:theme="@style/AppTheme.NoActionBar"

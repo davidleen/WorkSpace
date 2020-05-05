@@ -15,7 +15,7 @@ import java.awt.*;
 import java.util.List;
 
 /**
- *  工序对话框
+ *  外厂对话框
  */
 public class OutFactoryDialog extends BaseDialog<WorkFlowProduct> implements OutFactoryIPresenter {
 

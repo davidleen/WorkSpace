@@ -136,6 +136,19 @@
         android:text="工期调整" />
 
 
+    <TextView
+        android:id="@+id/message_record"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:gravity="center"
+        android:padding="5dp"
+        android:textSize="16sp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_white_round_selector"
+        android:text="交接记录" />
+
+
 </LinearLayout>
 
 

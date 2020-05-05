@@ -59,4 +59,13 @@ public class WorkFlowWorker implements Serializable {
     public int produceType;
     public String produceTypeName;
 
+
+    /**
+     * 限定只处理部分加工户的订单.
+     */
+    public String jghnames;/**
+     * 限定只处理部分加工户的订单.
+     */
+    public String jghncodes;
+
 }

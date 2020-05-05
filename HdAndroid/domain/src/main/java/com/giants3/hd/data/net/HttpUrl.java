@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.provider.Settings;
 
 import com.giants3.hd.exception.HdException;
 import com.giants3.hd.utils.StringUtils;
@@ -71,10 +72,13 @@ public class HttpUrl {
     public static String BASE_URL = "";
     static final String API_LOGIN = "/api/authority/aLogin2";
     public static String token = "";
+    public static String uuid;
+    public static String android_id;
 
     private static Context mContext;
     private static String versionCode = "111";
     private static String versionName = "";
+
 
     public static void init(Context context) {
         mContext = context;
@@ -105,6 +109,8 @@ public class HttpUrl {
         }
 
         apiVersion=1;
+
+
 
     }
 
@@ -172,6 +178,8 @@ public class HttpUrl {
                 .append("client", CLIENT_TYPE)
                 .append("token", token)
                 .append("api", apiVersion)
+                .append("uuid",uuid)
+                .append("android_id",android_id)
                 .append("versionName", versionName);
 
 
@@ -716,4 +724,16 @@ public class HttpUrl {
                 .append("pageSize", pageSize);
         return additionInfo(formatter);
     }
+
+
+    public static String findErpOrderItem(String osNo, int itm ) {
+
+        String apiUrl = BASE_URL + "/api/erpWork/findErpOrderItem";
+        UrlFormatter formatter = new UrlFormatter(apiUrl)
+                .append("osNo", osNo)
+                .append("itm", itm);
+        return additionInfo(formatter);
+    }
+
+
 }

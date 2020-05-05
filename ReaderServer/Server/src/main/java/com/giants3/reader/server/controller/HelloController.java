@@ -91,7 +91,11 @@ public class HelloController {
 	@ResponseBody
 	@RequestMapping(value = "msg",method = RequestMethod.GET)
 	public String getIds(  @RequestParam(value = "platform",required = false,defaultValue = "") String platform,@RequestParam(value = "key",required = false,defaultValue = "") String keyWord) {
- 		RemoteData<AuthCodes> allAuthCodes = authService.getAuthCodesByKey(keyWord,platform);
+
+		try {
+			authService.logAuthCodeReadTime();
+		}catch (Throwable t){}
+		RemoteData<AuthCodes> allAuthCodes = authService.getAuthCodesByKey(keyWord,platform);
 
 		int size = allAuthCodes.datas.size();
 		String[] result=new String[size+1];

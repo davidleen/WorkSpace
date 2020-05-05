@@ -20,7 +20,7 @@
   {
     "columnName": "用户名",
     "fileName": "userName",
-    "width": 80,
+    "width": 150,
     "aClass": "S",
     "isCombineField": false
   }, {
@@ -68,6 +68,15 @@
     "fileName": "send",
     "width": 60,
     "aClass": "B",
+    "isCombineField": false
+  },
+
+
+  {
+    "columnName": "指定加工户",
+    "fileName": "jghnames",
+    "width": 120,
+    "aClass": "S",
     "isCombineField": false
   }
 ]

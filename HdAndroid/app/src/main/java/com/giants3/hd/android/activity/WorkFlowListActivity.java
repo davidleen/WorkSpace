@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import com.giants3.android.frame.util.StringUtil;
 import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.BuildConfig;
 import com.giants3.hd.android.R;
@@ -46,6 +47,8 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
 
     public static final int REQUEST_CODE = 33;
     public static final String KEY_ORDER_ITEM = "KEY_ORDER_ITEM";
+    public static final String KEY_ORDER_NAME= "KEY_ORDER_NAME";
+    public static final String KEY_ITEM= "KEY_ITEM";
 
 
 
@@ -115,14 +118,37 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
             orderItem = GsonUtils.fromJson(getIntent().getStringExtra(KEY_ORDER_ITEM), ErpOrderItem.class);
         } catch (Throwable e) {
             e.printStackTrace();
-
-            showMessage("未发现传递的订单数据");
-            finish();
-            return;
         }
 
 
-        getPresenter().setSelectOrderItem(orderItem);
+
+
+
+        if(orderItem!=null)
+        {
+
+            getPresenter().setSelectOrderItem(orderItem);
+        }else
+        {
+
+            String osNo=getIntent().getStringExtra(KEY_ORDER_NAME);
+            int itm=getIntent().getIntExtra(KEY_ITEM,0);
+            if(!StringUtil.isEmpty(osNo))
+            {
+                getPresenter().loadOrderItem(osNo,itm);
+
+            }else
+            {
+                showMessage("未发现传递的订单数据");
+                finish();
+                return;
+            }
+        }
+
+
+
+
+
 
 
 
@@ -295,6 +321,24 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
             }
         });
 
+
+
+
+        View message_record = inflate.findViewById(R.id.message_record);
+        message_record.setVisibility(View.VISIBLE);
+
+        message_record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                getPresenter().showMessageRecord(workFlowReport);
+            }
+        });
+
+
+
+
         View adjust_limit = inflate.findViewById(R.id.adjust_limit);
         adjust_limit.setVisibility( (AuthorityUtil.getInstance().isAdmin()  || BuildConfig.DEBUG||SharedPreferencesHelper.getLoginUser().position != CompanyPosition.FACTORY_DIRECTOR_CODE) ? View.VISIBLE : View.GONE);
         adjust_limit.setOnClickListener(new View.OnClickListener() {
@@ -431,6 +475,21 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
         {
             ToastHelper.show("没有发现可以确认的流程");
         }
+    }
+
+    @Override
+    public void showWorkFlowMessage(ErpWorkFlowReport workFlowReport, List<WorkFlowMessage> datas) {
+
+        if(datas==null||datas.size()==0)
+        {
+            showMessage("无交接记录可以查看");
+            return;
+        }
+        Intent intent = new Intent(this, WorkFlowMessageListActivity.class);
+        intent.putExtra(WorkFlowMessageListActivity.KEY_MESSAGE_LIST,GsonUtils.toJson(datas));
+        intent.putExtra(WorkFlowMessageListActivity.KEY_TITLE,"[订单："+workFlowReport.osNo+",货款："+workFlowReport.prdNo+",流程："+workFlowReport.workFlowCode+","+workFlowReport.workFlowName+"]的交接列表");
+        startActivityForResult(intent, REQUEST_CODE);
+
     }
 
     @Override

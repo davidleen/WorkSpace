@@ -5,9 +5,7 @@ import com.giants3.hd.android.mvp.MonitorWorkFlowReportMVP;
 import com.giants3.hd.android.mvp.RemoteDataSubscriber;
 import com.giants3.hd.data.interractor.UseCaseFactory;
 import com.giants3.hd.data.net.HttpUrl;
-import com.giants3.hd.entity.ErpOrder;
 import com.giants3.hd.entity.ErpWorkFlowReport;
-import com.giants3.hd.entity.WorkFlowReportItem;
 import com.giants3.hd.noEntity.RemoteData;
 
 /**
@@ -22,6 +20,7 @@ public class PresenterImpl extends BasePresenter<MonitorWorkFlowReportMVP.Viewer
 
     @Override
     public void start() {
+        loadData();
 
     }
 
@@ -54,13 +53,16 @@ public class PresenterImpl extends BasePresenter<MonitorWorkFlowReportMVP.Viewer
             protected void handleRemoteData(RemoteData<ErpWorkFlowReport> data) {
 
 
+                                    if (remoteData == null) remoteData = data;
+                                    else {
 
-                if(remoteData==null) remoteData=data;
-                else {
-                    remoteData.datas.addAll(data.datas);
-                    remoteData.pageIndex=data.pageIndex;
-                    remoteData.pageSize=data.pageSize;
-                }
+                                        if (data.pageIndex == 0) {
+                                            remoteData.datas.clear();
+                                        }
+                                        remoteData.datas.addAll(data.datas);
+                                        remoteData.pageIndex = data.pageIndex;
+                                        remoteData.pageSize = data.pageSize;
+                                    }
 
                 getView().bindData(remoteData);
 

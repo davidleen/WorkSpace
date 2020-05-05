@@ -2,11 +2,15 @@ package com.giants.hd.desktop.dialogs;
 
 import com.giants.hd.desktop.local.HdSwingWorker;
 import com.giants.hd.desktop.local.LocalFileHelper;
+import com.giants.hd.desktop.mvp.DialogViewer;
+import com.giants.hd.desktop.mvp.RemoteDataSubscriber;
 import com.giants.hd.desktop.utils.Config;
 import com.giants3.hd.domain.api.ApiManager;
 import com.giants3.hd.domain.api.HttpUrl;
 import com.giants3.hd.domain.interractor.UseCaseFactory;
 import com.giants3.hd.noEntity.RemoteData;
+import com.giants3.hd.utils.DigestUtils;
+import com.giants3.hd.utils.GsonUtils;
 import com.giants3.hd.utils.StringUtils;
 import com.giants3.hd.entity.User;
 import com.google.inject.Inject;
@@ -75,38 +79,18 @@ public class LoginDialog extends BaseDialog<User> {
 
     private void loadUsers() {
 
-        UseCaseFactory.getInstance().createGetUserListUseCase().execute(new Subscriber<java.util.List<User>>() {
-            @Override
-            public void onCompleted() {
-
-
-                if(Config.DEBUG)
-                {
-
-                    tf_password.setText("xin2975.");
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            login();
-                        }
-                    });
-
-                }
-
-
-
-            }
+        UseCaseFactory.getInstance().createGetUseCase(HttpUrl.loadUsers(),User.class).execute(new RemoteDataSubscriber<User>(new DialogViewer(this)) {
 
             @Override
             public void onError(Throwable e) {
                 JOptionPane.showMessageDialog(LoginDialog.this, e.getMessage());
             }
 
-
             @Override
-            public void onNext(List<User> users) {
+            protected void handleRemoteData(RemoteData<User> data) {
+
                 cb_user.removeAllItems();
-                for (User user : users)
+                for (User user : data.datas)
                     cb_user.addItem(user);
 
 
@@ -146,7 +130,25 @@ public class LoginDialog extends BaseDialog<User> {
 
                     }
                 });
+                if(Config.DEBUG)
+                {
+
+                    tf_password.setText("xin2975.");
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            login();
+                        }
+                    });
+
+                }
+
+
             }
+
+
+
+
 
         });
 
@@ -158,47 +160,78 @@ public class LoginDialog extends BaseDialog<User> {
 
         final String userName = ((User) (cb_user.getSelectedItem())).name;
         final String password = tf_password.getText().toString();
+        User user = new User();
+        user.name = userName;
+        user.password = DigestUtils.md5(password);
 
-        new HdSwingWorker<User, Object>(this) {
+        UseCaseFactory.getInstance().createPostUseCase(HttpUrl.login(),user,User.class).execute(new RemoteDataSubscriber<User>(new DialogViewer(this)) {
             @Override
-            protected RemoteData<User> doInBackground() throws Exception {
-                return apiManager.login(userName, password);
-            }
+            protected void handleRemoteData(RemoteData<User> data) {
 
-            @Override
-            public void onResult(RemoteData<User> data) {
+                //登录成功
 
-                if (data.isSuccess()) {
+                HttpUrl.setToken(data.token);
 
+                if (data.newVersionCode > 0 && !StringUtils.isEmpty(data.newVersionName)) {
 
-                    //登录成功
-
-                    HttpUrl.setToken(data.token);
-
-                    if (data.newVersionCode > 0 && !StringUtils.isEmpty(data.newVersionName)) {
-
-                        JOptionPane.showMessageDialog(LoginDialog.this, "有最新版本客户端，请及时更新。。。");
-                    }
-
-
-                    User user = data.datas.get(0);
-                    setResult(user);
-
-
-                    LocalFileHelper.set(user);
-
-
-                    dispose();
-
-
-                } else {
-
-                    JOptionPane.showMessageDialog(LoginDialog.this, data.message);
+                    JOptionPane.showMessageDialog(LoginDialog.this, "有最新版本客户端，请及时更新。。。");
                 }
 
 
+                User user = data.datas.get(0);
+                setResult(user);
+
+
+                LocalFileHelper.set(user);
+
+
+                dispose();
+
             }
-        }.go();
+
+
+        });
+
+//        new HdSwingWorker<User, Object>(this) {
+//            @Override
+//            protected RemoteData<User> doInBackground() throws Exception {
+//                return apiManager.login(userName, password);
+//            }
+//
+//            @Override
+//            public void onResult(RemoteData<User> data) {
+//
+//                if (data.isSuccess()) {
+//
+//
+//                    //登录成功
+//
+//                    HttpUrl.setToken(data.token);
+//
+//                    if (data.newVersionCode > 0 && !StringUtils.isEmpty(data.newVersionName)) {
+//
+//                        JOptionPane.showMessageDialog(LoginDialog.this, "有最新版本客户端，请及时更新。。。");
+//                    }
+//
+//
+//                    User user = data.datas.get(0);
+//                    setResult(user);
+//
+//
+//                    LocalFileHelper.set(user);
+//
+//
+//                    dispose();
+//
+//
+//                } else {
+//
+//                    JOptionPane.showMessageDialog(LoginDialog.this, data.message);
+//                }
+//
+//
+//            }
+//        }.go();
     }
 
 }
