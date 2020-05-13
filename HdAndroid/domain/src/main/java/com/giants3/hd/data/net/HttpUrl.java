@@ -715,12 +715,13 @@ public class HttpUrl {
 
     }
 
-    public static String getMonitorWorkFlowReports(String key, int pageIndex, int pageSize) {
+    public static String getMonitorWorkFlowReports(String key, int completeState,int pageIndex, int pageSize) {
 
         String apiUrl = BASE_URL + "/api/erpWork/searchMonitorList";
         UrlFormatter formatter = new UrlFormatter(apiUrl)
                 .append("key", key)
                 .append("pageIndex", pageIndex)
+                .append("completeState", completeState)
                 .append("pageSize", pageSize);
         return additionInfo(formatter);
     }

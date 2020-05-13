@@ -5,6 +5,7 @@ import com.giants3.hd.android.mvp.NewModel;
 import com.giants3.hd.android.mvp.NewPresenter;
 import com.giants3.hd.android.mvp.NewViewer;
 import com.giants3.hd.entity.app.AUser;
+import com.giants3.hd.noEntity.MessageInfo;
 import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.noEntity.FileInfo;
 
@@ -56,7 +57,7 @@ public interface WorkFlowMainActMvp {
 
         void bindUser(AUser loginUser);
 
-        void setNewWorkFlowMessageCount(int count);
+        void updateMessageCounts(RemoteData<MessageInfo> msgInfo);
 
         void showApkUpdate(FileInfo fileInfo);
 

@@ -15,7 +15,36 @@
         android:hint="请输入订单号，货号查询"
         android:textSize="16sp" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+        <TextView
+            android:id="@+id/working"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_tab_selector"
+            android:gravity="center"
+            android:text="在产监控流程"
+            android:layout_height="40dp" />
+
+        <TextView
+            android:id="@+id/completed"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_tab_selector"
+            android:gravity="center"
+            android:text="历史监控流程" />
+        <TextView
+            android:id="@+id/all"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_tab_selector"
+            android:gravity="center"
+            android:text="全部记录" />
+    </LinearLayout>
     <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
         android:id="@+id/swipeLayout"
         android:layout_width="match_parent"

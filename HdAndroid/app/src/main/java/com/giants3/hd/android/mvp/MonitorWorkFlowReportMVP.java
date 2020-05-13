@@ -26,11 +26,16 @@ public interface MonitorWorkFlowReportMVP {
         void loadMore();
 
         void onKeyChange(String key);
+
+        void init(int categoryIndex);
     }
 
     interface Viewer extends NewViewer {
 
 
         void bindData(RemoteData<ErpWorkFlowReport> data);
+
+        void selectCategory(int categoryIndex);
+
     }
 }

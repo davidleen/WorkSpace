@@ -10,4 +10,11 @@ public class MessageInfo {
      * 新的待处理流程事件数量
      */
     public int newWorkFlowMessageCount;
+
+
+
+    /**
+     * 未完成的流程监控数量
+     */
+    public int unCompletedMonitoredWorkFlowCount;
 }

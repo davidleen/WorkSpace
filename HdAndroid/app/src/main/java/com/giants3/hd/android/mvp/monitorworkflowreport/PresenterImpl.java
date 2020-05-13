@@ -17,6 +17,7 @@ public class PresenterImpl extends BasePresenter<MonitorWorkFlowReportMVP.Viewer
     private String key="";
     int defaultPageSize=30;
     private RemoteData<ErpWorkFlowReport> remoteData;
+    private int categoryIndex;
 
     @Override
     public void start() {
@@ -48,7 +49,11 @@ public class PresenterImpl extends BasePresenter<MonitorWorkFlowReportMVP.Viewer
     }
 
     private void loadData(int pageIndex, int pageSize) {
-        UseCaseFactory.getInstance().createGetUseCase(HttpUrl.getMonitorWorkFlowReports(key, pageIndex, pageSize), ErpWorkFlowReport.class).execute(new RemoteDataSubscriber<ErpWorkFlowReport>(this) {
+
+
+        getView().selectCategory(categoryIndex);
+        int completeState=categoryIndex==0?0:categoryIndex==1?1:-1;
+        UseCaseFactory.getInstance().createGetUseCase(HttpUrl.getMonitorWorkFlowReports(key, completeState,pageIndex, pageSize), ErpWorkFlowReport.class).execute(new RemoteDataSubscriber<ErpWorkFlowReport>(this) {
             @Override
             protected void handleRemoteData(RemoteData<ErpWorkFlowReport> data) {
 
@@ -78,5 +83,12 @@ public class PresenterImpl extends BasePresenter<MonitorWorkFlowReportMVP.Viewer
     public void onKeyChange(String key) {
 
         this.key = key;
+    }
+
+    @Override
+    public void init(int categoryIndex) {
+
+
+        this.categoryIndex = categoryIndex;
     }
 }

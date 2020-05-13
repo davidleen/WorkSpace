@@ -34,9 +34,10 @@ public abstract class BaseMvpFragment<P extends NewPresenter> extends Fragment i
         super.onViewCreated(view, savedInstanceState);
 
         ButterKnife.bind(this, view);
+        presenter = createPresenter();
         initView();
 
-        presenter = createPresenter();
+
         presenter.attachView(this);
 
 

@@ -2387,7 +2387,7 @@ public class ErpWorkService extends AbstractErpService {
             report.monitorTime = Calendar.getInstance().getTimeInMillis();
             report.monitorTimeString = DateFormats.FORMAT_YYYY_MM_DD_HH_MM.format(Calendar.getInstance().getTime());
         }
-        if (StringUtils.isEmpty(report.productUrl)) {
+        if (StringUtils.isEmpty(report.productUrl)||StringUtils.isEmpty(report.thumbnail)) {
 
 
             Product product = productRepository.findFirstByNameEqualsAndPVersionEquals(report.prdNo, report.pVersion);
@@ -2400,8 +2400,32 @@ public class ErpWorkService extends AbstractErpService {
 
         return wrapMessageData("生产计划已经调整");
     }
+    public RemoteData<ErpWorkFlowReport> listCompleteMonitorReport(User user,String key, int pageIndex, int pageSize)
+    {
 
-    public RemoteData<ErpWorkFlowReport> listMonitorReport(User user,String key, int pageIndex, int pageSize) {
+        return listMonitorReport(user,key,1,pageIndex,pageSize);
+
+    }
+
+
+    public RemoteData<ErpWorkFlowReport> listUnCompleteMonitorReport(User user,String key, int pageIndex, int pageSize)
+    {
+
+        return listMonitorReport(user,key,0,pageIndex,pageSize);
+
+    }
+
+    /**
+     *
+     *
+     * @param user
+     * @param key
+     * @param completeState    -1 所有 0 未完成 1 已完成
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
+    public RemoteData<ErpWorkFlowReport> listMonitorReport(User user,String key,int completeState, int pageIndex, int pageSize) {
 
         String sqlKey = StringUtils.sqlLike(key);
         Pageable pageable = constructPageSpecification(pageIndex, pageSize);
@@ -2409,13 +2433,13 @@ public class ErpWorkService extends AbstractErpService {
         if(user.isAdmin()|| user.position == CompanyPosition.FACTORY_DIRECTOR_CODE)
         {
 
-            Page<ErpWorkFlowReport> page = erpWorkFlowReportRepository.findAllMonitoredWorkFlowReports(sqlKey, ErpWorkFlowReport.STATE_MONITOR, pageable);
+            Page<ErpWorkFlowReport> page = erpWorkFlowReportRepository.findAllMonitoredWorkFlowReports(sqlKey, ErpWorkFlowReport.STATE_MONITOR,completeState, pageable);
             return wrapData(pageable, page);
 
         }else
         {
             List<User> users=new ArrayList<>();
-            Page<ErpWorkFlowReport> page = erpWorkFlowReportRepository.findMonitoredWorkFlowReports(sqlKey, ErpWorkFlowReport.STATE_MONITOR,user.id
+            Page<ErpWorkFlowReport> page = erpWorkFlowReportRepository.findMonitoredWorkFlowReports(sqlKey, ErpWorkFlowReport.STATE_MONITOR,user.id,completeState
                     ,pageable);
             return wrapData(pageable,page);
 
@@ -2455,4 +2479,14 @@ public class ErpWorkService extends AbstractErpService {
 
 
     }
+
+        public int getUnCompletedMonitoredWorkFlowCount(User user) {
+            RemoteData<ErpWorkFlowReport> erpWorkFlowReportRemoteData = listUnCompleteMonitorReport(user, "%%",0, 1);
+            if(erpWorkFlowReportRemoteData.isSuccess())
+            {
+                return erpWorkFlowReportRemoteData.totalCount;
+            }
+
+            return 0;
+        }
 }

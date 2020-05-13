@@ -5,10 +5,7 @@ import com.giants3.hd.exception.HdException;
 import com.giants3.hd.noEntity.BufferData;
 import com.giants3.hd.noEntity.MessageInfo;
 import com.giants3.hd.noEntity.RemoteData;
-import com.giants3.hd.server.service.BufferDataService;
-import com.giants3.hd.server.service.ErpService;
-import com.giants3.hd.server.service.GlobalDataService;
-import com.giants3.hd.server.service.UserService;
+import com.giants3.hd.server.service.*;
 import com.giants3.hd.server.utils.Constraints;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,6 +37,9 @@ public class UserController extends BaseController {
 
     @Autowired
     private ErpService erpService;
+
+    @Autowired
+    private ErpWorkService erpWorkService;
 
 
     @RequestMapping("/delete/{userId}")
@@ -174,6 +174,9 @@ public class UserController extends BaseController {
 
         MessageInfo messageInfo = new MessageInfo();
         messageInfo.newWorkFlowMessageCount = count;
+         messageInfo.unCompletedMonitoredWorkFlowCount=erpWorkService.getUnCompletedMonitoredWorkFlowCount(user);
+
+
         return wrapData(messageInfo);
 
     }

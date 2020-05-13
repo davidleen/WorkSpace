@@ -254,8 +254,8 @@ public class ItemListAdapter<T>
 
                     ImageView imageView = (ImageView) views[i];
                     imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+
                     String url = o == null ? "" : String.valueOf(o);
-                    ImageLoaderFactory.getInstance().displayImage(HttpUrl.completeUrl(url), imageView);
                     String viewPictureUrl = url;
                     if (!StringUtils.isEmpty(tableData.relateField.get(i))) {
                         Object relateValue = getData(tableData.relateField.get(i), item);
@@ -264,6 +264,14 @@ public class ItemListAdapter<T>
                         }
 
                     }
+
+                    if(StringUtils.isEmpty(url)&&!StringUtils.isEmpty(viewPictureUrl))
+                    {
+                        url=viewPictureUrl;
+                    }
+
+                    ImageLoaderFactory.getInstance().displayImage(HttpUrl.completeUrl(url), imageView);
+
                     imageView.setTag(viewPictureUrl);
                     imageView.setOnClickListener(imageViewClickListener);
 

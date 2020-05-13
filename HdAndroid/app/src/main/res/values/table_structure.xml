@@ -417,7 +417,7 @@
 
     <string-array name="table_monitor_work_flow_report" >
 
-        <item>图片||thumbnail||2||91</item>
+        <item>图片||thumbnail||2||91||productUrl</item>
         <item>订单||osNo||1||91</item>
         <item>货号||prdNo||1||91</item>
         <item>配方||pVersion||1||91</item>

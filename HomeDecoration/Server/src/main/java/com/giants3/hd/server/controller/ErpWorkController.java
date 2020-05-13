@@ -314,9 +314,9 @@ public class ErpWorkController extends BaseController {
 
 
     /**
-     * 更新流程的生产期限参数
+     * 查询受监控的生产流程列表
      *
-     * @param
+     * @param completeState  -1 所有 0 未完成 1 已完成
      * @return
      */
     @RequestMapping(value = "/searchMonitorList", method = {RequestMethod.GET})
@@ -324,11 +324,12 @@ public class ErpWorkController extends BaseController {
     @ResponseBody
     RemoteData<ErpWorkFlowReport> searchMonitorList(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam("key") String key
 
+            , @RequestParam(value = "completeState", defaultValue = "-1", required = false) int completeState
             , @RequestParam(value = "pageIndex", defaultValue = "0", required = false) int pageIndex
             , @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize
 
     ) {
-        return erpWorkService.listMonitorReport(user,key, pageIndex, pageSize);
+        return erpWorkService.listMonitorReport(user,key,completeState, pageIndex, pageSize);
 
     }
 

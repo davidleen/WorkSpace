@@ -36,12 +36,14 @@ public interface ErpWorkFlowReportRepository extends JpaRepository<ErpWorkFlowRe
     List<ErpWorkFlowReport> findByOsNoEqualsAndItmEqualsOrderByWorkFlowStepAsc(String os_no, int itm);
 
     List<ErpWorkFlowReport> findByPercentageLessThanAndStartDateGreaterThan(float percentage, long createTime);
-    @Query(value = "SELECT  P from T_ErpWorkFlowReport    P where    p.state=:state  and  ( p.osNo like :key or p.prdNo like :key or p.pVersion like :key)   " )
-    Page<ErpWorkFlowReport> findAllMonitoredWorkFlowReports( @Param("key") String key,@Param("state") int state, Pageable pageable);
+    @Query(value = "SELECT  P from T_ErpWorkFlowReport    P where    p.state=:state  and  ( p.osNo like :key or p.prdNo like :key or p.pVersion like :key)   and  ( -1=:completeState or 0=:completeState and  p.percentage<1 or 1=:completeState and p.percentage >=1 ) " )
+    Page<ErpWorkFlowReport> findAllMonitoredWorkFlowReports( @Param("key") String key,@Param("state") int state,@Param("completeState") int completeState, Pageable pageable);
 
 
-    @Query(value = "SELECT  P from T_ErpWorkFlowReport    P where    p.state=:state  and  ( p.osNo like :key or p.prdNo like :key or p.pVersion like :key)   and  p.workFlowStep in  (select distinct  workFlowStep from T_WorkFlowWorker where userId=:user_id )" )
-    Page<ErpWorkFlowReport> findMonitoredWorkFlowReports(@Param("key") String key, @Param("state") int state, @Param("user_id") long  userId, Pageable pageable);
+    @Query(value = "SELECT  P from T_ErpWorkFlowReport    P where    p.state=:state  and  ( p.osNo like :key or p.prdNo like :key or p.pVersion like :key)   and  ( -1=:completeState or 0=:completeState and  p.percentage<1 or 1=:completeState and p.percentage >=1 )  and  p.workFlowStep in  (select distinct  workFlowStep from T_WorkFlowWorker where userId=:user_id )" )
+    Page<ErpWorkFlowReport> findMonitoredWorkFlowReports(@Param("key") String key, @Param("state") int state, @Param("user_id") long  userId, @Param("completeState") int completeState,Pageable pageable);
+
+
     ErpWorkFlowReport findFirstByOsNoEqualsAndItmEqualsAndWorkFlowStepEquals(String osNo, int itm, int fromFlowStep);
 
     @Modifying

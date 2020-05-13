@@ -61,6 +61,7 @@ public class ImageLoaderFactory {
                     .memoryCacheSizePercentage(13) // default
 
 
+
                     // .diskCache(new UnlimitedDiscCache(cacheDir)) // default
                     .diskCacheFileNameGenerator(new Md5FileNameGenerator())
                     .imageDownloader(new BaseImageDownloader(context){

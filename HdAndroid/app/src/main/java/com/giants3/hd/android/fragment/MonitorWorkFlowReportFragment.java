@@ -15,6 +15,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.activity.WorkFlowListActivity;
@@ -47,6 +48,28 @@ public class MonitorWorkFlowReportFragment extends BaseMvpFragment<MonitorWorkFl
     @Bind(R.id.search_text)
     EditText search_text;
 
+
+    @Bind(R.id.all)
+    TextView all;
+
+
+    @Bind(R.id.completed)
+    TextView completed;
+
+
+    @Bind(R.id.working)
+    TextView working;
+
+    View[] views;
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+
+    }
+
     @Override
     protected MonitorWorkFlowReportMVP.Presenter createPresenter() {
         return new PresenterImpl();
@@ -63,6 +86,7 @@ public class MonitorWorkFlowReportFragment extends BaseMvpFragment<MonitorWorkFl
     @Override
     protected void initView() {
 
+        getPresenter().init(0);
 //        swipeLayout.(new SwipeRefreshLayout.OnRefreshListener() {
 //            @Override
 //            public void onRefresh() {
@@ -70,6 +94,34 @@ public class MonitorWorkFlowReportFragment extends BaseMvpFragment<MonitorWorkFl
 //
 //            }
 //        });
+
+        views=new View[]{working,completed,all};
+        View.OnClickListener l = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                int index=0;
+                for (int i = 0; i < views.length; i++) {
+
+                    if(views[i]==v)
+                    {
+                        index=i;
+                        break;
+                    }
+                }
+
+                getPresenter().init(index);
+                getPresenter().loadData();
+
+            }
+        };
+        for (int i = 0; i < views.length; i++) {
+
+
+            views[i].setOnClickListener(l);
+        }
+
+
 
         adapter = new MonitorWorkFlowReportAdapter(getActivity());
         listView.setAdapter(adapter);
@@ -146,13 +198,13 @@ public class MonitorWorkFlowReportFragment extends BaseMvpFragment<MonitorWorkFl
         public void run() {
 
 
-            searchErpOrderItems();
+            searchData();
 
 
         }
     };
 
-    private void searchErpOrderItems() {
+    private void searchData() {
         getPresenter().loadData();
     }
 
@@ -168,6 +220,18 @@ public class MonitorWorkFlowReportFragment extends BaseMvpFragment<MonitorWorkFl
     }
 
     @Override
+    public void selectCategory(int categoryIndex) {
+
+        for (int i = 0; i < views.length; i++) {
+
+            views[i].setSelected(i==categoryIndex);
+        }
+
+
+
+    }
+
+    @Override
     public void bindData(RemoteData<ErpWorkFlowReport> data) {
 
         swipeLayout.setEnableLoadmore(data.hasNext());
@@ -180,7 +244,7 @@ public class MonitorWorkFlowReportFragment extends BaseMvpFragment<MonitorWorkFl
         if (resultCode != Activity.RESULT_OK) return;
         switch (requestCode) {
             case REQUEST_MESSAGE_OPERATE:
-                searchErpOrderItems();
+                searchData();
 
                 break;
         }

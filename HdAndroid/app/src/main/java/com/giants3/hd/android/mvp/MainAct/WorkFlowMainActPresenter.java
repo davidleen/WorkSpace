@@ -2,14 +2,11 @@ package com.giants3.hd.android.mvp.MainAct;
 
 import android.app.Activity;
 import android.content.res.Resources;
-import android.os.Build;
 
-import com.giants3.hd.android.BuildConfig;
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.activity.UpdatePasswordActivity;
 import com.giants3.hd.android.adapter.WorkFLowMainMenuAdapter;
 import com.giants3.hd.android.helper.AuthorityUtil;
-import com.giants3.hd.android.helper.SharedPreferencesHelper;
 import com.giants3.hd.android.mvp.BasePresenter;
 import com.giants3.hd.android.mvp.RemoteDataSubscriber;
 import com.giants3.hd.data.interractor.UseCaseFactory;
@@ -136,7 +133,7 @@ public class WorkFlowMainActPresenter extends BasePresenter<WorkFlowMainActMvp.V
                     count = data.datas.get(0).newWorkFlowMessageCount;
                 }
 
-                getView().setNewWorkFlowMessageCount(count);
+                getView().updateMessageCounts( data);
             }
 
 

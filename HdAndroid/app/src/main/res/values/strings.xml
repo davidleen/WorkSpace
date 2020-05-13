@@ -36,6 +36,7 @@
     <string name="work_flow_list">生产流程管理</string>
     <string name="schedule">我的流程</string>
     <string name="work_need_finish">待办事项</string>
+    <string name="monitor_work_flow">流程监控</string>
 
     <string name="title_activity_work_flow_message_receive">WorkFlowMessageReceiveActivity</string>
     <string name="action_update_password">修改密码</string>
@@ -48,7 +49,7 @@
         <item>在产订单</item>
 
         <item>已完成生产报表</item>
-        <item>生产计划</item>
+        <item>@string/monitor_work_flow</item>
         <item>我的流程消息</item>
         <item>未处理消息报表</item>
         <!-- <item>合同进度报表</item>-->

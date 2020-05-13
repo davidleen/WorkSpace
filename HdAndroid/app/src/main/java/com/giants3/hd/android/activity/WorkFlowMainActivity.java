@@ -35,6 +35,7 @@ import com.giants3.hd.data.net.HttpUrl;
 import com.giants3.hd.entity.app.AUser;
 import com.giants3.hd.noEntity.BufferData;
 import com.giants3.hd.noEntity.FileInfo;
+import com.giants3.hd.noEntity.MessageInfo;
 import com.giants3.hd.noEntity.RemoteData;
 
 import java.util.ArrayList;
@@ -402,15 +403,26 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
     }
 
     @Override
-    public void setNewWorkFlowMessageCount(int count) {
+    public void updateMessageCounts(RemoteData<MessageInfo> remoteData) {
+
+
+        MessageInfo messageInfo=remoteData.isSuccess()?remoteData.datas.get(0):null;
 
 
         String destTitle = getResources().getString(R.string.work_need_finish);
+        String monitor = getResources().getString(R.string.monitor_work_flow);
         for (WorkFLowMainMenuAdapter.MenuItem item : adapter.getDatas()) {
 
-            if (destTitle.equals(item.title)) {
-                item.msgCount = count;
-                break;
+            item.msgCount=0;
+
+            if(messageInfo!=null) {
+                if (  destTitle.equals(item.title)) {
+                    item.msgCount = messageInfo.newWorkFlowMessageCount;
+                }else
+                if (  monitor.equals(item.title)) {
+                    item.msgCount = messageInfo.unCompletedMonitoredWorkFlowCount;
+                }
+
             }
 
         }
