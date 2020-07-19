@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.annotation.Nullable;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -22,7 +22,6 @@ import com.giants3.hd.android.R;
 import com.giants3.hd.android.activity.WorkFlowListActivity;
 import com.giants3.hd.android.adapter.ErpOrderItemListAdapter;
 import com.giants3.hd.android.adapter.ItemListAdapter;
-import com.giants3.hd.android.entity.TableData;
 import com.giants3.hd.android.mvp.MyAvailableOrderItemMVP;
 import com.giants3.hd.android.mvp.myavailableorderitem.PresenterImpl;
 import com.giants3.hd.data.utils.GsonUtils;
@@ -175,11 +174,6 @@ public class MyAvailableOrderItemFragment extends BaseMvpFragment<MyAvailableOrd
 
     }
 
-    private LayoutInflater getLayoutInflater() {
-
-        return LayoutInflater.from( getActivity());
-
-    }
 
     private Runnable searchRunnable = new Runnable() {
         @Override

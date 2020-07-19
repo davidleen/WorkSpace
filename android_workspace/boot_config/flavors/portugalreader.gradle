@@ -1,0 +1,107 @@
+def boot_path="${rootDir}/Changdu/boot_config"
+apply from: "${boot_path}/ModuleConfig.gradle"
+apply from: "${boot_path}/modules.gradle"
+ext
+        {
+
+            portugalreader = [
+
+                    compile        : COMPILE_PRODUCT.PORTUGAL
+
+                    , modules      : []
+                    , dept         : []
+
+                    , flavor_config: [
+                    name                      : "portugal"
+                    , applicationId           : "com.changdu.portugalreader"
+                    , versionCode             : 120
+                    , versionName             : "1.0.0"
+                    , resConfigs              : "pt"
+                    , manifestPlaceholders    : [
+                                                   UMENG_APPKEY                   : "59b65c3907fe652873000026"
+                                                 , UMENG_MESSAGE_SECRET         : "d8acdd6d13d8b7829c0fd17034cd2770"
+                                                 , ADMOB_APP_ID                 : "ca-app-pub-1669209234634531~4794215152"
+                                                 , GOOGLE_TRACKER_ID            : "com_changdu_portugalreader"
+                                                 , FACEBOOK_APP_ID              : "201346844426224"
+                                                 , KOCHAVA_APP_GUID             : "koc1-pg-lera-f2fzq44g"
+                                                 , LINE_CHANNEL_ID              : "prefix_1653965249"
+
+                                                 , IFLYTEK_APPKEY_AD            : "5c99e374"
+                                                 //client id  plusappkey  是一样的
+                                                 , GOOGLE_SERVER_CLIENT_ID      : "312631303386-15rl9s0afhqvsgkjbp9mjq6j2t6utku0.apps.googleusercontent.com"
+                                                 , GOOGLE_PLUS_APP_KEY          : "312631303386-15rl9s0afhqvsgkjbp9mjq6j2t6utku0.apps.googleusercontent.com"
+                                                 //twitter id  secret
+                                                 , TWITTER_APP_ID               : "67ZpJsv9tn0Y0Bz0N051DzKKe"
+                                                 , TWITTER_APP_SECRET           : "OWYkPyQkKUOIqN3gI25VUrzUtmMoMfbHiukhPerHEAiYAwVsLH"
+                                                 //google充值 公钥
+                                                 , GOOGLE_BASE64ENCODEDPUBLICKEY: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1lQ0t1eVU69lQTkE/xM9TaL0XAkzdsoFt/prZ658J3ncEv8eF1LIU8JAYHiHkhTZpXjduLtCZe87A0wM5fARRxN7TQ2TepHlx63wSuiTlEzTkp/1/AKsosPsnyRYZ2kW7JyMp2dk3miEFOLdrcdSL5KYAY2GcQcknSEVchgBZqSRy17j4xQe/KBsQYEuRP0TySC7HlufKhPa/h/9d/azlZStRWbgUo9UwRrKYdqZXyQ21EsglxYjYJ42+zXJfRwf6n6x2cFvp+WvDvXDEjMNIFKofn9XM2bpceyTPu5Be7KxVwZE7gFe2qMkccIApHS7Ox1hWYIHE/VfH2I3o9xHNwIDAQAB"
+                                                 , BaiduMobAd_APP_ID            : "bd0ea319"
+                                                 , scheme                       : "ereader"
+                                                 //华为appid
+                                                 , HUAWEI_PAY_APP_ID            : "prefix_1653965249"
+                                                 //华为充值公共钥匙
+                                                 , HUAWEI_PAY_PUBLIC_KEY        : "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp5XVjbPAZtkARC6QhV5DldeBbcJf9F+fXHNo/3xDz9MNOWRWozRALGM5fCmpjp4bowbHmoZklroUVQSLnHqA7vBf8OFf70eovuvbChUawKEFamshqr8C6lKItJwqiB4PEzp/9gYTY3B97ipe9+Cbcft3DK+57tfCZw2MOTGSZTbpKwAxID0uX4YXxv9RZLXVndf451RzH5fEUZlVCrr+sM3va7sU7WVSo8HZusdBULiZ9OErTNIdH5r0M80cPDlKWufIUaM0Mg3xJWxugbrc7rOB7C4kt65RX/ykUFgKCE2ouDy3kV8sIZsQuweKy6nTbmw2mUN76viPYdG9wapQmQIDAQAB"
+                                                ]
+                    , matchingFallbacks       : ['abroad']
+                    , missingDimensionStrategy: [
+
+                                                        "pay"        : "abroad"
+                                                        , "share"    : "abroad"
+
+                                                ]
+                    , resValue   : [
+                                    "string": [
+                                            "facebook_app_id"  : "201346844426224"
+                                            ]
+
+                                    ]
+
+
+            ]
+                    , "source_set": [
+                                    "manifest.srcFile"    : 'products/PortugalReader/AndroidManifest.xml',
+                                     "java.srcDirs"        : ['products/PortugalReader/java', 'products/EBase/java'],
+                                     "resources.srcDirs"   : ['products/PortugalReader/java', 'products/EBase/java'],
+                                     "aidl.srcDirs"        : ['products/PortugalReader/java', 'products/EBase/java'],
+                                    "renderscript.srcDirs": ['products/PortugalReader/java', 'products/EBase/java'],
+                                    "res.srcDirs"         : ['products/PortugalReader/res', 'products/EBase/res'],
+                                    "assets.srcDirs"      : ['products/PortugalReader/assets', 'products/EBase/assets'],
+                                    "jniLibs.srcDirs"     : ['products/PortugalReader/libs', 'products/EBase/libs']
+            ]
+
+
+            ]
+
+
+            def modules = []
+ 
+
+            if (COMPILE_ANALYTICS) {
+                modules += Modules.Analytics.Kochava
+                modules += Modules.Analytics.Google
+                modules += Modules.Analytics.Facebook
+            }
+            if (COMPILE_ADVERTISE_MODULE) {
+                modules += [Modules.Advertise.FaceBook,
+                            Modules.Advertise.Admob
+                            , Modules.Advertise.Baidu]
+            }
+            if (COMPILE_CLOUD_MESSAGE) {
+                modules += [Modules.CloudMessage.FCM]
+            }
+
+            if (COMPILE_TTS) {
+//                modules += [
+//                        Modules.TTS.Xunfei,
+//                        Modules.TTS.Baidu
+//                ]
+            }
+
+
+            if (COMPILE_SHARE_AUTH) {
+                modules += Modules.Common.Share
+            }
+
+
+            portugalreader.modules = modules
+        }

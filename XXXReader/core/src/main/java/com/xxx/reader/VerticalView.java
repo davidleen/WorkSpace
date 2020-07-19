@@ -2,7 +2,7 @@ package com.xxx.reader;
 
 import android.content.Context;
 import android.database.DataSetObserver;
-import android.support.v4.view.NestedScrollingChild;
+import androidx.core.view.NestedScrollingChild;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;

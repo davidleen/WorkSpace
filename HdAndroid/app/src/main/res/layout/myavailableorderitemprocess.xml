@@ -16,7 +16,7 @@
 
         android:textSize="14sp" />
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeLayout"
         android:layout_width="match_parent"
 
@@ -38,7 +38,7 @@
             android:footerDividersEnabled="true"
             android:headerDividersEnabled="true" />
         </HorizontalScrollView>
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
 </LinearLayout>

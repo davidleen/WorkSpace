@@ -2,17 +2,15 @@ package com.giants3.hd.android.activity;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.appbar.AppBarLayout;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.fragment.OrderDetailFragment;
-import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.data.utils.GsonUtils;
 import com.giants3.hd.entity.ErpOrder;
-import com.giants3.hd.exception.HdException;
 
 import butterknife.Bind;
 

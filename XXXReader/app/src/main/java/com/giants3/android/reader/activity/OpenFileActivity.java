@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
+import androidx.viewbinding.ViewBinding;
+
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 import android.widget.Toast;
@@ -26,7 +28,7 @@ import java.net.URLDecoder;
  * Created by davidleen29 on 2018/12/24.
  */
 
-public class OpenFileActivity extends BaseActivity {
+public class OpenFileActivity extends BaseActivity  {
     public static final String RELATIVE_PATH_TEMPORARY = "temp/";
 
     @Override
@@ -159,5 +161,10 @@ public class OpenFileActivity extends BaseActivity {
                 }
                 break;
         }
+    }
+
+    @Override
+    protected ViewBinding createViewBinding() {
+        return null;
     }
 }

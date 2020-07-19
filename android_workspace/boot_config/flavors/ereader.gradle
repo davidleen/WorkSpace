@@ -1,0 +1,114 @@
+def boot_path="${rootDir}/Changdu/boot_config"
+apply from: "${boot_path}/ModuleConfig.gradle"
+apply from: "${boot_path}/modules.gradle"
+ext
+        {
+
+            def facebookid = "1534959866526432"
+            ereader=[
+
+                    compile:COMPILE_PRODUCT.EREADER
+
+                    ,modules:[]
+                    ,dept:[]
+                    , flavor_config: [
+                                        name: "ereader"
+                                        ,applicationId:'com.changdu.ereader'   //
+                                        ,versionCode :2000
+                                        ,versionName :"2.0.6"
+//                   //这里可以加入签名文件， 但我们的release包不需要签名。
+                                        //  signingConfig signingConfigs.changdu
+
+                                        //锁死语言配置
+                                        ,resConfigs:"en"
+                                        ,manifestPlaceholders : [
+                                                                  UMENG_APPKEY                   : "59b65c3907fe652873000026"
+                                                                , UMENG_MESSAGE_SECRET         : "d8acdd6d13d8b7829c0fd17034cd2770"
+                                                                , ADMOB_APP_ID                 : "ca-app-pub-1669209234634531~2722272049"
+                                                                , GOOGLE_TRACKER_ID            : "com_changdu_ereader"
+                                                                , FACEBOOK_APP_ID              : "${facebookid}"
+                                                                , KOCHAVA_APP_GUID             : "komoboreader-361"
+                                                                , LINE_CHANNEL_ID              : "prefix_1542818371"
+
+                                                                , IFLYTEK_APPKEY_AD            : "5c99e374"
+                                                                //client id  plusappkey  是一样的
+                                                                , GOOGLE_SERVER_CLIENT_ID      : "775048455330-8r2j60g794ntfgd3fsef8cm4kcnebpvo.apps.googleusercontent.com"
+                                                                , GOOGLE_PLUS_APP_KEY          : "775048455330-8r2j60g794ntfgd3fsef8cm4kcnebpvo.apps.googleusercontent.com"
+                                                                //twitter id  secret
+                                                                , TWITTER_APP_ID               : "xqJMtYSYXT7FC43SJJXtzrO6Z"
+                                                                , TWITTER_APP_SECRET           : "vvC9Lu64TkfmjHrKfQ6mtVXj2xgnYE9PvbAsnG7anAaRj3cmxe"
+                                                                //google充值 公钥
+                                                                , GOOGLE_BASE64ENCODEDPUBLICKEY: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAms3DHFsWllnzNoKSMpzBMkJG3ICwN1BJ1NMqzVL8tBQ+oiyeKZzuaEWopg8acSYUTOHFbnIytK+JsNGQsPoqRu7VUp0Zsm9raGqqTkT5EKc2qvS1aIpDbcG0yuKzMZCuXed9zsjn3yXA6symXAeX5odQbDCIfclq03893Ic8D7Nlnt0+ox+XM5UnaPLZye3Eo+skcN2mWUGzOEQsE4EFC+X0EXenTRfjkoRVKNOT2YWxRWmVpUsz6cSVZH6R5wKcLzXaCiC4Wo+fhb2dMhT9a0TNd8cL9sxyJkHNzG1Oq5w/XrZY/TwL2scwbcgP+VQYu4NP0FR+i15RbOHqwTFt6QIDAQAB"
+                                                                , BaiduMobAd_APP_ID            : "bd0ea319"
+                                                                , scheme                       : "ereader"
+                                                                //华为appid
+                                                                , HUAWEI_PAY_APP_ID            : "prefix_100664647"
+                                                                //华为充值公共钥匙
+                                                                , HUAWEI_PAY_PUBLIC_KEY        : "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp5XVjbPAZtkARC6QhV5DldeBbcJf9F+fXHNo/3xDz9MNOWRWozRALGM5fCmpjp4bowbHmoZklroUVQSLnHqA7vBf8OFf70eovuvbChUawKEFamshqr8C6lKItJwqiB4PEzp/9gYTY3B97ipe9+Cbcft3DK+57tfCZw2MOTGSZTbpKwAxID0uX4YXxv9RZLXVndf451RzH5fEUZlVCrr+sM3va7sU7WVSo8HZusdBULiZ9OErTNIdH5r0M80cPDlKWufIUaM0Mg3xJWxugbrc7rOB7C4kt65RX/ykUFgKCE2ouDy3kV8sIZsQuweKy6nTbmw2mUN76viPYdG9wapQmQIDAQAB"
+                                                                ]
+
+                                            , matchingFallbacks       : ['abroad']
+                                            , missingDimensionStrategy: [
+
+                                                                                "pay"        : "abroad"
+                                                                                , "share"    : "abroad"
+
+                                                                        ]
+                                            , resValue   : [
+                                                                "string": [
+                                                                        "facebook_app_id"  : "${facebookid}"
+                                                                ]
+
+                                                            ]
+
+
+                ]
+                    , "source_set" : [
+                                        "manifest.srcFile": 'products/EReader/AndroidManifest.xml'
+                                        ,"java.srcDirs": ['products/EReader/java', 'products/EBase/java']
+                                        ,"resources.srcDirs": ['products/EReader/java', 'products/EBase/java']
+                                        ,"aidl.srcDirs": ['products/EReader/java', 'products/EBase/java']
+                                        ,"renderscript.srcDirs": ['products/EReader/java', 'products/EBase/java']
+                                        ,"res.srcDirs": ['products/EReader/res', 'products/EBase/res']
+                                        ,"assets.srcDirs": ['products/EReader/assets', 'products/EBase/assets']
+                                        ,"jniLibs.srcDirs": ['products/EReader/libs', 'products/EBase/libs']
+                                    ]
+
+
+            ]
+
+
+            def modules = []
+ 
+
+            if(COMPILE_ANALYTICS) {
+                modules += Modules.Analytics.Kochava
+                modules += Modules.Analytics.Google
+                modules += Modules.Analytics.Facebook
+            }
+            if (COMPILE_ADVERTISE_MODULE) {
+                modules += [Modules.Advertise.FaceBook,
+                            Modules.Advertise.Admob
+                            , Modules.Advertise.Baidu]
+            }
+            if (COMPILE_CLOUD_MESSAGE) {
+                modules += [Modules.CloudMessage.FCM]
+            }
+
+            if(COMPILE_TTS)
+            {
+                modules+=[
+                        Modules.TTS.Xunfei,
+                        Modules.TTS.Baidu
+                ]
+            }
+
+
+            if(COMPILE_SHARE_AUTH)
+            {
+                modules+=Modules.Common.Share
+            }
+
+
+            ereader.modules = modules
+        }

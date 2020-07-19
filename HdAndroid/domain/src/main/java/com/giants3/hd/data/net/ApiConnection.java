@@ -259,6 +259,11 @@ public class ApiConnection {
 
 
     private ResponseBody getResponseBody(String url) throws HdException {
+
+        if(BuildConfig.DEBUG)
+        {
+            Log.e(TAG,"start Request:"+url);
+        }
         Request request = null;
         try {
             request = new Request.Builder()

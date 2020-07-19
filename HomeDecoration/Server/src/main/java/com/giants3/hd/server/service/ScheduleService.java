@@ -121,10 +121,18 @@ public class ScheduleService extends AbstractService {
             @Override
             public void run() {
                 int i = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-                if(i>7&&i<20) {
+                if(i>7&&i<20)
+                {
+                    try {
+                        erpWorkService.updateUncompletedMessageNextWorkFlowFactory();
+                    } catch (Throwable e) {
+                        e.printStackTrace();
+                    }
+
                     erpWorkService.autoCompleteSelfMadeStockIn();
                     erpWorkService.autoCompletePurchaseStockIn();
                    erpWorkService.autoCompleteStockOut();
+                    erpWorkService.autoCompleteWorkFlowState();
 
 
                 }

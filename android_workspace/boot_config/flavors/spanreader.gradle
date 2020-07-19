@@ -1,0 +1,115 @@
+def boot_path="${rootDir}/Changdu/boot_config"
+apply from: "${boot_path}/ModuleConfig.gradle"
+apply from: "${boot_path}/modules.gradle"
+ext
+        {
+
+            spanreader=[
+
+                    compile:COMPILE_PRODUCT.SPAIN
+
+                    ,modules:[]
+                    ,dept:[]
+                    , flavor_config: [
+                                            name: "spain"
+                                            ,applicationId:'com.changdu.spainreader'   //
+                                            ,versionCode:37
+                                            ,versionName:"1.0.0"
+//            //这里可以加入签名文件， 但我们的release包不需要签名。
+                                            //  signingConfig signingConfigs.changdu
+                                            //锁死语言配置
+                                            ,resConfigs:"es"
+
+                                            ,manifestPlaceholders : [
+                                                    UMENG_APPKEY                     : "59b65bd38630f50ccf0003b9"
+                                                    , UMENG_MESSAGE_SECRET           : "d85529bd835ba16297696b9189b4569d"
+                                                    , DEFAULT_NOTIFICATION_CHANNEL_ID: "000000000"
+                                                    , GOOGLE_TRACKER_ID              : "com_changdu_spainreader"
+                                                    , FACEBOOK_APP_ID                : "2201032626851567"
+                                                    , KOCHAVA_APP_GUID               : "komanobook-gp-h9j"
+                                                    , LINE_CHANNEL_ID                : "prefix_1638554412"
+                                                    //google plus client id  plusappkey  是一样的
+                                                    , GOOGLE_SERVER_CLIENT_ID        : "1074529564229-49l5ldjts6fme9pbe5ndsu52j66n4fjc.apps.googleusercontent.com"
+                                                    , GOOGLE_PLUS_APP_KEY            : "1074529564229-49l5ldjts6fme9pbe5ndsu52j66n4fjc.apps.googleusercontent.com"
+                                                    //twitter id  secret
+                                                    , TWITTER_APP_ID                 : "Idoc7PEWDyRBszfDOB5GoWHLM"
+                                                    , TWITTER_APP_SECRET             : "GevpTufeWgX6cnidZsSHfSK7OcxseDyJqzSaQtbu69vo4c9hv0"
+                                                    //google充值 公钥
+                                                    , GOOGLE_BASE64ENCODEDPUBLICKEY  : "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnobCLWt9yJXD1z9VB7i6RdYZ2UxABkI2nSjAToJmTj+T4z5hNfgyheWOVqtRdm1+yczjdi00/KsugdWVlxrx4Eod49/QNwj4214n5JLphClHZ4rxGvFyCfGsTtzeWQkdEryOfPWJsf7vskOi7dSkLnQOp+YbTsJeW8XQNmIswTdA50xqLRaFKAKgJ+LIwzG6Ph7qQVjvYeAgy9YSipPQAiLgTdk78Q1inJG0GvtlCBwCjHacTiHfSQd84gVpIF6Rz6QgEmaCMhWwAa4fJQuGKuenOc+BAi3GacRJUeyPcO59Vur6LuYXXktRwSH60kbO2xZXSmsIyDbEpgNBTjKOSQIDAQAB"
+                                                    , scheme                         : "spain"
+                                                    , ADMOB_APP_ID                   : "ca-app-pub-1669209234634531~2722272049"
+
+                                                    //华为appid
+                                                    , HUAWEI_PAY_APP_ID              : "100664647"
+                                                    //华为充值公共钥匙
+                                                    , HUAWEI_PAY_PUBLIC_KEY          : "xxxxx"
+                                            ]
+
+                                            ,matchingFallbacks : ['spain']
+                                            , missingDimensionStrategy: [
+
+                                                                                "pay"        : "abroad"
+                                                                                , "share"    : "abroad"
+
+                                                                        ]
+                                            , resValue   : [
+                                                                "string": [
+                                                                        "facebook_app_id"  : "2201032626851567"
+                                                                ]
+
+                                                            ]
+                                    ]
+                     , "source_set" : [
+                                        "manifest.srcFile": 'products/ESpain/AndroidManifest.xml'
+                                        ,"java.srcDirs": ['products/ESpain/java', 'products/EBase/java']
+                                        ,"resources.srcDirs": ['products/ESpain/java', 'products/EBase/java']
+                                        ,"aidl.srcDirs": ['products/ESpain/java', 'products/EBase/java']
+                                        ,"renderscript.srcDirs": ['products/ESpain/java', 'products/EBase/java']
+                                        ,"res.srcDirs": ['products/ESpain/res', 'products/EBase/res']
+                                        ,"assets.srcDirs": ['products/ESpain/assets', 'products/EBase/assets']
+                                        ,"jniLibs.srcDirs": ['products/ESpain/libs', 'products/EBase/libs']
+                                      ]
+
+
+
+            ]
+
+
+            def   modules = []
+
+ 
+
+            if(COMPILE_ANALYTICS) {
+                modules += Modules.Analytics.Kochava
+                modules += Modules.Analytics.Firebase
+                modules += Modules.Analytics.Google
+                modules += Modules.Analytics.Facebook
+            }
+            if (COMPILE_ADVERTISE_MODULE) {
+                modules += [Modules.Advertise.FaceBook,
+                            Modules.Advertise.Admob]
+            }
+            if (COMPILE_CLOUD_MESSAGE) {
+                modules += [Modules.CloudMessage.FCM]
+            }
+
+
+
+
+            if(COMPILE_SHARE_AUTH)
+            {
+                modules+=Modules.Common.Share
+            }
+
+
+
+
+            spanreader.modules = modules
+
+
+
+
+
+        }
+
+

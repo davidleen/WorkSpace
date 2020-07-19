@@ -34,7 +34,8 @@ public class Simulate {
     private PageTurnHelper.Bezier mBezierHorizontal = new PageTurnHelper.Bezier();                 //贝塞尔曲线
     private PageTurnHelper.Bezier mBezierVertical = new PageTurnHelper.Bezier();                 //另一条贝塞尔曲线
     //拖拽时 对应的页边角。
-    public PointF mDragCorner = new PointF();
+    public PointF mDragCorner = new PointF();  //拖拽时 对应的页边角。
+    public PointF destCorner = new PointF();
 
     //下页的阴影旋转角度
     private float mDegrees;
@@ -106,6 +107,11 @@ public class Simulate {
 
             mDrag.set(offsetX, offsetY);
 
+
+            float v = (mDrag.x - mPinedPoint.x) / drawParam.width;
+          float   folderRate=v>0?0.5f:(1+v)*0.5f;
+
+
             PointUtils.middle(mMidle, mDrag, mDragCorner);
 
 
@@ -113,22 +119,22 @@ public class Simulate {
             mBezierHorizontal.control.x = mMidle.x - (mMidle.y - mDragCorner.y) * (mMidle.y - mDragCorner.y) / (mDragCorner.x - mMidle.x);
             mBezierHorizontal.control.y = mDragCorner.y;
             //计算起点（）
-            mBezierHorizontal.start.x =  mBezierHorizontal.control.x - (mDragCorner.x - mBezierHorizontal.control.x) * 0.5f;
+            mBezierHorizontal.start.x =   mBezierHorizontal.control.x - (mDragCorner.x - mBezierHorizontal.control.x) *folderRate ;
             mBezierHorizontal.start.y = mDragCorner.y;
 
 
-            //翻页限制检查
-//            if (mBezierHorizontal.start.x < -0.1f) {
-//
-//                float width = mDragCorner.x - mBezierHorizontal.start.x;
-//                float radio = (mPinedPoint.x - mBezierHorizontal.start.x) / width;
-//                float newOffsetX = mDrag.x + (mDragCorner.x - mDrag.x) * radio;
-//                float newOffsetY = mDrag.y + (mDragCorner.y - mDrag.y) * radio;
-//                // Log.e("newOffsetX:"+newOffsetX+",newOffsetY:"+newOffsetY+",mBezierHorizontal.start.x:"+mBezierHorizontal.start.x);
-//                calculatePoints(newOffsetX, newOffsetY);
-//                return;
-//
-//            }
+         //   翻页限制检查
+            if (mBezierHorizontal.start.x < -0.1f) {
+
+                float width = mDragCorner.x - mBezierHorizontal.start.x;
+                float radio = (mPinedPoint.x - mBezierHorizontal.start.x) / width;
+                float newOffsetX = mDrag.x + (mDragCorner.x - mDrag.x) * radio;
+                float newOffsetY = mDrag.y + (mDragCorner.y - mDrag.y) * radio;
+                // Log.e("newOffsetX:"+newOffsetX+",newOffsetY:"+newOffsetY+",mBezierHorizontal.start.x:"+mBezierHorizontal.start.x);
+                calculatePoints(newOffsetX, newOffsetY);
+                return;
+
+            }
 
 
             //计算控制点。
@@ -175,14 +181,17 @@ public class Simulate {
 
         if (isHorizontalTurning) {
             mDragCorner.set(0, 0);
+            destCorner.set(-drawParam.width,0);
         } else {
 
             if (eY < drawParam.height / 3) {
                 mDragCorner.set(drawParam.width, 0);
                 mPinedPoint.set(0, 0);
+                destCorner.set(-drawParam.width,0);
             } else {
                 mDragCorner.set(drawParam.width, drawParam.height);
                 mPinedPoint.set(0, drawParam.height);
+                destCorner.set(-drawParam.width,drawParam.height);
             }
         }
 
@@ -459,6 +468,16 @@ public class Simulate {
 
 
 
+    }
+
+    public PointF getDragCorner() {
+
+
+        return mDragCorner;
+    }   public PointF getDestCorner() {
+
+
+        return destCorner;
     }
 //    /**
 //     * 绘制翻起页

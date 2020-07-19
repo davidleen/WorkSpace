@@ -1,0 +1,55 @@
+def  boot_config_path="${rootDir}/Changdu/boot_config/"
+apply from: "${boot_config_path}/product.gradle"
+
+ext {
+    robolectricVersion = "3.0"
+
+
+}
+
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+
+
+
+
+
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+
+    }
+    dependencies {
+//        classpath 'com.android.tools.build:gradle:3.4.2'
+        classpath 'com.android.tools.build:gradle:3.4.2'
+//        // plugin for reporting code coverage to coveralls
+//        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.4.0'
+//        classpath 'org.ajoberstar:gradle-jacoco:0.2.0'
+        //classpath 'com.google.gms:google-services:3.0.0'
+//        classpath 'com.google.gms:google-services:3.1.0'
+        classpath 'com.google.gms:google-services:3.2.0'
+    }
+}
+allprojects {
+    repositories {
+        maven{ url  LOCAL_MAVEN_URL}
+//        maven { url "https://jitpack.io" }
+
+        maven{ url  'https://oss.sonatype.org/content/repositories/snapshots/'}
+        google()
+        jcenter()
+        maven {url "http://kochava.bintray.com/maven"}
+        //mupdf需要
+        maven { url 'http://maven.ghostscript.com/' }
+        maven {
+            //阿里百川相关的组件依赖
+            url "http://repo.baichuan-android.taobao.com/content/groups/BaichuanRepositories/"
+        }
+
+        maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local/' }
+    }
+
+
+}
+

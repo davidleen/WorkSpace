@@ -201,4 +201,8 @@ public class WorkFlowMessage {
     public String produceTypeName;
 
 
+    /**
+     *  下一道流程的加工户名称
+     */
+    public String nextFlowFactoryName;
 }

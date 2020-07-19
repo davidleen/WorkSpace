@@ -1,12 +1,16 @@
 package com.giants3.hd.android.activity;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +34,7 @@ import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.helper.UpgradeUtil;
 import com.giants3.hd.android.mvp.MainAct.WorkFlowMainActMvp;
 import com.giants3.hd.android.mvp.MainAct.WorkFlowMainActPresenter;
+import com.giants3.hd.android.receiver.HDIntent;
 import com.giants3.hd.data.interractor.UseCaseFactory;
 import com.giants3.hd.data.net.HttpUrl;
 import com.giants3.hd.entity.app.AUser;
@@ -38,10 +43,10 @@ import com.giants3.hd.noEntity.FileInfo;
 import com.giants3.hd.noEntity.MessageInfo;
 import com.giants3.hd.noEntity.RemoteData;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import me.leolin.shortcutbadger.ShortcutBadger;
 import rx.Subscriber;
 
 /**
@@ -88,11 +93,27 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
     //    List<String> menuTitleList = null;
 //    List<String> menuFragmentClassList;
     WorkFLowMainMenuAdapter adapter;
+    BroadcastReceiver messageBroadcastReceiver=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if(intent.getAction().equals(HDIntent.Message.ACTION))
+            {
+                int newWorkFlowMessageCount=intent.getIntExtra(HDIntent.Message.KEY_WORK_FLOW_MESSAGE_COUNT,0);
+                int newWorkFlowMonitorCount=intent.getIntExtra(HDIntent.Message.KEY_WORK_FLOW_MONITOR_COUNT,0);
+                updateMessageCounts(newWorkFlowMessageCount,newWorkFlowMonitorCount);
+
+            }
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(HDIntent.Message.ACTION);
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageBroadcastReceiver,intentFilter);
         setBackEnable(false);
 
 //        menuTitles = getResources().getStringArray(R.array.menu_title);
@@ -123,6 +144,7 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
                 getPresenter().checkAppUpdateInfo(true);
             }
         });
+
 
     }
 
@@ -402,11 +424,39 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
 
     }
 
+
+    @Override
+    protected void onDestroy() {
+
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageBroadcastReceiver);
+
+        super.onDestroy();
+    }
+
     @Override
     public void updateMessageCounts(RemoteData<MessageInfo> remoteData) {
 
 
         MessageInfo messageInfo=remoteData.isSuccess()?remoteData.datas.get(0):null;
+        int  newWorkFlowMessageCount =messageInfo==null?0:messageInfo.newWorkFlowMessageCount;
+        int  newWorkFlowMonitorCount =messageInfo==null?0:messageInfo.unCompletedMonitoredWorkFlowCount;
+
+        updateMessageCounts(newWorkFlowMessageCount,newWorkFlowMonitorCount);
+        try {
+            ShortcutBadger.applyCount(this,  newWorkFlowMessageCount+newWorkFlowMonitorCount);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+    public void updateMessageCounts(int newWorkFlowMessageCount,int newWorkFlowMonitorCount) {
+
+
+
 
 
         String destTitle = getResources().getString(R.string.work_need_finish);
@@ -415,22 +465,21 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
 
             item.msgCount=0;
 
-            if(messageInfo!=null) {
+
                 if (  destTitle.equals(item.title)) {
-                    item.msgCount = messageInfo.newWorkFlowMessageCount;
+                    item.msgCount = newWorkFlowMessageCount;
                 }else
                 if (  monitor.equals(item.title)) {
-                    item.msgCount = messageInfo.unCompletedMonitoredWorkFlowCount;
+                    item.msgCount = newWorkFlowMonitorCount;
                 }
 
-            }
+
 
         }
         adapter.notifyDataSetChanged();
 
 
     }
-
     @Override
     public void showApkUpdate(final FileInfo fileInfo) {
 
@@ -458,6 +507,9 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
         Intent intent = new Intent(context, WorkFlowMainActivity.class);
         context.startActivity(intent);
     }
+
+
+
 
 
 }

@@ -12,9 +12,8 @@ android {
         versionCode 1
         versionName "1.0"
         //友盟appkey常量配置
-        buildConfigField "String", "UMENG_APP_KEY", "\"57a1e715e0f55a37b8004434\""
         buildConfigField "String", "UMENG_CHANNEL", "\"DEVELOPER\""
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
 
@@ -33,10 +32,15 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.umeng.analytics:analytics:latest.integration'
+
+    api project(':library-android')
+    implementation  'com.umeng.umsdk:common:9.1.0' // (必选)
+    implementation  'com.umeng.umsdk:asms:1.1.3' // asms包依赖(必选)
+    implementation 'com.umeng.umsdk:crash:0.0.4' // native crash包依赖(必选)
+
     provided "com.giants3.android:api:${API_VERSION}"
-    compile "com.android.support:appcompat-v7:${ANDROID_SUPPORT_V7_VERSION}"
+    compile 'androidx.appcompat:appcompat:1.0.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
 }

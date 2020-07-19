@@ -1,0 +1,114 @@
+def boot_path="${rootDir}/Changdu/boot_config"
+apply from: "${boot_path}/ModuleConfig.gradle"
+apply from: "${boot_path}/modules.gradle"
+ext
+        {
+
+            frenchreader=[
+
+                    compile:COMPILE_PRODUCT.FRENCH
+
+                    ,modules:[]
+                    ,dept:[]
+                    , flavor_config: [
+                            name                      : "french"
+                            ,applicationId: 'com.changdu.frenchreader'   //
+                            ,versionCode :120
+                            ,versionName:"1.0.0"
+//            //这里可以加入签名文件， 但我们的release包不需要签名。
+                            //  signingConfig signingConfigs.changdu
+
+                            //锁死语言配置
+                            ,resConfigs :"fr"
+                            ,manifestPlaceholders : [UMENG_APPKEY                   : "59b65c3907fe652873000026"
+                                                    , UMENG_MESSAGE_SECRET         : "d8acdd6d13d8b7829c0fd17034cd2770"
+                                                    , ADMOB_APP_ID                 : "ca-app-pub-1669209234634531~6298868514"
+                                                    , GOOGLE_TRACKER_ID            : "com_changdu_frenchreader"
+                                                    , FACEBOOK_APP_ID              : "492391051638955"
+                                                    , KOCHAVA_APP_GUID             : "koc1-fr-onlit-6gqmf54t"
+                                                    , LINE_CHANNEL_ID              : "prefix_1653965384"
+
+                                                    , IFLYTEK_APPKEY_AD            : "5c99e374"
+                                                    //client id  plusappkey  是一样的
+                                                    , GOOGLE_SERVER_CLIENT_ID      : "971630560053-tjun3ccbs91bl8oi18o2v713p1m15444.apps.googleusercontent.com"
+                                                    , GOOGLE_PLUS_APP_KEY          : "971630560053-tjun3ccbs91bl8oi18o2v713p1m15444.apps.googleusercontent.com"
+                                                    //twitter id  secret
+                                                    , TWITTER_APP_ID               : "gaG0xyPVthWF5htR41J1J5FEj"
+                                                    , TWITTER_APP_SECRET           : "Q6RXzGRuClTiqgaX8AnIt12UezeQZLBt5f3GMYTxjIJGZU5pPF"
+                                                    //google充值 公钥
+                                                    , GOOGLE_BASE64ENCODEDPUBLICKEY: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAk9SHaRwVSZWhdeOmxwlJQdO8VkdeYHQ1vzBgMx2g8UQ4SrlhW2MqM/dLL+kfh1HYeFA9EeNwWiz6BMW0lbdkoViiJSHVc33AfZecrgC0KQmJQZRlrtcg1ukgu6tZ3o8ZouRhaFSdpT29LflzlYlyrYTwc+ySFvGIx6ss9TE2uj6kDB3yRptsAnPMS9yDUEzrSuhtCWS6ZsDEsgcs/JiPIJJgEzE1w3hgmFXP2MJRi5BF1B90jfoE+U6y4DmEERxgb6ElcXHOHYJdWfKnIgugWxVDA1k2542VgjxqPUI4Rmg35bAMIrz9NeCVFp1uFk3T7sLrKcYwVb28NVxQmZZoawIDAQAB"
+                                                    , BaiduMobAd_APP_ID            : "bd0ea319"
+                                                    , scheme                       : "ereader"
+                                                    //华为appid
+                                                    , HUAWEI_PAY_APP_ID            : "prefix_1653965384"
+                                                    //华为充值公共钥匙
+                                                    , HUAWEI_PAY_PUBLIC_KEY        : "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp5XVjbPAZtkARC6QhV5DldeBbcJf9F+fXHNo/3xDz9MNOWRWozRALGM5fCmpjp4bowbHmoZklroUVQSLnHqA7vBf8OFf70eovuvbChUawKEFamshqr8C6lKItJwqiB4PEzp/9gYTY3B97ipe9+Cbcft3DK+57tfCZw2MOTGSZTbpKwAxID0uX4YXxv9RZLXVndf451RzH5fEUZlVCrr+sM3va7sU7WVSo8HZusdBULiZ9OErTNIdH5r0M80cPDlKWufIUaM0Mg3xJWxugbrc7rOB7C4kt65RX/ykUFgKCE2ouDy3kV8sIZsQuweKy6nTbmw2mUN76viPYdG9wapQmQIDAQAB"
+                            ]
+                            , matchingFallbacks       : ['abroad']
+                            , missingDimensionStrategy: [
+
+                                                            "pay"        : "abroad"
+                                                            , "share"    : "abroad"
+
+                                                         ]
+                            , resValue   : [
+                                                        "string": [
+                                                                "facebook_app_id"  : "492391051638955"
+
+                                                        ]
+
+                                             ]
+                    ]
+                    ,source_set:
+                    [
+
+
+                            "manifest.srcFile": 'products/FrenchReader/AndroidManifest.xml',
+                            "java.srcDirs": ['products/FrenchReader/java', 'products/EBase/java'],
+                            "java.srcDirs":['products/FrenchReader/java','products/EBase/java'],
+                            "resources.srcDirs": ['products/FrenchReader/java', 'products/EBase/java'],
+                            "aidl.srcDirs": ['products/FrenchReader/java', 'products/EBase/java'],
+                            "renderscript.srcDirs": ['products/FrenchReader/java', 'products/EBase/java'],
+                            "res.srcDirs": ['products/FrenchReader/res', 'products/EBase/res'],
+                            "assets.srcDirs":['products/FrenchReader/assets', 'products/EBase/assets'],
+                            "jniLibs.srcDirs": ['products/FrenchReader/libs', 'products/EBase/libs']
+                    ]
+
+
+
+            ]
+
+
+            def modules = []
+ 
+            if(COMPILE_ANALYTICS) {
+                modules += Modules.Analytics.Kochava
+                modules += Modules.Analytics.Google
+                modules += Modules.Analytics.Facebook
+            }
+            if (COMPILE_ADVERTISE_MODULE) {
+                modules += [Modules.Advertise.FaceBook,
+                            Modules.Advertise.Admob
+                            , Modules.Advertise.Baidu]
+            }
+            if (COMPILE_CLOUD_MESSAGE) {
+                modules += [Modules.CloudMessage.FCM]
+            }
+
+            if(COMPILE_TTS)
+            {
+//                modules+=[
+//                        Modules.TTS.Xunfei,
+//                        Modules.TTS.Baidu
+//                ]
+            }
+
+
+            if(COMPILE_SHARE_AUTH)
+            {
+                modules+=Modules.Common.Share
+            }
+
+
+            frenchreader.modules = modules
+        }

@@ -18,7 +18,7 @@ import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintDocumentInfo;
 import android.print.pdf.PrintedPdfDocument;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 
 import com.giants3.android.frame.util.BitmapHelper;
 import com.giants3.android.frame.util.Log;

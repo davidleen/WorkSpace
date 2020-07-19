@@ -1,14 +1,11 @@
 package com.giants3.android.frame.util;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.content.Context;
 import android.os.Build;
-import android.support.v4.content.FileProvider;
+import androidx.core.content.FileProvider;
 
 import java.io.File;
-
-import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
 
 /**
  * Created by davidleen29 on 2018/8/26.

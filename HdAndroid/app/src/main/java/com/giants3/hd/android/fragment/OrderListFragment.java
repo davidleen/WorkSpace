@@ -1,7 +1,7 @@
 package com.giants3.hd.android.fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.giants3.android.adapter.AbstractAdapter;
 import com.giants3.hd.android.adapter.OrderListAdapter;

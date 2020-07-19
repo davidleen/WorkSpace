@@ -1,0 +1,98 @@
+def boot_path="${rootDir}/Changdu/boot_config"
+apply from: "${boot_path}/ModuleConfig.gradle"
+apply from: "${boot_path}/modules.gradle"
+ext
+        {
+
+            andreader=[
+
+                    compile:COMPILE_PRODUCT.ANDREADER
+
+                    ,modules:[]
+                    ,dept:[]
+                    , flavor_config: [
+                                            name  : "andreader"
+                                            ,applicationId :'com.jiasoft.swreader'
+                                            ,versionCode :2007
+                                            ,versionName :"6.0.5.7"
+                                            ,manifestPlaceholders : [
+                                                    UMENG_APPKEY          : "4df0842b431fe32907000001"
+                                                    , UMENG_MESSAGE_SECRET: "c53458c70b62acc62efd90f1b6e79d4e"
+                                                    , scheme              : "andreader"
+                                                    , BaiduMobAd_APP_ID   : "c655b147"
+                                                    , TENCENT_AAP_ID      : "prefix_1105835693"
+                                                    , TOUTIAO_AAP_ID      : "prefix_5010928"
+                                                    , IFLYTEK_APPKEY_AD   : "5c99e374"
+                                                    , XUNFEI_TTS_APP_ID   : "5428d0b8"
+
+                                            ]
+                                            ,matchingFallbacks : ['inland']
+                                            , missingDimensionStrategy: [
+
+                                                                                "pay"        : "inland"
+                                                                                , "share"    : "andreader"
+
+                                                                        ]
+
+
+                                    ]
+                    , "source_set":  [
+                                            "setRoot":'Andreader'
+                                    ]
+
+
+
+            ]
+
+
+            def   modules = [] 
+            
+            if (COMPILE_ADVERTISE_MODULE) {
+                modules += [
+                        Modules.Advertise.Baidu
+                        ,Modules.Advertise.Tencent
+                        ,Modules.Advertise.Ifly
+                        ,Modules.Advertise.Toutiao
+                           ]
+            }
+            if (COMPILE_CLOUD_MESSAGE) {
+                modules += [Modules.CloudMessage.Umeng]
+            }
+
+
+
+
+            if(COMPILE_ECONO) {
+                modules += Modules.Econo.AliEC
+            }
+
+
+
+
+            if(COMPILE_TTS)
+            {
+                modules+=[
+                        Modules.TTS.Xunfei,
+                        Modules.TTS.Baidu
+                ]
+            }
+
+
+
+            if(COMPILE_SHARE_AUTH)
+            {
+                modules+=Modules.Common.Share
+            }
+
+
+
+            andreader.modules = modules
+
+
+
+
+
+
+        }
+
+

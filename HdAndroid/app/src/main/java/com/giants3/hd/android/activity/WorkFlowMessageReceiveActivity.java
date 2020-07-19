@@ -12,6 +12,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.giants3.android.Utils;
+import com.giants3.android.frame.util.StringUtil;
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.helper.AndroidUtils;
 import com.giants3.hd.android.helper.CapturePictureHelper;
@@ -257,7 +259,7 @@ public class WorkFlowMessageReceiveActivity extends BaseHeadViewerActivity<Prese
 
     @Override
     protected void onViewClick(int id, View v) {
-
+        if(!Utils.isActionEnable(id,1000)) return;
         switch (id) {
             case R.id.addPicture:
 
@@ -438,7 +440,7 @@ public class WorkFlowMessageReceiveActivity extends BaseHeadViewerActivity<Prese
         List<WorkFlowWorker> workFlowWorkers = SharedPreferencesHelper.getInitData().workFlowWorkers;
 
         for (WorkFlowWorker workFlow : workFlowWorkers) {
-            if (workFlow.workFlowStep == data.toFlowStep && workFlow.receive) {
+            if (workFlow.workFlowStep == data.toFlowStep && workFlow.receive&&(StringUtil.isEmpty(workFlow.jghnames)||workFlow.jghnames.contains(data.nextFlowFactoryName))) {
                 canReceiveOrReject = true;
                 break;
             }

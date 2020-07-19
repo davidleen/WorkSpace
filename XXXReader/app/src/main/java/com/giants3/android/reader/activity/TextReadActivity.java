@@ -5,16 +5,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 
-import com.giants3.android.frame.util.Log;
 import com.giants3.android.frame.util.StorageUtils;
-import com.giants3.android.frame.util.StringUtil;
-import com.giants3.android.reader.R;
+import com.giants3.android.reader.databinding.ActivityTextReaderBinding;
+import com.giants3.android.reader.entity.User;
+import com.giants3.android.reader.vm.TextReadViewModel;
+import com.giants3.android.reader.vm.UserModel;
 import com.giants3.file.FileContentType;
 import com.giants3.io.FileUtils;
 import com.giants3.reader.book.EpubChapter;
-import com.giants3.tool.zip.ZipJNIInterface;
 import com.giants3.yourreader.text.TextPageBitmap;
 import com.giants3.yourreader.text.TextPageInfo;
 import com.giants3.yourreader.text.TextPrepareJob;
@@ -24,7 +25,6 @@ import com.xxx.reader.Utils;
 import com.xxx.reader.book.BookFactory;
 import com.xxx.reader.book.IBook;
 import com.xxx.reader.book.IChapter;
-import com.xxx.reader.book.TextBook;
 import com.xxx.reader.book.TextChapter;
 import com.xxx.reader.core.DrawParam;
 import com.xxx.reader.core.IPageTurner;
@@ -33,36 +33,49 @@ import com.xxx.reader.prepare.DrawLayer;
 import com.xxx.reader.prepare.PageBitmapCreator;
 import com.xxx.reader.prepare.PagePlayer;
 import com.xxx.reader.prepare.PagePlayerBuilder;
-import com.xxx.reader.turnner.ScrollPageTurner;
 import com.xxx.reader.turnner.SimulatePageTurner;
-import com.xxx.reader.turnner.sim.SimPageTurner;
-import com.xxx.reader.turnner.slide.SlidePageTurner;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Calendar;
-import java.util.List;
 
-import butterknife.Bind;
 
-public class TextReadActivity extends BaseActivity {
-    @Bind(R.id.reader)
-    ReaderView readerView;
+public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBinding,TextReadViewModel> {
 
+      PagePlayer<IChapter, TextPageInfo, DrawParam, TextPageBitmap> prepareLayer ;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_text_reader);
+        init( );
+        getViewModel().getBookInfo().observe(this, new Observer<IBook>() {
+            @Override
+            public void onChanged(IBook iBook) {
 
-        handleFile(getIntent());
+
+
+                if (iBook != null)
+                    prepareLayer.updateBook(iBook);
+            }
+        });
+        getViewModel().handleIntent(getIntent());
+
     }
 
-    private void handleFile(Intent intent) {
+    @Override
+    protected Class<TextReadViewModel> getViewModelClass() {
+        return TextReadViewModel.class;
+    }
 
-        final String filePath = intent.getStringExtra("filePath");
-        String bookId = intent.getStringExtra("bookId");
-        String bookUrl = intent.getStringExtra("bookUrl");
+    @Override
+    protected ActivityTextReaderBinding createViewBinding() {
+        return ActivityTextReaderBinding.inflate(getLayoutInflater());
+    }
+
+    private void init( ) {
+
+
+
 
 
 
@@ -76,10 +89,10 @@ public class TextReadActivity extends BaseActivity {
         builder.setCreator(new PageBitmapCreator<TextPageBitmap>() {
             @Override
             public TextPageBitmap create() {
-                return new TextPageBitmap(context, wh[0], wh[1], readerView);
+                return new TextPageBitmap(context, wh[0], wh[1], getViewBinding().reader);
             }
         });
-        builder.setiDrawable(readerView);
+        builder.setiDrawable(getViewBinding().reader);
 
         builder.setPrepareJob(new TextPrepareJob(new Url2FileMapper<IChapter>() {
             @Override
@@ -126,12 +139,12 @@ public class TextReadActivity extends BaseActivity {
 
 
 
-        final PagePlayer<IChapter, TextPageInfo, DrawParam, TextPageBitmap> prepareLayer = builder.createPrepareLayer();
+        prepareLayer = builder.createPrepareLayer();
         DrawParam drawParam = new DrawParam();
         drawParam.width = wh[0] ;
         drawParam.height = wh[1] ;
         prepareLayer.updateDrawParam(drawParam);
-        readerView.setOnSizeChangeListener(new ReaderView.onSizeChangeLister(){
+        getViewBinding().reader.setOnSizeChangeListener(new ReaderView.onSizeChangeLister(){
             @Override
             public void onSizeChanged(int width, int height) {
                 DrawParam drawParam = new DrawParam();
@@ -141,7 +154,7 @@ public class TextReadActivity extends BaseActivity {
             }
         });
 
-        DrawLayer drawLayer = new DrawLayer(this, prepareLayer, readerView);
+        DrawLayer drawLayer = new DrawLayer(this, prepareLayer, getViewBinding().reader);
 
         PageSwitchListener pageSwitchListener = new PageSwitchListener() {
             @Override
@@ -176,52 +189,15 @@ public class TextReadActivity extends BaseActivity {
 
 
         IPageTurner pageTurner = null;
-      //  pageTurner = new ScrollPageTurner(this, pageSwitchListener, readerView, prepareLayer);
-//        pageTurner=new SimPageTurner(this,pageSwitchListener,readerView,prepareLayer);
-     pageTurner=new SimulatePageTurner(this,pageSwitchListener,readerView,prepareLayer);
-        //   pageTurner = new SlidePageTurner(this, pageSwitchListener, readerView, prepareLayer);
+      //  pageTurner = new ScrollPageTurner(this, pageSwitchListener, activityTextReaderBinding.reader, prepareLayer);
+//        pageTurner=new SimPageTurner(this,pageSwitchListener,activityTextReaderBinding.reader,prepareLayer);
+     pageTurner=new SimulatePageTurner(this,pageSwitchListener,getViewBinding().reader,prepareLayer);
+        //   pageTurner = new SlidePageTurner(this, pageSwitchListener, activityTextReaderBinding.reader, prepareLayer);
 
         drawLayer.setPageTurner(pageTurner);
-        readerView.setDrawLayer(drawLayer);
-        String contentType = FileContentType.getContentType(new File(filePath));
-        final BookFactory bookFactory;
-        switch (contentType) {
-            case FileContentType.EPUB: {
-                bookFactory = new EpubBookFactory();
-            }
-            break;
-            case FileContentType.TEXT:
-            {
-
-                bookFactory=new TextBookFactory();
-            }break;
-            default:
-                bookFactory = null;
-
-        }
-
-        if(bookFactory==null){
-            finish();
-            return;
-        }
-        new AsyncTask<Void, Void, IBook>() {
-            @Override
-            protected IBook doInBackground(Void[] objects) {
-
-                IBook iBook =   bookFactory.create(filePath);;
+        getViewBinding().reader.setDrawLayer(drawLayer);
 
 
-                return iBook;
-            }
-
-            @Override
-            protected void onPostExecute(IBook iBook) {
-                super.onPostExecute(iBook);
-
-                if (iBook != null)
-                    prepareLayer.updateBook(iBook);
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 
     }

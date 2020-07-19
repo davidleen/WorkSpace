@@ -46,15 +46,29 @@
 
 
 
-#android support######
 
--keep public class * extends android.support.v4.**
--keep class android.support.v4.** { *; }
+###########androidX support################
+-keep class com.google.android.material.** {*;}
+-keep class androidx.** {*;}
+-keep public class * extends androidx.**
+-keep interface androidx.** {*;}
+-dontwarn com.google.android.material.**
+-dontnote com.google.android.material.**
+-dontwarn androidx.**
 
 
--keep public class * extends android.support.v7.**
--keep class android.support.v7.** { *; }
+-keep class com.umeng.** {*;}
 
+-keep class com.uc.** {*;}
+
+-keepclassmembers class * {
+   public <init> (org.json.JSONObject);
+}
+
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
 
 -keepclasseswithmembers class com.giants3.android.analysis.UmengAnalysisImpl {
    public *;

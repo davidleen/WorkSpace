@@ -4,8 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -20,7 +20,6 @@ import com.giants3.hd.entity.ErpOrderItem;
 import com.giants3.hd.entity.ErpWorkFlow;
 import com.giants3.hd.entity.OrderItemWorkMemo;
 import com.giants3.hd.entity.ProductWorkMemo;
-import com.giants3.hd.exception.HdException;
 import com.giants3.hd.noEntity.WorkFlowMemoAuth;
 import com.giants3.hd.utils.StringUtils;
 

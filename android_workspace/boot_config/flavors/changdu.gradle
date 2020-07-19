@@ -1,0 +1,90 @@
+def boot_path="${rootDir}/Changdu/boot_config"
+apply from: "${boot_path}/ModuleConfig.gradle"
+apply from: "${boot_path}/modules.gradle"
+ext
+        {
+
+            changdu=[
+
+
+                    compile:COMPILE_PRODUCT.CHANGDU
+
+                    ,modules:[]
+                    ,dept:[]
+                    , flavor_config: [
+                                        name  : "changdu"
+                                        ,applicationId :'com.changdu'  //
+                                        ,versionCode :2007
+                                        ,versionName :"3.0.5.7"
+                                        ,manifestPlaceholders : [
+                                                UMENG_APPKEY          : "52dcfb6956240b6e511dfe08"
+                                                , UMENG_MESSAGE_SECRET: "a8408e93f740677fb61f65471986cf00"
+                                                , scheme              : "changdu"
+                                                , BaiduMobAd_APP_ID   : "d783a7fd"
+                                                , TENCENT_AAP_ID      : "prefix_1105835675"
+                                                , TOUTIAO_AAP_ID      : "prefix_5010919"
+                                                , IFLYTEK_APPKEY_AD   : "5c99e3b7"
+                                        ]
+
+
+                                        ,matchingFallbacks :['inland']
+                                        , missingDimensionStrategy: [
+                                                                            "pay"        : "inland"
+                                                                            , "share"    : "changdu"
+
+                                                                    ]
+
+                                     ]
+                    , "source_set":  [
+                                        "setRoot":'Changdu'
+                                      ]
+
+
+            ]
+
+
+            def   modules = [] 
+            if (COMPILE_ADVERTISE_MODULE) {
+                modules += [
+                        Modules.Advertise.Baidu
+                        ,Modules.Advertise.Tencent
+                        ,Modules.Advertise.Ifly
+                        ,Modules.Advertise.Toutiao
+                           ]
+            }
+            if (COMPILE_CLOUD_MESSAGE) {
+                modules += [Modules.CloudMessage.Umeng]
+            }
+
+
+            if(COMPILE_ECONO) {
+                modules += Modules.Econo.AliEC
+            }
+
+            if(COMPILE_TTS)
+            {
+                modules+=[
+                        Modules.TTS.Xunfei,
+                        Modules.TTS.Baidu
+                ]
+            }
+
+
+            if(COMPILE_SHARE_AUTH)
+            {
+                modules+=Modules.Common.Share
+            }
+
+
+
+
+
+            changdu.modules = modules
+
+
+
+
+
+        }
+
+

@@ -6,10 +6,13 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.RemoteViews;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.giants3.android.frame.util.Log;
 import com.giants3.hd.android.R;
@@ -17,10 +20,17 @@ import com.giants3.hd.android.activity.MainActivity;
 import com.giants3.hd.android.activity.WorkFlowMainActivity;
 import com.giants3.hd.android.helper.ImageLoaderFactory;
 import com.giants3.hd.android.helper.NotificationUtils;
+import com.giants3.hd.android.mvp.RemoteDataSubscriber;
+import com.giants3.hd.android.receiver.HDIntent;
+import com.giants3.hd.data.interractor.UseCaseFactory;
 import com.giants3.hd.data.net.HttpUrl;
+import com.giants3.hd.noEntity.MessageInfo;
+import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.noEntity.app.PushMessage;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+
+import me.leolin.shortcutbadger.ShortcutBadger;
 
 /**
  * Created by davidleen29 on 2018/6/24.
@@ -59,9 +69,41 @@ public class PushManager {
 
         }
 
-        if(intent!=null)
+        if(intent!=null) {
+            //发送通知
             showWorkFlowMessageNotification(pushMessage.hashCode(), context, pushMessage.ticker, pushMessage.title, pushMessage.content, pushMessage.icon, intent);
+            //更新桌面图片远点。
+            UseCaseFactory.getInstance().createGetNewMessageInfoUseCase().execute(new RemoteDataSubscriber<MessageInfo>() {
 
+
+                @Override
+                protected void handleRemoteData(RemoteData<MessageInfo> data) {
+
+
+                    int messageCount = 0;
+                    int monitorCount = 0;
+                    if (data.isSuccess()) {
+                        messageCount = data.datas.get(0).newWorkFlowMessageCount;
+                        monitorCount = data.datas.get(0).newWorkFlowMessageCount;
+                    }
+
+
+                    int count= messageCount+monitorCount;
+                    ShortcutBadger.applyCount(context, count);
+
+
+                    Intent messageIntent = new Intent(HDIntent.Message.ACTION);
+                    messageIntent.putExtra(HDIntent.Message.KEY_WORK_FLOW_MESSAGE_COUNT,messageCount);
+                    messageIntent.putExtra(HDIntent.Message.KEY_WORK_FLOW_MONITOR_COUNT,monitorCount);
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(messageIntent);
+
+                }
+
+
+            });
+            //更新
+
+        }
 
     }
 

@@ -8,11 +8,14 @@ import android.widget.Toast;
 
 import com.giants3.android.api.push.MessageCallback;
 import com.giants3.android.api.push.RegisterCallback;
+import com.giants3.android.utils.ManifestUtils;
+import com.umeng.commonsdk.UMConfigure;
 import com.umeng.message.IUmengRegisterCallback;
 import com.umeng.message.PushAgent;
 import com.umeng.message.UmengMessageHandler;
 import com.umeng.message.UmengNotificationClickHandler;
 import com.umeng.message.entity.UMessage;
+import com.umeng.message.lib.BuildConfig;
 
 
 /**
@@ -28,6 +31,10 @@ public class PushProxy {
     public static void config(Context context, final RegisterCallback callback, final MessageCallback messageCallback) {
 
         if (mPushAgent == null) {
+          String key=  ManifestUtils.getMetaData(context,"UMENG_APPKEY");
+          String secret=  ManifestUtils.getMetaData(context,"UMENG_MESSAGE_SECRET");
+          String chanel=ManifestUtils.getMetaData(context,"UMENG_CHANNEL");
+           UMConfigure.init(context, key, chanel, UMConfigure.DEVICE_TYPE_PHONE, secret);
             mPushAgent = PushAgent.getInstance(context.getApplicationContext());
             handler = new Handler(Looper.getMainLooper());
 
@@ -38,8 +45,8 @@ public class PushProxy {
             @Override
             public void onSuccess(String deviceToken) {
                 //注册成功会返回device token
-
-
+                if(BuildConfig.DEBUG)
+                {Log.e(TAG,"deviceToken:"+deviceToken);}
                 callback.onSuccess(deviceToken);
 
 

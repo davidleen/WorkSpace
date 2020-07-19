@@ -1,0 +1,81 @@
+def boot_path="${rootDir}/Changdu/boot_config"
+apply from: "${boot_path}/ModuleConfig.gradle"
+apply from: "${boot_path}/modules.gradle"
+ext
+        {
+
+            yiqidushu=[
+
+                    compile:COMPILE_PRODUCT.YIQIDUSHU
+                    ,modules:[]
+                    ,dept:[]
+
+
+                    , flavor_config: [
+                                            name  : "yiqidushu"
+                                            ,applicationId:'com.qilong.yiqidushu.huawei'
+                                            ,versionCode:1000
+                                            ,versionName: "1.0.0"
+//            //这里可以加入签名文件， 但我们的release包不需要签名。
+                                            //  signingConfig signingConfigs.andreader
+
+                                            ,manifestPlaceholders : [
+                                                    scheme             : "yiqidushu"
+                                                    , XUNFEI_TTS_APP_ID: "5428d0b8"
+                                            ]
+
+                                            , matchingFallbacks       : ['inland']
+                                            , missingDimensionStrategy: [
+
+                                                                                "pay"        : "huawei"
+                                                                                , "share"    : "changdu"
+
+                                                                        ]
+
+                                     ]
+                    , "source_set":  [
+                                            "setRoot":'Yiqidushu'
+                                      ]
+
+
+
+
+            ]
+
+
+            def   modules = [] 
+
+            if (COMPILE_ADVERTISE_MODULE) {
+//                modules += [
+//                        Modules.Advertise.Baidu
+//                           ]
+            }
+            if (COMPILE_CLOUD_MESSAGE) {
+              //  modules += [Modules.CloudMessage.Umeng]
+            }
+
+
+
+//            modules+=Modules.Econo.AliEC
+
+            if(COMPILE_TTS)
+            {
+                modules+=[
+                        Modules.TTS.Xunfei,
+                        Modules.TTS.Baidu
+                ]
+            }
+
+            modules+=Modules.Other.Huaweisdk
+
+
+
+            yiqidushu.modules = modules
+
+
+
+
+
+        }
+
+

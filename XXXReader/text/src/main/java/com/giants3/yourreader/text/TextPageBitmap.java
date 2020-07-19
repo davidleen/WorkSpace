@@ -5,10 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.AsyncTask;
-import android.support.v4.util.Pools;
+import androidx.core.util.Pools;
 import android.view.MotionEvent;
 
-import com.giants3.android.frame.util.Log;
 import com.giants3.yourreader.text.elements.WordElement;
 import com.xxx.reader.core.DrawParam;
 import com.xxx.reader.core.IDrawable;

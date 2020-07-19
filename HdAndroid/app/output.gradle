@@ -64,6 +64,7 @@ ext {
     def abiCodes = ['armeabi': 1, 'armeabi-v7a': 2, 'arm64-v8a': 3, 'x86': 4, 'x86_64': 5]
     //在gradle->tasks->other 找到这个任务，执行
     def moveApk = project.tasks.create("copyReleaseApkToCustomDir")
+    moveApk.group('pack')
     //改变打出的包的 名称   增加版本号， 日期
 
     //修改导出包名

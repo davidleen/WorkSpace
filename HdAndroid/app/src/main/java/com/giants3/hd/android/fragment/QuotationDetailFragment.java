@@ -3,7 +3,7 @@ package com.giants3.hd.android.fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +23,6 @@ import com.giants3.hd.entity.Quotation;
 import com.giants3.hd.entity.QuotationItem;
 import com.giants3.hd.entity.QuotationXKItem;
 import com.giants3.hd.entity.QuoteAuth;
-import com.giants3.hd.exception.HdException;
 import com.giants3.hd.noEntity.QuotationDetail;
 import com.giants3.hd.noEntity.RemoteData;
 

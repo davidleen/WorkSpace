@@ -16,7 +16,12 @@ public abstract class RemoteDataSubscriber<T> extends Subscriber<RemoteData<T>> 
 
     private BasePresenter presenter;
     private boolean silence;
+    public RemoteDataSubscriber( ) {
 
+
+        this(null);
+
+    }
     public RemoteDataSubscriber(BasePresenter presenter) {
 
 
@@ -35,7 +40,7 @@ public abstract class RemoteDataSubscriber<T> extends Subscriber<RemoteData<T>> 
     public void onCompleted() {
 
         if (!silence) {
-            if (presenter.getView() == null) return;
+            if (presenter==null||presenter.getView() == null) return;
             presenter.getView().hideWaiting();
         }
     }
@@ -44,7 +49,7 @@ public abstract class RemoteDataSubscriber<T> extends Subscriber<RemoteData<T>> 
     public void onError(Throwable e) {
 
         if (!silence) {
-            if (presenter.getView() == null) return;
+            if (presenter==null||presenter.getView() == null) return;
 
             presenter.getView().hideWaiting();
 
@@ -57,14 +62,14 @@ public abstract class RemoteDataSubscriber<T> extends Subscriber<RemoteData<T>> 
 
     @Override
     public void onNext(RemoteData<T> tRemoteData) {
-        if (presenter.getView() == null) return;
+        if (presenter==null||presenter.getView() == null) return;
         if (tRemoteData.isSuccess()) {
 
             handleRemoteData(tRemoteData);
             // getView().setData(remoteData);
         } else {
             handleFail(tRemoteData);
-            if (!silence) {
+            if (!silence&&presenter!=null&& presenter.getView()!=null) {
                 presenter.getView().showMessage(tRemoteData.message);
 
                 if (tRemoteData.code == RemoteData.CODE_UNLOGIN) {

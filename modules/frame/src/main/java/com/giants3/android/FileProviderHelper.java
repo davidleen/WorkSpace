@@ -10,8 +10,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import android.text.TextUtils;
 
 import org.xmlpull.v1.XmlPullParserException;

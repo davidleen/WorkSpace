@@ -17,10 +17,11 @@ ext{
     ANDROID_SUPPORT_V7_VERSION='27.0.2'
 
 
-    compileSdkVersion=26
+    compileSdkVersion=28
     buildToolsVersion='28.0.3'
     targetSdkVersion=26
     minSdkVersion=14
 
+    BUTTERKNIFE_VERSION="7.0.1"
 
 }

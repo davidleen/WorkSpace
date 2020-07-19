@@ -428,9 +428,11 @@ public class ProductService extends AbstractService implements InitializingBean,
             //構建縮略路径 保证文件夹存在
             //    String thumbnailPath = FileUtils.getProductThumbnailFilePath(productFilePath, product);
             //   boolean thumbnailFileExist = new File(thumbnailPath).exists();
-
-            String oldThumbnailFilePath = FileUtils.convertThumbnailUrlToPath(productFilePath, product.thumbnail);
-            boolean oldThumbnailFileExist = new File(oldThumbnailFilePath).exists();
+            boolean oldThumbnailFileExist=false;
+            if(!StringUtils.isEmpty(product.thumbnail)) {
+                String oldThumbnailFilePath = FileUtils.convertThumbnailUrlToPath(productFilePath, product.thumbnail);
+                  oldThumbnailFileExist = new File(oldThumbnailFilePath).exists();
+            }
             //四种情况下 更新图片路径  1 图片已经被修改。  2  新图片路径与旧路径不一致  3 缩略图未生成 4 缩略图对应图片不存在
             if (lastPhotoUpdateTime != product.lastPhotoUpdateTime || !newUrl.equals(product.url) || StringUtils.isEmpty(product.thumbnail) || !oldThumbnailFileExist) {
 

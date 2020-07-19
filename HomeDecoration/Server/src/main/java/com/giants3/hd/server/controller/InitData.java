@@ -2,6 +2,7 @@ package com.giants3.hd.server.controller;
 
 import com.giants3.hd.entity.GlobalData;
 import com.giants3.hd.server.ServerConfig;
+import com.giants3.hd.server.config.Assets;
 import com.giants3.hd.server.service.*;
 import com.giants3.hd.utils.GsonUtils;
 import com.giants3.hd.utils.StringUtils;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.net.InetAddress;
 
 /**
  * 应用程序启动初始化
@@ -68,7 +70,17 @@ public class InitData implements ApplicationListener<ContextRefreshedEvent> {
         if (!isStart) {
 
             final String applicationName = event.getApplicationContext().getApplicationName();
+            try {
+                InetAddress addr = InetAddress.getLocalHost();
+                String ip=addr.getHostAddress().toString(); //获取本机ip
 
+                logger.info("ip:"+ip);
+                Assets.init(ip,applicationName);
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             ServerConfig serverConfig= null;
             try {

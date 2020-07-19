@@ -8,26 +8,24 @@ import android.widget.ListView;
 
 import com.giants3.android.frame.util.Log;
 import com.giants3.android.reader.activity.BaseActivity;
+import com.giants3.android.reader.databinding.ActivityMain2Binding;
 import com.giants3.android.reader.domain.UseCaseFactory;
 import com.giants3.android.reader.domain.UseCaseHandler;
 import com.giants3.reader.entity.Book;
 import com.giants3.reader.noEntity.RemoteData;
 
-import butterknife.Bind;
 
-public class ComicListActivity extends BaseActivity {
+public class ComicListActivity extends BaseActivity<ActivityMain2Binding> {
 
-    @Bind(R.id.list)
-    ListView listView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
 
         final BookListAdapter adapter = new BookListAdapter(this);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        getViewBinding().list.setAdapter(adapter);
+        getViewBinding().list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -69,5 +67,10 @@ public class ComicListActivity extends BaseActivity {
 
             }
         });
+    }
+
+    @Override
+    protected ActivityMain2Binding createViewBinding() {
+        return ActivityMain2Binding.inflate(getLayoutInflater());
     }
 }

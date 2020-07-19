@@ -3,13 +3,12 @@ package com.xxx.reader;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.giants3.android.frame.util.Log;
 import com.xxx.reader.core.DrawParam;
 import com.xxx.reader.core.IDrawable;
 import com.xxx.reader.prepare.DrawLayer;
@@ -44,7 +43,7 @@ public class ReaderView  extends View implements IDrawable{
 
     private void init()
     {
-        setLayerType(LAYER_TYPE_HARDWARE, null);
+        setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
     public void setDrawLayer(DrawLayer drawLayer) {
         this.drawLayer = drawLayer;

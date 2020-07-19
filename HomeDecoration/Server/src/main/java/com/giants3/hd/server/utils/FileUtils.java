@@ -414,6 +414,7 @@ public class FileUtils {
      * @return
      */
     public static String convertThumbnailUrlToPath(String productFilePath, String thumbnailUrl) {
+        if(thumbnailUrl==null)return "";
         return thumbnailUrl.replace(DOWNLOAD_PRODUCT_PATH, productFilePath).replace(URL_PATH_SEPARATOR, SEPARATOR);
 
 

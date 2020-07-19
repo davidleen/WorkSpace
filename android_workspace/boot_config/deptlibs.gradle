@@ -1,0 +1,126 @@
+apply from :"${rootDir}/projectconfig.gradle"
+
+ext{
+
+
+    //所有模块定义
+    DEPTLIB = [
+            "android":[
+                    "multidex":[
+
+                            group:"com.android.support"
+                            ,name:"multidex"
+                            ,version:"1.0.3"
+                    ]
+                    , "support_compat":[
+
+                            group:"com.android.support"
+                            ,name:"support-compat"
+                            ,version:"${ANDROID_SUPPORT_V4_VERSION}"
+                    ]
+                    , "support_core_utils":[
+
+                            group:"com.android.support"
+                            ,name:"support-core-utils"
+                            ,version:"${ANDROID_SUPPORT_V4_VERSION}"
+                    ]
+                    , "support_annotations":[
+
+                            group:"com.android.support"
+                            ,name:"support-annotations"
+                            ,version:"${ANDROID_SUPPORT_V4_VERSION}"
+                    ] , "appcompat_v7":[
+
+                            group:"com.android.support"
+                            ,name:"appcompat-v7"
+                            ,version:"${ANDROID_SUPPORT_V7_VERSION}"
+                    ] , "recyclerview_v7":[
+
+                            group:"com.android.support"
+                            ,name:"recyclerview-v7"
+                            ,version:"${ANDROID_SUPPORT_V7_VERSION}"
+                    ] , "constraint_layout":[
+
+                            group:"com.android.support.constraint"
+                            ,name:"constraint-layout"
+                            ,version:"1.1.3"
+                    ]
+
+            ]
+
+           , "google":[
+
+                    "exoplayer":[
+                            group:"com.google.android.exoplayer"
+                            ,name:"exoplayer"
+                            ,version:"r2.1.1"
+                    ]
+
+
+               , "ads_identifier":[
+                        group:"com.google.android.gms"
+                        ,name:"play-services-ads-identifier"
+                        ,version:"${PLAY_SERVICES_ANALYTICS_VERSION}"
+                ]
+            ]
+            ,"okio":[
+                    group:"com.squareup.okio"
+                    ,name:"okio"
+                    ,version:"${JAVA_OKIO_VERSION}"
+            ]
+            ,"utdid4all":[
+                    group:"com.taobao.android"
+                    ,name:"utdid4all"
+                    ,version:"1.1.5.3_proguard@jar"
+            ]
+            ,"SmartRefreshLayout":[
+                    group:"com.scwang.smartrefresh"
+                    ,name:"SmartRefreshLayout"
+                    ,version:"1.1.0"
+            ]
+
+            ,"permissionsdispatcher":[
+                                            group:"com.github.hotchemi"
+                                            ,name:"permissionsdispatcher"
+                                            ,version:"3.2.0"
+                                    ]
+
+
+
+            , "changdu": [
+
+
+                    "changduApi"    : [
+                                group    : "com.changdu"
+                                , name   : "changduApi"
+                                , version: "${getChangduApiVersion}"
+                                     ]
+
+                    ,"imageviewlib": [
+                                group    : "com.changdu"
+                                , name   : "imageviewlib"
+                                , version: "1.3.4"
+                                 ]
+                    ,"netsourcelib": [
+                                group    : "com.changdu"
+                                , name   : "netsourcelib"
+                                , version: "1.0.1"
+                                 ]
+
+    ]
+
+
+    ]
+
+
+    ANNOTATION_PROCESSOR = [
+
+            "permissionsdispatcher": [
+                    group    : "com.github.hotchemi"
+                    , name   : "permissionsdispatcher-processor"
+                    , version: "3.2.0"
+            ]
+
+    ]
+
+}

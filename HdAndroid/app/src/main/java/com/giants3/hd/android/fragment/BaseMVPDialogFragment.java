@@ -3,7 +3,6 @@ package com.giants3.hd.android.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.view.View;
 
 import com.giants3.hd.android.activity.BaseActivity;
@@ -14,7 +13,6 @@ import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.mvp.NewPresenter;
 import com.giants3.hd.android.mvp.NewViewer;
 
-import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 /**
  * Created by david on 2015/12/24.

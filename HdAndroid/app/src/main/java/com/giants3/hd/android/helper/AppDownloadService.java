@@ -434,7 +434,7 @@ public class AppDownloadService extends Service {
      * <p/>
      * 针对新的package 添加通知进行拦截。
      */
-    public class PackageReceiver extends BroadcastReceiver {
+public class PackageReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals("android.intent.action.PACKAGE_ADDED")) {

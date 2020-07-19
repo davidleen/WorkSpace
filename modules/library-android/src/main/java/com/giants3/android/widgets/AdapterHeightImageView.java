@@ -10,7 +10,7 @@ import android.util.AttributeSet;
  * 自适应根据图片比例，调整控件高度。
  *
  */
-public class AdapterHeightImageView extends android.support.v7.widget.AppCompatImageView {
+public class AdapterHeightImageView extends androidx.appcompat.widget.AppCompatImageView {
 
 
     public AdapterHeightImageView(Context context) {

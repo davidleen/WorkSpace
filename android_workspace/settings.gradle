@@ -1,0 +1,58 @@
+def proejcts_path="${rootDir}${PROJECT_BOOT_PATH}/"
+def projectNameMap=[:]
+fileTree(proejcts_path) { ConfigurableFileTree configurableFileTree ->
+    //遍历
+    configurableFileTree.visit { FileVisitDetails fileVisitDetails ->
+        //在这里操作文件...
+        String filePath=fileVisitDetails.file.getAbsolutePath()
+        println "apply flavor from file : ${filePath}"
+        apply from:filePath
+        int indexOfDot=fileVisitDetails.name.indexOf(".")
+        String flavorName=indexOfDot>-1?fileVisitDetails.name.substring(0,indexOfDot):fileVisitDetails.name;
+        flavorNameMap+=["${flavorName}":filePath]
+
+    }
+    println "projectNameMap  "+projectNameMap
+}
+
+
+////所有产品
+//projects=[]
+//projectNameMap.each {
+//    item->
+//        if(item==null)return
+//        def project=find(item.key)
+//        if(project==null)
+//        {
+//            println("配置异常警告：${item.value} 文件中必须有一个根元素，名称与文件名${item.key}保持一致")
+//            return
+//        }
+//        projects+=project
+//}
+//
+//projects.each{
+//
+//    project->
+//        if(project==null) return;
+//
+//
+//        for(Map module:project.setting_modules){
+//            println module
+//            if(module==null) continue
+//            include ":${module.name}"
+//            project(":${module.name}").projectDir = new File("${module.path}")
+//
+//        }
+//}
+//
+//
+
+
+
+
+
+
+
+
+
+

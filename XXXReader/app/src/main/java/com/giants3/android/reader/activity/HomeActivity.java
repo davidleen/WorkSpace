@@ -2,34 +2,36 @@ package com.giants3.android.reader.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.View;
 
 import com.giants3.android.reader.ComicListActivity;
 import com.giants3.android.reader.R;
+import com.giants3.android.reader.databinding.ActivityHomeBinding;
+import com.giants3.android.reader.databinding.ActivityTextReaderBinding;
 import com.nostra13.universalimageloader.core.assist.ws.LibContext;
 
-import butterknife.Bind;
 
 /**
  * Created by davidleen29 on 2018/12/24.
  */
 
-public class HomeActivity extends  BaseActivity implements View.OnClickListener {
+public class HomeActivity extends  BaseActivity<ActivityHomeBinding> implements View.OnClickListener {
 
-    @Bind(R.id.text)
-    View text;
-    @Bind(R.id.comic)
-    View comic;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        comic.setOnClickListener(this);
-        text.setOnClickListener(this);
+        getViewBinding().comic.setOnClickListener(this);
+        getViewBinding().text.setOnClickListener(this);
         LibContext.init(this);
 
+    }
+
+    @Override
+    protected ActivityHomeBinding createViewBinding() {
+        return ActivityHomeBinding.inflate(getLayoutInflater());
     }
 
     @Override

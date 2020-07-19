@@ -1,0 +1,145 @@
+def boot_path="${rootDir}${PROJECT_BOOT_PATH}/boot_config"
+apply from: "${boot_path}/deptlibs.gradle"
+apply from: "${boot_path}/modules.gradle"
+def flavorsPath="${boot_path}/flavors/"
+def flavorNameMap=[:]
+fileTree(flavorsPath) { ConfigurableFileTree configurableFileTree ->
+    //遍历
+    configurableFileTree.visit { FileVisitDetails fileVisitDetails ->
+        //在这里操作文件...
+        String filePath=fileVisitDetails.file.getAbsolutePath()
+        println "apply flavor from file : ${filePath}"
+        apply from:filePath
+        int indexOfDot=fileVisitDetails.name.indexOf(".")
+        String flavorName=indexOfDot>-1?fileVisitDetails.name.substring(0,indexOfDot):fileVisitDetails.name;
+        flavorNameMap+=["${flavorName}":filePath]
+
+    }
+    println "flavorNameMap  "+flavorNameMap
+}
+ext {
+
+    product_manifestPlaceholders = [
+            //安卓SUPPORT版本
+            ANDROID_SUPPORT_VERSION: "${ANDROID_SUPPORT_V7_VERSION}"
+            //默认的百度tts 配置参数(所有产品适用)
+            , BAIDU_TTS_APP_ID     : "prefix_16867392"
+            , BAIDU_TTS_APP_KEY    : "PYeddnuvXpsGG7AO5zsSGu72"
+            , BAIDU_TTS_APP_SECRET : "hoz53s144rSf2ULo9CAjohMpG78f7daC"
+            , BAIDU_TTS_APP_SN     : "xxxxxxxx"
+
+
+            //默认的讯飞tts 配置参数(所有产品适用)
+            , XUNFEI_TTS_APP_ID    : "53a3de17"
+
+    ]
+
+
+    product_resConfigs="zh_CN"
+    product_resValue   = [
+            "bool": [
+                    "GooglePlay_Product"  : "${IS_GP_PRODUCT}"
+            ]
+
+    ]
+    product_buildConfigField   = [
+            "boolean": [
+                    "GooglePlay_Product"  : "${IS_GP_PRODUCT}"
+            ]
+
+    ]
+
+
+
+    //所有产品
+    flavors=[]
+    flavorNameMap.each {
+        item->
+            if(item==null)return
+            def flavor=find(item.key)
+            if(flavor==null)
+            {
+                println("配置异常警告：${item.value} 文件中必须有一个根元素，名称与文件名${item.key}保持一致")
+                return
+            }
+            flavors+=flavor
+    }
+
+//通用模块集合
+    product_modules = []
+    product_modules += [
+            Modules.Common.ChangduLib
+            , Modules.Common.PayLib
+            , Modules.Common.ComicLib
+            , Modules.Common.AndroidCompat
+            , Modules.Common.GifLib
+            , Modules.Other.MuPdf
+    ]
+
+    if(USE_GT_TEST)
+    {
+        product_modules+=Modules.Common.Monitor_GT
+
+    }else {
+        product_modules+=Modules.Common.Monitor_NP
+    }
+
+
+    //远程lib 依赖列表。
+    product_dept=[]
+
+    if(IS_GP_PRODUCT)
+    {
+        product_dept+=DEPTLIB.google.ads_identifier
+    }
+    product_dept+=DEPTLIB.google.exoplayer
+    product_dept+=DEPTLIB.android.multidex
+    product_dept+=DEPTLIB.android.support_compat
+    product_dept+=DEPTLIB.android.support_core_utils
+    product_dept+=DEPTLIB.android.support_annotations
+    product_dept+=DEPTLIB.android.appcompat_v7
+    product_dept+=DEPTLIB.android.recyclerview_v7
+    product_dept+=DEPTLIB.android.constraint_layout
+    product_dept+=DEPTLIB.okio
+    product_dept+=DEPTLIB.utdid4all
+    product_dept+=DEPTLIB.SmartRefreshLayout
+    product_dept+=DEPTLIB.permissionsdispatcher
+    product_dept+=DEPTLIB.changdu.changduApi
+    product_dept+=DEPTLIB.changdu.imageviewlib
+    product_dept+=DEPTLIB.changdu.netsourcelib
+
+
+
+
+    //annotation 依赖列表
+    product_annotation_processor=[]
+    product_annotation_processor+=ANNOTATION_PROCESSOR.permissionsdispatcher
+
+
+
+
+    //settings.gradle 文件中所有依赖的模块定义
+    setting_modules = [Modules.App]
+    setting_modules+=product_modules
+
+    //引入所有产品依赖模块
+    flavors.each({
+        p->
+            if(p==null) return
+            if(p.compile) {
+                setting_modules += p.modules
+            }
+
+    })
+
+
+
+
+
+
+
+
+
+
+}
+

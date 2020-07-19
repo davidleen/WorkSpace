@@ -1,17 +1,13 @@
 package com.giants3.hd.server.service;
 
-import com.giants3.hd.domain.api.Client;
 import com.giants3.hd.entity.*;
 import com.giants3.hd.exception.HdException;
 import com.giants3.hd.noEntity.CompanyPosition;
 import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.noEntity.WorkFlowMemoAuth;
-import com.giants3.hd.noEntity.app.PushMessage;
 import com.giants3.hd.server.repository.*;
 import com.giants3.hd.server.service_third.MessagePushService;
-import com.giants3.hd.server.service_third.PushService;
 import com.giants3.hd.utils.DateFormats;
-import com.giants3.hd.utils.GsonUtils;
 import com.giants3.hd.utils.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
@@ -259,7 +255,7 @@ public class WorkFlowService extends AbstractService implements InitializingBean
     public RemoteData<WorkFlowWorker> findWorkers() {
 
 
-        List<WorkFlowWorker> workFlowWorkers = workFlowWorkerRepository.findAll();
+        List<WorkFlowWorker> workFlowWorkers = workFlowWorkerRepository.findByUserNameLikeOrderByUserNameAscWorkFlowStepAsc(StringUtils.sqlLike(""));
         return wrapData(workFlowWorkers);
 
 
@@ -639,7 +635,7 @@ public class WorkFlowService extends AbstractService implements InitializingBean
                     WorkFlowWorker worker = workFlowWorkerRepository.findFirstByUserIdEqualsAndProduceTypeEqualsAndWorkFlowCodeEqualsAndReceiveEquals(user.id, produceType, message.toFlowCode, true);
 
                     //当前用户在目标流程有接收权限workFlowService
-                    if (worker != null) {
+                    if (worker != null&&(StringUtils.isEmpty(worker.jghnames)||worker.jghnames.contains(message.nextFlowFactoryName))) {
                         result.add(message);
                     }
                 }

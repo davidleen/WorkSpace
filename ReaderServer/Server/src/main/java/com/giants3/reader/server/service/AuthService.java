@@ -5,6 +5,7 @@ import com.giants3.reader.noEntity.ComicChapterInfo;
 import com.giants3.reader.noEntity.RemoteData;
 import com.giants3.reader.server.repository.*;
 import com.giants3.utils.Assets;
+import com.giants3.utils.DateFormats;
 import com.giants3.utils.StringUtils;
 import de.greenrobot.common.io.IoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -34,6 +36,8 @@ public class AuthService extends AbstractService {
     AuthCodesRepository authCodesRepository;
     @Autowired
     SettingsRepository settingsRepository;
+    @Autowired
+    CodeAnalyticsRepository codeAnalyticsRepository;
 
 
     public RemoteData<AuthCodes> getAuthCodesByKey( String key,String platform)
@@ -101,6 +105,23 @@ public class AuthService extends AbstractService {
         settings.authCodeRequestTime++;
         settingsRepository.save(settings);
 
+
+        String date = DateFormats.FORMAT_YYYY_MM_DD.format(Calendar.getInstance().getTime());
+        CodeAnalytics codeAnalytics = codeAnalyticsRepository.findFirstByDateStringEquals(date);
+        if(codeAnalytics==null)
+        {
+            codeAnalytics=new CodeAnalytics();
+            codeAnalytics.dateString=date;
+        }
+        codeAnalytics.requestTime++;
+        codeAnalyticsRepository.saveAndFlush(codeAnalytics);
+
+    }
+
+    public CodeAnalytics getTodayCodeAnalytics() {
+
+
+     return   codeAnalyticsRepository.findFirstByDateStringEquals(DateFormats.FORMAT_YYYY_MM_DD.format(Calendar.getInstance().getTime()));
 
     }
 }

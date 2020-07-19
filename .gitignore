@@ -1,3 +1,7 @@
 *.iml 
 *.apk
 ReaderServer/local.properties
+*.bin
+android_workspace/.gradle/
+android_workspace/.idea/
+

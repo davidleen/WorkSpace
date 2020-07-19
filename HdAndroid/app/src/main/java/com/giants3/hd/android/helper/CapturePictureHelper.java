@@ -6,10 +6,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.giants3.android.Utils;
 import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.io.FileUtils;
 import com.giants3.android.frame.util.StorageUtils;
@@ -261,6 +262,7 @@ public class CapturePictureHelper implements View.OnClickListener {
     @Override
     public void onClick(View v) {
 
+        if(!Utils.isActionEnable(v.hashCode(),1000) )return ;
         switch (v.getId()) {
 
             case R.id.ly_from_camera:

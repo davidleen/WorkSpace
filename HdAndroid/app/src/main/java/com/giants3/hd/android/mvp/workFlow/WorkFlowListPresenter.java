@@ -56,6 +56,7 @@ public class WorkFlowListPresenter extends BasePresenter<WorkFlowListMvp.Viewer,
 
 
         ErpOrderItem orderItem = getModel().getSelectOrderItem();
+        if(orderItem==null) return;
         String os_no = orderItem.os_no;
         int itm = orderItem.itm;
 

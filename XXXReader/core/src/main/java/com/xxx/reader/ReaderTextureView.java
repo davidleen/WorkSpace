@@ -1,16 +1,13 @@
 package com.xxx.reader;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.SurfaceTexture;
-import android.opengl.EGLContext;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.TextureView;
-import android.view.View;
 
 
 import com.giants3.android.frame.util.Log;

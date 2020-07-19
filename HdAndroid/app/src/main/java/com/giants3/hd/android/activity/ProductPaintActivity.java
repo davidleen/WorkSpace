@@ -2,10 +2,7 @@ package com.giants3.hd.android.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -16,17 +13,13 @@ import com.giants3.hd.android.fragment.MaterialSelectFragment;
 import com.giants3.hd.android.fragment.ValueEditDialogFragment;
 import com.giants3.hd.android.helper.SharedPreferencesHelper;
 import com.giants3.hd.data.utils.GsonUtils;
-import com.giants3.hd.entity.GlobalData;
 import com.giants3.hd.entity.Material;
 import com.giants3.hd.entity.ProductPaint;
 import com.giants3.hd.entity.ProductProcess;
 import com.giants3.hd.logic.ProductAnalytics;
-import com.giants3.hd.noEntity.ProductDetail;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-
-import static com.giants3.hd.android.activity.ProductMaterialActivity.PRODUCT_MATERIAL_TYPE;
 
 /**
  * 产品油漆清单编辑界面

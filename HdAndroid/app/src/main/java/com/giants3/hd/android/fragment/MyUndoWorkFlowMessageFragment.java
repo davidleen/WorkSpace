@@ -1,10 +1,9 @@
 package com.giants3.hd.android.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -26,8 +25,6 @@ import com.giants3.hd.entity.WorkFlowMessage;
 import com.giants3.hd.noEntity.RemoteData;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
-import com.lcodecore.tkrefreshlayout.footer.LoadingView;
-import com.lcodecore.tkrefreshlayout.header.progresslayout.ProgressLayout;
 
 import butterknife.Bind;
 

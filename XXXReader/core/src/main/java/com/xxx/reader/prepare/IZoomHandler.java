@@ -2,7 +2,7 @@ package com.xxx.reader.prepare;
 
 import android.animation.ValueAnimator;
 import android.graphics.Canvas;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;

@@ -3,10 +3,11 @@ package com.giants3.android.reader.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.giants3.android.reader.R;
+import com.giants3.android.reader.databinding.ActivitySplashBinding;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnPermissionDenied;
@@ -16,7 +17,7 @@ import permissions.dispatcher.RuntimePermissions;
  * Created by davidleen29 on 2018/12/24.
  */
 @RuntimePermissions
-public class SplashActivity extends BaseActivity {
+public class SplashActivity extends BaseActivity<ActivitySplashBinding> {
 
 
     public static final int SPLASH_TIME = 3000;
@@ -24,10 +25,15 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
 
         SplashActivityPermissionsDispatcher.doCreateWithPermissionCheck(this, savedInstanceState);
     }
+
+    @Override
+    protected ActivitySplashBinding createViewBinding() {
+        return ActivitySplashBinding.inflate(getLayoutInflater());
+    }
+
     @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void doCreate(final Bundle savedInstanceState) {
         goToHome();

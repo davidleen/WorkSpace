@@ -5,7 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -340,7 +340,7 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
 
 
         View adjust_limit = inflate.findViewById(R.id.adjust_limit);
-        adjust_limit.setVisibility( (AuthorityUtil.getInstance().isAdmin()  || BuildConfig.DEBUG||SharedPreferencesHelper.getLoginUser().position != CompanyPosition.FACTORY_DIRECTOR_CODE) ? View.VISIBLE : View.GONE);
+        adjust_limit.setVisibility( (AuthorityUtil.getInstance().isAdmin()  || BuildConfig.DEBUG||SharedPreferencesHelper.getLoginUser().position == CompanyPosition.FACTORY_DIRECTOR_CODE) ? View.VISIBLE : View.GONE);
         adjust_limit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

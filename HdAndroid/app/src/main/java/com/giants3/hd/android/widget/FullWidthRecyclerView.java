@@ -1,13 +1,14 @@
 package com.giants3.hd.android.widget;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by david on 2016/3/5.
  */
-public class FullWidthRecyclerView  extends RecyclerView{
+public class FullWidthRecyclerView  extends RecyclerView {
     public FullWidthRecyclerView(Context context) {
         super(context);
     }

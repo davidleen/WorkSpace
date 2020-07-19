@@ -10,7 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
                 includeCompileClasspath true
@@ -33,14 +33,15 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    compile "com.android.support:appcompat-v7:${ANDROID_SUPPORT_V7_VERSION}"
+    implementation "androidx.appcompat:appcompat:1.0.0"
+    compileOnly "androidx.databinding:viewbinding:3.6.0"
     testImplementation 'junit:junit:4.12'
 
 
-    compile project(':library-android')
+    api project(':library-android')
 
-    provided "com.jakewharton:butterknife:${BUTTERKNIFE_VERSION}"
-    provided "com.android.support:recyclerview-v7:${ANDROID_SUPPORT_V7_VERSION}"
+    compileOnly "com.jakewharton:butterknife:${BUTTERKNIFE_VERSION}"
+    provided "androidx.recyclerview:recyclerview:1.0.0"
 
 
 }

@@ -6,7 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.giants3.android.frame.util.Installation;
 import com.giants3.android.frame.util.StorageUtils;

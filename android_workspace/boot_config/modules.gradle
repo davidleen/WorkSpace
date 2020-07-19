@@ -1,0 +1,173 @@
+
+
+ext{
+
+    //外部模块 引用库路径
+    MOUDLE_EXTERNAL_PATH = "../ChangduLibs/"
+
+    //所有模块定义
+    Modules = [
+
+
+            "App":[
+
+                    "name": "Changdu",
+                    "path": "Changdu"
+            ]
+            ,
+
+
+            "Common":[
+
+                    "ComicLib":[
+
+                            "name": "ComicLib",
+                            "path": "ComicLib"
+                    ]
+                    ,
+                    "ChangduLib"  : [
+
+                            "name": "ChangduLib",
+                            "path": "ChangduLib"
+                    ],
+                    "PayLib"      : [
+
+                            "name": "ChangduPayOpenLib",
+                            "path": "ChangduPayOpenLib"
+                    ]
+                    ,
+                    "Share": [
+
+                            "name": "Share_SDK",
+                            "path": "Share_SDK"
+                    ],
+                    "AndroidCompat": [
+
+                            "name": "androidcompat",
+                            "path": MOUDLE_EXTERNAL_PATH+"androidcompat"
+                    ],
+                    "GifLib": [
+
+                            "name": "giflib",
+                            "path": MOUDLE_EXTERNAL_PATH+"giflib_target26"
+                    ],
+
+                    "Monitor_GT": [
+
+                            "name": "monitor_gt",
+                            "path": MOUDLE_EXTERNAL_PATH+"monitor_gt"
+                    ],
+                    "Monitor_NP": [
+
+                            "name": "monitor_no_op",
+                            "path": MOUDLE_EXTERNAL_PATH+"monitor_no_op"
+                    ]
+
+            ],
+
+            "Advertise"   : [
+
+
+                    "Admob"   : [
+                            "name": "admobAdvertise",
+                            "path": MOUDLE_EXTERNAL_PATH+"admobAdvertise"
+                    ]
+                    ,
+                    "Facebook": [
+                            "name": "facebookAdvertise_5.6",
+                            "path": MOUDLE_EXTERNAL_PATH+"facebookAdvertise_5.6"
+                    ],
+                    "Baidu"   : [
+                            "name": "baiduAdvertise",
+                            "path": MOUDLE_EXTERNAL_PATH+"baiduAdvertise"
+                            ,"proguard": MOUDLE_EXTERNAL_PATH+"baiduAdvertise"+File.separator+"proguard-rules.pro"
+                    ],
+                    "Tencent": [
+                            "name": "tencentAdvertise",
+                            "path": MOUDLE_EXTERNAL_PATH+"tencentadvertise"
+                    ],
+                    "Toutiao": [
+                            "name": "toutiaoAdvertise",
+                            "path": MOUDLE_EXTERNAL_PATH+"toutiaoAdvertise"
+                    ],
+                    "Ifly": [
+                            "name": "iflyAdvertise",
+                            "path": MOUDLE_EXTERNAL_PATH+"iflyadvertise_upgrade"
+                    ],
+            ]
+
+            ,
+            "CloudMessage": [
+
+                    "Umeng": [
+                            "name": "umengpush",
+                            "path": MOUDLE_EXTERNAL_PATH+"umengpush"
+                    ],
+                    "FCM"  : [
+                            "name": "fcm",
+                            "path": MOUDLE_EXTERNAL_PATH+"fcm"
+                    ]
+            ]
+
+            ,
+            "Analytics"   : [
+                    "Kochava": [
+                            "name": "kochavaAnalytics",
+                            "path": MOUDLE_EXTERNAL_PATH+"kochava"
+                    ],
+                    "Firebase": [
+                            "name": "firebaseAnalytics",
+                            "path": MOUDLE_EXTERNAL_PATH+"firebaseAnalyticsSdk"
+                    ],
+                    "Google": [
+                            "name": "googleAnalytics",
+                            "path": MOUDLE_EXTERNAL_PATH+"googleAnalyticsSdk"
+                    ],
+                    "Facebook": [
+                            "name": "facebookAnalytics",
+                            "path": MOUDLE_EXTERNAL_PATH+"facebookSdk_5.6"
+                    ],
+
+
+
+            ] ,
+            "Econo"   : [
+                    "AliEC": [
+                            "name": "AliEC",
+                            "path": MOUDLE_EXTERNAL_PATH+"AliECSdk_new"
+                    ]
+
+            ] ,
+            "TTS"   : [
+                    "Xunfei": [
+                            "name": "tts_xunfei",
+                            "path": MOUDLE_EXTERNAL_PATH+"tts_xunfei_refract"
+                    ] ,
+                    "Baidu": [
+                            "name": "tts_baidu",
+                            "path": MOUDLE_EXTERNAL_PATH+"tts_baidu_online"
+                    ]
+
+            ],
+
+            "Other" :[
+
+                    "Huaweisdk": [
+                            "name": "huaweisdk",
+                            "path":  "huaweisdk"
+                    ] ,
+                    "MuPdf": [
+                            "name": "mu_pdf",
+                            "path":  MOUDLE_EXTERNAL_PATH+"mu_pdf"
+                    ] ,
+
+
+            ]
+
+
+
+
+    ]
+
+
+}

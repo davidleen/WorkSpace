@@ -6,7 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +23,6 @@ import com.giants3.hd.data.interractor.UseCaseFactory;
 import com.giants3.hd.data.net.HttpUrl;
 import com.giants3.hd.data.utils.GsonUtils;
 import com.giants3.hd.entity.Material;
-import com.giants3.hd.exception.HdException;
 import com.giants3.hd.noEntity.RemoteData;
 
 import java.io.ByteArrayOutputStream;

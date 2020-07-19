@@ -76,6 +76,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 
         HttpServletRequestWrapper wrapper;
         //非过滤的url
+        if(request.getServletPath().equalsIgnoreCase("/jsp")) return true;
         if (ConstantData.FOR_TEST || url.contains(UN_INTERCEPT_LOGIN) || url.contains(UN_INTERCEPT_ALOGIN) || url.contains(UN_INTERCEPT_USERLIST) || url.contains(UNLOGIN) || url.contains(WEIXIN))
             return true;
         else

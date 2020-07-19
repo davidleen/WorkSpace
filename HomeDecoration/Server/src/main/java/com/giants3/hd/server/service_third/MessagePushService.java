@@ -4,6 +4,7 @@ import com.giants3.hd.entity.ErpWorkFlow;
 import com.giants3.hd.entity.Session;
 import com.giants3.hd.entity.WorkFlowMessage;
 import com.giants3.hd.entity.WorkFlowWorker;
+import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.noEntity.app.PushMessage;
 import com.giants3.hd.server.repository.SessionRepository;
 import com.giants3.hd.server.repository.UserRepository;
@@ -23,6 +24,7 @@ import java.util.List;
  */
 @Service
 public class MessagePushService extends AbstractService {
+    public static final String ANDROID = "ANDROID";
     @Autowired
     WorkFlowWorkerRepository workFlowWorkerRepository;
     @Autowired
@@ -84,7 +86,7 @@ public class MessagePushService extends AbstractService {
         List<String> workerString=new ArrayList<>();
         for(WorkFlowWorker workFlowWorker:selectWorkers)
         {
-            Session session=      sessionRepository.findFirstByUserIdEqualsAndClientEqualsOrderByLoginTimeDesc(workFlowWorker.userId,"ANDROID" );
+            Session session=      sessionRepository.findFirstByUserIdEqualsAndClientEqualsOrderByLoginTimeDesc(workFlowWorker.userId, ANDROID);
             if(session!=null&&!StringUtils.isEmpty(session.device_token))
             {
                 tokens.add(session.device_token);
@@ -126,6 +128,42 @@ public class MessagePushService extends AbstractService {
 
         }else
              pushMessage.ticker="你有一条新的待办任务";
-        pushService.sendUnicastMessage(GsonUtils.toJson(pushMessage), combineTokens);
+        sendMessage(pushMessage,combineTokens);
+    }
+
+
+
+    public void  sendMessage(PushMessage pushMessage,String tokens)
+    {
+
+        pushService.sendUnicastMessage(GsonUtils.toJson(pushMessage), tokens);
+
+    }
+
+
+    public RemoteData<Void> sendMessageToUser(long userId, String message)
+    {
+
+        Session session=sessionRepository.findFirstByUserIdEqualsAndClientEqualsOrderByLoginTimeDesc(userId,ANDROID);
+        if(session!=null)
+        {
+
+            PushMessage pushMessage=new PushMessage();
+            pushMessage.custom=String.valueOf(message.hashCode());
+            pushMessage.messageType=0;
+            pushMessage.title="测试消息";
+            pushMessage.content=StringUtils.isEmpty(message)?"xxxxxxxxxxxx":message;
+            sendMessage(pushMessage,session.device_token);
+
+            return wrapData();
+
+        }
+
+        return wrapError("session:"+session);
+
+
+
+
+
     }
 }

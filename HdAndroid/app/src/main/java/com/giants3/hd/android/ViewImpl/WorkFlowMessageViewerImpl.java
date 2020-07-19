@@ -1,7 +1,7 @@
 package com.giants3.hd.android.ViewImpl;
 
 import android.content.Context;
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;

@@ -1,0 +1,108 @@
+def boot_path="${rootDir}/Changdu/boot_config"
+apply from: "${boot_path}/ModuleConfig.gradle"
+apply from: "${boot_path}/modules.gradle"
+ext
+        {
+
+            stories=[
+
+                    compile:COMPILE_PRODUCT.STORIES
+
+                    ,modules:[]
+                    ,dept:[]
+                    , flavor_config: [
+                                    name  : "stories"
+                                    ,applicationId: 'com.changdu.stories'
+                                    , versionCode             : 9999
+                                    , versionName             : "1.0.4.2"
+                                    , resConfigs              : ["zh_CN", "zh_TW"]
+                                    , manifestPlaceholders : [UMENG_APPKEY                     : "570634e367e58e2363000e25"
+                                                              , UMENG_MESSAGE_SECRET           : "71090dbe77ae53f40d639cf4735201e2"
+                                                              , DEFAULT_NOTIFICATION_CHANNEL_ID: "000000000"
+                                                              , GOOGLE_TRACKER_ID              : "com_changdu_stories"
+                                                              , FACEBOOK_APP_ID                : "1186921521451989"
+                                                              , KOCHAVA_APP_GUID               : "kochangdunovel-eq5iob3z"
+                                                              , LINE_CHANNEL_ID                : "prefix_1533805387"
+                                                              //google plus client id  plusappkey  是一样的
+                                                              , GOOGLE_SERVER_CLIENT_ID        : "971962945245-95jkrb3c0flc6tiq1pg06eg1m4e74bu7.apps.googleusercontent.com"
+                                                              , GOOGLE_PLUS_APP_KEY            : "971962945245-95jkrb3c0flc6tiq1pg06eg1m4e74bu7.apps.googleusercontent.com"
+                                                              //twitter id  secret
+                                                              , TWITTER_APP_ID                 : "kN2iFNeh0BSPq22QxGICkRp7R"
+                                                              , TWITTER_APP_SECRET             : "sKC0oUwa6JWfiK5LXexlWjKgqW1SuiWDGGNO4q6SV5nwJn2xsx"
+                                                              //google充值 公钥
+                                                              , GOOGLE_BASE64ENCODEDPUBLICKEY  : "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhUrS/6yagjbnc9qeaCHeK4jKg1sWH0ECWP9DSp4pTRrtt/457UgBJzcu4KliU3WK9iygHy9g8Ra+QJlOutMRYwibfllLWxdVvYbBEwb9sqq1FlAh7Cvi4sMCey1qFNDw4ogWdRdJW8ULdddvSF7SLDj2BFhTqlJEWucleM+IINtTRtnZrq0Q8bX8Ma1pVEATV9x12XaHDRfvk5dIPF9ECJvp8ZjeHzFXyKnlP0lDD2cfxGkihnl7cEyCWW/fkjfCY8R6iT2D+xXBU0ased6YedlTSfKBDVfLX8eCTDtdWHeJNZildjeKXtwB/Hc9EVlZuUF+PsKpjH30u5OT2NEL+wIDAQAB"
+                                                              , scheme                         : "stories"
+                                                              , ADMOB_APP_ID                   : "ca-app-pub-1669209234634531~2722272049"
+
+                                                              //华为appid
+                                                              , HUAWEI_PAY_APP_ID              : "100664647"
+                                                              //华为充值公共钥匙
+                                                              , HUAWEI_PAY_PUBLIC_KEY          : "xxxxx"
+            ]
+
+                                    , matchingFallbacks       : ['abroad']
+                                    , missingDimensionStrategy: [
+
+                                                                    "pay"        : "abroad"
+                                                                    , "share"    : "abroad"
+
+                                                                ]
+                                    , resValue   : [
+                                                        "string": [
+                                                                "facebook_app_id"  : "1186921521451989"
+
+                                                        ]
+
+                                                    ]
+
+
+                                    ]
+                    , "source_set": [
+                            "setRoot":'products/Stories'
+                    ]
+
+
+            ]
+
+            def modules=[]
+ 
+
+            if(COMPILE_ANALYTICS) {
+                modules += Modules.Analytics.Kochava
+                modules += Modules.Analytics.Firebase
+                modules += Modules.Analytics.Google
+                modules += Modules.Analytics.Facebook
+            }
+            if (COMPILE_ADVERTISE_MODULE) {
+                modules += [Modules.Advertise.FaceBook,
+                             Modules.Advertise.Admob]
+            }
+            if (COMPILE_CLOUD_MESSAGE) {
+                modules += [Modules.CloudMessage.Umeng]
+            }
+
+
+            if(COMPILE_TTS)
+            {
+                modules+=[
+                        Modules.TTS.Xunfei,
+                        Modules.TTS.Baidu
+                ]
+            }
+
+            if(COMPILE_SHARE_AUTH)
+            {
+                modules+=Modules.Common.Share
+            }
+
+
+
+
+            stories.modules=modules
+
+
+
+
+        }
+
+

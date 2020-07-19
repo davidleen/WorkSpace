@@ -11,7 +11,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
 
@@ -29,5 +29,5 @@ dependencies {
 
     compile 'cn.yipianfengye.android:zxing-library:2.2'
     provided "com.giants3.android:api:${API_VERSION}"
-    provided "com.android.support:appcompat-v7:${ANDROID_SUPPORT_V7_VERSION}"
+    provided 'androidx.appcompat:appcompat:1.0.0'
 }

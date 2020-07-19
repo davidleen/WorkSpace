@@ -95,7 +95,7 @@ public interface WorkFlowMessageRepository extends JpaRepository<WorkFlowMessage
 
     @Query(value= " select  a.* from ( select * from  t_workflowmessage   where  state in :states and toFlowStep in :workflowSteps    and receiverId =0 and ( orderName like :key or productName like :key )  ) as a  \n" +
             " \n" +
-            "inner     join (select   UserId, mu,tie ,ProduceType,WorkFlowStep ,jghnames from T_WorkflowWorker where userId= :userId) e on  e.ProduceType=a.produceType and e.WorkFlowStep=a.toFlowStep and ( e.jghnames is null or e.jghnames='' or   CHARINDEX(a.factoryName,e.jghnames)>0) \n" +
+            "inner     join (select   UserId, mu,tie ,ProduceType,WorkFlowStep ,jghnames from T_WorkflowWorker where userId= :userId  and receive=1 ) e on  e.ProduceType=a.produceType and e.WorkFlowStep=a.toFlowStep and ( e.jghnames is null or e.jghnames='' or   CHARINDEX(a.nextFlowFactoryName,e.jghnames)>0) \n" +
             "\n" +
             "where    ToFlowStep not in (2000,3000) \n" +
             "  or (    not (((a.mrpType='T' or (a.mrpType<>'M' and a.mrpType<>'T' and a.prdType='TJ')) and e.tie=0) or ((a.mrpType='M' or   (a.mrpType<>'M' and a.mrpType<>'T' and a.prdType='MJ')) and e.mu=0)  ) )   order by orderName desc ,itm   " ,nativeQuery = true
@@ -110,6 +110,8 @@ public interface WorkFlowMessageRepository extends JpaRepository<WorkFlowMessage
 
 
 
+    @Query("select p from  T_WorkFlowMessage  p  where  p.state in :states")
+    List<WorkFlowMessage> findAllUnHandleWorkFlowMessage( @Param("states") int[]  states );
 
 
 

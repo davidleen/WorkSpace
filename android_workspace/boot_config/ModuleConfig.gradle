@@ -1,0 +1,55 @@
+
+ext {
+
+
+    //是否海外产品
+    /**
+     * 是否使用googleservice脚本。不使用时， 只显示国内产品。使用，只显示海外产品（英文西语繁体）
+     * 理由： 如果不这样区分开， 国内版本 会自动嵌入部分firebase代码， 导致可能出现 com.google.firebase.xx 类找不到的崩溃问题。
+     */
+    IS_GP_PRODUCT=true
+
+    //产品是否加入编译配置。
+    COMPILE_PRODUCT=[
+
+            //简体产品部分-----------
+            CHANGDU:!IS_GP_PRODUCT&&true
+            ,ANDREADER:!IS_GP_PRODUCT&&false
+            ,PANDREAD:!IS_GP_PRODUCT&&false
+            ,YIQIDUSHU:!IS_GP_PRODUCT&&false
+
+
+            //海外产品部分---------------
+            ,EREADER:IS_GP_PRODUCT&&false
+            ,STORIES:IS_GP_PRODUCT&&false
+            ,SPAIN:IS_GP_PRODUCT&&false
+            ,FRENCH:IS_GP_PRODUCT&&false
+            ,PORTUGAL:IS_GP_PRODUCT&&true
+    ]
+    //是否接入GT数据监测模块
+    USE_GT_TEST=false
+
+
+    /**
+     * 是否统一接入可拔插模块（开发时候可以设置false，加快编译速度）
+     */
+    USE_PLUGIN_MODULE=true
+
+    //是否接入广告模块
+    COMPILE_ADVERTISE_MODULE=USE_PLUGIN_MODULE&&true
+    //是否接入消息模块
+    COMPILE_CLOUD_MESSAGE=USE_PLUGIN_MODULE&&true
+    //是否接入统计模块
+    COMPILE_ANALYTICS=USE_PLUGIN_MODULE&&true
+    //是否接入分享授权模块
+    COMPILE_SHARE_AUTH=USE_PLUGIN_MODULE&&true
+    //是否接入听书功能模块
+    COMPILE_TTS=USE_PLUGIN_MODULE&&true
+    //是否接入电商相关功能模块
+    COMPILE_ECONO=USE_PLUGIN_MODULE&&true
+
+
+
+
+}
+

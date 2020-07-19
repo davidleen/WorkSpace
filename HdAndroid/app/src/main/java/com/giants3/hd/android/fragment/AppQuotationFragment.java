@@ -1,10 +1,9 @@
 package com.giants3.hd.android.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -18,14 +17,11 @@ import android.widget.ListView;
 
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.activity.AppQuotationActivity;
-import com.giants3.hd.android.activity.WorkFlowListActivity;
 import com.giants3.hd.android.adapter.ItemListAdapter;
 import com.giants3.hd.android.entity.TableData;
 import com.giants3.hd.android.mvp.AppQuotationMVP;
 import com.giants3.hd.android.mvp.appquotation.PresenterImpl;
 import com.giants3.hd.android.widget.RefreshLayoutConfig;
-import com.giants3.hd.data.utils.GsonUtils;
-import com.giants3.hd.entity.ErpOrderItem;
 import com.giants3.hd.entity.app.Quotation;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
@@ -163,11 +159,6 @@ public class AppQuotationFragment extends BaseMvpFragment<AppQuotationMVP.Presen
         swipeLayout.finishRefreshing();
     }
 
-    private LayoutInflater getLayoutInflater() {
-
-        return LayoutInflater.from(getActivity());
-
-    }
 
     private Runnable searchRunnable = new Runnable() {
         @Override

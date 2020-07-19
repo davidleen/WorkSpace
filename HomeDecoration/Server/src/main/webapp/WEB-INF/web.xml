@@ -29,6 +29,12 @@
 
     </servlet-mapping>
 
+
+    <servlet-mapping>
+        <servlet-name>mvc-dispatcher</servlet-name>
+        <url-pattern>/jsp/*</url-pattern>
+
+    </servlet-mapping>
     <filter>
         <filter-name>HttpWrapperFilter</filter-name>
         <filter-class>com.giants3.hd.server.filter.HttpRequestWrapFilter</filter-class>

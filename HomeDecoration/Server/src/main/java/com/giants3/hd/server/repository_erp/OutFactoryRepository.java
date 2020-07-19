@@ -23,7 +23,7 @@ public class OutFactoryRepository extends  ErpRepository {
 
 
     //查找所有的加工户信息
-    private static final java.lang.String FIND_ALL = "select DEP,NAME from DEPT where MAKE_ID=3  order by dep asc";
+    private static final java.lang.String FIND_ALL = "select DEP,NAME from DEPT where MAKE_ID=3  order by NAME asc";
 
 
 

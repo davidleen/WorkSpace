@@ -11,7 +11,7 @@ import java.util.List;
 public interface WorkFlowWorkerRepository extends JpaRepository<WorkFlowWorker, Long> {
 
       List<WorkFlowWorker>  findByUserIdEquals(long userId);
-
+    List<WorkFlowWorker> findByUserNameLikeOrderByUserNameAscWorkFlowStepAsc( String key);
     /**
      * 查找指定流程指定工作人的记录
      * @param userId

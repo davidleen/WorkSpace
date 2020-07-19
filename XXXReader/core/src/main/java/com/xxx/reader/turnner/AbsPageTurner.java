@@ -2,6 +2,7 @@ package com.xxx.reader.turnner;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.os.Handler;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.Scroller;
@@ -19,6 +20,7 @@ import com.xxx.reader.text.layout.BitmapProvider;
  */
 
 public abstract class AbsPageTurner implements IPageTurner, GestureDetector.OnGestureListener , GestureDetector.OnDoubleTapListener {
+    public static final int MSG_LONG_PRESS = 33;
     private final GestureDetector gestureDetector;
 
     @Override
@@ -54,7 +56,7 @@ public abstract class AbsPageTurner implements IPageTurner, GestureDetector.OnGe
         scroller = new Scroller(context);
 
         gestureDetector = new GestureDetector(context, this);
-//        gestureDetector.setIsLongpressEnabled(false);
+        gestureDetector.setIsLongpressEnabled(false);
 
         this.pageSwitchListener = pageSwitchListener;
         this.drawable = drawable;
@@ -118,6 +120,8 @@ public abstract class AbsPageTurner implements IPageTurner, GestureDetector.OnGe
 
     @Override
     public boolean onDown(MotionEvent e) {
+
+
         return false;
     }
 

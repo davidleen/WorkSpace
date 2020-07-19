@@ -33,8 +33,8 @@ android {
         applicationId "com.giants3.hd.android"
         minSdkVersion project.ANDROID_MIN_VERSION
         targetSdkVersion project.ANDROID_TARGET_VERSION
-        versionCode 88
-        versionName "1.8.8"
+        versionCode 93
+        versionName "1.9.3"
 
         buildConfigField "boolean", "AUTO_UPDATES", "true"
 
@@ -123,7 +123,7 @@ tasks.withType(JavaCompile) {
 }
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'androidx.multidex:multidex:2.0.0'
 
 //    compile('com.nostra13.universalimageloader:universal-image-loader:1.9.4') {
 //        exclude group: 'com.android.support'
@@ -136,14 +136,16 @@ dependencies {
     //    fullCompile project(':sharesdk')
     //友盟分析统计
     //noinspection GradleCompatible
-    compile "com.android.support:appcompat-v7:${ANDROID_SUPPORT_V7_VERSION}"
-    compile "com.android.support:design:${ANDROID_SUPPORT_V7_VERSION}"
-    compile "com.android.support:recyclerview-v7:${ANDROID_SUPPORT_V7_VERSION}"
-    compile "com.jakewharton:butterknife:${BUTTERKNIFE_VERSION}"
+
+    api "androidx.core:core:1.0.0"
+    api 'androidx.appcompat:appcompat:1.0.0'
+    api 'com.google.android.material:material:1.0.0'
+    api 'androidx.recyclerview:recyclerview:1.0.0'
+    api "com.jakewharton:butterknife:${BUTTERKNIFE_VERSION}"
     implementation 'de.greenrobot:eventbus:2.4.1'
     implementation 'com.wefika:flowlayout:0.4.1'
     // compile 'com.android.support:support-v4:23.4.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     testCompile 'junit:junit:4.12'
     implementation 'com.lcodecorex:tkrefreshlayout:1.0.7'
 //    compile project(':zxing')
@@ -152,11 +154,11 @@ dependencies {
 //     releaseCompile project(':camcomnamecard')
 //     compile project(':xunfeinamecard')
     compile "com.giants3.android:api:${API_VERSION}"
-//    compile project(':PushSDK_no_op')
+//    implementation project(':PushSDK_no_op')
 
-    releaseCompile project(':PushSDK')
+    implementation project(':PushSDK')
     releaseCompile project(path: ':umenganalysis')
-    debugCompile project(':PushSDK_no_op')
+
     debugCompile project(path: ':umenganalysis')
 
 
@@ -166,7 +168,6 @@ dependencies {
 
     }
     annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:${PERMISSIONSDISPATCHER_VERSION}"
-
+    implementation "me.leolin:ShortcutBadger:1.1.22@aar"
 //    api project(':thief')
-
 }

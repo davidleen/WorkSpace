@@ -26,6 +26,9 @@ public interface ErpWorkFlowReportRepository extends JpaRepository<ErpWorkFlowRe
   @Query(value = "SELECT  P from T_ErpWorkFlowReport    P where    p.workFlowStep=:currentUnCompletedStep  and p.percentage<1  and p.startDate>0   " )
   List<ErpWorkFlowReport> findUnCompletedStep(  @Param("currentUnCompletedStep") int currentUnCompletedStep );
 
+    @Query(value = "SELECT  a.* from (select * from T_ErpWorkFlowReport where  workFlowStep=:currentUnCompletedStep and    percentage>=1 )  as a inner join (select * from T_OrderItemWorkState where workFlowState=:orderState) as e on a.osNo=e.osNo and a.itm=e.itm  " ,nativeQuery = true)//and a.osNo='19YF499' and a.itm=2
+ List<ErpWorkFlowReport> findStepCompleteAndOrderItemStateNotComplete(  @Param("currentUnCompletedStep") int currentUnCompletedStep,@Param("orderState")int orderItemState );
+
 
     List<ErpWorkFlowReport> findByOsNoEqualsAndPrdNoEquals(String os_no, String prd_no);
 

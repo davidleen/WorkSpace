@@ -2,7 +2,7 @@ package com.giants3.hd.android.widget;
 
 import android.content.Context;
 import android.database.DataSetObserver;
-import android.support.v7.widget.LinearLayoutCompat;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.BaseAdapter;

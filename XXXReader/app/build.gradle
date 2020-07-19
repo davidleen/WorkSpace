@@ -13,7 +13,7 @@ android {
         versionName "1.0"
         manifestPlaceholders = [ANDROID_SUPPORT_VERSION: "${ANDROID_SUPPORT_V7_VERSION}"]
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
                 includeCompileClasspath true
@@ -28,27 +28,31 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+
+
+    viewBinding.enabled = true
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestCompile('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    api "com.android.support:support-compat:${ANDROID_SUPPORT_V4_VERSION}"
-    api "com.android.support:support-core-utils:${ANDROID_SUPPORT_V4_VERSION}"//
-    api "com.android.support:support-annotations:${ANDROID_SUPPORT_V4_VERSION}"
-     api "com.android.support:appcompat-v7:${ANDROID_SUPPORT_V7_VERSION}"
-    api "com.android.support:recyclerview-v7:${ANDROID_SUPPORT_V7_VERSION}"
+    api 'androidx.core:core:1.0.0'
+    api 'androidx.legacy:legacy-support-core-utils:1.0.0'//
+    api 'androidx.annotation:annotation:1.0.0'
+     api 'androidx.appcompat:appcompat:1.0.0'
+    api 'androidx.recyclerview:recyclerview:1.0.0'
 
 
     testCompile 'junit:junit:4.12'
 
     compile project(path: ':comic')
     compile project(path: ':domain')
-
-    compile 'com.jakewharton:butterknife:7.0.1'
+//
+//    compile 'com.jakewharton:butterknife:7.0.1'
 //    compile 'com.google.inject:guice:4.0:no_aop'
 //    provided 'com.google.inject:guice:4.0'
     compile 'com.giants3.reader:data:0.0.0'

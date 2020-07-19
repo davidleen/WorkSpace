@@ -30,6 +30,7 @@ import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * 订单生产流程， 物料采购流程相关业务
@@ -881,6 +882,20 @@ public class ErpWorkService extends AbstractErpService {
         workFlowMessage.thumbnail = erpOrderItemProcess.photoThumb;
 
         workFlowMessage.factoryName = erpOrderItemProcess.jgh;
+
+
+//        //尝试查询下一道流程的加工户
+//        {
+//            List<ErpOrderItemProcess> orderItemProcesses = erpWorkRepository.findOrderItemProcesses(erpOrderItemProcess.osNo, erpOrderItem.itm);
+//            for (ErpOrderItemProcess temp : orderItemProcesses)
+//            {
+//                if(temp.currentWorkFlowCode)
+//            }
+//        }
+//
+//
+//        workFlowMessage.nextFlowFactoryName = erpOrderItemProcess.jgh;
+        tryUpdateMessageNextFlowFactoryName(workFlowMessage);
         workFlowMessage.bat_no = erpOrderItem.bat_no;
         workFlowMessage.cus_no = erpOrderItem.cus_no;
 
@@ -2146,6 +2161,36 @@ public class ErpWorkService extends AbstractErpService {
         }
 
     }
+
+    @Transactional
+    public void autoCompleteWorkFlowState()
+    {
+
+        //查找出所有成品流程percentage>=1 但是OrderItemWorkState 未标记完成的数据。
+        List<ErpWorkFlowReport> reports =  erpWorkFlowReportRepository.findStepCompleteAndOrderItemStateNotComplete(ErpWorkFlow.STEP_CHENGPIN,ErpWorkFlow.STATE_WORKING);
+        if(reports!=null&&reports.size()>0) {
+            for (ErpWorkFlowReport report : reports) {
+                OrderItemWorkState orderItemState = orderItemWorkStateRepository.findFirstByOsNoEqualsAndItmEquals(report.osNo, report.itm);
+                if (orderItemState != null) {
+                    orderItemState.maxWorkFlowStep = report.workFlowStep;
+                    orderItemState.maxWorkFlowCode = report.workFlowCode;
+                    orderItemState.maxWorkFlowName = report.workFlowName;
+                    //最后一个流程完成  该货款生产结束
+                    orderItemState.workFlowState = ErpWorkFlow.STATE_COMPLETE;
+                    orderItemState.workFlowDescribe = ErpWorkFlow.STATE_NAME_COMPLETE;
+
+                     orderItemWorkStateRepository.save(orderItemState);
+                }
+
+
+            }
+        }
+
+
+    }
+
+
+
     /**
      * 自动完成外购产品入库流程
      */
@@ -2383,7 +2428,6 @@ public class ErpWorkService extends AbstractErpService {
         report.state = monitorState;
         if(report.state==ErpWorkFlowReport.STATE_MONITOR)
         {
-
             report.monitorTime = Calendar.getInstance().getTimeInMillis();
             report.monitorTimeString = DateFormats.FORMAT_YYYY_MM_DD_HH_MM.format(Calendar.getInstance().getTime());
         }
@@ -2489,4 +2533,63 @@ public class ErpWorkService extends AbstractErpService {
 
             return 0;
         }
+
+
+    /**
+     * 更新交接数据的下个流程加工户信息
+     */
+    public void tryUpdateMessageNextFlowFactoryName(WorkFlowMessage workFlowMessage)
+    {
+
+
+
+        //尝试查询下一道流程的加工户
+        String nextFlowFactoryName="";
+        {
+            List<ErpOrderItemProcess> orderItemProcesses = erpWorkRepository.findOrderItemProcesses(workFlowMessage.orderName,workFlowMessage.itm);
+            for (ErpOrderItemProcess temp : orderItemProcesses)
+            {
+                if(temp.mrpNo.startsWith(workFlowMessage.toFlowCode)&&!StringUtils.isEmpty(temp.jgh))
+                {
+                    nextFlowFactoryName=temp.jgh;
+                }
+            }
+        }
+      workFlowMessage.nextFlowFactoryName = nextFlowFactoryName;
+
+
+
+    }
+
+
+
+    @Transactional
+    public void updateUncompletedMessageNextWorkFlowFactory()
+    {
+
+        int[] state = new int[]{WorkFlowMessage.STATE_SEND, WorkFlowMessage.STATE_REWORK};
+        List<WorkFlowMessage> allUnHandleWorkFlowMessage = workFlowMessageRepository.findAllUnHandleWorkFlowMessage(state);
+        int count=0;
+        for (WorkFlowMessage workFlowMessage:allUnHandleWorkFlowMessage)
+        {
+
+            if(StringUtils.isEmpty(workFlowMessage.nextFlowFactoryName))
+            {
+                tryUpdateMessageNextFlowFactoryName(workFlowMessage);
+                if(!StringUtils.isEmpty(workFlowMessage.nextFlowFactoryName))
+                {
+
+                    count++;
+                    workFlowMessageRepository.saveAndFlush(workFlowMessage);
+                }
+            }
+
+
+        }
+
+        logger.info("updateUncompletedMessageNextWorkFlowFactory:"+count);
+
+    }
+
+
 }

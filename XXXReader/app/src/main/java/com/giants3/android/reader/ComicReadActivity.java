@@ -12,6 +12,7 @@ import com.giants3.android.frame.util.Log;
 import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.android.reader.activity.BaseActivity;
 import com.giants3.android.reader.adapter.ComicBook;
+import com.giants3.android.reader.databinding.ActivityMainBinding;
 import com.giants3.android.reader.domain.UseCaseFactory;
 import com.giants3.android.reader.domain.UseCaseHandler;
 import com.giants3.reader.noEntity.ComicChapterInfo;
@@ -37,13 +38,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ComicReadActivity extends BaseActivity {
+public class ComicReadActivity extends BaseActivity<ActivityMainBinding> {
 
     public static final String KEY_BOOK_ID = "KEY_BOOK_ID";
     public static final String KEY_BOOK = "KEY_BOOK";
 
     DrawLayer drawLayer;
-    ReaderView readerView;
     PageSwitchListener pageSwitchListener;
     BitmapProvider provider;
     public static final String KEY_FILE_PATH = "KEY_FILE_PATH";
@@ -51,14 +51,13 @@ public class ComicReadActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
 
-        readerView = (ReaderView) findViewById(R.id.reader);
+
         int[] wh = Utils.getScreenDimension(this);
 
 
-        final PagePlayer comicPagePlayer = ComicPrepareLayer.createComicPrepareLayer(this, wh[0], wh[1], readerView, new DownloadListener() {
+        final PagePlayer comicPagePlayer = ComicPrepareLayer.createComicPrepareLayer(this, wh[0], wh[1], getViewBinding().reader, new DownloadListener() {
             Map<String, List<NotifyListener>> notifyListenerMap = new HashMap<>();
 
             @Override
@@ -121,7 +120,7 @@ public class ComicReadActivity extends BaseActivity {
         //SimpleBitmapProvider provider=new SimpleBitmapProvider(this,wh[0],wh[1]);
         provider = comicPagePlayer;
 
-        drawLayer = new DrawLayer(this, comicPagePlayer, readerView);
+        drawLayer = new DrawLayer(this, comicPagePlayer, getViewBinding().reader);
 
         pageSwitchListener = new PageSwitchListener() {
             @Override
@@ -157,11 +156,11 @@ public class ComicReadActivity extends BaseActivity {
         IPageTurner pageTurner = null;
         //  pageTurner=new ScrollPageTurner(this,pageSwitchListener,readerView,provider);
 //        pageTurner = new SimPageTurner(this, pageSwitchListener, readerView, provider);
-        pageTurner = new SimulatePageTurner(this, pageSwitchListener, readerView, provider);
+        pageTurner = new SimulatePageTurner(this, pageSwitchListener, getViewBinding().reader, provider);
         // pageTurner = new SlidePageTurner(this, pageSwitchListener, readerView, provider);
 
         drawLayer.setPageTurner(pageTurner);
-        readerView.setDrawLayer(drawLayer);
+        getViewBinding().reader.setDrawLayer(drawLayer);
 
 
         long bookId = getIntent().getLongExtra(KEY_BOOK_ID, 0);
@@ -204,6 +203,11 @@ public class ComicReadActivity extends BaseActivity {
     }
 
     @Override
+    protected ActivityMainBinding createViewBinding() {
+        return ActivityMainBinding.inflate(getLayoutInflater());
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
@@ -222,14 +226,14 @@ public class ComicReadActivity extends BaseActivity {
 
             case R.id.slide:
 
-                drawLayer.setPageTurner(new SlidePageTurner(this, pageSwitchListener, readerView, provider));
+                drawLayer.setPageTurner(new SlidePageTurner(this, pageSwitchListener, getViewBinding().reader, provider));
 
                 break;
             case R.id.simulate:
-                drawLayer.setPageTurner(new SimPageTurner(this, pageSwitchListener, readerView, provider));
+                drawLayer.setPageTurner(new SimPageTurner(this, pageSwitchListener, getViewBinding().reader, provider));
                 break;
             case R.id.scroll:
-                drawLayer.setPageTurner(new ScrollPageTurner(this, pageSwitchListener, readerView, provider));
+                drawLayer.setPageTurner(new ScrollPageTurner(this, pageSwitchListener, getViewBinding().reader, provider));
                 break;
         }
 

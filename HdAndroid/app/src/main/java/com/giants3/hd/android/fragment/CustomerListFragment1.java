@@ -3,7 +3,7 @@ package com.giants3.hd.android.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -18,7 +18,6 @@ import android.widget.ListView;
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.activity.CustomerEditActivity;
 import com.giants3.hd.android.adapter.ItemListAdapter;
-import com.giants3.hd.android.entity.TableData;
 import com.giants3.hd.android.events.CustomerUpdateEvent;
 import com.giants3.hd.android.mvp.customer.CustomerListMVP;
 import com.giants3.hd.android.mvp.customer.CustomerListPresenterImpl;
@@ -155,11 +154,6 @@ public class CustomerListFragment1 extends BaseMvpFragment<CustomerListMVP.Prese
         swipeLayout.finishRefreshing();
     }
 
-    private LayoutInflater getLayoutInflater() {
-
-        return LayoutInflater.from(getActivity());
-
-    }
 
     private Runnable searchRunnable = new Runnable() {
         @Override
