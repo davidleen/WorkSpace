@@ -5,3 +5,4 @@ ReaderServer/local.properties
 android_workspace/.gradle/
 android_workspace/.idea/
 
+*.log
