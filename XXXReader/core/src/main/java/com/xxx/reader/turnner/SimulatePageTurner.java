@@ -29,7 +29,7 @@ import com.xxx.reader.turnner.sim.PageTurnHelper;
 import static com.xxx.reader.turnner.sim.PageTurnHelper.PAGGING_SLOP;
 
 public class SimulatePageTurner extends AbsPageTurner {
-    public static final int DURATION = 8000;
+    public static final int DURATION = 800;
     private PointF lastTouch = new PointF();
     private PointF firstTouch = new PointF();
     private int direction = TURN_NONE;
@@ -49,9 +49,10 @@ public class SimulatePageTurner extends AbsPageTurner {
 
 
     private boolean hasStartScroll = false;
-    PointF startPoint = new PointF();
 
     Handler handler;
+    private boolean longPressed;
+
     public SimulatePageTurner(Context context, PageSwitchListener pageSwitchListener, IDrawable drawable, BitmapProvider bitmapProvider) {
         super(context, pageSwitchListener, drawable, bitmapProvider);
         handler=new Handler()
@@ -96,6 +97,7 @@ public class SimulatePageTurner extends AbsPageTurner {
             //获取当前页和底页
             BitmapHolder topPage = null;
             BitmapHolder bottomPage = null;
+            Log.e("direction on draw:"+direction);
             if (direction == TURN_PREVIOUS  ) {
                 topPage = bitmapProvider.getPreviousBitmap();
                 bottomPage = bitmapProvider.getCurrentBitmap();
@@ -197,13 +199,15 @@ public class SimulatePageTurner extends AbsPageTurner {
         handler.removeMessages(MSG_LONG_PRESS);
         Message message = handler.obtainMessage();
         message.what=MSG_LONG_PRESS;
-        message.obj=e;
+        message.obj=MotionEvent.obtain(e);
         handler.sendMessageDelayed(message,1000);
         abortAnimation();
         useInter=false;
         scrolling=false;
+        longPressed=false;
         hasStartScroll = false;
         isDirectionSetting = false;
+        direction=TURN_NONE;
         float eX = e.getX();
         float eY = e.getY();
 
@@ -213,7 +217,6 @@ public class SimulatePageTurner extends AbsPageTurner {
         lastTouch.x = eX;
         lastTouch.y = eY;
 
-        startPoint.set(0, 0);
 
         return true;
     }
@@ -252,7 +255,9 @@ public class SimulatePageTurner extends AbsPageTurner {
     }
     float[] pos=new float[2];
     float[] tag=new float[2];
+
     protected void computeScroll() {
+
 
 
         if (scroller.computeScrollOffset()) {
@@ -277,8 +282,15 @@ public class SimulatePageTurner extends AbsPageTurner {
 
             simulate.calculatePoints(offsetX, offsetY);
 
-
             drawable.updateView();
+//            if(scroller.isFinished()&&useInter)
+//            {
+//
+//                pageSwitchListener.afterPageChanged(direction==TURN_NEXT?PageSwitchListener.TURN_NEXT:PageSwitchListener.TURN_PREVIOUS);
+//                useInter=false;
+//
+//            }
+
 
         }
 
@@ -297,6 +309,7 @@ public class SimulatePageTurner extends AbsPageTurner {
         handler.removeMessages(MSG_LONG_PRESS);
 
         int turnMoveDirection = getTurnMoveDirection(e.getX(), e.getY(),true);
+        Log.e("turnMoveDirection:"+turnMoveDirection);
         if(turnMoveDirection==TURN_NONE) return false;
         if(turnMoveDirection==TURN_PREVIOUS&&!canTurnPrevious()) return false;
         if(turnMoveDirection==TURN_NEXT&&!canTurnNext()) return false;
@@ -311,12 +324,18 @@ public class SimulatePageTurner extends AbsPageTurner {
         //scroller.startScroll(startX,startY,-drawParam.width-startX,drawParam.height-startY,3000);
         int startX= (int) e.getX();
         int startY= (int) e.getY();
-        setDirection(startX,startY);
+        setDirectionIfNeeded(startX,startY);
         useInter=true;
         autoFlipPath.reset();
         PointF dragCorner=simulate.getDragCorner();
        PointF pointF= simulate.getDestCorner();
-        autoFlipPath.moveTo(dragCorner.x,dragCorner.y);
+       if(longPressed)
+       {
+           autoFlipPath.moveTo(startX,startY);
+       }else {
+
+           autoFlipPath.moveTo(dragCorner.x, dragCorner.y);
+       }
         autoFlipPath.quadTo(0,drawParam.height/2,pointF.x,pointF.y);
         pathMeasure.setPath(autoFlipPath,false);
         scroller.startScroll(0,0, (int) pathMeasure.getLength(),0, DURATION);
@@ -354,20 +373,22 @@ public class SimulatePageTurner extends AbsPageTurner {
     {
         return isDirectionSetting;
     }
-
     private void setDirectionIfNeeded(int x, int y)
+    {
+        setDirectionIfNeeded(x,y,false);
+    }
+    private void setDirectionIfNeeded(int x, int y,boolean mustDecideDirection)
     {
 
         //还未判滚动方向
         if (!isDirectionSetting) {
 
-            int turnMoveDirection = getTurnMoveDirection(x, y);
+            int turnMoveDirection = getTurnMoveDirection(x, y,mustDecideDirection);
             if (turnMoveDirection != TURN_NONE) {
 
                 direction = turnMoveDirection;
                 isDirectionSetting = true;
                 setDirection(x, y);
-                startPoint.set(0, 0);
 
             }
 
@@ -379,7 +400,7 @@ public class SimulatePageTurner extends AbsPageTurner {
     }
 
     public void setDirection(float eX, float eY) {
-        isDirectionSetting = true;
+
 
         if (direction == TURN_NEXT) {
             simulate.mCornerTop.x = drawParam.width;
@@ -424,14 +445,11 @@ public class SimulatePageTurner extends AbsPageTurner {
 
             }
             offsetX = scroller.getFinalX();
-            offsetY = scroller.getFinalY();
-
-
-        }
+            offsetY = scroller.getFinalY();}
 
 
         hasStartScroll = true;
-        scroller.startScroll((int) offsetX, offsetY, x - offsetX, y - offsetY, 10000);
+        scroller.startScroll((int) offsetX, offsetY, x - offsetX, y - offsetY, DURATION);
         Log.e("offset:"+offsetX+","+offsetY+"==scroller:" + scroller.getStartX() + ",e1.getx()" + x + ",e2.getY()" + y + ", scroller.getFinalX():" + scroller.getFinalX() + ", scroller.getFinalY():" + scroller.getFinalY() + ",direction:" + direction);
         drawable.updateView();
     }
@@ -504,13 +522,14 @@ public class SimulatePageTurner extends AbsPageTurner {
     @Override
     public void onLongPress(MotionEvent e) {
 
+        longPressed=true;
         int x = (int) e.getX();
         int y = (int) e.getY();
 
         Log.e("onLongPress:"+x+","+y);
         //判断前翻还是后翻
         //还未判滚动方向
-       setDirectionIfNeeded(x,y);
+       setDirectionIfNeeded(x,y,true);
 
 
 
@@ -536,7 +555,7 @@ public class SimulatePageTurner extends AbsPageTurner {
 
 
 
-
+    Log.e("onactionUp:"+event);
 
         //未开始滚动 不处理，单点击时间 由onSingleTapUp 处理
         if(!scrolling)
