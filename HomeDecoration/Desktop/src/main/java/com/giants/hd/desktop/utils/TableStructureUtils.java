@@ -21,7 +21,7 @@ public class TableStructureUtils {
     public static final Type typeToken = new TypeToken<List<TableField>>() {
     }.getType();
 
-    private static List<TableField> fromJson(String jsonFileName) {
+    public  static List<TableField> fromJson(String jsonFileName) {
 
         //以包起始的地方开始   jar 根目录开始。
         InputStream inputStream = TableStructureUtils.class.getClassLoader().getResourceAsStream(DIRECTORY + jsonFileName);

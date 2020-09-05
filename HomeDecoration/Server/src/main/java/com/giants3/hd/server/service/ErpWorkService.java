@@ -1436,7 +1436,7 @@ public class ErpWorkService extends AbstractErpService {
 
         erpOrderItemProcessRepository.save(erpOrderItemProcess);
 
-        if (erpOrderItemProcess.sentQty == erpOrderItemProcess.qty) {
+        if (erpOrderItemProcess.sentQty >= erpOrderItemProcess.qty) {
             //修改erp數據的狀態  //当前流程完工
             int updateCount = erpWorkRepository.updateErpWorkFlowTime(erpOrderItemProcess.osNo, erpOrderItemProcess.itm, erpOrderItemProcess.mrpNo);
             logger.info("update erp mrp_no time success:" + updateCount);

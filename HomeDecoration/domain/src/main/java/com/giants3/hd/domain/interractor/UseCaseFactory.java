@@ -423,7 +423,19 @@ public class UseCaseFactory {
 
         return new RemoteDataPostUseCase(url,data
                 , tClass);
-    }/**
+    }
+    /**
+     * 获取列表
+     *
+     * @return
+     */
+    public <T> RemoteDataPostJsonUseCase<T> createPostJsonUseCase(String url,String json,Class<T> tClass) {
+
+        return new RemoteDataPostJsonUseCase(url,json
+                , tClass);
+    }
+
+    /**
      * 获取列表
      *
      * @return

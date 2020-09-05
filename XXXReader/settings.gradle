@@ -14,7 +14,7 @@ project(':library-java').projectDir = new File('../modules/library-java')
 include ':frame'
 project(':frame').projectDir = new File('../modules/frame')
 
-include ':test'
+//include ':test'
 
 
 include ':core',    ':comic', ':domain'

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.giants3.hd.android.R;
@@ -21,6 +24,7 @@ import com.giants3.hd.android.mvp.list.ListMVP;
 import com.giants3.hd.android.mvp.list.ListPresenterImpl;
 import com.giants3.hd.android.widget.RefreshLayoutConfig;
 import com.giants3.hd.data.interractor.UseCase;
+import com.giants3.hd.noEntity.RemoteData;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 
@@ -51,7 +55,10 @@ public class ListFragment<T> extends BaseMvpFragment<ListMVP.Presenter> implemen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
+        ViewGroup customContainer = view.findViewById(R.id.custom_container);
+        configCustomContainer(customContainer);
+        return view;
     }
 
 
@@ -65,29 +72,32 @@ public class ListFragment<T> extends BaseMvpFragment<ListMVP.Presenter> implemen
         if (adapter != null)
             listView.setAdapter(adapter);
 
+        search_text.setVisibility(supportSearch()?View.VISIBLE:View.GONE);
+        if(supportSearch()) {
 
-        search_text.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                if (search_text != null && getPresenter() != null) {
-                    String text = search_text.getText().toString().trim();
-                    getPresenter().setKey(text);
+            search_text.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
                 }
-                doSearch();
-            }
 
-            @Override
-            public void afterTextChanged(Editable s) {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-            }
-        });
+                    if (search_text != null && getPresenter() != null) {
+                        String text = search_text.getText().toString().trim();
+                        getPresenter().setKey(text);
+
+                    }
+                    doSearch();
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
+        }
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -140,11 +150,19 @@ public class ListFragment<T> extends BaseMvpFragment<ListMVP.Presenter> implemen
         searchRunnable.run();
     }
 
+    protected void configCustomContainer(ViewGroup container) {
+
+    }
 
 
     protected void addNewOne() {
 
 
+    }
+
+    protected boolean supportSearch()
+    {
+        return true;
     }
 
 
@@ -197,6 +215,8 @@ public class ListFragment<T> extends BaseMvpFragment<ListMVP.Presenter> implemen
             public UseCase getListUseCase(String key, int pageIndex, int pageSize) {
                 return getUserCase(key, pageIndex, pageSize);
             }
+
+
         };
     }
 
@@ -253,12 +273,20 @@ public class ListFragment<T> extends BaseMvpFragment<ListMVP.Presenter> implemen
 
 
     @Override
-    public void bindData(List<T> datas) {
+    public void bindData(RemoteData<T> remoteData) {
+        List<T> datas= filterData(remoteData.datas);
         adapter.setDataArray(datas);
         swipeLayout.finishRefreshing();
         swipeLayout.finishLoadmore();
+        swipeLayout.setEnableLoadmore(remoteData.hasNext());
     }
 
+
+    protected List<T> filterData(List<T> datas)
+    {
+
+        return datas;
+    }
 
 
 
@@ -271,4 +299,11 @@ public class ListFragment<T> extends BaseMvpFragment<ListMVP.Presenter> implemen
 
 
     }
+
+    protected void notifyAdapterDataChanged()
+    {
+
+        getPresenter().rebindData();
+    }
+
 }

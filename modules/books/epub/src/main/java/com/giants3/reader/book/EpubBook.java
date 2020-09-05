@@ -72,7 +72,7 @@ public class EpubBook extends AbstractBook<EpubChapter> {
 
     @Override
     public int getChapterCount() {
-        return chapters.size();
+        return chapters==null?0:chapters.size();
     }
 
 

@@ -802,14 +802,45 @@ public class ErpWorkRepository extends ErpRepository {
                 listQuery(sqlQuery, Sub_workflow_state.class, 0, 0);
     }
 
+    /**
+     * 更新erp 系統製令單完成时间。mrpno 校正 ，与erp系统一直。
+     * @param osNo
+     * @param itm
+     * @param mrpNo
+     */
+    public int updateErpWorkFlowTime(String osNo, int itm, String mrpNo)
+    {
+        if(mrpNo.startsWith(ErpWorkFlow.CODE_CHENGPIN))
+        {
+            //erp 系统成品没有前缀。
+            mrpNo=  mrpNo.replace(ErpWorkFlow.CODE_CHENGPIN + "-","");
+            return updateErpWorkFlowTime2(  osNo,   itm,   mrpNo);
+        }
 
+        if(mrpNo.startsWith(ErpWorkFlow.CODE_BAOZHUANG))
+        {
+
+            //包装的完成 erp中含有两个流程  包装 组装。
+            int count=   updateErpWorkFlowTime2(  osNo,   itm,   mrpNo);
+            String zuzhuang = ErpWorkFlow.CODE_ZUZHUANG + mrpNo.substring( ErpWorkFlow.CODE_BAOZHUANG.length());
+            count+= updateErpWorkFlowTime2(  osNo,   itm,   zuzhuang);
+            return count;
+
+        }
+        //其他情况 正常执行。
+        return    updateErpWorkFlowTime2(  osNo,   itm,   mrpNo);
+
+
+
+    }
     /**
      * 更新erp 系統製令單完成时间。
      * @param osNo
      * @param itm
      * @param mrpNo
      */
-    public int updateErpWorkFlowTime(String osNo, int itm, String mrpNo) {
+    public int updateErpWorkFlowTime2(String osNo, int itm, String mrpNo) {
+
 
 
         EntityManager entityManager = getEntityManager();

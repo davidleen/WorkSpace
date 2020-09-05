@@ -1,7 +1,5 @@
 package com.giants3.hd.noEntity;
 
-import javax.swing.*;
-
 /**
  * 模块相关的常量数据
  * Created by davidleen29 on 2016/11/19.
@@ -169,6 +167,11 @@ public class ModuleConstant {
     public static final String NAME_APP_PRODUCE_MANAGER = "HD_APP_PRODUCE_MANAGER";
     public static final String TITLE_APP_PRODUCE_MANAGER = "APP生产管理";
 
+
+
+    public static final String NAME_PRODUCER_VALUE_CONFIG = "HD_PRODUCER_VALUE_CONFIG";
+    public static final String TITLE_PRODUCER_VALUE_CONFIG = "加工户产能配置";
+
     public static String[] TITLES = new String[]{TITLE_MATERIAL, TITLE_PRODUCT, TITLE_PRODUCT_PICTURE, TITLE_MATERIAL_PICTURE,
             TITLE_PRODUCT_REPORT,
             TITLE_QUOTATION, TITLE_AUTHORITY, TITLE_SYNC_DATA, TITLE_PICTURE_UPLOAD, TITLE_MATERIAL_CLASS,
@@ -204,6 +207,7 @@ public class ModuleConstant {
             ,TITLE_APP_QUOTATION_SYNC
             ,TITLE_APP_QUOTATION_REPORT
             ,TITLE_APP_PRODUCE_MANAGER
+            , TITLE_PRODUCER_VALUE_CONFIG
 
 
 
@@ -250,6 +254,7 @@ public class ModuleConstant {
             ,NAME_APP_QUOTATION_SYNC
             ,NAME_APP_QUOTATION_REPORT
             ,NAME_APP_PRODUCE_MANAGER
+            ,NAME_PRODUCER_VALUE_CONFIG
 
 
 

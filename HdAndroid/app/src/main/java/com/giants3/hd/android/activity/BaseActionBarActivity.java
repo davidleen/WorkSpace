@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.giants3.android.interf.TitleAble;
 import com.giants3.hd.android.R;
 
 import butterknife.Bind;
@@ -17,7 +18,7 @@ import butterknife.Bind;
  * Created by davidleen29 on 2017/7/21.
  */
 
-public abstract class BaseActionBarActivity extends BaseActivity {
+public abstract class BaseActionBarActivity extends BaseActivity implements TitleAble {
     @Bind(R.id.toolbar )
     Toolbar toolbar  ;
     @Override
@@ -38,7 +39,8 @@ public abstract class BaseActionBarActivity extends BaseActivity {
      * 设置标题
      * @param title
      */
-    protected final   void setTitle(String title)
+    @Override
+    public  final   void setTitle(String title)
     {
 
 

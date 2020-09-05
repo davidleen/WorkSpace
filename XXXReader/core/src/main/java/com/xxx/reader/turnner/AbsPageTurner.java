@@ -21,6 +21,7 @@ import com.xxx.reader.text.layout.BitmapProvider;
 
 public abstract class AbsPageTurner implements IPageTurner, GestureDetector.OnGestureListener , GestureDetector.OnDoubleTapListener {
     public static final int MSG_LONG_PRESS = 33;
+    public static final int MSG_TURN = 333;
     private final GestureDetector gestureDetector;
 
     @Override

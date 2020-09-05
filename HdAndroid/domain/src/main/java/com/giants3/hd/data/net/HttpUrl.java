@@ -737,4 +737,21 @@ public class HttpUrl {
     }
 
 
+    public static String getProducerValueReport(String producer) {
+
+        String apiUrl = BASE_URL + "/api/workFlow/producerValueReport";
+        UrlFormatter formatter = new UrlFormatter(apiUrl)
+                .append("producer", producer);
+
+        return additionInfo(formatter);
+    }  public static String getProducerValueItems(String producer) {
+
+        String apiUrl = BASE_URL + "/api/workFlow/producerValueItems";
+        UrlFormatter formatter = new UrlFormatter(apiUrl)
+                .append("producer", producer);
+
+        return additionInfo(formatter);
+    }
+
+
 }

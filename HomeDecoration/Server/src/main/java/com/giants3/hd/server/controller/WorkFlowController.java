@@ -2,9 +2,12 @@ package com.giants3.hd.server.controller;
 
 
 import com.giants3.hd.entity.*;
+import com.giants3.hd.noEntity.ProducerValueItem;
+import com.giants3.hd.noEntity.ProducerValueReport;
 import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.noEntity.WorkFlowMemoAuth;
 import com.giants3.hd.server.service.ErpWorkService;
+import com.giants3.hd.server.service.ProducerService;
 import com.giants3.hd.server.service.WorkFlowService;
 import com.giants3.hd.server.utils.Constraints;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,8 @@ public class WorkFlowController extends BaseController {
 
     @Autowired
     private WorkFlowService workFlowService;
+    @Autowired
+    private ProducerService producerService;
 
     @Autowired
     private ErpWorkService erpWorkService;
@@ -442,6 +447,70 @@ public class WorkFlowController extends BaseController {
 
 
         return wrapData(workFlowService.getUnHandleWorkFlowMessageReport(hourLimit));
+
+
+    }
+    /** 查询加工户产值配置
+     * @return
+     */
+    @RequestMapping(value = "/producerValueConfig", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    RemoteData<ProducerValueConfig> getProducerValueConfig(
+    ) {
+
+
+        return producerService.getProducerValueConfig( );
+
+
+    } /** 查询加工户产值配置
+     * @return
+     */
+    @RequestMapping(value = "/producerValueItems", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    RemoteData<ProducerValueItem> getProducerValueItems(
+            @RequestParam(value = "producer",required = false,defaultValue = "" ) String producer
+    ) {
+
+
+        return producerService.getProducerValueItems(producer );
+
+
+    }
+    /** 查询加工户产值配置
+     * @return
+     */
+    @RequestMapping(value = "/producerValueReport", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    RemoteData<ProducerValueReport> getProducerValueReport( @RequestParam(value = "producer",required = false,defaultValue = "" ) String producer
+    ) {
+
+
+        return producerService.getProducerValueReport( producer);
+
+
+    }  /** 查询加工户产值配置
+     * @return
+     */
+    @RequestMapping(value = "/saveProducerValueConfig", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    RemoteData<ProducerValueConfig> saveProducerValueConfig(  @RequestBody List<ProducerValueConfig> valueConfigs  ) {
+
+
+
+        boolean result=producerService.save(valueConfigs);
+        if(result)
+        {
+            return  producerService.getProducerValueConfig();
+        }else
+        {
+            return wrapError("更新失败");
+        }
+
+
 
 
     }

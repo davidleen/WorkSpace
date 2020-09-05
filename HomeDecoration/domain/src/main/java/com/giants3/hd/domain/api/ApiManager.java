@@ -2238,7 +2238,12 @@ public class ApiManager {
     }
 
     public <T> RemoteData<T> postData(String url, T data, Class<T> tClass) throws HdException {
-        String result = client.postWithStringReturned(url, GsonUtils.toJson(data));
+        return postData(url,GsonUtils.toJson(data),tClass);
+    }
+
+
+    public <T> RemoteData<T> postData(String url, String json, Class<T> tClass) throws HdException {
+        String result = client.postWithStringReturned(url, json);
         RemoteData<T> remoteData = invokeByReflect(result,tClass);
         return remoteData;
     }

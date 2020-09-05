@@ -39,6 +39,13 @@
             android:name=".activity.ProductListActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
+
+
+
+        <activity
+            android:name=".activity.FragmentWrapActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activity.ProductDetailActivity"
             android:theme="@style/AppTheme.NoActionBar" />

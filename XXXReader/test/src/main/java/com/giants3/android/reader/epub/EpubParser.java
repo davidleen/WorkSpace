@@ -15,12 +15,10 @@ import org.xmlpull.v1.XmlPullParser;
 import android.text.TextUtils;
 import android.util.Xml;
 
-import com.changdu.util.Utils;
-import com.changdu.zip.ZipJNIInterface;
-import com.changdu.changdulib.util.Log;
-import com.changdu.changdulib.util.storage.StorageUtils;
 
+import com.giants3.android.frame.util.StorageUtils;
 import com.giants3.android.reader.Log;
+import com.giants3.android.reader.zip.ZipJNIInterface;
 
 /**
  * ����epub�鱾��ϸ��Ϣ
@@ -207,7 +205,7 @@ public class EpubParser {
 			tempbBuffer.append(epubFile.length());
 			tempbBuffer.append("/");
 			temporaryRelativePath = "/Epub/" + tempbBuffer.substring(index, tempbBuffer.length());
-			StorageUtils.buildStoragePath(tempbBuffer.toString(), 0);		
+			StorageUtils.buildStoragePath(tempbBuffer.toString());
 			tempPath = tempbBuffer.toString();
 		}
 		return tempPath;
@@ -223,7 +221,7 @@ public class EpubParser {
 		tempbBuffer.append(epubPath.substring(epubPath.lastIndexOf('/') + 1, epubPath.lastIndexOf('.')));
 		tempbBuffer.append(epubFile.length());
 		tempbBuffer.append("/");
-		StorageUtils.buildStoragePath(tempbBuffer.toString(), 0);		
+		StorageUtils.buildStoragePath(tempbBuffer.toString());
 		return tempbBuffer.toString();
 	}
 	
@@ -428,8 +426,7 @@ public class EpubParser {
 	/**
 	 * parse the OPF file in the EPUB,and put the information to the EpubBook
 	 * object
-	 * 
-	 * @param book
+	 *
 	 * @param hasNcxFile
 	 *            :
 	 */

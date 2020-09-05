@@ -93,12 +93,12 @@ public class ErpOrderItemListAdapter extends ItemListAdapter<ErpOrderItem> {
             if (item.currentOverDueDay > 5)
 
             {
-                view.setBackgroundResource(R.drawable.icon_workflow_limit_exceed_5_selector);
+                view.setBackgroundResource(R.drawable.bg_red_selector);
 
             } else if (item.currentOverDueDay > 0) {
-                view.setBackgroundResource(R.drawable.icon_workflow_limit_selector);
+                view.setBackgroundResource(R.drawable.bg_orange_selector);
             } else if (item.currentOverDueDay != 0 && Math.abs(item.currentOverDueDay) <= item.currentAlertDay) {
-                view.setBackgroundResource(R.drawable.icon_workflow_alert_selector);
+                view.setBackgroundResource(R.drawable.bg_yellow_selector);
             } else {
                 view.setBackgroundResource(R.drawable.list_item_bg_selector);
             }

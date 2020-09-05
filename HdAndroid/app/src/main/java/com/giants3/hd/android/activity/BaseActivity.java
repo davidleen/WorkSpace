@@ -62,7 +62,6 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
 //        //强制全部横屏
 //        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
         PushProxy.onAppStart();

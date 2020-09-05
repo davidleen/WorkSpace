@@ -44,10 +44,17 @@ public abstract class ListPresenterImpl<T> extends BasePresenter<ListMVP.Viewer,
 
     }
 
+
+
     private void bindData() {
 
 
-        getView().bindData(getModel().getDatas());
+        getView().bindData(getModel().getRemoteData());
+    }
+
+    @Override
+    public void rebindData() {
+        bindData();
     }
 
     @Override

@@ -1,0 +1,39 @@
+[
+  {
+    "columnName": "编号",
+    "fileName": "dept",
+    "width": 60,
+    "aClass": "S"
+  },
+  {
+    "columnName": "加工户",
+    "fileName": "name",
+    "width": 60,
+    "aClass": "S"
+  },
+  {
+    "columnName": "在产产能上限(元)",
+    "fileName": "maxOutputValue",
+    "width": 90,
+    "aClass": "F"
+  },
+  {
+    "columnName": "在产产能下限(元)",
+    "fileName": "minOutputValue",
+    "width": 90,
+    "aClass": "F",
+    "isCombineField": false
+  }, {
+    "columnName": "工人数",
+    "fileName": "workerNum",
+    "width": 60,
+    "aClass": "I",
+    "isCombineField": false
+  }, {
+    "columnName": "备注",
+    "fileName": "memo",
+    "width": 200,
+    "aClass": "S",
+    "isCombineField": false
+  }
+]

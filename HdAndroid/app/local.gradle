@@ -6,7 +6,7 @@
 ext {
 
 
-    myStoreFileName = 'D:/projects/WorkSpace/HdAndroid/doc/android.jks'
+    myStoreFileName = 'D:/projects/github/WorkSpace/HdAndroid/doc/android.jks'
     myKeyAlias = 'android'
     myKeyPassword = '123456'
     myStorePassword = '123456'

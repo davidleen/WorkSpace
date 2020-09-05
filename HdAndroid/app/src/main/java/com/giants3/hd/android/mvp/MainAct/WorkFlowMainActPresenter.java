@@ -244,6 +244,21 @@ public class WorkFlowMainActPresenter extends BasePresenter<WorkFlowMainActMvp.V
             }
         }
 
+
+
+        {
+            String[] menuTitles = resources.getStringArray(R.array.producer_menu_title);
+            String[] menuFragmentClass = resources.getStringArray(R.array.producer_menu_fragemnt_class);
+
+            for (int i = 0; i < menuTitles.length; i++) {
+                WorkFLowMainMenuAdapter.MenuItem item = new WorkFLowMainMenuAdapter.MenuItem();
+                item.title = menuTitles[i];
+                item.fragmentClass = menuFragmentClass[i];
+                menuItems.add(item);
+
+            }
+        }
+
         getView().bindMenu(menuItems);
 
 

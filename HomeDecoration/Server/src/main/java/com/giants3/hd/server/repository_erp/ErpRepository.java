@@ -21,6 +21,7 @@ import java.util.List;
 @NoRepositoryBean
 public class ErpRepository {
 
+
     @Autowired
     @Qualifier("erpEntityManagerFactory")
     private EntityManagerFactory entityManagerFactory;

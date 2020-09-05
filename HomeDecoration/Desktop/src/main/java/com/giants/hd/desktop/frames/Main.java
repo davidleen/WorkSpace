@@ -420,6 +420,20 @@ public class Main extends BaseFrame {
                 }
             });
         }
+        if (AuthorityUtil.getInstance().isViewable(ModuleConstant.NAME_PRODUCER_VALUE_CONFIG)) {
+            JMenuItem menuItem = new JMenuItem(ModuleConstant.TITLE_PRODUCER_VALUE_CONFIG);
+            menu.add(menuItem);
+            menuItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+
+                    ProducerValueConfigFrame frame = new ProducerValueConfigFrame();
+                    addInterFrame(frame);
+
+                }
+            });
+        }
 
         return menu;
 

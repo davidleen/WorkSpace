@@ -1429,5 +1429,21 @@ public class HttpUrl {
     }
 
 
+    public static String loadProducerValueConfig() {
 
+        UrlFormatter urlFormatter = new UrlFormatter(BaseUrl + "/api/workFlow/producerValueConfig");
+
+        return additionInfo(urlFormatter);
+
+
+
+    }
+
+    public static String saveProducerValueConfig() {
+
+        UrlFormatter urlFormatter = new UrlFormatter(BaseUrl + "/api/workFlow/saveProducerValueConfig");
+
+        return additionInfo(urlFormatter);
+
+    }
 }

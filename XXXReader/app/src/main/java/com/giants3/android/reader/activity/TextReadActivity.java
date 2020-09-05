@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
+import com.giants3.android.frame.util.Log;
 import com.giants3.android.frame.util.StorageUtils;
 import com.giants3.android.reader.databinding.ActivityTextReaderBinding;
 import com.giants3.android.reader.entity.User;
@@ -172,7 +173,7 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
             public void afterPageChanged(int direction) {
 
 
-               // Log.e("afterPageChanged:" + direction);
+                Log.e("afterPageChanged:" + direction);
                 if (direction == PageSwitchListener.TURN_NEXT) {
                     prepareLayer.turnNext();
                 } else {

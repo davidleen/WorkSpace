@@ -435,4 +435,39 @@
 
     </string-array>
 
+
+
+
+
+    <string-array name="table_producer_value_report" >
+        <item>编码||dept||1||60</item>
+        <item>名称||name||1||100</item>
+        <item>在产产值总计||workingValue||1||120</item>
+        <item>最大配置产值||maxOutputValue||1||120</item>
+        <item>最小配置产值||minOutputValue||1||120</item>
+        <item>工人数||workerNum||1||80</item>
+
+    </string-array>
+
+
+
+    <string-array name="table_producer_value_item" >
+        <item>编码||dept||1||60</item>
+        <item>名称||name||1||100</item>
+        <item>产值||value||1||100</item>
+
+        <item>订单号||os_no||1||100</item>
+
+        <item>产品||id_no||1||200</item>
+        <item>图片||thumbnail||2||91</item>
+
+        <item>下单日期||os_dd||1||100</item>
+
+        <item>工序||zc_name||1||100</item>
+
+        <item>制令单号||mrp_no||1||100</item>
+
+
+    </string-array>
+
 </resources>

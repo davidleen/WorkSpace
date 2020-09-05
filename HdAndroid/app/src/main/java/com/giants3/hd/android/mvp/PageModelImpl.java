@@ -25,25 +25,23 @@ public class PageModelImpl<T> implements PageModel<T> {
         return key;
     }
 
-    List<T> datas = new ArrayList<>();
 
     public void setRemoteData(RemoteData<T> remoteData) {
-        this.remoteData = remoteData;
+
 
 
         if (remoteData.pageIndex == 0) {
-            //第一页
+            this.remoteData = remoteData;
 
-            datas.clear();
-
-
+        }else{
+            this.remoteData.pageIndex=remoteData.pageIndex;
+            this.remoteData.datas.addAll(remoteData.datas);
         }
 
-        datas.addAll(remoteData.datas);
     }
 
     public List<T> getDatas() {
-        return datas;
+        return remoteData.datas;
     }
 
 
