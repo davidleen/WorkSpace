@@ -37,6 +37,14 @@ public class Simulate {
     public PointF mDragCorner = new PointF();  //拖拽时 对应的页边角。
     public PointF destCorner = new PointF();
 
+
+    /**
+     * 滚动路径起点
+     */
+    public PointF startScrollPoint = new PointF();  //拖拽时 对应的页边角。
+    //滚动路径终点。
+    public PointF endScrollPoint = new PointF();
+
     //下页的阴影旋转角度
     private float mDegrees;
     //对角线长度（触控点与对应边角）
@@ -171,6 +179,9 @@ public class Simulate {
 
     public void setDirection(float eX, float eY) {
 
+    }
+    public void setDirection(float eX, float eY,boolean turnNext) {
+
 
         if (Math.abs((eY - drawParam.height / 2)) < (drawParam.height / 6)) {
             isHorizontalTurning = true;
@@ -178,23 +189,33 @@ public class Simulate {
             isHorizontalTurning = false;
         }
 
-
+        int startScrollX=turnNext?drawParam.width:-drawParam.width;
+        int endScrollX=turnNext?-drawParam.width: drawParam.width;
         if (isHorizontalTurning) {
-            mDragCorner.set(0, 0);
+            mDragCorner.set(drawParam.width, 0);
             destCorner.set(-drawParam.width,0);
+            startScrollPoint.set(startScrollX,0);
+            endScrollPoint.set(endScrollX,0);
+
         } else {
 
             if (eY < drawParam.height / 3) {
                 mDragCorner.set(drawParam.width, 0);
                 mPinedPoint.set(0, 0);
                 destCorner.set(-drawParam.width,0);
+                startScrollPoint.set(startScrollX,1);
+                endScrollPoint.set(endScrollX,1);
             } else {
                 mDragCorner.set(drawParam.width, drawParam.height);
                 mPinedPoint.set(0, drawParam.height);
                 destCorner.set(-drawParam.width,drawParam.height);
+                startScrollPoint.set(startScrollX,drawParam.height-1);
+                endScrollPoint.set(endScrollX,drawParam.height-1);
             }
         }
 
+
+        //startScrollPoint  endScrollPoint  终点y值微调，避免顶点计算时候除不尽异常。
 
 
     }
@@ -473,11 +494,11 @@ public class Simulate {
     public PointF getDragCorner() {
 
 
-        return mDragCorner;
+        return startScrollPoint;
     }   public PointF getDestCorner() {
 
 
-        return destCorner;
+        return endScrollPoint;
     }
 //    /**
 //     * 绘制翻起页

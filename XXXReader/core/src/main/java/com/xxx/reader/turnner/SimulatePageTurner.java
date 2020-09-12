@@ -57,8 +57,8 @@ public class SimulatePageTurner extends AbsPageTurner {
     {
         //  int direction=  msg.arg1;
         Log.e("handler:"+direction);
-        isDirectionSetting=false;
         pageSwitchListener.afterPageChanged(direction==TURN_PREVIOUS?PageSwitchListener.TURN_PREVIOUS:PageSwitchListener.TURN_NEXT);
+        isDirectionSetting=false;
         direction=TURN_NONE;
 
 
@@ -116,7 +116,7 @@ public class SimulatePageTurner extends AbsPageTurner {
             Log.e("direction on draw:"+direction);
             if (direction == TURN_PREVIOUS  ) {
                 topPage = bitmapProvider.getPreviousBitmap();
-                bottomPage = bitmapProvider.getCurrentBitmap();
+                bottomPage =bitmapProvider.getCurrentBitmap();
 
             } else if (direction == TURN_NEXT  ) {
                 topPage = bitmapProvider.getCurrentBitmap();
@@ -301,7 +301,7 @@ public class SimulatePageTurner extends AbsPageTurner {
             }
 
 
-            Log.e("==========offsetX:" + offsetX + ",offsetY:" + offsetY + ",isDirectionSetting:" + isDirectionSetting);
+            Log.e("==========offsetX:" + offsetX + ",offsetY:" + offsetY + ",isDirectionSetting:" + isDirectionSetting+",direction:"+direction);
 
 
             simulate.calculatePoints(offsetX, offsetY);
@@ -333,10 +333,10 @@ public class SimulatePageTurner extends AbsPageTurner {
         handler.removeMessages(MSG_LONG_PRESS);
 
 
-        Log.e("turnMoveDirection:"+turnMoveDirection);
 
-
-
+        //scroller.startScroll(startX,startY,-drawParam.width-startX,drawParam.height-startY,3000);
+        int startX= (int) e.getX();
+        int startY= (int) e.getY();
         setDirectionIfNeeded((int)e.getX(),(int)e.getY(),true);
         if(direction==TURN_NONE) return false;
         if(direction==TURN_PREVIOUS&&!canTurnPrevious()) return false;
@@ -346,10 +346,7 @@ public class SimulatePageTurner extends AbsPageTurner {
 
         simulate.getDestPoint(direction);
 
-        //scroller.startScroll(startX,startY,-drawParam.width-startX,drawParam.height-startY,3000);
-        int startX= (int) e.getX();
-        int startY= (int) e.getY();
-        setDirectionIfNeeded(startX,startY);
+
         useInter=true;
         autoFlipPath.reset();
         PointF dragCorner=simulate.getDragCorner();
@@ -428,7 +425,7 @@ public class SimulatePageTurner extends AbsPageTurner {
     public void setDirection(float eX, float eY) {
 
 
-        if (direction == TURN_NEXT) {
+//        if (direction == TURN_NEXT) {
             simulate.mCornerTop.x = drawParam.width;
             simulate.mCornerTop.y = 0;
             simulate.mCornerBottom.x = drawParam.width;
@@ -437,16 +434,16 @@ public class SimulatePageTurner extends AbsPageTurner {
 
 
 
-        } else if (direction == TURN_PREVIOUS) {
-            simulate.mCornerTop.x = 0;
-            simulate.mCornerTop.y = 0;
-            simulate.mCornerBottom.x = 0;
-            simulate.mCornerBottom.y = drawParam.height;
+//        } else if (direction == TURN_PREVIOUS) {
+//            simulate.mCornerTop.x = 0;
+//            simulate.mCornerTop.y = 0;
+//            simulate.mCornerBottom.x = 0;
+//            simulate.mCornerBottom.y = drawParam.height;
+//
+//        }
 
-        }
 
-
-        simulate.setDirection(eX,eY);
+        simulate.setDirection(eX,eY,direction==TURN_NEXT);
 
 
     }
