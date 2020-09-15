@@ -303,7 +303,9 @@ public class SimulatePageTurner extends AbsPageTurner {
 
             Log.e("==========offsetX:" + offsetX + ",offsetY:" + offsetY + ",isDirectionSetting:" + isDirectionSetting+",direction:"+direction);
 
-
+            offsetY=Math.min(drawParam.height-1,Math.max(offsetY,1));
+            offsetX=Math.max(-drawParam.width+1,Math.min(offsetX,drawParam.width-1));
+            Log.e("==========offsetX:" + offsetX + ",offsetY:" + offsetY + ",isDirectionSetting:" + isDirectionSetting+",direction:"+direction);
             simulate.calculatePoints(offsetX, offsetY);
 
             drawable.updateView();
