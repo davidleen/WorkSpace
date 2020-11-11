@@ -1,0 +1,32 @@
+apply plugin: 'com.android.library'
+android {
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+    productFlavors {
+    }
+
+}
+
+dependencies {
+
+
+    api project(':library-java')
+
+
+    implementation "com.scwang.smartrefresh:SmartRefreshLayout:1.1.0"
+
+
+    api "androidx.appcompat:appcompat:${ANDROID_X_APPCOMPAT}"
+    api "androidx.recyclerview:recyclerview:${ANDROID_X_VERSION}"
+}

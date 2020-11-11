@@ -58,6 +58,8 @@ dependencies {
     testCompile 'org.springframework:spring-test:3.2.3.RELEASE'
 
 
+    compile project(":NetWork")
+    compile project(":library-java")
 
 
 

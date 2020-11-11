@@ -19,6 +19,7 @@ public  abstract class BaseViewModelActivity<T extends ViewBinding,VM extends Ba
         super.onCreate(savedInstanceState);
         viewModelProvider = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication()));
         viewModel=createViewModel();
+
         viewModel.getWaitMessage().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean value) {
@@ -37,6 +38,7 @@ public  abstract class BaseViewModelActivity<T extends ViewBinding,VM extends Ba
 
             }
         });
+        viewModel.handleIntent(getIntent());
     }
 
     protected   VM createViewModel( ) {

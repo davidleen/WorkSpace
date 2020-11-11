@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.scwang.smartrefresh.layout.footer.ClassicsFooter xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    app:srlTextPulling="@string/tag_scroll_up"
+    app:srlTextRelease="@string/tag_scroll_up_refresh"
+    app:srlTextLoading="@string/tag_scroll_up_loading"
+    app:srlTextNothing="@string/footer_load_nothing"
+    android:layout_height="wrap_content"
+     />

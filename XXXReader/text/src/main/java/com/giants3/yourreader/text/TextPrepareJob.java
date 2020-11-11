@@ -79,7 +79,7 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
                 if(lastTextPageInfo==null) textPageInfo.pageIndex=0;
                 else
                     textPageInfo.pageIndex=lastTextPageInfo.pageIndex+1;
-                textPageInfo.chapterIndex=0;
+                textPageInfo.chapterIndex=iChapter.getIndex();
                 result.pageValues.add(textPageInfo);
                 lastTextPageInfo=textPageInfo;
             }

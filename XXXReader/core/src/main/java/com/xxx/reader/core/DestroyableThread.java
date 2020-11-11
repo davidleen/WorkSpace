@@ -39,6 +39,11 @@ public abstract class DestroyableThread extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        onDestroy();
+    }
+
+    protected void onDestroy() {
+
     }
 
 

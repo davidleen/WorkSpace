@@ -41,7 +41,10 @@ dependencies {
     api project(':library-android')
 
     compileOnly "com.jakewharton:butterknife:${BUTTERKNIFE_VERSION}"
-    provided "androidx.recyclerview:recyclerview:1.0.0"
+
+
+    api "androidx.appcompat:appcompat:${ANDROID_X_APPCOMPAT}"
+    api "androidx.recyclerview:recyclerview:${ANDROID_X_VERSION}"
 
 
 }

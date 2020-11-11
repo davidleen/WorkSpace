@@ -1,6 +1,7 @@
 package com.giants3.reader.server.controller;
 
 import com.giants3.reader.entity.Book;
+import com.giants3.reader.entity.Chapter;
 import com.giants3.reader.entity.ComicBook;
 import com.giants3.reader.noEntity.ComicChapterInfo;
 import com.giants3.reader.noEntity.RemoteData;
@@ -52,6 +53,14 @@ public class BookController extends BaseController {
     RemoteData<ComicChapterInfo> findComicChapters(@RequestParam(value = "bookId", required = false, defaultValue = "-1") long bookId
     ) {
         return bookService.findComicChapters(bookId);
+
+    }
+
+    @RequestMapping(value = "/getChapters", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    RemoteData<Chapter> getChapters(@RequestParam(value = "bookId", required = false, defaultValue = "-1")long bookId,@RequestParam(value = "pageIndex", required = false, defaultValue = "0") int pageIndex,@RequestParam(value = "pageSize", required = false, defaultValue = "999") int pageSize   ) {
+        return bookService.findChapters(bookId,pageIndex,pageSize);
 
     }
 

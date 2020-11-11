@@ -17,5 +17,10 @@
         android:layout_width="wrap_content"
         android:text="文字展示"
         android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/list"
+        android:layout_width="wrap_content"
+        android:text="书籍列表"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

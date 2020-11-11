@@ -7,7 +7,7 @@ import javax.persistence.*;
  */
 @Entity(name="T_Chapter")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="type", discriminatorType=DiscriminatorType.INTEGER)
+@DiscriminatorColumn(name="type,chapterIndex", discriminatorType=DiscriminatorType.INTEGER)
 @DiscriminatorValue("0")
 public class Chapter {
 
@@ -22,6 +22,16 @@ public class Chapter {
 
 
     public String bookName;
+
+    public int chapterIndex;
+    public String url;
+
+
+    public long fileSize;
+
+    public int volumeIndex;
+    public String volumeName;
+
 
 
 }

@@ -1,9 +1,6 @@
 package com.giants3.reader.server.service;
 
-import com.giants3.reader.entity.Book;
-import com.giants3.reader.entity.ComicBook;
-import com.giants3.reader.entity.ComicChapter;
-import com.giants3.reader.entity.ComicChapterFile;
+import com.giants3.reader.entity.*;
 import com.giants3.reader.noEntity.ComicChapterInfo;
 import com.giants3.reader.noEntity.RemoteData;
 import com.giants3.reader.server.repository.BookRepository;
@@ -76,7 +73,17 @@ public class BookService extends AbstractService {
 
     }
 
-    public RemoteData<ComicChapterInfo> findComicChapters(long bookId) {
+    public RemoteData<Chapter> findChapters(long bookId, int pageIndex, int pageSize) {
+
+
+        return wrapData();
+
+
+
+    }
+
+
+        public RemoteData<ComicChapterInfo> findComicChapters(long bookId) {
 
         final ComicBook comicBook = comicBookRepository.findOne(bookId);
 

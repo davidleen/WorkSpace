@@ -2,7 +2,9 @@ package com.xxx.reader.prepare;
 
 
 import com.giants3.android.frame.util.Log;
+import com.xxx.reader.book.ChapterMeasureResult;
 import com.xxx.reader.core.DestroyableThread;
+import com.xxx.reader.core.PageBitmap;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -14,14 +16,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class PrepareThread extends DestroyableThread {
 
 
-    private PagePlayer pagePlayer;
+    private PagePrepareWorker pagePlayer;
     private int maxCacheSize;
     //每个页面的准备顺序   当前  下一页 ， 上一页 ，下下页，  上上页
     int[] indexOfPage;// = new int[]{0, 1, -1, 2, -2}
 
-    public PrepareThread(PagePlayer pagePlayer, int maxCacheSize) {
+    public PrepareThread(PagePrepareWorker pagePrepareWorker, int maxCacheSize) {
 
-        this.pagePlayer = pagePlayer;
+        this.pagePlayer = pagePrepareWorker;
         this.maxCacheSize = maxCacheSize;
 
         indexOfPage = new int[maxCacheSize];
@@ -51,6 +53,8 @@ public class PrepareThread extends DestroyableThread {
 
 
         for (int index : indexOfPage) {
+
+
             pagePlayer.preparePage(index, skip);
         }
 
@@ -60,5 +64,14 @@ public class PrepareThread extends DestroyableThread {
 
     public void setSkip(boolean skip) {
         this.skip.set(skip);
+    }
+
+
+    @Override
+    protected void onDestroy() {
+
+        pagePlayer=null;
+
+
     }
 }

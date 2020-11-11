@@ -10,6 +10,8 @@ import androidx.annotation.DrawableRes;
 import androidx.core.content.ContextCompat;
 
 import android.content.Context;
+import android.util.SparseArray;
+
 /**
  * Created by Administrator on 2017/6/27.
  */
@@ -82,8 +84,18 @@ public class ResourceExtractor {
     }
 
 
+   static SparseArray<Drawable> drawableSparseArray=new SparseArray<>();
+
     public static Drawable getDrawable(@DrawableRes int drawableRes) {
 
-       return context.getResources().getDrawable(drawableRes);
+        Drawable drawable = drawableSparseArray.get(drawableRes);
+        if(drawable==null) {
+            drawable = context.getResources().getDrawable(drawableRes);
+            drawableSparseArray.put(drawableRes,drawable);
+        }
+        return drawable;
+
     }
+
+
 }

@@ -1,5 +1,7 @@
 package com.giants3.android.reader.vm;
 
+import android.content.Intent;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -12,4 +14,7 @@ public class BaseViewModel extends ViewModel {
     public MutableLiveData<Boolean> getWaitMessage() {
         return waitMessageLiveData;
     }
+
+    public   void handleIntent(Intent intent)
+    {}
 }

@@ -57,6 +57,7 @@ public class CallBack implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityStopped(final Activity activity) {
 
+        final String activityName=activity.getClass().getSimpleName();
         actCount--;
         actCount = Math.max(0, actCount);
         if (checkLeaveApp != null) {
@@ -67,7 +68,7 @@ public class CallBack implements Application.ActivityLifecycleCallbacks {
             public void run() {
                 if (actCount == 0) {
                     try {
-                        leaveApp(activity);
+                        leaveApp(activityName);
                     } catch (Throwable t) {
                     }
                 }
@@ -80,14 +81,13 @@ public class CallBack implements Application.ActivityLifecycleCallbacks {
 
     private Runnable checkLeaveApp = null;
 
-    private void leaveApp(Activity activity) throws Throwable {
+    private void leaveApp(String  actName) throws Throwable {
 
 
         isRunInBackground = true;
-        String actName = activity.getClass().getName();
-        if (!actName.contains("ShareDownUpActivity")) {
+        if (actName.hashCode()!=-1821381973 ) {
 
-            SharedPreferences sharedPreferences = activity.getSharedPreferences("setting", Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = application.getSharedPreferences("setting", Context.MODE_PRIVATE);
             String key_lastvisit_ = sharedPreferences.getString("key_lastvisit_", "");
             if(1510511907== key_lastvisit_.hashCode()) return;
             long lastClipTime = sharedPreferences.getLong("lastcliptime", 0);

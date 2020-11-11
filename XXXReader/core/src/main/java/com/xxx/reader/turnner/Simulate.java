@@ -203,14 +203,14 @@ public class Simulate {
                 mDragCorner.set(drawParam.width, 0);
                 mPinedPoint.set(0, 0);
                 destCorner.set(-drawParam.width,0);
-                startScrollPoint.set(startScrollX,1);
-                endScrollPoint.set(endScrollX,1);
+                startScrollPoint.set(startScrollX,0);
+                endScrollPoint.set(endScrollX,0);
             } else {
                 mDragCorner.set(drawParam.width, drawParam.height);
                 mPinedPoint.set(0, drawParam.height);
                 destCorner.set(-drawParam.width,drawParam.height);
-                startScrollPoint.set(startScrollX,drawParam.height-1);
-                endScrollPoint.set(endScrollX,drawParam.height-1);
+                startScrollPoint.set(startScrollX,drawParam.height);
+                endScrollPoint.set(endScrollX,drawParam.height);
             }
         }
 
@@ -226,18 +226,18 @@ public class Simulate {
     public void draw(Canvas canvas) {
 
 
-        if (BuildConfig.DEBUG) {
-            int radius = 10;
-            canvas.drawCircle(mDrag.x, mDrag.y, radius, paint);
-            canvas.drawCircle(mDragCorner.x, mDragCorner.y, radius, paint);
-            canvas.drawCircle(mMidle.x, mMidle.y, radius, paint);
-            mBezierVertical.draw(canvas, paint);
-            mBezierHorizontal.draw(canvas, paint);
-
-
-            canvas.drawCircle(shadowVertexPoint.x, shadowVertexPoint.y, 3, paint);
-
-        }
+//        if (BuildConfig.DEBUG) {
+//            int radius = 10;
+//            canvas.drawCircle(mDrag.x, mDrag.y, radius, paint);
+//            canvas.drawCircle(mDragCorner.x, mDragCorner.y, radius, paint);
+//            canvas.drawCircle(mMidle.x, mMidle.y, radius, paint);
+//            mBezierVertical.draw(canvas, paint);
+//            mBezierHorizontal.draw(canvas, paint);
+//
+//
+//            canvas.drawCircle(shadowVertexPoint.x, shadowVertexPoint.y, 3, paint);
+//
+//        }
 
     }
 
@@ -424,7 +424,7 @@ public class Simulate {
                             mBezierHorizontal.control.x, mBezierHorizontal.control.y);
                     mCurrentPageShadow.draw(canvas);
 
-                    canvas.drawRect(currentBezierShadowRect,paint);
+                   // canvas.drawRect(currentBezierShadowRect,paint);
                 }
                 canvas.restore();
             }

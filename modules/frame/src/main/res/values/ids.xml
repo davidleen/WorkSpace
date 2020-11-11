@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <!-- 特殊定义id  给 view tag 作做传递标记 -->
+    <item type="id" name="item_click_wrap_data" />
+    <item type="id" name="item_click_position" />
+</resources>

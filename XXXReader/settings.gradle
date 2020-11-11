@@ -8,6 +8,11 @@ project(':network').projectDir = new File('../modules/network_okhttp')
 include ':library-android'
 project(':library-android').projectDir = new File('../modules/library-android')
 
+include ':library-refresh-android'
+project(':library-refresh-android').projectDir = new File('../modules/library-refresh-android')
+
+include ':library-router'
+project(':library-router').projectDir = new File('../modules/router')
 include ':library-java'
 project(':library-java').projectDir = new File('../modules/library-java')
 

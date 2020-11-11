@@ -8,7 +8,7 @@ import android.view.View;
 import com.giants3.android.reader.ComicListActivity;
 import com.giants3.android.reader.R;
 import com.giants3.android.reader.databinding.ActivityHomeBinding;
-import com.giants3.android.reader.databinding.ActivityTextReaderBinding;
+import com.github.mzule.activityrouter.router.Routers;
 import com.nostra13.universalimageloader.core.assist.ws.LibContext;
 
 
@@ -25,7 +25,8 @@ public class HomeActivity extends  BaseActivity<ActivityHomeBinding> implements 
         super.onCreate(savedInstanceState);
         getViewBinding().comic.setOnClickListener(this);
         getViewBinding().text.setOnClickListener(this);
-        LibContext.init(this);
+        getViewBinding().list.setOnClickListener(this);
+        LibContext.init(getApplicationContext());
 
     }
 
@@ -48,6 +49,11 @@ public class HomeActivity extends  BaseActivity<ActivityHomeBinding> implements 
                     Intent intent = new Intent(HomeActivity.this, TextReadActivity.class);
                     intent.putExtra("filePath", "/sdcard/Download/2222222222222.epub");
                     startActivity(intent);
+                }
+
+                break;   case R.id.list: {
+
+                        Routers.openForResult(this,"XXX://bookList",999);
                 }
 
                 break;

@@ -7,7 +7,6 @@ import com.giants3.android.frame.util.Log;
 import com.xxx.reader.book.ChapterMeasureResult;
 import com.xxx.reader.book.IBook;
 import com.xxx.reader.book.IChapter;
-import com.xxx.reader.core.BuildConfig;
 import com.xxx.reader.core.CacheUpdateListener;
 import com.xxx.reader.core.DrawParam;
 import com.xxx.reader.core.IDrawable;
@@ -18,6 +17,7 @@ import com.xxx.reader.text.layout.BitmapHolder;
 import com.xxx.reader.text.layout.BitmapProvider;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -30,7 +30,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by davidleen29 on 2017/8/25.
  */
 
-public class PagePlayer<C extends IChapter, P extends PageInfo, DP extends DrawParam, PB extends PageBitmap> extends BasePlayer<C, DP> implements BitmapProvider, CacheUpdateListener {
+public class PagePlayer<C extends IChapter, P extends PageInfo, DP extends DrawParam, PB extends PageBitmap> extends BasePlayer<C, DP> implements BitmapProvider, CacheUpdateListener, PrepareListener
+{
 
     public static final boolean DEBUG = true && BuildConfig.DEBUG;
 
@@ -109,8 +110,7 @@ public class PagePlayer<C extends IChapter, P extends PageInfo, DP extends DrawP
         }
 
 
-        prepareThread = new PrepareThread(this, MAX_CACHE_SIZE);
-        prepareThread.start();
+
 
 
 
@@ -382,6 +382,7 @@ public class PagePlayer<C extends IChapter, P extends PageInfo, DP extends DrawP
 
         if (prepareThread != null) {
             prepareThread.setDestroy();
+            prepareThread=null;
         }
 
 
@@ -393,4 +394,8 @@ public class PagePlayer<C extends IChapter, P extends PageInfo, DP extends DrawP
     }
 
 
+    @Override
+    public void onPagePrepared(List<PageInfo> pageInfos) {
+
+    }
 }

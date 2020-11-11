@@ -22,6 +22,9 @@
 
 
         <activity android:name=".ComicListActivity">
+        </activity><activity android:name=".activity.ChapterListActivity">
+        </activity>
+        <activity android:name=".activity.BookListActivity">
 
         </activity>
 
@@ -92,7 +95,16 @@
 
             </intent-filter>
         </activity>
-
+        <activity
+            android:name="com.github.mzule.activityrouter.router.RouterActivity"
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="${SCHEME}" /><!--改成自己的scheme-->
+            </intent-filter>
+        </activity>
 
         <!--全面屏处理-->
         <meta-data

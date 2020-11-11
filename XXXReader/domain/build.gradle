@@ -28,7 +28,7 @@ dependencies {
     // explicitly depend on RxJava's latest version for bug fixes and new features.
     compile "io.reactivex:rxjava:${rxVersion}"
     compile "com.google.code.gson:gson:${gsonVersion}"
-    compileOnly 'com.giants3.reader:data:0.0.0'
+    compileOnly "com.giants3.reader:data:${DataVersion}"
 
 
     compile project(path: ':network')

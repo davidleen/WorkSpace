@@ -36,7 +36,7 @@ public class EpubBook extends AbstractBook<EpubChapter> {
             int size= spineReferences.size();
             chapters=new ArrayList<>(size);
             for (int i = 0; i < size; i++) {
-                chapters.add(new EpubChapter(book,spineReferences.get(i)));
+                chapters.add(new EpubChapter(book,spineReferences.get(i),i));
             }
         } catch (IOException e) {
             e.printStackTrace();

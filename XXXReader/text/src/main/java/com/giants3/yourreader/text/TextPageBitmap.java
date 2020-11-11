@@ -1,13 +1,16 @@
 package com.giants3.yourreader.text;
 
+import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import androidx.core.util.Pools;
 import android.view.MotionEvent;
 
+import com.giants3.android.kit.ResourceExtractor;
 import com.giants3.yourreader.text.elements.WordElement;
 import com.xxx.reader.core.DrawParam;
 import com.xxx.reader.core.IDrawable;
@@ -27,11 +30,13 @@ public class TextPageBitmap extends PageBitmap<TextPageInfo,DrawParam> {
 
     Bitmap bitmap;
     DrawTask drawTask;
+    Canvas canvas;
+   Drawable drawable = ResourceExtractor.getDrawable(R.mipmap.bg1);
 
     public TextPageBitmap(Context context,int screenWidth, int screenHeight, IDrawable iDrawable) {
         super(screenWidth, screenHeight, iDrawable);
         bitmap=Bitmap.createBitmap(screenWidth,screenHeight, Bitmap.Config.ARGB_8888);
-
+        canvas =new Canvas(bitmap);
     }
 
     @Override
@@ -42,10 +47,9 @@ public class TextPageBitmap extends PageBitmap<TextPageInfo,DrawParam> {
     @Override
     protected void drawPage(TextPageInfo pageInfo, DrawParam drawParam) {
 
-
-        Canvas canvas =new Canvas(bitmap);
         canvas.drawColor(Color.WHITE);
-        Paint paint = new Paint();paint.setTextSize(SettingContent.getInstance().getTextSize());
+        Paint paint = new Paint();
+        paint.setTextSize(SettingContent.getInstance().getTextSize());
 //        canvas.drawText("xxxxxxxxxx",500,500, paint);
 //        Log.e("draw Pageinfo");
 //
@@ -99,7 +103,7 @@ public class TextPageBitmap extends PageBitmap<TextPageInfo,DrawParam> {
     {
 
         public TextPageInfo textPageInfo;
-
+        TextPageDrawHelper drawHelper;
         Canvas canvas;
         Paint paint;
         IDrawable iDrawable;
@@ -110,13 +114,20 @@ public class TextPageBitmap extends PageBitmap<TextPageInfo,DrawParam> {
             this.canvas = canvas;
             this.paint = paint;
             this.iDrawable = iDrawable;
+
+            drawHelper=new TextPageDrawHelper();
         }
         @Override
         protected Object doInBackground(Object[] objects) {
 
 
-
+            drawHelper.draw(canvas,textPageInfo);
             textPageInfo.elements=new ArrayList<>();
+
+
+
+            drawable.setBounds(0,0,canvas.getWidth(),canvas.getHeight());
+            drawable.draw(canvas);
 
 
             float textSize = SettingContent.getInstance().getTextSize();

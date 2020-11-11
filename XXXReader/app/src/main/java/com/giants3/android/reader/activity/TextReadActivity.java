@@ -1,10 +1,15 @@
 package com.giants3.android.reader.activity;
 
+import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
+
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
@@ -17,6 +22,7 @@ import com.giants3.android.reader.vm.UserModel;
 import com.giants3.file.FileContentType;
 import com.giants3.io.FileUtils;
 import com.giants3.reader.book.EpubChapter;
+import com.giants3.yourreader.text.BookService;
 import com.giants3.yourreader.text.TextPageBitmap;
 import com.giants3.yourreader.text.TextPageInfo;
 import com.giants3.yourreader.text.TextPrepareJob;
@@ -43,7 +49,7 @@ import java.util.Calendar;
 
 
 public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBinding,TextReadViewModel> {
-
+    BookService.BookReadController bookReadController;
       PagePlayer<IChapter, TextPageInfo, DrawParam, TextPageBitmap> prepareLayer ;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,7 +65,35 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
                     prepareLayer.updateBook(iBook);
             }
         });
-        getViewModel().handleIntent(getIntent());
+
+        Intent intent=new Intent(this, BookService.class);
+        bindService(intent,new ServiceConnection(){
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+
+                bookReadController= (BookService.BookReadController) service;
+                bookReadController.setPrepareListener(prepareLayer);
+
+                getViewModel().getBookInfo().observe(TextReadActivity.this, new Observer<IBook>() {
+                    @Override
+                    public void onChanged(IBook iBook) {
+
+
+
+                        if (iBook != null)
+                            bookReadController.updateBook(iBook);
+                    }
+                });
+
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        }, Service.BIND_AUTO_CREATE);
+
+
 
     }
 
@@ -203,4 +237,13 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
 
     }
 
+    @Override
+    protected void onDestroy() {
+        if (prepareLayer!=null) {
+            prepareLayer.onDestroy();
+        }
+
+
+        super.onDestroy();
+    }
 }

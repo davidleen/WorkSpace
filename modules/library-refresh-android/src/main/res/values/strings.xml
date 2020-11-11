@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="footer_load_nothing">Loading completed.</string>
+    <string name="tag_scroll_up">Pull up to load more</string>
+    <string name="tag_scroll_up_loading">Loading...</string>
+    <string name="tag_scroll_up_refresh">Release to load</string>
+    <string name="tag_scroll_last_update">M-d HH:mm</string>
+    <string name="tag_scroll_refresh">Release to refresh</string>
+    <string name="reload_string">Reload</string>
+    <string name="refresh">Refresh</string>
+    <string name="hint_loading">Loading...</string>
+    <string name="tag_scroll_down">Pull down to refresh</string>
+</resources>

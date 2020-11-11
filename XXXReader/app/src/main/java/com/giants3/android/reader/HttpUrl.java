@@ -14,9 +14,9 @@ import com.giants3.net.UrlFormatter;
 public class HttpUrl {
     public static final String SHARE_FILE = "url_file";
     public static final String CLIENT_TYPE = "ANDROID";
-    public static final String DEFAULT_IPAddress = "59.56.182.132";
-    public static final String DEFAULT_IPPort = "8080";
-    public static final String DEFAULT_ServiceName = "ReaderServer";
+    public static final String DEFAULT_IPAddress = "www.giants3.xyz";
+    public static final String DEFAULT_IPPort = "";
+    public static final String DEFAULT_ServiceName = "service";
     public static String BASE_URL = "http://127.0.0.1:8080/ReaderServer/";
     private static String versionCode = "111";
     private static String versionName = "";
@@ -125,5 +125,13 @@ public class HttpUrl {
         return additionInfo(formatter);
 
 
+    }
+
+    public static String getChapterList(long bookId) {
+        String url = BASE_URL + "api/book/getChapters";
+
+        UrlFormatter formatter = new UrlFormatter(url);
+        formatter.append("bookId",bookId);
+        return additionInfo(formatter);
     }
 }

@@ -44,6 +44,7 @@ public class EpubChapter implements IChapter {
     private String path;
     private Book book;
     private SpineReference resource;
+    private int index;
 
     public void setHasChild(boolean hasChild) {
         this.mHasChild = hasChild;
@@ -96,9 +97,10 @@ public class EpubChapter implements IChapter {
     }
 
 
-    EpubChapter(Book book, SpineReference resource) {
+    EpubChapter(Book book, SpineReference resource,int index) {
         this.book = book;
         this.resource = resource;
+        this.index = index;
     }
 
 
@@ -124,7 +126,7 @@ public class EpubChapter implements IChapter {
 
     @Override
     public int getIndex() {
-        return 0;
+        return index;
     }
 
     @Override

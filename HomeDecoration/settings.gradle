@@ -13,4 +13,7 @@ include ':report'
 
 include ':Resource'
 include ':Data'
+ 
 include ':NetWork'
+project(':NetWork').projectDir = new File('../modules/NetWork')
+

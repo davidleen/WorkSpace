@@ -11,7 +11,10 @@ android {
 
         versionCode 2
         versionName "1.0"
-        manifestPlaceholders = [ANDROID_SUPPORT_VERSION: "${ANDROID_SUPPORT_V7_VERSION}"]
+        manifestPlaceholders = [
+                ANDROID_SUPPORT_VERSION: "${ANDROID_SUPPORT_V7_VERSION}"
+                ,SCHEME: "XXX"
+        ]
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
@@ -47,15 +50,15 @@ dependencies {
     api 'androidx.recyclerview:recyclerview:1.0.0'
 
 
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
 
-    compile project(path: ':comic')
-    compile project(path: ':domain')
+    api project(path: ':comic')
+    api project(path: ':domain')
 //
 //    compile 'com.jakewharton:butterknife:7.0.1'
 //    compile 'com.google.inject:guice:4.0:no_aop'
 //    provided 'com.google.inject:guice:4.0'
-    compile 'com.giants3.reader:data:0.0.0'
+    api "com.giants3.reader:data:${DataVersion}"
   //  compile fileTree(dir: 'provided', include: ['*.jar'])
 
 
@@ -67,12 +70,14 @@ dependencies {
     }
     annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:3.2.0"
 
-
+    api 'com.github.mzule.activityrouter:activityrouter:1.2.2'
+    annotationProcessor 'com.github.mzule.activityrouter:compiler:1.1.7'
     //数据库查看工具
     debugCompile 'com.facebook.stetho:stetho:1.5.0'
-    compile project(':epub')
-    compile project(path: ':text')
+    api project(':epub')
+    api project(path: ':text')
 
 
     api project(path:':thief')
+    api project(path: ':library-refresh-android')
 }

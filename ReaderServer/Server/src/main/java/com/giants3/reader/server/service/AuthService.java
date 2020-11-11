@@ -94,7 +94,7 @@ public class AuthService extends AbstractService {
     }
 
     @Transactional
-    public void logAuthCodeReadTime() {
+    public synchronized void logAuthCodeReadTime() {
 
 
 

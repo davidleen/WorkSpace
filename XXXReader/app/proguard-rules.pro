@@ -27,3 +27,4 @@
 -keep public class com.nostra13.universalimageloader.core.assist.ws.LibContext {
     public static void  init(android.content.Context);
 }
+-keep class com.github.mzule.activityrouter.router.** { *; }

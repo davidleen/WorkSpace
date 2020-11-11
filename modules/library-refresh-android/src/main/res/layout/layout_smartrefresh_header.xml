@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.scwang.smartrefresh.layout.header.ClassicsHeader xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    app:srlTextPulling="@string/tag_scroll_down"
+    app:srlTextLoading="@string/hint_loading"
+    app:srlTextRelease="@string/tag_scroll_refresh"
+    app:srlTextFinish="@string/tag_scroll_refresh"
+    app:srlTextUpdate="@string/tag_scroll_last_update"
+    app:srlTextRefreshing="@string/tag_scroll_refresh"
+    android:layout_height="wrap_content"
+     />

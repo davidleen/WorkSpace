@@ -38,7 +38,7 @@
 <br/>
 <form method="POST" enctype="multipart/form-data"  id="form_rate"
 >
-    触发几率<br/>
+    触发几率:${rate}%<br/>
     0<input id="id_rate" value="${rate}"
            type="range" name="rate"/>100<br/>
     <br/>
@@ -65,6 +65,7 @@
 <br/>
 
 口令被请求总次数: ${requestCodeTime}<br/>
+今日请求次数: ${requestCodeTimeToday}<br/>
 
 
 <script type="text/javascript">

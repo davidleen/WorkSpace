@@ -19,6 +19,7 @@ public class TextReadViewModel extends BaseViewModel {
 
 
     protected final MutableLiveData<IBook> bookInfo = new MutableLiveData<>();
+    @Override
     public void handleIntent(Intent intent) {
 
         final String filePath = intent.getStringExtra("filePath");

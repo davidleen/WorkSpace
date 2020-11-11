@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tag_scroll_down">下拉可以刷新</string>
+    <string name="footer_load_nothing">已经全部加载完毕</string>
+
+    <string name="tag_scroll_up">上拉载入更多</string>
+    <string name="tag_scroll_up_loading">上滑查看更多</string>
+    <string name="tag_scroll_up_refresh">松开即可载入</string>
+
+    <string name="tag_scroll_last_update">上次更新 M-d HH:mm</string>
+
+
+    <string name="tag_scroll_refresh">松开即可刷新</string>
+    <string name="reload_string">重新加载</string>
+    <string name="refresh">刷新</string>
+
+    <string name="hint_loading">正在载入...</string>
+
+
+</resources>

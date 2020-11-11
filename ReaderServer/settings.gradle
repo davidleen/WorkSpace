@@ -4,3 +4,10 @@ include ':library'
 include ':Utils'
 include ':Server'
 
+include ':NetWork'
+project(':NetWork').projectDir = new File('../modules/NetWork')
+
+
+
+include ':library-java'
+project(':library-java').projectDir = new File('../modules/library-java')
