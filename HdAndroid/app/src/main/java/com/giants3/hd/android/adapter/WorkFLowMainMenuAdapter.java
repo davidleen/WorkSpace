@@ -9,7 +9,8 @@ import com.giants3.android.adapter.AbstractAdapter;
 import com.giants3.android.adapter.AbstractViewHolder;
 import com.giants3.hd.android.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 /**
  * Created by davidleen29 on 2017/6/23.
@@ -36,9 +37,9 @@ public class WorkFLowMainMenuAdapter extends AbstractAdapter<WorkFLowMainMenuAda
 
     public static class ViewHolder extends AbstractViewHolder<MenuItem> {
 
-        @Bind(R.id.text)
+         @BindView(R.id.text)
         public TextView text;
-        @Bind(R.id.countText)
+         @BindView(R.id.countText)
         public TextView countText;
 
         public String mItem;

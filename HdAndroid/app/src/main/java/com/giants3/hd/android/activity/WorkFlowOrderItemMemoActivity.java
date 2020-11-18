@@ -23,7 +23,7 @@ import com.giants3.hd.entity.ProductWorkMemo;
 import com.giants3.hd.noEntity.WorkFlowMemoAuth;
 import com.giants3.hd.utils.StringUtils;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * 订单生产备注界面备注
@@ -33,51 +33,51 @@ public class WorkFlowOrderItemMemoActivity extends BaseViewerActivity<WorkFlowOr
 
     public static final int REQUEST_CODE = 33;
     public static final String KEY_ORDER_ITEM = "KEY_ORDER_ITEM";
-    @Bind(R.id.detail_toolbar)
+    @BindView(R.id.detail_toolbar)
     Toolbar toolbar;
 
-    @Bind(R.id.conceptusManage)
+    @BindView(R.id.conceptusManage)
     TextView conceptusManage;
 
-    @Bind(R.id.colorManage)
+    @BindView(R.id.colorManage)
     TextView colorManage;
 
-    @Bind(R.id.packManage)
+    @BindView(R.id.packManage)
     TextView packManage;
 
 
-    @Bind(R.id.productWorkMemo)
+    @BindView(R.id.productWorkMemo)
     EditText productWorkMemoView;
 
 
-    @Bind(R.id.orderItemWorkMemo)
+    @BindView(R.id.orderItemWorkMemo)
     EditText orderItemWorkMemoView;
 
 
-    @Bind(R.id.save)
+    @BindView(R.id.save)
     View save;
 
 
-    @Bind(R.id.check)
+    @BindView(R.id.check)
     View check;
 
 
-    @Bind(R.id.unCheck)
+    @BindView(R.id.unCheck)
     View unCheck;
 
-    @Bind(R.id.checkState)
+    @BindView(R.id.checkState)
     TextView checkState;
 
-    @Bind(R.id.checker)
+    @BindView(R.id.checker)
     TextView checker;
 
-    @Bind(R.id.checkTime)
+    @BindView(R.id.checkTime)
     TextView checkTime;
 
-    @Bind(R.id.modifier)
+    @BindView(R.id.modifier)
     TextView modifier;
 
-    @Bind(R.id.modifyTime)
+    @BindView(R.id.modifyTime)
     TextView modifyTime;
 
 

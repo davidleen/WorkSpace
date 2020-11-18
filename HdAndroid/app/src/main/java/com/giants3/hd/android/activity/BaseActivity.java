@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import de.greenrobot.event.EventBus;
 
 
@@ -124,6 +125,7 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+
     public Context getContext() {
         return this;
     }
@@ -133,6 +135,10 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
         hideWaiting();
         sharedPreferences = null;
         EventBus.getDefault().unregister(this);
+        if(unbinder!=null)
+        {
+            unbinder.unbind();
+        }
         super.onDestroy();
 
 
@@ -166,10 +172,15 @@ public class BaseActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    private Unbinder unbinder;
     @Override
     public void onContentChanged() {
         super.onContentChanged();
-        ButterKnife.bind(this);
+        try {
+            unbinder=  ButterKnife.bind(this);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
 
     }
 

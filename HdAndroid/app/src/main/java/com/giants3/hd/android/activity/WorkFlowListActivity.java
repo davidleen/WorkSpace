@@ -36,7 +36,8 @@ import com.giants3.hd.utils.StringUtils;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 /**
  * 生产流程管理界面
@@ -52,26 +53,26 @@ public class WorkFlowListActivity extends BaseHeadViewerActivity<WorkFlowListMvp
 
 
 
-    @Bind(R.id.orderItemInfo)
+     @BindView(R.id.orderItemInfo)
     TextView orderItemInfo;
 
-    @Bind(R.id.beibang)
+     @BindView(R.id.beibang)
     TextView beibang;
 
 
-    @Bind(R.id.sampleState)
+     @BindView(R.id.sampleState)
     TextView sampleState;
 
-    @Bind(R.id.clear)
+     @BindView(R.id.clear)
     View clear;
-    @Bind(R.id.adjust)
+     @BindView(R.id.adjust)
     View adjust;
 
 
-    @Bind(R.id.workFlowReport)
+     @BindView(R.id.workFlowReport)
     GridView workFlowReport;
 
-    @Bind(R.id.swipeLayout)
+     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeLayout;
 
 

@@ -21,7 +21,7 @@ import com.giants3.hd.utils.StringUtils;
 
 import java.util.Calendar;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import de.greenrobot.common.DateUtils;
 
 /**
@@ -96,27 +96,27 @@ public class WorkFlowReportItemAdapter extends AbstractAdapter<ErpWorkFlowReport
     public class ViewHolder extends BaseBindable<ErpWorkFlowReport> {
 
         public ErpWorkFlowReport mItem;
-        @Bind(R.id.progress)
+         @BindView(R.id.progress)
         public ProgressBar progress;
-        @Bind(R.id.workFlowName)
+         @BindView(R.id.workFlowName)
         public TextView workFlowName;
-        @Bind(R.id.percentage)
+         @BindView(R.id.percentage)
         public TextView percentage;
-        @Bind(R.id.limit)
+         @BindView(R.id.limit)
         public TextView limit;
-        @Bind(R.id.workflowstate)
+         @BindView(R.id.workflowstate)
         public TextView workflowstate;
-        @Bind(R.id.startDate)
+         @BindView(R.id.startDate)
         public TextView startDate;
-        @Bind(R.id.endDate)
+         @BindView(R.id.endDate)
         public TextView endDate;
-        @Bind(R.id.btn_complete)
+         @BindView(R.id.btn_complete)
         public TextView btn_complete;
-        @Bind(R.id.btn_confirm)
+         @BindView(R.id.btn_confirm)
         public TextView btn_confirm;
-        @Bind(R.id.addition_msg)
+         @BindView(R.id.addition_msg)
         public TextView addition_msg;
-        @Bind(R.id.monitor)
+         @BindView(R.id.monitor)
         public ImageView monitor;
 
 

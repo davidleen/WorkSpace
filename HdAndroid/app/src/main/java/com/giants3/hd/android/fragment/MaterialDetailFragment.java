@@ -27,7 +27,7 @@ import com.giants3.hd.noEntity.RemoteData;
 
 import java.io.ByteArrayOutputStream;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import rx.Subscriber;
@@ -54,46 +54,46 @@ public class MaterialDetailFragment extends BaseFragment implements View.OnClick
     private OnFragmentInteractionListener mListener;
 
 
-    @Bind(R.id.image)
+     @BindView(R.id.image)
     ImageView image;
-    @Bind(R.id.capture)
+     @BindView(R.id.capture)
     View capture;
 
-    @Bind(R.id.upload)
+     @BindView(R.id.upload)
     View upload;
 
 
-    @Bind(R.id.materialCode)
+     @BindView(R.id.materialCode)
     TextView materialCode;
-    @Bind(R.id.materialName)
+     @BindView(R.id.materialName)
     TextView materialName;
-    @Bind(R.id.typeName)
+     @BindView(R.id.typeName)
     TextView typeName;
-    @Bind(R.id.className)
+     @BindView(R.id.className)
     TextView className;
-    @Bind(R.id.mLong)
+     @BindView(R.id.mLong)
     TextView mLong;
-    @Bind(R.id.mWidth)
+     @BindView(R.id.mWidth)
     TextView mWidth;
-    @Bind(R.id.mHeight)
+     @BindView(R.id.mHeight)
     TextView mHeight;
-    @Bind(R.id.unit)
+     @BindView(R.id.unit)
     TextView unit;
-    @Bind(R.id.price)
+     @BindView(R.id.price)
     TextView price;
-    @Bind(R.id.spec)
+     @BindView(R.id.spec)
     TextView spec;
-    @Bind(R.id.available)
+     @BindView(R.id.available)
     TextView available;
-    @Bind(R.id.discount)
+     @BindView(R.id.discount)
     TextView discount;
-    @Bind(R.id.unitRatio)
+     @BindView(R.id.unitRatio)
     TextView unitRatio;
-    @Bind(R.id.ingredientRatio)
+     @BindView(R.id.ingredientRatio)
     TextView ingredientRatio;
-    @Bind(R.id.memo)
+     @BindView(R.id.memo)
     TextView memo;
-    @Bind(R.id.outOfService)
+     @BindView(R.id.outOfService)
     TextView outOfService;
 
 

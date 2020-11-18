@@ -17,6 +17,7 @@ import com.giants3.hd.android.mvp.AndroidRouter;
 import com.giants3.hd.android.viewer.BaseViewer;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -24,11 +25,11 @@ import de.greenrobot.event.EventBus;
  */
 public class BaseFragment extends Fragment implements AndroidRouter{
 
-
+    Unbinder unbinder;
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder=    ButterKnife.bind(this, view);
         if (getViewer() != null) {
             getViewer().onCreate();
         }
@@ -46,7 +47,10 @@ public class BaseFragment extends Fragment implements AndroidRouter{
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+
+        if (unbinder!=null) {
+            unbinder.unbind();
+        }
         if (getViewer() != null) {
             getViewer().onDestroy();
         }

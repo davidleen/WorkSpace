@@ -12,7 +12,8 @@ import com.giants3.hd.android.fragment.MaterialSelectFragment;
 import com.giants3.hd.data.utils.GsonUtils;
 import com.giants3.hd.entity.Material;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 /**材料挑选界面
  * An activity representing a single ProductListActivity detail screen. This
@@ -24,11 +25,11 @@ public class MaterialSelectActivity extends BaseActivity implements MaterialSele
 
 
     public static final String EXTRA_MATERIAL = "EXTRA_MATERIAL";
-    @Bind(R.id.detail_toolbar )
+     @BindView(R.id.detail_toolbar )
     Toolbar toolbar  ;
 
 
-    @Bind(R.id.app_bar )
+     @BindView(R.id.app_bar )
     AppBarLayout app_bar  ;
 
 

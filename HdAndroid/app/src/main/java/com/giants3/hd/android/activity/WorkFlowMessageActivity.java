@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import com.giants3.hd.android.R;
 import com.giants3.hd.android.fragment.WorkFlowMessageFragment;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * An activity representing a single ProductListActivity detail screen. This
@@ -20,7 +20,7 @@ public class WorkFlowMessageActivity extends BaseActivity  {
 
 
 
-    @Bind(R.id.detail_toolbar )
+    @BindView(R.id.detail_toolbar )
     Toolbar toolbar  ;
 
 

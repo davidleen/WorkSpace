@@ -14,7 +14,7 @@ import com.giants3.hd.android.viewer.WorkFlowMessageViewer;
 import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.entity.WorkFlowMessage;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * 订单流程处理界面
@@ -25,19 +25,19 @@ public class WorkFlowMessageViewerImpl extends BaseViewerImpl implements WorkFlo
 
 
     private final WorkFlowMessagePresenter presenter;
-    @Bind(R.id.list)
+     @BindView(R.id.list)
     ListView listView;
 
-    @Bind(R.id.swipeLayout)
+     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeLayout;
 
 
 
 
-    @Bind(R.id.mySend)
+     @BindView(R.id.mySend)
     View mySend;
 
-    @Bind(R.id.myReceive)
+     @BindView(R.id.myReceive)
     View myReceive;
 
 

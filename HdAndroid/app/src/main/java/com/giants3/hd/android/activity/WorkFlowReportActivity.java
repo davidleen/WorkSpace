@@ -15,7 +15,7 @@ import com.giants3.hd.entity.OrderItemWorkFlowState;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * An activity representing a single ProductListActivity detail screen. This
@@ -27,23 +27,23 @@ public class WorkFlowReportActivity extends BaseHeadViewerActivity<WorkFlowRepor
 
 
 
-    @Bind(R.id.progressSearch)
+    @BindView(R.id.progressSearch)
     View progressSearch;
-    @Bind(R.id.unDeliveryList)
+    @BindView(R.id.unDeliveryList)
     View unDeliveryList;
 
-    @Bind(R.id.list_unComplete)
+    @BindView(R.id.list_unComplete)
     ExpandableHeightListView list_unComplete;
-    @Bind(R.id.list_progress)
+    @BindView(R.id.list_progress)
     ExpandableHeightListView list_progress;
-    @Bind(R.id.panel_progress)
+    @BindView(R.id.panel_progress)
     View panel_progress;
 
-    @Bind(R.id.search_text)
+    @BindView(R.id.search_text)
     View search_text;
 
 
-    @Bind(R.id.key)
+    @BindView(R.id.key)
     EditText key;
 
 

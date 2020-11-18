@@ -16,7 +16,7 @@ import com.giants3.hd.android.helper.SharedPreferencesHelper;
 import com.giants3.hd.data.net.HttpUrl;
 import com.giants3.hd.entity.app.AUser;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 //import com.giants3.hd.data.net.HttpUrl;
 
@@ -26,26 +26,26 @@ import butterknife.Bind;
 public class SettingActivity extends BaseActionBarActivity {
 
 
-    @Bind(R.id.et_ip)
+    @BindView(R.id.et_ip)
     EditText etIp;
-    @Bind(R.id.et_port)
+    @BindView(R.id.et_port)
     EditText etPort;
-    @Bind(R.id.et_service)
+    @BindView(R.id.et_service)
     EditText etService;
-    @Bind(R.id.btn_save)
+    @BindView(R.id.btn_save)
     Button btnSave;
 
-    @Bind(R.id.setOutUrl)
+    @BindView(R.id.setOutUrl)
     Button setOutUrl;
 
-    @Bind(R.id.setInUrl)
+    @BindView(R.id.setInUrl)
     Button setInUrl;
 
 
-    @Bind(R.id.setProduceUrl)
+    @BindView(R.id.setProduceUrl)
     Button setProduceUrl;
 
-    @Bind(R.id.version)
+    @BindView(R.id.version)
     TextView version;
 
     @Override

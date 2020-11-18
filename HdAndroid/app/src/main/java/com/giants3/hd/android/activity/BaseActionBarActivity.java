@@ -10,7 +10,8 @@ import android.widget.FrameLayout;
 import com.giants3.android.interf.TitleAble;
 import com.giants3.hd.android.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 /**
  * 默认带头部导航条的act
@@ -19,7 +20,7 @@ import butterknife.Bind;
  */
 
 public abstract class BaseActionBarActivity extends BaseActivity implements TitleAble {
-    @Bind(R.id.toolbar )
+     @BindView(R.id.toolbar )
     Toolbar toolbar  ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

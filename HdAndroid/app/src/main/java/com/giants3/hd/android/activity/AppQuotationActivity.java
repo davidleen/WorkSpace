@@ -46,7 +46,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 import static com.giants3.hd.utils.DateFormats.FORMAT_YYYY_MM_DD;
 
@@ -57,42 +57,42 @@ public class AppQuotationActivity extends BaseHeadViewerActivity<AppQuotationDet
     private static final int REQUEST_CODE_ADD_CUSTOMER = 998;
 
 
-    @Bind(R.id.pickItem)
+    @BindView(R.id.pickItem)
     ImageView pickItem;
 
-    @Bind(R.id.scanItem)
+    @BindView(R.id.scanItem)
     ImageView scanItem;
-    @Bind(R.id.discountAll)
+    @BindView(R.id.discountAll)
     View discountAll;
-    @Bind(R.id.cancelDiscount)
+    @BindView(R.id.cancelDiscount)
     View cancelDiscount;
 
-    @Bind(R.id.qNumber)
+    @BindView(R.id.qNumber)
     TextView qNumber;
-    @Bind(R.id.createTime)
+    @BindView(R.id.createTime)
     TextView createTime;
-    @Bind(R.id.validateTime)
+    @BindView(R.id.validateTime)
     TextView validateTime;
-    @Bind(R.id.customer)
+    @BindView(R.id.customer)
     TextView customer;
 
-    @Bind(R.id.salesman)
+    @BindView(R.id.salesman)
     TextView salesman;
-    @Bind(R.id.exportPdf)
+    @BindView(R.id.exportPdf)
     View exportPdf;
-    @Bind(R.id.booth)
+    @BindView(R.id.booth)
     TextView booth;
-    @Bind(R.id.save)
+    @BindView(R.id.save)
     TextView save;
-    @Bind(R.id.delete)
+    @BindView(R.id.delete)
     View delete;
-    @Bind(R.id.print)
+    @BindView(R.id.print)
     TextView print;
-    @Bind(R.id.memo)
+    @BindView(R.id.memo)
     TextView memo;
-    @Bind(R.id.addCustomer)
+    @BindView(R.id.addCustomer)
     TextView addCustomer;
-    @Bind(R.id.quotation_item_list)
+    @BindView(R.id.quotation_item_list)
     ListView quotation_item_list;
     ItemListAdapter<QuotationItem> adapter;
 

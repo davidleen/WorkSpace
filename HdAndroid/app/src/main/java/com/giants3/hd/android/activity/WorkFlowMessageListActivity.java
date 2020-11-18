@@ -18,7 +18,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 
 public class WorkFlowMessageListActivity extends BaseHeadViewerActivity<NewPresenter> {
@@ -26,7 +26,7 @@ public class WorkFlowMessageListActivity extends BaseHeadViewerActivity<NewPrese
     private static final int REQUEST_MESSAGE_OPERATE = 999;
     public static final String KEY_MESSAGE_LIST = "KEY_MESSAGE_LIST";
     public static String KEY_TITLE="KEY_TITLE";
-    @Bind(R.id.list)
+    @BindView(R.id.list)
     ListView listView;
     private WorkFlowMessageAdapter adapter;
 

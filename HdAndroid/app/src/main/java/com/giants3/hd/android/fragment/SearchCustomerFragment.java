@@ -21,7 +21,7 @@ import com.giants3.hd.entity.Customer;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * 查找客户Fragment
@@ -31,9 +31,9 @@ public class SearchCustomerFragment extends BaseMVPDialogFragment<SearchCustomer
     private static final String ARG_AVAILABLE_ITEMS = "ARG_AVAILABLE_ITEMS";
 
 
-    @Bind(R.id.key)
+     @BindView(R.id.key)
     EditText editText;
-    @Bind(R.id.list)
+     @BindView(R.id.list)
     ListView listView;
     ItemListAdapter<Customer> listAdapter;
     private OnFragmentInteractionListener mListener;

@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 
 /**
@@ -151,9 +151,9 @@ public class ProducerValueReportFragment extends ListFragment<ProducerValueRepor
 
     }
 
-    @Bind(R.id.hide_no_value)
+    @BindView(R.id.hide_no_value)
     public CheckBox hide_no_value;
-    @Bind(R.id.sort_value_desc)
+    @BindView(R.id.sort_value_desc)
     public CheckBox sort_value_desc;
     @Override
     protected void configCustomContainer(ViewGroup container) {

@@ -17,7 +17,7 @@ import com.giants3.hd.entity_erp.WorkFlowMaterial;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by davidleen29 on 2017/6/25.
@@ -30,15 +30,15 @@ public class OrderItemWorkFlowMaterialActivity extends BaseViewerActivity<MVP.Pr
 
     private static final String KEY_OS_NO = "KEY_OS_NO";
     private static final String KEY_ITM = "KEY_ITM";
-    @Bind(R.id.detail_toolbar)
+    @BindView(R.id.detail_toolbar)
     Toolbar toolbar;
 
 
-    @Bind(R.id.swipeLayout)
+    @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeLayout;
 
 
-    @Bind(R.id.list_material)
+    @BindView(R.id.list_material)
     ExpandableHeightListView list_material;
 
     ItemListAdapter<WorkFlowMaterial> adapter;

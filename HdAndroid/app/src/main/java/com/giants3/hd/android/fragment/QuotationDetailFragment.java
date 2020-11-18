@@ -26,7 +26,7 @@ import com.giants3.hd.entity.QuoteAuth;
 import com.giants3.hd.noEntity.QuotationDetail;
 import com.giants3.hd.noEntity.RemoteData;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import rx.Subscriber;
 
 
@@ -51,37 +51,37 @@ public class QuotationDetailFragment extends BaseFragment implements View.OnClic
     ItemListAdapter<QuotationXKItem> xkquotationItemItemListAdapter;
     private OnFragmentInteractionListener mListener;
 
-    @Bind(R.id.listView)
+    @BindView(R.id.listView)
     ExpandableHeightListView listView;
 
 
-    @Bind(R.id.cus_no)
+    @BindView(R.id.cus_no)
     TextView cus_no;
 
-    @Bind(R.id.qDate)
+    @BindView(R.id.qDate)
     TextView qDate;
-    @Bind(R.id.validDate)
+    @BindView(R.id.validDate)
     TextView validDate;
-    @Bind(R.id.moneyType)
+    @BindView(R.id.moneyType)
     TextView moneyType;
-    @Bind(R.id.sal)
+    @BindView(R.id.sal)
     TextView sal;
-    @Bind(R.id.memo)
+    @BindView(R.id.memo)
     TextView memo;
-    @Bind(R.id.showMore)
+    @BindView(R.id.showMore)
     View showMore;
-    @Bind(R.id.more_text)
+    @BindView(R.id.more_text)
     View more_text;
-    @Bind(R.id.qNumber)
+    @BindView(R.id.qNumber)
     TextView qNumber;
 
-    @Bind(R.id.check)
+    @BindView(R.id.check)
     public View check;
-    @Bind(R.id.overdue)
+    @BindView(R.id.overdue)
     public View overdue;
 
 
-    @Bind(R.id.scrollIndicatorDown)
+    @BindView(R.id.scrollIndicatorDown)
     HorizontalScrollView horizontalScrollView1;
 
 

@@ -10,7 +10,7 @@ import com.giants3.android.adapter.AbstractViewHolder;
 import com.giants3.hd.android.R;
 import com.giants3.hd.entity.Quotation;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 ;
 
@@ -43,20 +43,20 @@ public class QuotationListAdapter
 
     public static class ViewHolder extends AbstractViewHolder<Quotation> {
 
-        @Bind(R.id.qNumber)
+        @BindView(R.id.qNumber)
         public TextView qNumber;
-        @Bind(R.id.customer)
+        @BindView(R.id.customer)
         public TextView customer;
-        @Bind(R.id.saleman)
+        @BindView(R.id.saleman)
         public TextView saleman;
-        @Bind(R.id.qDate)
+        @BindView(R.id.qDate)
         public TextView qDate;
-        @Bind(R.id.type)
+        @BindView(R.id.type)
         public TextView type;
 
-        @Bind(R.id.check)
+        @BindView(R.id.check)
         public View check;
-        @Bind(R.id.overdue)
+        @BindView(R.id.overdue)
         public View overdue;
 
         public com.giants3.hd.entity.app.Quotation mItem;

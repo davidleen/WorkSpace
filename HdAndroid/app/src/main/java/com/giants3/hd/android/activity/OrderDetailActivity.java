@@ -12,7 +12,7 @@ import com.giants3.hd.android.fragment.OrderDetailFragment;
 import com.giants3.hd.data.utils.GsonUtils;
 import com.giants3.hd.entity.ErpOrder;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * An activity representing a single ProductListActivity detail screen. This
@@ -24,11 +24,11 @@ public class OrderDetailActivity extends BaseActivity implements OrderDetailFrag
 
 
 
-    @Bind(R.id.detail_toolbar )
+    @BindView(R.id.detail_toolbar )
     Toolbar toolbar  ;
 
 
-    @Bind(R.id.app_bar )
+    @BindView(R.id.app_bar )
     AppBarLayout app_bar  ;
 
 

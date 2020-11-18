@@ -16,6 +16,7 @@ import com.giants3.hd.android.mvp.NewPresenter;
 import com.giants3.hd.android.mvp.NewViewer;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -24,7 +25,7 @@ import de.greenrobot.event.EventBus;
  */
 public abstract class BaseMvpFragment<P extends NewPresenter> extends Fragment implements NewViewer {
 
-
+    Unbinder unbinder;
     P presenter;
     private ProgressDialog progressDialog;
 
@@ -33,7 +34,7 @@ public abstract class BaseMvpFragment<P extends NewPresenter> extends Fragment i
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ButterKnife.bind(this, view);
+          unbinder = ButterKnife.bind(this, view);
         presenter = createPresenter();
         initView();
 
@@ -59,7 +60,10 @@ public abstract class BaseMvpFragment<P extends NewPresenter> extends Fragment i
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        if(unbinder!=null)
+        {
+            unbinder.unbind();
+        }
         if (getPresenter() != null) {
             getPresenter().detachView();
         }

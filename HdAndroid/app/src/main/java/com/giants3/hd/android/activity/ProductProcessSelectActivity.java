@@ -12,7 +12,8 @@ import com.giants3.hd.android.fragment.ProcessSelectFragment;
 import com.giants3.hd.data.utils.GsonUtils;
 import com.giants3.hd.entity.ProductProcess;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 /**产品工序选择界面
  * An activity representing a single ProductListActivity detail screen. This
@@ -24,11 +25,11 @@ public class ProductProcessSelectActivity extends BaseActivity implements Proces
 
 
     public static final String EXTRA_PRODUCT_PROCESS = "EXTRA_PRODUCT_PROCESS";
-    @Bind(R.id.detail_toolbar )
+     @BindView(R.id.detail_toolbar )
     Toolbar toolbar  ;
 
 
-    @Bind(R.id.app_bar )
+     @BindView(R.id.app_bar )
     AppBarLayout app_bar  ;
 
 

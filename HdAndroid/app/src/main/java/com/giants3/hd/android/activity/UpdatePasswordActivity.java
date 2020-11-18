@@ -14,7 +14,7 @@ import com.giants3.hd.data.interractor.UseCaseFactory;
 import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.utils.StringUtils;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import rx.Subscriber;
 
 //import com.giants3.hd.data.net.HttpUrl;
@@ -27,11 +27,11 @@ public class UpdatePasswordActivity extends BaseActionBarActivity {
 
 
 
-    @Bind(R.id.et_new_password)
+    @BindView(R.id.et_new_password)
     EditText et_new_password;
-    @Bind(R.id.et_old_password)
+    @BindView(R.id.et_old_password)
     EditText et_old_password;
-    @Bind(R.id.btn_save)
+    @BindView(R.id.btn_save)
     Button btnSave;
 
 

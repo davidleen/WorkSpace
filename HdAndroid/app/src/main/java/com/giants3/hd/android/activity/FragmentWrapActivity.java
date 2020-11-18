@@ -31,7 +31,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import rx.Subscriber;
 
 /**
@@ -48,7 +48,7 @@ public class FragmentWrapActivity extends BaseActionBarActivity {
     private static final String PARA_FRAGMENT_CLASS="PARA_FRAGMENT_CLASS";
 
 
-    @Bind(R.id.container)
+    @BindView(R.id.container)
     FrameLayout container;
 
     @Override

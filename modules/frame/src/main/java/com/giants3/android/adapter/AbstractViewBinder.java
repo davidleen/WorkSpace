@@ -6,7 +6,7 @@ import android.content.Context;
 
 import androidx.viewbinding.ViewBinding;
 
-import butterknife.Bind;
+
 
 public abstract class AbstractViewBinder<D,V extends ViewBinding> implements AbstractAdapter.Bindable<D> {
 

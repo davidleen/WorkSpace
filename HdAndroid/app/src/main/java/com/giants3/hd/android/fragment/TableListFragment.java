@@ -18,7 +18,7 @@ import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.data.interractor.UseCase;
 import com.giants3.hd.noEntity.RemoteData;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import rx.Subscriber;
 
 /**
@@ -29,12 +29,12 @@ public abstract class TableListFragment<T> extends BaseFragment  {
    ItemListAdapter<T> adapter;
 
 
-    @Bind(R.id.item_list)
+    @BindView(R.id.item_list)
     ListView listView;
-    @Bind(R.id.search_text)
+    @BindView(R.id.search_text)
     EditText search_text;
 
-    @Bind(R.id.progressBar)
+    @BindView(R.id.progressBar)
     View progressBar;
     private OnFragmentInteractionListener<T> mListener;
 

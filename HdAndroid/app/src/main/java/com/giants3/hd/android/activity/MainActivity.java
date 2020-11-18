@@ -48,7 +48,7 @@ import com.giants3.hd.noEntity.BufferData;
 import com.giants3.hd.noEntity.FileInfo;
 import com.giants3.hd.noEntity.RemoteData;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Subscriber;
 
@@ -70,15 +70,15 @@ public class MainActivity extends BaseViewerActivity<MainActMvp.Presenter>
     NavigationViewHelper helper;
 
 
-    @Bind(R.id.toolbar)
+     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.fab)
+     @BindView(R.id.fab)
     FloatingActionButton fab;
-    @Bind(R.id.drawer_layout)
+     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
-    @Bind(R.id.nav_view)
+     @BindView(R.id.nav_view)
     NavigationView navigationView;
-    @Bind(R.id.list_container)
+     @BindView(R.id.list_container)
     FrameLayout frameLayout;
 
 
@@ -282,11 +282,11 @@ public class MainActivity extends BaseViewerActivity<MainActMvp.Presenter>
 
     public static class NavigationViewHelper {
 
-        @Bind(R.id.head)
+         @BindView(R.id.head)
         ImageView userHead;
-        @Bind(R.id.code)
+         @BindView(R.id.code)
         TextView code;
-        @Bind(R.id.name)
+         @BindView(R.id.name)
         TextView name;
 
 

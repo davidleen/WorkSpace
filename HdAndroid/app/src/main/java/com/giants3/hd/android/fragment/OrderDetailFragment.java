@@ -23,7 +23,7 @@ import com.giants3.hd.entity.ErpOrder;
 import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.noEntity.ErpOrderDetail;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import rx.Subscriber;
 
 
@@ -48,31 +48,31 @@ public class OrderDetailFragment extends BaseFragment implements View.OnClickLis
     ItemListAdapter orderItemListAdapter;
     private OnFragmentInteractionListener mListener;
 
-    @Bind(R.id.order_item_list)
+     @BindView(R.id.order_item_list)
     ListView order_item_list;
 
 
-    @Bind(R.id.order_no)
+     @BindView(R.id.order_no)
     TextView order_no;
-    @Bind(R.id.cus_no)
+     @BindView(R.id.cus_no)
     TextView cus_no;
-    @Bind(R.id.cus_os_no)
+     @BindView(R.id.cus_os_no)
     TextView cus_os_no;
-    @Bind(R.id.os_dd)
+     @BindView(R.id.os_dd)
     TextView os_dd;
-    @Bind(R.id.est_dd)
+     @BindView(R.id.est_dd)
     TextView est_dd;
-    @Bind(R.id.so_data)
+     @BindView(R.id.so_data)
     TextView so_data;
-    @Bind(R.id.sal)
+     @BindView(R.id.sal)
     TextView sal;
-    @Bind(R.id.memo)
+     @BindView(R.id.memo)
     TextView memo;
-    @Bind(R.id.showMore)
+     @BindView(R.id.showMore)
     View showMore;
-    @Bind(R.id.more_text)
+     @BindView(R.id.more_text)
     View more_text;
-    @Bind(R.id.scrollIndicatorDown)
+     @BindView(R.id.scrollIndicatorDown)
     HorizontalScrollView horizontalScrollView1;
 
     public OrderDetailFragment() {

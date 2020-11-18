@@ -9,13 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class BaseDialogFragment extends DialogFragment {
-
+    Unbinder unbinder;
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder=ButterKnife.bind(this, view);
 
     }
 
@@ -29,7 +30,10 @@ public class BaseDialogFragment extends DialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        if(unbinder!=null)
+        {
+            unbinder.unbind();
+        }
 
     }
 }

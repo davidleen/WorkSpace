@@ -8,6 +8,7 @@ import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.viewer.BaseViewer;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by david on 2016/4/12.
@@ -17,6 +18,7 @@ public abstract class BaseViewerImpl implements BaseViewer {
 
     protected Context context;
     private View contentView;
+    Unbinder unbinder;
 
     public BaseViewerImpl(Context context) {
         this.context = context;
@@ -39,14 +41,18 @@ public abstract class BaseViewerImpl implements BaseViewer {
 
     @Override
     public void onCreate() {
-        ButterKnife.bind(this, contentView);
+          unbinder = ButterKnife.bind(this, contentView);
 
     }
 
     @Override
     public void onDestroy() {
-        ButterKnife.unbind(this);
 
+
+        if(unbinder!=null)
+        {
+            unbinder.unbind();
+        }
     }
 
     @Override

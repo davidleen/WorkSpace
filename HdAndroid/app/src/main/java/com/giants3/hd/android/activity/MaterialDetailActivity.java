@@ -13,7 +13,7 @@ import com.giants3.hd.android.fragment.MaterialDetailFragment;
 import com.giants3.hd.data.utils.GsonUtils;
 import com.giants3.hd.entity.Material;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * An activity representing a single ProductListActivity detail screen. This
@@ -25,11 +25,11 @@ public class MaterialDetailActivity extends BaseActivity implements MaterialDeta
 
 
 
-    @Bind(R.id.detail_toolbar )
+     @BindView(R.id.detail_toolbar )
     Toolbar toolbar  ;
 
 
-    @Bind(R.id.app_bar )
+     @BindView(R.id.app_bar )
     AppBarLayout app_bar  ;
 
 

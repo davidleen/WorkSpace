@@ -29,7 +29,7 @@ import com.giants3.hd.entity.ErpOrderItem;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * 我的生产事项  我可以发起的任务的货款列表
@@ -40,12 +40,12 @@ public class MyAvailableOrderItemFragment extends BaseMvpFragment<MyAvailableOrd
 
     private static final int REQUEST_MESSAGE_OPERATE = 9999;
     ItemListAdapter<ErpOrderItem> adapter;
-    @Bind(R.id.swipeLayout)
+    @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeLayout;
 
-    @Bind(R.id.list)
+    @BindView(R.id.list)
     ListView listView;
-    @Bind(R.id.search_text)
+    @BindView(R.id.search_text)
     EditText search_text;
     View loadingMoreView;
     TextWatcher watcher;

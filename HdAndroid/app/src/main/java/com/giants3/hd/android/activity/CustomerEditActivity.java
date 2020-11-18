@@ -27,7 +27,8 @@ import com.giants3.hd.utils.StringUtils;
 import java.io.File;
 import java.util.Calendar;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 //import com.giants3.android.namecardscan.activity.*;
 //import com.giants3.android.namecardscan.activity.*;
@@ -37,37 +38,37 @@ public class CustomerEditActivity extends BaseHeadViewerActivity<CustomerEditMVP
 
 
     private static final String KEY_CUSTOMER = "KEY_CUSTOMER";
-    @Bind(R.id.save)
+     @BindView(R.id.save)
     TextView save;
-    @Bind(R.id.namecard)
+     @BindView(R.id.namecard)
     TextView namecard;
-    @Bind(R.id.nation)
+     @BindView(R.id.nation)
     TextView nation;
-    @Bind(R.id.address)
+     @BindView(R.id.address)
     TextView address;
-    @Bind(R.id.email)
+     @BindView(R.id.email)
     TextView email;
-    @Bind(R.id.fax)
+     @BindView(R.id.fax)
     TextView fax;
-    @Bind(R.id.tel)
+     @BindView(R.id.tel)
     TextView tel;
-    @Bind(R.id.name)
+     @BindView(R.id.name)
     TextView name;
-    @Bind(R.id.code)
+     @BindView(R.id.code)
     TextView code;
-    @Bind(R.id.company)
+     @BindView(R.id.company)
     TextView company;
-    @Bind(R.id.img_namecard)
+     @BindView(R.id.img_namecard)
     ImageView img_namecard;
-    @Bind(R.id.lastRequestFailImg)
+     @BindView(R.id.lastRequestFailImg)
     ImageView lastRequestFailImg;
-    @Bind(R.id.retry)
+     @BindView(R.id.retry)
     View retry;
 
-    @Bind(R.id.last)
+     @BindView(R.id.last)
     View last;
 
-    @Bind(R.id.delete)
+     @BindView(R.id.delete)
     View delete;
 
 

@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import de.greenrobot.event.EventBus;
 import rx.Subscriber;
 
@@ -56,21 +56,21 @@ public class LoginActivity extends BaseActivity {
 
 
 
-    @Bind(R.id.user)
+     @BindView(R.id.user)
     TextView user;
-    @Bind(R.id.keepPassword)
+     @BindView(R.id.keepPassword)
     CheckBox keepPassword;
-    @Bind(R.id.password)
+     @BindView(R.id.password)
     EditText mPasswordView;
-    @Bind(R.id.email_sign_in_button)
+     @BindView(R.id.email_sign_in_button)
     Button emailSignInButton;
 
-    @Bind(R.id.act)
+     @BindView(R.id.act)
     Button act;
-    @Bind(R.id.email_login_form)
+     @BindView(R.id.email_login_form)
     LinearLayout emailLoginForm;
 
-    @Bind(R.id.setUrl)
+     @BindView(R.id.setUrl)
     Button setUrl;
 
 

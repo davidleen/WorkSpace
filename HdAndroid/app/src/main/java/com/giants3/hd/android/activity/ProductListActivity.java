@@ -29,7 +29,7 @@ import com.giants3.hd.noEntity.RemoteData;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import rx.Subscriber;
 
 /**
@@ -48,11 +48,11 @@ public class ProductListActivity extends BaseActivity {
 
     private List<AProduct> products = new ArrayList<>();
 
-    @Bind(R.id.productlistactivity_list)
+    @BindView(R.id.productlistactivity_list)
     RecyclerView recyclerView;
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.fab)
+    @BindView(R.id.fab)
     FloatingActionButton fab;
 
     SimpleItemRecyclerViewAdapter
@@ -215,7 +215,7 @@ public class ProductListActivity extends BaseActivity {
 
             public ViewHolder(View view) {
                 super(view);
-                // ButterKnife.bind(this, view);
+                // ButterKnife.BindView(this, view);
                 mView = view;
                 mIdView = (TextView) view.findViewById(R.id.id);
                 mContentView = (TextView) view.findViewById(R.id.content);

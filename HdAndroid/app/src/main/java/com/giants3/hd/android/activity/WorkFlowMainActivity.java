@@ -45,7 +45,7 @@ import com.giants3.hd.noEntity.RemoteData;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import me.leolin.shortcutbadger.ShortcutBadger;
 import rx.Subscriber;
 
@@ -69,21 +69,21 @@ public class WorkFlowMainActivity extends BaseHeadViewerActivity<WorkFlowMainAct
     public static final String EXTRA_FLOW_MESSAGE = "EXTRA_FLOW_MESSAGE";
 
 
-    @Bind(R.id.menu)
+    @BindView(R.id.menu)
     ListView menu;
-    @Bind(R.id.main_content)
+    @BindView(R.id.main_content)
     FrameLayout main_content;
 
-    @Bind(R.id.head)
+    @BindView(R.id.head)
     ImageView head;
-    @Bind(R.id.code)
+    @BindView(R.id.code)
     TextView code;
 
-    @Bind(R.id.name)
+    @BindView(R.id.name)
     TextView name;
 
 
-    @Bind(R.id.quotation)
+    @BindView(R.id.quotation)
     TextView quotation;
 
 

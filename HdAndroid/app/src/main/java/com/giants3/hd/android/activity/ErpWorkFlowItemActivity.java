@@ -14,7 +14,7 @@ import com.giants3.hd.entity_erp.ErpWorkFlowItem;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * 生产流程管理界面
@@ -26,7 +26,7 @@ public class ErpWorkFlowItemActivity extends BaseHeadViewerActivity<ErpWorkFlowI
     public static final String PARA_OS_NO = "PARA_OS_NO";
     public static final String PARA_ITM = "PARA_ITM";
     public static final String PARA_WORKFLOWCODE = "PARA_WORKFLOWCODE";
-    @Bind(R.id.list)
+     @BindView(R.id.list)
     ListView list;
     ItemListAdapter<ErpWorkFlowItem> adapter;
 

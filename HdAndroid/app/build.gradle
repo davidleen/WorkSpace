@@ -108,6 +108,10 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+
+
+//    viewBinding.enabled = true
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
@@ -141,7 +145,8 @@ dependencies {
     api 'androidx.appcompat:appcompat:1.0.0'
     api 'com.google.android.material:material:1.0.0'
     api 'androidx.recyclerview:recyclerview:1.0.0'
-    api "com.jakewharton:butterknife:${BUTTERKNIFE_VERSION}"
+    api "com.jakewharton:butterknife:${versions.BUTTERKNIFE_VERSION}"
+    annotationProcessor "com.jakewharton:butterknife-compiler:${versions.BUTTERKNIFE_VERSION}"
     implementation 'de.greenrobot:eventbus:2.4.1'
     implementation 'com.wefika:flowlayout:0.4.1'
     // compile 'com.android.support:support-v4:23.4.0'
@@ -154,9 +159,9 @@ dependencies {
 //     releaseCompile project(':camcomnamecard')
 //     compile project(':xunfeinamecard')
     compile "com.giants3.android:api:${API_VERSION}"
-//    implementation project(':PushSDK_no_op')
+    implementation project(':PushSDK_no_op')
 
-    implementation project(':PushSDK')
+//    implementation project(':PushSDK')
     releaseCompile project(path: ':umenganalysis')
 
     debugCompile project(path: ':umenganalysis')

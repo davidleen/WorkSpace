@@ -45,7 +45,8 @@ import com.giants3.hd.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.OnClick;
 
 import static com.giants3.hd.android.presenter.ProductDetailPresenter.ARG_ITEM;
@@ -61,109 +62,109 @@ public class ProductDetailActivity extends BaseHeadViewerActivity<ProductDetailP
     private static final int MAX_MEMO_ROW_LINE = 3;
 
 
-    @Bind(R.id.photo)
+    @BindView(R.id.photo)
     ImageView photo;
 
 
-    @Bind(R.id.loading)
+    @BindView(R.id.loading)
     View loading;
 
 
-    @Bind(R.id.pversion)
+    @BindView(R.id.pversion)
     TextView pversion;
-    @Bind(R.id.name)
+    @BindView(R.id.name)
     TextView name;
 
 
-    @Bind(R.id.unit)
+    @BindView(R.id.unit)
     TextView unit;
 
-    @Bind(R.id.pClass)
+    @BindView(R.id.pClass)
     TextView pClass;
-    @Bind(R.id.pack)
+    @BindView(R.id.pack)
     TextView pack;
-    @Bind(R.id.weight)
+    @BindView(R.id.weight)
     TextView weight;
-    @Bind(R.id.factory)
+    @BindView(R.id.factory)
     TextView factory;
-    @Bind(R.id.specCm)
+    @BindView(R.id.specCm)
     TextView specCm;
-    @Bind(R.id.packSize)
+    @BindView(R.id.packSize)
     TextView packSize;
-    @Bind(R.id.price_panel)
+    @BindView(R.id.price_panel)
     View price_panel;
-    @Bind(R.id.panel_cost_wage_sum)
+    @BindView(R.id.panel_cost_wage_sum)
     View panel_cost_wage_sum;
-    @Bind(R.id.fob)
+    @BindView(R.id.fob)
     TextView fob;
-    @Bind(R.id.price)
+    @BindView(R.id.price)
     TextView price;
-    @Bind(R.id.cost)
+    @BindView(R.id.cost)
     TextView cost;
-    @Bind(R.id.conceptusCost)
+    @BindView(R.id.conceptusCost)
     TextView conceptusCost;
-    @Bind(R.id.conceptusWage)
+    @BindView(R.id.conceptusWage)
     TextView conceptusWage;
-    @Bind(R.id.assembleCost)
+    @BindView(R.id.assembleCost)
     TextView assembleCost;
-    @Bind(R.id.assembleWage)
+    @BindView(R.id.assembleWage)
     TextView assembleWage;
-    @Bind(R.id.paintCost)
+    @BindView(R.id.paintCost)
     TextView paintCost;
-    @Bind(R.id.paintWage)
+    @BindView(R.id.paintWage)
     TextView paintWage;
-    @Bind(R.id.packCost)
+    @BindView(R.id.packCost)
     TextView packCost;
-    @Bind(R.id.packWage)
+    @BindView(R.id.packWage)
     TextView packWage;
-    @Bind(R.id.memo)
+    @BindView(R.id.memo)
     TextView memo;
 
 
-    @Bind(R.id.panel_conceptus)
+    @BindView(R.id.panel_conceptus)
     TextView panel_conceptus;
-    @Bind(R.id.panel_assemble)
+    @BindView(R.id.panel_assemble)
     TextView panel_assemble;
-    @Bind(R.id.panel_paint)
+    @BindView(R.id.panel_paint)
     TextView panel_paint;
-    @Bind(R.id.panel_pack)
+    @BindView(R.id.panel_pack)
     TextView panel_pack;
 
-    @Bind(R.id.panel_material_wage)
+    @BindView(R.id.panel_material_wage)
     View panel_material_wage;
 
-    @Bind(R.id.segment_material)
+    @BindView(R.id.segment_material)
     View segment_material;
 
-    @Bind(R.id.segment_wage)
+    @BindView(R.id.segment_wage)
     View segment_wage;
 
     //四合一控件 用作选中状态控制
-    @Bind({R.id.panel_conceptus, R.id.panel_assemble, R.id.panel_paint, R.id.panel_pack})
+    @BindViews({R.id.panel_conceptus, R.id.panel_assemble, R.id.panel_paint, R.id.panel_pack})
     View[] panels;
     //二合一 材料工资  选中状态控制
-    @Bind({R.id.segment_material, R.id.segment_wage})
+    @BindViews({R.id.segment_material, R.id.segment_wage})
     View[] materialWage;
-    @Bind(R.id.product_item_list)
+    @BindView(R.id.product_item_list)
     ExpandableHeightListView listView;
 
 
-    @Bind(R.id.showMore)
+    @BindView(R.id.showMore)
     View showMore;
 
-    @Bind(R.id.control)
+    @BindView(R.id.control)
     View control;
-    @Bind(R.id.edit)
+    @BindView(R.id.edit)
     View edit;
-    @Bind(R.id.save)
+    @BindView(R.id.save)
     View save;
-    @Bind(R.id.table_operate)
+    @BindView(R.id.table_operate)
     View table_operate;
-    @Bind(R.id.table_add)
+    @BindView(R.id.table_add)
     TextView table_add;
-    @Bind(R.id.table_modify)
+    @BindView(R.id.table_modify)
     TextView table_modify;
-    @Bind(R.id.table_delete)
+    @BindView(R.id.table_delete)
     TextView table_delete;
 
 

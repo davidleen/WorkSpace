@@ -22,7 +22,7 @@ import com.giants3.hd.entity.Material;
 import com.giants3.hd.noEntity.RemoteData;
 import com.giants3.hd.utils.StringUtils;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnItemClick;
 import rx.Subscriber;
 
@@ -44,11 +44,11 @@ public class MaterialSelectFragment extends BaseFragment {
     private String materialName;
 
 
-    @Bind(R.id.search_text)
+    @BindView(R.id.search_text)
     EditText search_text;
-    @Bind(R.id.progressBar)
+    @BindView(R.id.progressBar)
     View progressBar;
-    @Bind(R.id.item_list)
+    @BindView(R.id.item_list)
     ListView itemList;
     private OnFragmentInteractionListener mListener;
 

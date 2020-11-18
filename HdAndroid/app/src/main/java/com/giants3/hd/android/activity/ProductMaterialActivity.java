@@ -26,7 +26,7 @@ import com.giants3.hd.utils.GsonUtils;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 
@@ -44,62 +44,62 @@ public class ProductMaterialActivity extends BaseActionBarActivity {
 
     public static String PRODUCT_MATERIAL_TYPE = "PRODUCT_MATERIAL_TYPE";
     public static String PRODUCT_MATERIAL_POSITION = "PRODUCT_PAINT_POSITION";
-    @Bind(R.id.materialCode)
+     @BindView(R.id.materialCode)
     TextView materialCode;
-    @Bind(R.id.materialName)
+     @BindView(R.id.materialName)
     TextView materialName;
-    @Bind(R.id.quantity)
+     @BindView(R.id.quantity)
     TextView quantity;
-    @Bind(R.id.mLong)
+     @BindView(R.id.mLong)
     TextView mLong;
-    @Bind(R.id.mWidth)
+     @BindView(R.id.mWidth)
     TextView mWidth;
-    @Bind(R.id.mHeight)
+     @BindView(R.id.mHeight)
     TextView mHeight;
-    @Bind(R.id.wLong)
+     @BindView(R.id.wLong)
     TextView wLong;
-    @Bind(R.id.wWidth)
+     @BindView(R.id.wWidth)
     TextView wWidth;
-    @Bind(R.id.wHeight)
+     @BindView(R.id.wHeight)
     TextView wHeight;
-    @Bind(R.id.quota)
+     @BindView(R.id.quota)
     TextView quota;
-    @Bind(R.id.unit)
+     @BindView(R.id.unit)
     TextView unit;
-    @Bind(R.id.available)
+     @BindView(R.id.available)
     TextView available;
-    @Bind(R.id.type)
+     @BindView(R.id.type)
     TextView type;
-    @Bind(R.id.price)
+     @BindView(R.id.price)
     TextView price;
-    @Bind(R.id.amount)
+     @BindView(R.id.amount)
     TextView amount;
-    @Bind(R.id.memo)
+     @BindView(R.id.memo)
     TextView memo;
-    @Bind(R.id.selectMaterial)
+     @BindView(R.id.selectMaterial)
     View selectMaterial;
-    @Bind(R.id.selectMaterial2)
+     @BindView(R.id.selectMaterial2)
     View selectMaterial2;
 
-    @Bind(R.id.goBack)
+     @BindView(R.id.goBack)
     View goBack;
 
 
-    @Bind(R.id.packMaterialClass)
+     @BindView(R.id.packMaterialClass)
     Spinner packMaterialClass;
 
-    @Bind(R.id.packMaterialType)
+     @BindView(R.id.packMaterialType)
     Spinner packMaterialType;
-    @Bind(R.id.packMaterialPosition)
+     @BindView(R.id.packMaterialPosition)
     Spinner packMaterialPositionSpinner;
 
 
-    @Bind(R.id.ll_packMaterialClass)
+     @BindView(R.id.ll_packMaterialClass)
     View ll_packMaterialClass;
 
-    @Bind(R.id.ll_packMaterialType)
+     @BindView(R.id.ll_packMaterialType)
     View ll_packMaterialType;
-    @Bind(R.id.ll_packMaterialPosition)
+     @BindView(R.id.ll_packMaterialPosition)
     View ll_packMaterialPosition;
 
 

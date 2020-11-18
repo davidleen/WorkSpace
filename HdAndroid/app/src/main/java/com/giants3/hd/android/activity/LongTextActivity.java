@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import com.giants3.hd.android.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 public class LongTextActivity extends BaseActivity {
 
@@ -15,9 +15,9 @@ public class LongTextActivity extends BaseActivity {
     public static final String PARAM_CONTENT = "CONTENT";
 
 
-    @Bind(R.id.text)
+    @BindView(R.id.text)
     TextView textView;
-    @Bind(R.id.title)
+    @BindView(R.id.title)
     TextView titleView;
 
     @Override

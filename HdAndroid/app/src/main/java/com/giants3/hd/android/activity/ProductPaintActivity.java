@@ -18,7 +18,7 @@ import com.giants3.hd.entity.ProductPaint;
 import com.giants3.hd.entity.ProductProcess;
 import com.giants3.hd.logic.ProductAnalytics;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -34,45 +34,45 @@ public class ProductPaintActivity extends BaseActionBarActivity  {
      ProductPaint productPaint;
     String originData;
 
-    @Bind(R.id.materialCode)
+    @BindView(R.id.materialCode)
     TextView materialCode;
-    @Bind(R.id.materialName)
+    @BindView(R.id.materialName)
     TextView materialName;
 
 
 
-    @Bind(R.id.processCode)
+    @BindView(R.id.processCode)
     TextView processCode;
-    @Bind(R.id.processName)
+    @BindView(R.id.processName)
     TextView processName;
-    @Bind(R.id.processPrice)
+    @BindView(R.id.processPrice)
     TextView processPrice;
-    @Bind(R.id.unitName)
+    @BindView(R.id.unitName)
     TextView unitName;
 
 
-    @Bind(R.id.ingredientRatio)
+    @BindView(R.id.ingredientRatio)
     TextView ingredientRatio;
-    @Bind(R.id.quantity)
+    @BindView(R.id.quantity)
     TextView quantity;
-    @Bind(R.id.price)
+    @BindView(R.id.price)
     TextView price;
-    @Bind(R.id.cost)
+    @BindView(R.id.cost)
     TextView cost;
-    @Bind(R.id.materialQuantity)
+    @BindView(R.id.materialQuantity)
     TextView materialQuantity;
 
-    @Bind(R.id.ingredientQuantity)
+    @BindView(R.id.ingredientQuantity)
     TextView ingredientQuantity;
 
-    @Bind(R.id.memo)
+    @BindView(R.id.memo)
     TextView memo;
 
 
-    @Bind(R.id.goBack)
+    @BindView(R.id.goBack)
     View goBack;
 
-    @Bind(R.id.delete)
+    @BindView(R.id.delete)
     View delete;
     private int position = -1;
     private int materialType = -1;

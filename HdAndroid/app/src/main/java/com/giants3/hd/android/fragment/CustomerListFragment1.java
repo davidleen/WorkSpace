@@ -28,7 +28,8 @@ import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 /**
  * 广交会报价
@@ -39,13 +40,13 @@ public class CustomerListFragment1 extends BaseMvpFragment<CustomerListMVP.Prese
 
     private static final int REQUEST_CUSTOMER_DETAIL_OPERATE = 9993;
     ItemListAdapter<Customer> adapter;
-    @Bind(R.id.swipeLayout)
+     @BindView(R.id.swipeLayout)
     TwinklingRefreshLayout swipeLayout;
-    @Bind(R.id.list)
+     @BindView(R.id.list)
     ListView listView;
-    @Bind(R.id.search_text)
+     @BindView(R.id.search_text)
     EditText search_text;
-    @Bind(R.id.add)
+     @BindView(R.id.add)
     View add;
 
     TextWatcher watcher;

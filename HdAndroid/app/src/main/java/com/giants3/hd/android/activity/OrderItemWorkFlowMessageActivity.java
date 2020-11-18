@@ -18,7 +18,8 @@ import com.giants3.hd.entity.WorkFlowMessage;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 /**
  * Created by davidleen29 on 2017/6/25.
@@ -26,15 +27,15 @@ import butterknife.Bind;
 
 public class OrderItemWorkFlowMessageActivity extends BaseViewerActivity<OrderItemWorkFlowMessageMVP.Presenter> implements OrderItemWorkFlowMessageMVP.Viewer  {
     private static final int REQUEST_MESSAGE_OPERATE = 1000;
-    @Bind(R.id.detail_toolbar)
+     @BindView(R.id.detail_toolbar)
     Toolbar toolbar;
     public static final String KEY_ORDER_ITEM = "KEY_ORDER_ITEM";
 
-    @Bind(R.id.swipeLayout)
+     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeLayout;
 
 
-    @Bind(R.id.workFlowMessages)
+     @BindView(R.id.workFlowMessages)
     ListView workFlowMessages;
 
     WorkFlowMessageAdapter adapter;

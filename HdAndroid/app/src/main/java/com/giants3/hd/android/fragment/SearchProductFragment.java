@@ -29,7 +29,8 @@ import com.giants3.hd.entity.app.AProduct;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 /**
  *  查找产品Fragment
@@ -40,11 +41,11 @@ public class SearchProductFragment extends BaseMVPDialogFragment<SearchProductMv
 
 
 
-    @Bind(R.id.key)
+     @BindView(R.id.key)
     EditText editText;
-    @Bind(R.id.withCopy)
+     @BindView(R.id.withCopy)
     CheckBox withCopy;
-    @Bind(R.id.list)
+     @BindView(R.id.list)
     ListView listView;
     ItemListAdapter<AProduct> listAdapter;
     private OnFragmentInteractionListener mListener;

@@ -28,7 +28,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * 发送流程fragment
@@ -37,48 +37,48 @@ public class SendWorkFlowFragment extends BaseMVPDialogFragment<WorkFlowSendMvp.
 
     private static final String ARG_AVAILABLE_ITEMS = "ARG_AVAILABLE_ITEMS";
 
-    @Bind(R.id.sendPanel)
+    @BindView(R.id.sendPanel)
     View sendPanel;
 
-    @Bind(R.id.panel_select_item)
+    @BindView(R.id.panel_select_item)
     View panel_select_item;
-    @Bind(R.id.order_item_name)
+    @BindView(R.id.order_item_name)
     TextView order_item_name;
-    @Bind(R.id.orderItemQty)
+    @BindView(R.id.orderItemQty)
     TextView orderItemQty;
-    @Bind(R.id.orderItemTranQty)
+    @BindView(R.id.orderItemTranQty)
     TextView orderItemTranQty;
-    @Bind(R.id.currentWorkFlow)
+    @BindView(R.id.currentWorkFlow)
     TextView currentWorkFlow;
-    @Bind(R.id.destWorkFlow)
+    @BindView(R.id.destWorkFlow)
     TextView destWorkFlow;
-    @Bind(R.id.sendQty)
+    @BindView(R.id.sendQty)
     EditText sendQty;
-    @Bind(R.id.panel_factory)
+    @BindView(R.id.panel_factory)
     View panel_factory;
-    @Bind(R.id.factory)
+    @BindView(R.id.factory)
     TextView factory;
-    @Bind(R.id.produceType)
+    @BindView(R.id.produceType)
     TextView produceType;
-    @Bind(R.id.panel_picture)
+    @BindView(R.id.panel_picture)
     View panel_picture;
 
-    @Bind(R.id.panel_subtype)
+    @BindView(R.id.panel_subtype)
     View panel_subtype;
 
 
-    @Bind(R.id.picture)
+    @BindView(R.id.picture)
     ImageView picture;
 
-    @Bind(R.id.submitFlow)
+    @BindView(R.id.submitFlow)
     View submitFlow;
 
-    @Bind(R.id.panel_area)
+    @BindView(R.id.panel_area)
     View panel_area;
-    @Bind(R.id.area)
+    @BindView(R.id.area)
     TextView area;
 
-    @Bind(R.id.memo)
+    @BindView(R.id.memo)
     EditText memo;
 
 

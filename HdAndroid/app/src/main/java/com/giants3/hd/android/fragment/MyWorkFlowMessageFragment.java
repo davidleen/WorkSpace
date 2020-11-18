@@ -27,7 +27,7 @@ import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * 我的消息任务 我发起的  我收到的。
@@ -38,12 +38,12 @@ public class MyWorkFlowMessageFragment extends BaseMvpFragment<MVP.Presenter> im
 
     private static final int REQUEST_MESSAGE_OPERATE = 9999;
     WorkFlowMessageAdapter adapter;
-    @Bind(R.id.swipeLayout)
+    @BindView(R.id.swipeLayout)
     TwinklingRefreshLayout swipeLayout;
-    @Bind(R.id.search)
+    @BindView(R.id.search)
     EditText search;
 
-    @Bind(R.id.list)
+    @BindView(R.id.list)
     ListView listView;
 
     @Override

@@ -28,7 +28,7 @@ import com.giants3.hd.entity.QuoteAuth;
 import com.giants3.hd.entity.app.AProduct;
 import com.giants3.hd.noEntity.QuotationDetail;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /** 
  */
@@ -47,40 +47,40 @@ public class QuotationDetailActivity extends BaseHeadViewerActivity<QuotationDet
     ItemListAdapter<QuotationXKItem> xkquotationItemItemListAdapter;
     private QuotationDetailFragment.OnFragmentInteractionListener mListener;
 
-    @Bind(R.id.listView)
+    @BindView(R.id.listView)
     ListView listView;
 
 
-    @Bind(R.id.cus_no)
+    @BindView(R.id.cus_no)
     TextView cus_no;
 
-    @Bind(R.id.qDate)
+    @BindView(R.id.qDate)
     TextView qDate;
-    @Bind(R.id.validDate)
+    @BindView(R.id.validDate)
     TextView validDate;
-    @Bind(R.id.moneyType)
+    @BindView(R.id.moneyType)
     TextView moneyType;
-    @Bind(R.id.sal)
+    @BindView(R.id.sal)
     TextView sal;
-    @Bind(R.id.memo)
+    @BindView(R.id.memo)
     TextView memo;
-    @Bind(R.id.showMore)
+    @BindView(R.id.showMore)
     View showMore;
-    @Bind(R.id.more_text)
+    @BindView(R.id.more_text)
     View more_text;
-    @Bind(R.id.qNumber)
+    @BindView(R.id.qNumber)
     TextView qNumber;
 
-    @Bind(R.id.check)
+    @BindView(R.id.check)
     public View check;
-    @Bind(R.id.overdue)
+    @BindView(R.id.overdue)
     public View overdue;
-    @Bind(R.id.verify)
+    @BindView(R.id.verify)
     public View verify;
-    @Bind(R.id.unVerify)
+    @BindView(R.id.unVerify)
     public View unVerify;
 
-    @Bind(R.id.verifyHint)
+    @BindView(R.id.verifyHint)
     public View verifyHint;
 
 

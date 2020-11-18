@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.widget.ImageView;
+
 import androidx.annotation.NonNull;
 
 import com.giants3.android.frame.util.Installation;
@@ -16,6 +18,7 @@ import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.data.net.HttpUrl;
 import com.giants3.hd.entity.app.AUser;
 
+import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -30,6 +33,8 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class SplashActivity extends BaseActivity {
 
+//    @BindView(R.id.logo)
+//   public  ImageView logo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -12,7 +12,7 @@ import android.widget.EditText;
 import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.hd.android.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 public class ProductPackSizeEditDialogFragment extends BaseDialogFragment {
     private int insideBoxQuantity;
@@ -23,18 +23,18 @@ public class ProductPackSizeEditDialogFragment extends BaseDialogFragment {
     private OnNewPackDataListener listener;
 
 
-    @Bind(R.id.inboxCount)
+    @BindView(R.id.inboxCount)
     EditText insideBoxQuantityText;
 
-    @Bind(R.id.packQuantity)
+    @BindView(R.id.packQuantity)
     EditText packQuantityText;
-    @Bind(R.id.packLong)
+    @BindView(R.id.packLong)
     EditText packLongText;
-    @Bind(R.id.packWidth)
+    @BindView(R.id.packWidth)
     EditText packWidthText;
-    @Bind(R.id.packHeight)
+    @BindView(R.id.packHeight)
     EditText packHeightText;
- @Bind(R.id.btn_confirm)
+ @BindView(R.id.btn_confirm)
     View btn_confirm;
 
     @Override

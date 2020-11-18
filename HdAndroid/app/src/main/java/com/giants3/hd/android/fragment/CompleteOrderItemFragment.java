@@ -33,7 +33,7 @@ import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * 排厂完工的货款
@@ -44,12 +44,12 @@ public class CompleteOrderItemFragment extends BaseMvpFragment<CompleteOrderItem
 
     private static final int REQUEST_MESSAGE_OPERATE = 9999;
     ItemListAdapter<ErpOrderItem> adapter;
-    @Bind(R.id.swipeLayout)
+    @BindView(R.id.swipeLayout)
     TwinklingRefreshLayout swipeLayout;
 
-    @Bind(R.id.list)
+    @BindView(R.id.list)
     ListView listView;
-    @Bind(R.id.search_text)
+    @BindView(R.id.search_text)
     EditText search_text;
 
 

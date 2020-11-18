@@ -13,7 +13,7 @@ import com.giants3.hd.android.helper.ImageViewerHelper;
 import com.giants3.hd.data.net.HttpUrl;
 import com.giants3.hd.entity.ErpOrderItem;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by david on 2016/2/14.
@@ -39,19 +39,19 @@ public class WorkFlowOrderItemListAdapter
     public class ViewHolder extends BaseBindable<ErpOrderItem> {
 
 
-        @Bind(R.id.photo)
+        @BindView(R.id.photo)
         public ImageView photo;
-        @Bind(R.id.os_no)
+        @BindView(R.id.os_no)
         public   TextView os_no;
-        @Bind(R.id.productName)
+        @BindView(R.id.productName)
         public   TextView productName;
-        @Bind(R.id.pversion)
+        @BindView(R.id.pversion)
 
         public   TextView pversion;
-        @Bind(R.id.batNo)
+        @BindView(R.id.batNo)
         public   TextView batNo;
 
-        @Bind(R.id.workflow)
+        @BindView(R.id.workflow)
         public   TextView workflow;
 
 

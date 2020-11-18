@@ -40,7 +40,7 @@ dependencies {
 
     api project(':library-android')
 
-    compileOnly "com.jakewharton:butterknife:${BUTTERKNIFE_VERSION}"
+    compileOnly "com.jakewharton:butterknife:${versions.BUTTERKNIFE_VERSION}"
 
 
     api "androidx.appcompat:appcompat:${ANDROID_X_APPCOMPAT}"

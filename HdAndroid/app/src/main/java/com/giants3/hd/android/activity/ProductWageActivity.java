@@ -18,7 +18,7 @@ import com.giants3.hd.entity.ProductProcess;
 import com.giants3.hd.entity.ProductWage;
 import com.giants3.hd.exception.HdException;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.giants3.hd.android.activity.ProductMaterialActivity.PRODUCT_MATERIAL_TYPE;
@@ -40,22 +40,22 @@ public class ProductWageActivity extends BaseActionBarActivity {
     ProductWage productWage;
 
 
-    @Bind(R.id.processCode)
+    @BindView(R.id.processCode)
     TextView processCode;
-    @Bind(R.id.processName)
+    @BindView(R.id.processName)
     TextView processName;
-    @Bind(R.id.price)
+    @BindView(R.id.price)
     TextView price;
-    @Bind(R.id.amount)
+    @BindView(R.id.amount)
     TextView amount;
-    @Bind(R.id.memo)
+    @BindView(R.id.memo)
     TextView memo;
-    @Bind(R.id.selectWage)
+    @BindView(R.id.selectWage)
     View selectWage;
-    @Bind(R.id.selectWage2)
+    @BindView(R.id.selectWage2)
     View selectWage2;
 
-    @Bind(R.id.goBack)
+    @BindView(R.id.goBack)
     View goBack;
 
 

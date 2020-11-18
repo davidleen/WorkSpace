@@ -30,7 +30,8 @@ import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 /**
  * Created by david on 2016/5/12.
@@ -40,13 +41,13 @@ public class ListFragment<T> extends BaseMvpFragment<ListMVP.Presenter> implemen
     AbstractAdapter<T> adapter;
 
 
-    @Bind(R.id.list)
+     @BindView(R.id.list)
     ListView listView;
-    @Bind(R.id.search_text)
+     @BindView(R.id.search_text)
     EditText search_text;
-    @Bind(R.id.swipeLayout)
+     @BindView(R.id.swipeLayout)
     TwinklingRefreshLayout swipeLayout;
-    @Bind(R.id.add)
+     @BindView(R.id.add)
     View add;
     OnFragmentInteractionListener<T> mListener;
 

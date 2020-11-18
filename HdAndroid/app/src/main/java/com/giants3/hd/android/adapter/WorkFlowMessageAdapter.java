@@ -15,7 +15,8 @@ import com.giants3.hd.data.net.HttpUrl;
 import com.giants3.hd.entity.WorkFlowMessage;
 import com.giants3.hd.utils.StringUtils;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 /**
  * 流程处理
@@ -60,61 +61,61 @@ public class WorkFlowMessageAdapter
 
     public static class ViewHolder extends AbstractViewHolder<WorkFlowMessage> {
         public WorkFlowMessage mItem;
-        @Bind(R.id.picture)
+         @BindView(R.id.picture)
         public ImageView picture;
 
-        @Bind(R.id.fromFlow)
+         @BindView(R.id.fromFlow)
         public TextView fromFlow;
 
-        @Bind(R.id.toFlow)
+         @BindView(R.id.toFlow)
         public TextView toFlow;
-        @Bind(R.id.tranQty)
+         @BindView(R.id.tranQty)
         public TextView tranQty;
 
-        @Bind(R.id.name)
+         @BindView(R.id.name)
         public TextView name;
-        @Bind(R.id.orderName)
+         @BindView(R.id.orderName)
         public TextView orderName;
-        @Bind(R.id.productName)
+         @BindView(R.id.productName)
         public TextView productName;
-        @Bind(R.id.pVersion)
+         @BindView(R.id.pVersion)
         public TextView pVersion;
-        @Bind(R.id.mrpNo)
+         @BindView(R.id.mrpNo)
         public TextView mrpNo;
-        @Bind(R.id.qty)
+         @BindView(R.id.qty)
         public TextView qty;
-        @Bind(R.id.batNo)
+         @BindView(R.id.batNo)
         public TextView batNo;
-        @Bind(R.id.cus_no)
+         @BindView(R.id.cus_no)
         public TextView cus_no;
-        @Bind(R.id.unitName)
+         @BindView(R.id.unitName)
         public TextView unitName;
 
 
-        @Bind(R.id.createTime)
+         @BindView(R.id.createTime)
         public TextView createTime;
-        @Bind(R.id.state)
+         @BindView(R.id.state)
         public TextView state;
-        @Bind(R.id.panel_reason)
+         @BindView(R.id.panel_reason)
         public View panel_reason;
-        @Bind(R.id.reason)
+         @BindView(R.id.reason)
         public TextView reason;
 
 
-        @Bind(R.id.panel_receiver)
+         @BindView(R.id.panel_receiver)
         public View panel_receiver;
-        @Bind(R.id.receiver)
+         @BindView(R.id.receiver)
         public TextView receiver;
 
-        @Bind(R.id.panel_sender)
+         @BindView(R.id.panel_sender)
         public View panel_sender;
-        @Bind(R.id.sender)
+         @BindView(R.id.sender)
         public TextView sender;
 
 
-        @Bind(R.id.panel_factory)
+         @BindView(R.id.panel_factory)
         public View panel_factory;
-        @Bind(R.id.factory)
+         @BindView(R.id.factory)
         public TextView factory;
 
         public ViewHolder(View view, View.OnClickListener listener) {

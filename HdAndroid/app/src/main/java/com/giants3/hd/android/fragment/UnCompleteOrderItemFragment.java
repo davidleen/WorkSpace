@@ -34,7 +34,8 @@ import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 /**
  * 一排厂未完工的货款
@@ -45,27 +46,27 @@ public class UnCompleteOrderItemFragment extends BaseMvpFragment<UnCompleteOrder
 
     private static final int REQUEST_MESSAGE_OPERATE = 9999;
     ItemListAdapter<ErpOrderItem> adapter;
-    @Bind(R.id.swipeLayout)
+     @BindView(R.id.swipeLayout)
     TwinklingRefreshLayout swipeLayout;
 
-    @Bind(R.id.list)
+     @BindView(R.id.list)
     ListView listView;
-    @Bind(R.id.search_text)
+     @BindView(R.id.search_text)
     EditText search_text;
 
 
-    @Bind(R.id.all)
+     @BindView(R.id.all)
     View all;
-    @Bind(R.id.step1)
+     @BindView(R.id.step1)
     View step1;
-    @Bind(R.id.step2)
+     @BindView(R.id.step2)
     View step2;
-    @Bind(R.id.step3)
+     @BindView(R.id.step3)
     View step3;
-    @Bind(R.id.step4)
+     @BindView(R.id.step4)
     View step4;
 
-    @Bind(R.id.step5)
+     @BindView(R.id.step5)
     View step5;
     View[] steps;
 

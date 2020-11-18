@@ -35,7 +35,7 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 import static com.giants3.hd.android.mvp.WorkFlowMessageReceive.Presenter;
 import static com.giants3.hd.android.mvp.WorkFlowMessageReceive.Viewer;
@@ -50,84 +50,84 @@ public class WorkFlowMessageReceiveActivity extends BaseHeadViewerActivity<Prese
 
     public static final String KEY_MESSAGE = "KEY_MESSAGE";
     private static final String KEY_MESSAGE_ID = "KEY_MESSAGE_ID";
-    @Bind(R.id.picture)
+     @BindView(R.id.picture)
     public ImageView picture;
-    @Bind(R.id.fromFlow)
+     @BindView(R.id.fromFlow)
     public TextView fromFlow;
-    @Bind(R.id.toFlow)
+     @BindView(R.id.toFlow)
     public TextView toFlow;
-    @Bind(R.id.tranQty)
+     @BindView(R.id.tranQty)
     public TextView tranQty;
-    @Bind(R.id.name)
+     @BindView(R.id.name)
     public TextView name;
-    @Bind(R.id.orderName)
+     @BindView(R.id.orderName)
     public TextView orderName;
-    @Bind(R.id.batNo)
+     @BindView(R.id.batNo)
     public TextView batNo;
-    @Bind(R.id.cus_no)
+     @BindView(R.id.cus_no)
     public TextView cus_no;
-    @Bind(R.id.productName)
+     @BindView(R.id.productName)
     public TextView productName;
-    @Bind(R.id.mrpNo)
+     @BindView(R.id.mrpNo)
     public TextView mrpNo;
-    @Bind(R.id.qty)
+     @BindView(R.id.qty)
     public TextView qty;
-    @Bind(R.id.unitName)
+     @BindView(R.id.unitName)
     public TextView unitName;
-    @Bind(R.id.area)
+     @BindView(R.id.area)
     public TextView area;
-    @Bind(R.id.sendMemo)
+     @BindView(R.id.sendMemo)
     public TextView sendMemo;
-    @Bind(R.id.createTime)
+     @BindView(R.id.createTime)
     public TextView createTime;
-    @Bind(R.id.state)
+     @BindView(R.id.state)
     public TextView state;
-    @Bind(R.id.memo)
+     @BindView(R.id.memo)
     public EditText memo;
-    @Bind(R.id.panel_factory)
+     @BindView(R.id.panel_factory)
     public View panel_factory;
-    @Bind(R.id.factory)
+     @BindView(R.id.factory)
     public TextView factory;
-    @Bind(R.id.picture1)
+     @BindView(R.id.picture1)
     ImageView picture1;
-    @Bind(R.id.picture2)
+     @BindView(R.id.picture2)
     ImageView picture2;
-    @Bind(R.id.picture3)
+     @BindView(R.id.picture3)
     ImageView picture3;
-    @Bind(R.id.panel_picture2)
+     @BindView(R.id.panel_picture2)
     View panel_picture2;
-    @Bind(R.id.panel_picture1)
+     @BindView(R.id.panel_picture1)
     View panel_picture1;
-    @Bind(R.id.panel_picture3)
+     @BindView(R.id.panel_picture3)
     View panel_picture3;
-    @Bind(R.id.delete1)
+     @BindView(R.id.delete1)
     View delete1;
-    @Bind(R.id.delete2)
+     @BindView(R.id.delete2)
     View delete2;
-    @Bind(R.id.delete3)
+     @BindView(R.id.delete3)
     View delete3;
-    @Bind(R.id.addPicture)
+     @BindView(R.id.addPicture)
     ImageView addPicture;
-    @Bind(R.id.receive)
+     @BindView(R.id.receive)
     View receive;
 
 
-    @Bind(R.id.panel_receiver)
+     @BindView(R.id.panel_receiver)
     public View panel_receiver;
-    @Bind(R.id.receiver)
+     @BindView(R.id.receiver)
     public TextView receiver;
 
-    @Bind(R.id.panel_sender)
+     @BindView(R.id.panel_sender)
     public View panel_sender;
-    @Bind(R.id.sender)
+     @BindView(R.id.sender)
     public TextView sender;
-    @Bind(R.id.rollback)
+     @BindView(R.id.rollback)
     public View rollback;
 
 
 
 
-    @Bind(R.id.reject)
+     @BindView(R.id.reject)
     View reject;
     CapturePictureHelper capturePictureHelper;
 

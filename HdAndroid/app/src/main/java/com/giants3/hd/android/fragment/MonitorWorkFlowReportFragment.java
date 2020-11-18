@@ -29,7 +29,8 @@ import com.giants3.hd.noEntity.RemoteData;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 /**
  * 生产计划任务报表
@@ -40,24 +41,24 @@ public class MonitorWorkFlowReportFragment extends BaseMvpFragment<MonitorWorkFl
 
     private static final int REQUEST_MESSAGE_OPERATE = 9999;
     ItemListAdapter<ErpWorkFlowReport> adapter;
-    @Bind(R.id.swipeLayout)
+     @BindView(R.id.swipeLayout)
     TwinklingRefreshLayout swipeLayout;
 
-    @Bind(R.id.list)
+     @BindView(R.id.list)
     ListView listView;
-    @Bind(R.id.search_text)
+     @BindView(R.id.search_text)
     EditText search_text;
 
 
-    @Bind(R.id.all)
+     @BindView(R.id.all)
     TextView all;
 
 
-    @Bind(R.id.completed)
+     @BindView(R.id.completed)
     TextView completed;
 
 
-    @Bind(R.id.working)
+     @BindView(R.id.working)
     TextView working;
 
     View[] views;

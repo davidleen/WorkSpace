@@ -15,7 +15,7 @@ import com.giants3.hd.android.helper.ImageViewerHelper;
 import com.giants3.hd.data.net.HttpUrl;
 import com.giants3.hd.entity.Material;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * 材料列表适配
@@ -59,15 +59,15 @@ public class MaterialListAdapter
         public Material mItem;
 
 
-        @Bind(R.id.materialCode)
+        @BindView(R.id.materialCode)
         public TextView materialCode;
-        @Bind(R.id.picture)
+        @BindView(R.id.picture)
         public ImageView picture;
-        @Bind(R.id.materialName)
+        @BindView(R.id.materialName)
         public TextView materialName;
-        @Bind(R.id.materialType)
+        @BindView(R.id.materialType)
         public TextView materialType;
-        @Bind(R.id.unit)
+        @BindView(R.id.unit)
         public TextView unit;
 
         public ViewHolder(View view) {

@@ -20,7 +20,7 @@ import com.giants3.hd.noEntity.RemoteData;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import rx.Subscriber;
 
 /**
@@ -30,11 +30,11 @@ import rx.Subscriber;
 public class UnHandleWorkFlowMessageReport extends BaseMvpFragment {
 
     ItemListAdapter<WorkFlowMessage> adapter;
-    @Bind(R.id.swipeLayout)
+     @BindView(R.id.swipeLayout)
     TwinklingRefreshLayout swipeLayout;
 
 
-    @Bind(R.id.list)
+     @BindView(R.id.list)
     ListView listView;
 
     @Override
