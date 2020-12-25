@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * 网络数据交换格式。
  */
-public class RemoteData<T> implements Serializable{
+public class RemoteData<T> implements Serializable,Pageable{
 
 
     /**
@@ -97,5 +97,25 @@ public class RemoteData<T> implements Serializable{
         this.code=remoteData.code;
         this.message=remoteData.message;
         datas=new ArrayList<>();
+    }
+
+    @Override
+    public int getPageIndex() {
+        return pageIndex;
+    }
+
+    @Override
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    @Override
+    public int getTotalCount() {
+        return totalCount;
+    }
+
+    @Override
+    public int getPageNum() {
+        return pageCount;
     }
 }

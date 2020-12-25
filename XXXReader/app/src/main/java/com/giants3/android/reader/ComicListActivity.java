@@ -31,9 +31,9 @@ public class ComicListActivity extends BaseActivity<ActivityMain2Binding> {
 
                 Book book=adapter.getItem(position);
 
-                Intent intent=new Intent(ComicListActivity.this,ComicReadActivity.class);
-                intent.putExtra(ComicReadActivity.KEY_BOOK_ID,book.id);
-                startActivity(intent);
+//                Intent intent=new Intent(ComicListActivity.this,ComicReadActivity.class);
+//                intent.putExtra(ComicReadActivity.KEY_BOOK_ID,book.id);
+//                startActivity(intent);
 
 
 

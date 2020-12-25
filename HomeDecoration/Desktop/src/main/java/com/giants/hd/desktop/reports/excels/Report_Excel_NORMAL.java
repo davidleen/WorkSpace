@@ -2,6 +2,7 @@ package com.giants.hd.desktop.reports.excels;
 
 import com.giants.hd.desktop.reports.QuotationFile;
 import com.giants3.hd.domain.api.HttpUrl;
+import com.giants3.hd.utils.FloatHelper;
 import com.giants3.hd.utils.StringUtils;
 import com.giants3.hd.entity.Quotation;
 import com.giants3.hd.entity.QuotationItem;
@@ -117,8 +118,8 @@ public class Report_Excel_NORMAL extends ExcelReportor {
             addString(writableSheet, lastIndex == -1 ? "1" : item.unit.substring(lastIndex + 1), 7, rowUpdate);
 
             //FOb
-            addNumber(writableSheet, item.price, 8, rowUpdate);
-
+//            addNumber(writableSheet, item.price, 8, rowUpdate);
+            addString(writableSheet, FloatHelper.formatDollar(item.price), 8, rowUpdate);
             //包装尺寸
             //内盒数
             addNumber(writableSheet, item.inBoxCount, 9, rowUpdate);
@@ -134,18 +135,23 @@ public class Report_Excel_NORMAL extends ExcelReportor {
 
 
             //包装长
-            addNumber(writableSheet, result[0], 12, rowUpdate);
-
+            //addNumber(writableSheet, result[0], 12, rowUpdate);
+            addString(writableSheet, FloatHelper.scale(result[0]), 12, rowUpdate);
             //包装宽
-            addNumber(writableSheet, result[1], 14, rowUpdate);
+//            addNumber(writableSheet, result[1], 14, rowUpdate);
+            addString(writableSheet, FloatHelper.scale(result[1]), 14, rowUpdate);
 
 
             //包装高
-            addNumber(writableSheet, result[2], 16, rowUpdate);
+//            addNumber(writableSheet, result[2], 16, rowUpdate);
+            addString(writableSheet, FloatHelper.scale(result[2]), 16, rowUpdate);
+
+
 
 
             //包装体积
-            addNumber(writableSheet, item.volumeSize, 17, rowUpdate);
+//            addNumber(writableSheet, item.volumeSize, 17, rowUpdate);
+            addString(writableSheet, FloatHelper.formatNumber(item.volumeSize,3), 17, rowUpdate);
 
 
             //是否开模
@@ -161,7 +167,8 @@ public class Report_Excel_NORMAL extends ExcelReportor {
 
 
             //净重
-            addNumber(writableSheet, item.weight, 22, rowUpdate);
+//            addNumber(writableSheet, item.weight, 22, rowUpdate);
+            addString(writableSheet, FloatHelper.formatNumber(item.weight), 22, rowUpdate);
 
 
             //备注

@@ -191,13 +191,13 @@ public class Report_Excel_StockOut_Qingguan_Invoice extends SimpleExcelReporter<
             addString(writableSheet, outItem.describe, 5, row);
             //fob
 
-            addNumber(writableSheet, outItem.up, 6, row);
+            addString(writableSheet, FloatHelper.formatDollar(outItem.up), 6, row);
 
             //amount
-            addNumber(writableSheet, FloatHelper.scale(outItem.up * outItem.stockOutQty), 7, row);
+            addString(writableSheet, FloatHelper.formatDollar((outItem.up * outItem.stockOutQty)), 7, row);
 
             //cbm
-            addNumber(writableSheet, outItem.xgtj, 8, row);
+            addString(writableSheet, FloatHelper.formatNumber( outItem.xgtj,3), 8, row);
 
             addString(writableSheet, outItem.specInch, 9, row);
 
@@ -219,7 +219,7 @@ public class Report_Excel_StockOut_Qingguan_Invoice extends SimpleExcelReporter<
         }
         addString(writableSheet, totalXs + " /CTNS", 3, row);
         addString(writableSheet, totalStockOutQty + " /PCS", 4, row);
-        addNumber(writableSheet, totalAmt, 7, row);
+        addString(writableSheet, FloatHelper.formatDollar(totalAmt), 7, row);
 
 
     }
@@ -305,10 +305,10 @@ public class Report_Excel_StockOut_Qingguan_Invoice extends SimpleExcelReporter<
                // addString(writableSheet, outItem.describe, 7, row);
                 //fob
 
-                addNumber(writableSheet, outItem.up, 8, row);
+                addString(writableSheet,  FloatHelper.formatDollar(outItem.up), 8, row);
 
                 //amount
-                addNumber(writableSheet, FloatHelper.scale(outItem.up * outItem.stockOutQty), 9, row);
+                addString(writableSheet,  FloatHelper.formatDollar(outItem.up * outItem.stockOutQty), 9, row);
 
 //                //Product size (inch)
 //                addString(writableSheet, outItem.specInch, 8, row);
@@ -334,7 +334,7 @@ public class Report_Excel_StockOut_Qingguan_Invoice extends SimpleExcelReporter<
         }
         addString(writableSheet, totalXs + " /CTNS", 3, row);
         addString(writableSheet, totalStockOutQty + " /PCS", 4, row);
-        addNumber(writableSheet, totalAmt, 9, row);
+        addString(writableSheet, FloatHelper.formatDollar(totalAmt), 9, row);
 
     }
 
@@ -466,31 +466,31 @@ public class Report_Excel_StockOut_Qingguan_Invoice extends SimpleExcelReporter<
                 orderTiji = outItem.xgtj * xs;
 
                 //ttl cbm
-                addNumber(writableSheet, FloatHelper.scale(orderTiji), 13, row);
+                addString(writableSheet, FloatHelper.formatNumber(orderTiji,3), 13, row);
                 totalTiji += orderTiji;
 
 
                 //净重 按产品个数量结算
                 //ttl nw
-//                addNumber(writableSheet, FloatHelper.scale(orderTiji), 13, row);
+//                addString(writableSheet, FloatHelper.scale(orderTiji), 13, row);
 
 
                 final float zjz = outItem.jz1 * xs;
                 totaljz += zjz;
-                addNumber(writableSheet, FloatHelper.scale(zjz), 14, row);
+                addString(writableSheet, FloatHelper.formatNumber(zjz), 14, row);
 //                //TTL G.W      毛重  按箱数结算
-//                addNumber(writableSheet, FloatHelper.scale(outItem.mz), 15, row);
+//                addString(writableSheet, FloatHelper.scale(outItem.mz), 15, row);
 //
 //                //TTL G.W       (kgs)
                 final float zmz = outItem.mz * xs;
                 totalmz += zmz;
-                addNumber(writableSheet, FloatHelper.scale(zmz), 15, row);
+                addString(writableSheet, FloatHelper.formatNumber(zmz), 15, row);
 
 
 //                //  cbm
-//                addNumber(writableSheet, FloatHelper.scale(outItem.xgtj, 3), 17, row);
+//                addString(writableSheet, FloatHelper.scale(outItem.xgtj, 3), 17, row);
 //                //ttl cbm
-//                addNumber(writableSheet, FloatHelper.scale(orderTiji, 3), 18, row);
+//                addString(writableSheet, FloatHelper.scale(orderTiji, 3), 18, row);
 
                 //Product size (inch)
                 addString(writableSheet, outItem.specInch, 16, row);
@@ -514,11 +514,11 @@ public class Report_Excel_StockOut_Qingguan_Invoice extends SimpleExcelReporter<
 
 
         row++;
-        addNumber(writableSheet, FloatHelper.scale(totalTiji, 3), 3, row);
+        addString(writableSheet, FloatHelper.formatNumber(totalTiji, 3), 3, row);
         row++;
-        addNumber(writableSheet, FloatHelper.scale(totaljz), 3, row);
+        addString(writableSheet, FloatHelper.formatNumber(totaljz), 3, row);
         row++;
-        addNumber(writableSheet, FloatHelper.scale(totalmz), 3, row);
+        addString(writableSheet, FloatHelper.formatNumber(totalmz), 3, row);
 
 
     }

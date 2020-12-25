@@ -8,6 +8,7 @@ import com.giants3.hd.utils.file.ImageUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.format.CellFormatType;
 import org.apache.poi.ss.usermodel.*;
 
 import java.awt.image.BufferedImage;
@@ -111,10 +112,13 @@ public abstract class AbstractExcelReporter<T> {
         return result;
 
     }
-
+    protected void addString(Sheet sheet, double value, int column, int rowUpdate) {
+       addString(sheet,String.valueOf(value),column,rowUpdate);
+    }
 
     protected void addString(Sheet sheet, String value, int column, int rowUpdate) {
         Cell cell = getRow(sheet,rowUpdate).getCell(column, Row.CREATE_NULL_AS_BLANK);
+        cell.setCellType(Cell.CELL_TYPE_STRING);
         cell.setCellValue(value);
 
     }

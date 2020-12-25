@@ -1025,6 +1025,19 @@ public class HttpUrl {
     public static String getOrderWorkFlowReport(String key, int pageIndex, int pageSize) {
 
         return additionInfo(BaseUrl + String.format("api/order/getWorkFlowOrderItem?key=%s&pageIndex=%d&pageSize=%d", key, pageIndex, pageSize));
+
+    } public static String queryErpOrderItems(String key,int state,int flowStep,int alertType, int pageIndex, int pageSize) {
+        UrlFormatter urlFormatter = new UrlFormatter(BaseUrl + "api/erpWork/queryOrderItems");
+          urlFormatter.append("key",key)
+                  .append("workFlowState",state)
+                  .append("workFlowStep",flowStep)
+                  .append("alertType",alertType)
+                  .append("pageIndex",pageIndex)
+                  .append("pageSize",pageSize) ;
+
+
+        return additionInfo(urlFormatter);
+
     }
 
     public static String getStockInAndSubmitList(String key, String startDate, String endDate) {
@@ -1444,6 +1457,13 @@ public class HttpUrl {
         UrlFormatter urlFormatter = new UrlFormatter(BaseUrl + "/api/workFlow/saveProducerValueConfig");
 
         return additionInfo(urlFormatter);
+
+    }
+
+    public static String getStockInButNotCompletedOrderItems(String key, int pageIndex  ,int  pageSize) {
+
+
+        return additionInfo(BaseUrl + String.format("api/erpWork/searchStockInUnCompleteOrderItems?key=%s&pageIndex=%d&pageSize=%s", key, pageIndex, pageSize));
 
     }
 }

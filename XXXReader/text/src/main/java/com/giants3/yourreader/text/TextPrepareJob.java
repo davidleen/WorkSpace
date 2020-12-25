@@ -2,6 +2,7 @@ package com.giants3.yourreader.text;
 
 import com.giants3.android.frame.util.Log;
 import com.giants3.android.frame.util.StringUtil;
+import com.giants3.io.FileUtils;
 import com.xxx.reader.Url2FileMapper;
 import com.xxx.reader.book.ChapterMeasureResult;
 import com.xxx.reader.book.IChapter;
@@ -97,6 +98,9 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
             result.name="";
         } catch (IOException e) {
             e.printStackTrace();
+        }finally {
+
+            FileUtils.safeClose(bufferedRandomAccessFile);
         }
 
 

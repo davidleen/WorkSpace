@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.giants.hd.desktop.viewImpl.Panel_Work_Flow_Query">
+  <grid id="27dc6" binding="root" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="0" left="0" bottom="0" right="0"/>
+    <constraints>
+      <xy x="20" y="20" width="798" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <tabbedpane id="32624" binding="tabbedPane1" default-binding="true">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="200" height="200"/>
+          </grid>
+        </constraints>
+        <properties/>
+        <border type="none">
+          <font/>
+          <title-color color="-16777216"/>
+        </border>
+        <children>
+          <grid id="7d9cc" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints>
+              <tabbedpane title="成品已入库未交接订单"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <grid id="c6695" layout-manager="GridLayoutManager" row-count="1" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
+                <constraints border-constraint="North"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="53ee9" class="javax.swing.JTextField" binding="jtf_key">
+                    <constraints>
+                      <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="-1"/>
+                      </grid>
+                    </constraints>
+                    <properties>
+                      <toolTipText value="输入货号搜素"/>
+                    </properties>
+                  </component>
+                  <hspacer id="9faac">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                  </hspacer>
+                  <hspacer id="b10a7">
+                    <constraints>
+                      <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                  </hspacer>
+                  <component id="63ff" class="javax.swing.JButton" binding="btn_search">
+                    <constraints>
+                      <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="查找"/>
+                    </properties>
+                  </component>
+                  <hspacer id="e288">
+                    <constraints>
+                      <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                  </hspacer>
+                </children>
+              </grid>
+              <nested-form id="8e80b" form-file="com/giants/hd/desktop/viewImpl/Panel_Page.form" binding="pagePanel">
+                <constraints border-constraint="South"/>
+              </nested-form>
+              <scrollpane id="c18bd">
+                <constraints border-constraint="Center"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="86dbc" class="com.giants.hd.desktop.widget.JHdTable" binding="tb">
+                    <constraints/>
+                    <properties>
+                      <fillsViewportHeight value="true"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+            </children>
+          </grid>
+          <grid id="2d1d3" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints>
+              <tabbedpane title="预警数据查询"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <scrollpane id="c9f2d">
+                <constraints border-constraint="Center"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="3b7b9" class="com.giants.hd.desktop.widget.JHdTable" binding="tb_alert">
+                    <constraints/>
+                    <properties>
+                      <fillsViewportHeight value="true"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+              <grid id="d9a57" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+                <constraints border-constraint="North"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="c1886" class="javax.swing.JTextField" binding="key_alert">
+                    <constraints/>
+                    <properties>
+                      <columns value="20"/>
+                    </properties>
+                  </component>
+                  <component id="46e5f" class="javax.swing.JLabel">
+                    <constraints/>
+                    <properties>
+                      <text value="生产状态"/>
+                    </properties>
+                  </component>
+                  <component id="970ef" class="javax.swing.JComboBox" binding="cb_state">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                  <component id="cfd71" class="javax.swing.JLabel">
+                    <constraints/>
+                    <properties>
+                      <text value="流程选择"/>
+                    </properties>
+                  </component>
+                  <component id="c55ec" class="javax.swing.JComboBox" binding="cb_flow">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                  <hspacer id="9ea1d">
+                    <constraints/>
+                  </hspacer>
+                  <component id="ffbf9" class="javax.swing.JLabel">
+                    <constraints/>
+                    <properties>
+                      <text value="预警程序"/>
+                    </properties>
+                  </component>
+                  <component id="52e2e" class="javax.swing.JComboBox" binding="cb_alert">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                  <component id="5427a" class="javax.swing.JButton" binding="search_alert">
+                    <constraints/>
+                    <properties>
+                      <text value="查询"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <nested-form id="f480e" form-file="com/giants/hd/desktop/viewImpl/Panel_Page.form" binding="page_alert">
+                <constraints border-constraint="South"/>
+              </nested-form>
+            </children>
+          </grid>
+        </children>
+      </tabbedpane>
+    </children>
+  </grid>
+</form>

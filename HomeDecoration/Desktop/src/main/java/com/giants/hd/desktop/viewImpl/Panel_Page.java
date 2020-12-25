@@ -1,6 +1,7 @@
 package com.giants.hd.desktop.viewImpl;
 
 import com.giants.hd.desktop.interf.PageListener;
+import com.giants3.hd.noEntity.Pageable;
 import com.giants3.hd.noEntity.RemoteData;
 
 import javax.swing.*;
@@ -33,7 +34,7 @@ public class Panel_Page<T>   {
             public void actionPerformed(ActionEvent e) {
 
 
-                if(listener!=null&&remoteData!=null)
+                if(listener!=null&& pageable !=null)
                 {
 
                     int newPageIndex=Integer.valueOf(jtf_pageIndex.getText().toString())-1;
@@ -53,7 +54,7 @@ public class Panel_Page<T>   {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                if(listener!=null&&remoteData!=null)
+                if(listener!=null&& pageable !=null)
                 {
 
                     int newPageIndex=Integer.valueOf(jtf_pageIndex.getText().toString())-1;
@@ -69,10 +70,10 @@ public class Panel_Page<T>   {
         first.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(listener!=null&&remoteData!=null)
+                if(listener!=null&& pageable !=null)
                 {
 
-                    if(listener!=null&&remoteData!=null)
+                    if(listener!=null&& pageable !=null)
                     {
 
 
@@ -92,13 +93,13 @@ public class Panel_Page<T>   {
         next.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(listener!=null&&remoteData!=null)
+                if(listener!=null&& pageable !=null)
                 {
 
 
 
 
-                    listener.onPageChanged(remoteData.pageIndex+1 ,Integer.valueOf(pageRows.getSelectedItem().toString()));
+                    listener.onPageChanged(pageable.getPageIndex()+1 ,Integer.valueOf(pageRows.getSelectedItem().toString()));
 
 
                 }
@@ -109,13 +110,13 @@ public class Panel_Page<T>   {
         last.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(listener!=null&&remoteData!=null)
+                if(listener!=null&& pageable !=null)
                 {
 
 
 
 
-                    listener.onPageChanged(Math.max(remoteData.pageCount-1,0) ,Integer.valueOf(pageRows.getSelectedItem().toString()));
+                    listener.onPageChanged(Math.max(pageable.getPageNum()-1,0) ,Integer.valueOf(pageRows.getSelectedItem().toString()));
 
                 }
 
@@ -126,13 +127,13 @@ public class Panel_Page<T>   {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                if(listener!=null&&remoteData!=null)
+                if(listener!=null&& pageable !=null)
                 {
 
 
 
 
-                    listener.onPageChanged(Math.max(remoteData.pageIndex-1,0) ,Integer.valueOf(pageRows.getSelectedItem().toString()));
+                    listener.onPageChanged(Math.max(pageable.getPageIndex()-1,0) ,Integer.valueOf(pageRows.getSelectedItem().toString()));
 
                 }
 
@@ -144,24 +145,27 @@ public class Panel_Page<T>   {
 
 
 
-
+    public void setVisible(boolean visible)
+    {
+        contentPane.setVisible(visible);
+    }
 
 
 
     private PageListener listener;
 
-    private RemoteData<T> remoteData;
+    private Pageable pageable;
 
     public void setListener(PageListener listener) {
         this.listener = listener;
     }
 
 
-    public void bindRemoteData(RemoteData<T> remoteData)
+    public void bindRemoteData(Pageable pageable)
     {
 
 
-        this.remoteData=remoteData;
+        this.pageable =pageable;
 
         update();
 
@@ -172,16 +176,16 @@ public class Panel_Page<T>   {
     private void update()
     {
 
-        message.setText("共"+remoteData.totalCount+"条");
-        first.setEnabled(remoteData.pageIndex>0);
-        previous.setEnabled(remoteData.pageIndex>0);
+        message.setText("共"+ pageable.getTotalCount()+"条");
+        first.setEnabled(pageable.getPageIndex()>0);
+        previous.setEnabled(pageable.getPageIndex()>0);
 
-        previous.setEnabled(remoteData.pageIndex>0);
+        previous.setEnabled(pageable.getPageIndex()>0);
 
 
-        next.setEnabled(remoteData.pageIndex<remoteData.pageCount-1);
-        last.setEnabled(remoteData.pageIndex<remoteData.pageCount-1);
-        jtf_pageIndex.setText(String.valueOf(remoteData.pageIndex+1));
+        next.setEnabled(pageable.getPageIndex()< pageable.getPageNum()-1);
+        last.setEnabled(pageable.getPageIndex()< pageable.getPageNum()-1);
+        jtf_pageIndex.setText(String.valueOf(pageable.getPageIndex()+1));
 
 
 
@@ -190,14 +194,14 @@ public class Panel_Page<T>   {
         int selectIndex=-1;
         for (int i = 0; i < itemCount; i++) {
             selectIndex=i;
-            if(Float.valueOf(pageRows.getItemAt(i).toString())>=remoteData.pageSize)
+            if(Float.valueOf(pageRows.getItemAt(i).toString())>= pageable.getPageSize())
             {
                 break;
             }
         }
         pageRows.setSelectedIndex(selectIndex);
 
-        turnTo.setEnabled(remoteData!=null);
+        turnTo.setEnabled(pageable !=null);
 
     }
 

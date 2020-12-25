@@ -4,6 +4,7 @@ import com.giants.hd.desktop.reports.QuotationFile;
 import com.giants3.hd.domain.api.ApiManager;
 import com.giants3.hd.domain.api.HttpUrl;
 import com.giants3.hd.noEntity.RemoteData;
+import com.giants3.hd.utils.FloatHelper;
 import com.giants3.hd.utils.StringUtils;
 import com.giants3.hd.entity.Quotation;
 import com.giants3.hd.entity.QuotationItem;
@@ -148,7 +149,8 @@ public class Report_Excel_NORMAL2 extends ExcelReportor {
             addString(writableSheet, lastIndex == -1 ? "1" : item.unit.substring(lastIndex + 1), 8, rowUpdate);
 
             //FOb
-            addNumber(writableSheet, item.price, 9, rowUpdate);
+//            addNumber(writableSheet, item.price, 9, rowUpdate);
+            addString(writableSheet, FloatHelper.formatDollar(item.price), 9, rowUpdate);
 
             //包装尺寸
             //内盒数
@@ -165,18 +167,20 @@ public class Report_Excel_NORMAL2 extends ExcelReportor {
 
 
             //包装长
-            addNumber(writableSheet, result[0], 13, rowUpdate);
-
+//            addNumber(writableSheet, result[0], 13, rowUpdate);
+            addString(writableSheet, FloatHelper.scale(result[0]), 13, rowUpdate);
             //包装宽
-            addNumber(writableSheet, result[1], 15, rowUpdate);
-
+//            addNumber(writableSheet, result[1], 15, rowUpdate);
+            addString(writableSheet, FloatHelper.scale(result[1]), 15, rowUpdate);
 
             //包装高
-            addNumber(writableSheet, result[2], 17, rowUpdate);
+//            addNumber(writableSheet, result[2], 17, rowUpdate);
+            addString(writableSheet, FloatHelper.scale(result[2]), 17, rowUpdate);
 
 
             //包装体积
-            addNumber(writableSheet, item.volumeSize, 18, rowUpdate);
+//            addNumber(writableSheet, item.volumeSize, 18, rowUpdate);
+            addString(writableSheet,FloatHelper.scale(item.volumeSize,3),18,rowUpdate);
 
 
             //产品规格
@@ -189,6 +193,7 @@ public class Report_Excel_NORMAL2 extends ExcelReportor {
 
             //净重
             addNumber(writableSheet, item.weight, 22, rowUpdate);
+            addString(writableSheet, FloatHelper.scale(item.weight), 22, rowUpdate);
 
 
             //备注

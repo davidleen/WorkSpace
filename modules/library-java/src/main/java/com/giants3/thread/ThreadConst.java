@@ -1,5 +1,7 @@
 package com.giants3.thread;
 
+import com.giants3.concurrent.ListenableFutureTask;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -51,6 +53,12 @@ public class ThreadConst {
 
         return create(Integer.MAX_VALUE);
 
+
+    }
+
+
+    public static  void  test()
+    {
 
     }
 

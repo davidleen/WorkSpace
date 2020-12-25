@@ -20,13 +20,7 @@ public interface LayerController<C extends IChapter,DP extends DrawParam>  {
 
     void updateBook(IBook<C> iBook);
 
-    boolean canPageChangedNext();
 
-    boolean canPageChangedPrevious();
-
-    void turnNext();
-
-    void turnPrevious();
 
     void onDestroy();
 

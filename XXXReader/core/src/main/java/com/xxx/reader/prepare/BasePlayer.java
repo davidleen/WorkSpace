@@ -163,4 +163,9 @@ public abstract class BasePlayer<C extends IChapter, DP extends DrawParam> imple
         return currentChapterIndex;
     }
 
+    public abstract void turnNext();
+
+    //
+    //
+        public abstract void turnPrevious();
 }

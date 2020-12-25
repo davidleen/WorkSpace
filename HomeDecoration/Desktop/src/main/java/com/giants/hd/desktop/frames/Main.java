@@ -433,6 +433,19 @@ public class Main extends BaseFrame {
 
                 }
             });
+        }  if (AuthorityUtil.getInstance().isViewable(ModuleConstant.NAME_WORK_FLOW_QUERY)) {
+            JMenuItem menuItem = new JMenuItem(ModuleConstant.TITLE_WORK_FLOW_QUERY);
+            menu.add(menuItem);
+            menuItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+
+                    WorkFlowQueryFrame frame = new WorkFlowQueryFrame();
+                    addInterFrame(frame);
+
+                }
+            });
         }
 
         return menu;

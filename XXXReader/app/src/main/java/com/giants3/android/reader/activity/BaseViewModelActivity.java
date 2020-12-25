@@ -25,11 +25,11 @@ public  abstract class BaseViewModelActivity<T extends ViewBinding,VM extends Ba
             public void onChanged(Boolean value) {
 
 
-                if (value)
-                    getViewWaiting().showWait();
-                else {
-                    getViewWaiting().hideWait();
-                }
+//                if (value)
+//                    getViewWaiting().showWait();
+//                else {
+//                    getViewWaiting().hideWait();
+//                }
 
 
 

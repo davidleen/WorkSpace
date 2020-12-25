@@ -13,9 +13,12 @@ import com.giants3.hd.exception.HdException;
 import com.giants3.hd.noEntity.OrderReportItem;
 import rx.Subscriber;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /** 订单报表业务逻辑层
  * Created by david on 2015/11/23.
@@ -123,15 +126,43 @@ public class OrderReportInternalFrame extends BaseInternalFrame implements Order
         if (file == null) return;
 
 
-        try {
-            new Report_Excel_StockOutPlan().report(items,file.getAbsolutePath());
-        } catch (IOException e) {
-            e.printStackTrace();
-            orderReportViewer.showMesssage(e.getMessage());
-        } catch (HdException e) {
-            e.printStackTrace();
-            orderReportViewer.showMesssage(e.getMessage());
-        }
+
+        new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                new Report_Excel_StockOutPlan().report(items,file.getAbsolutePath());
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                super.done();
+                orderReportViewer.hideLoadingDialog();
+                try{
+                    get();
+                    orderReportViewer.showMesssage("成功导出文件到："+file.getAbsolutePath());
+                }catch (Throwable t)
+                {
+                    orderReportViewer.showMesssage("导出出错："+t.getMessage());
+                }
+
+
+
+            }
+
+        }.execute();
+
+
+        orderReportViewer.showLoadingDialog();
+//        try {
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//
+//        } catch (HdException e) {
+//            e.printStackTrace();
+//            orderReportViewer.showMesssage(e.getMessage());
+//        }
 
 
     }

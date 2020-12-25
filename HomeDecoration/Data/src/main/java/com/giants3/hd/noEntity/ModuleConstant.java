@@ -135,6 +135,8 @@ public class ModuleConstant {
     public static final String NAME_SUB_WORK_FLOW = "SUB_WORK_FLOW";
 
 
+    public static final String TITLE_WORK_FLOW_QUERY = "流程相关查询";
+    public static final String NAME_WORK_FLOW_QUERY = "WORK_FLOW_QUERY";
 
 
 
@@ -208,6 +210,7 @@ public class ModuleConstant {
             ,TITLE_APP_QUOTATION_REPORT
             ,TITLE_APP_PRODUCE_MANAGER
             , TITLE_PRODUCER_VALUE_CONFIG
+            , TITLE_WORK_FLOW_QUERY
 
 
 
@@ -255,6 +258,7 @@ public class ModuleConstant {
             ,NAME_APP_QUOTATION_REPORT
             ,NAME_APP_PRODUCE_MANAGER
             ,NAME_PRODUCER_VALUE_CONFIG
+            ,NAME_WORK_FLOW_QUERY
 
 
 

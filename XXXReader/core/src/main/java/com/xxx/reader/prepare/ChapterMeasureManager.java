@@ -65,6 +65,21 @@ public class ChapterMeasureManager<C extends IChapter, P extends PageInfo, DP ex
         }
     }
 
+
+    public  ChapterMeasureResult<P> measureResult( int chapterIndex,Cancelable cancelable) {
+
+        if(book==null) return null;
+        C iChapter = book.getChapter(chapterIndex);
+        if(iChapter==null) return  null;
+        ChapterMeasureResult<P> chapterMeasureResult = null;
+
+            chapterMeasureResult = prepareJob.measureChapter(iChapter, drawParam, cancelable, pageType);
+
+        return chapterMeasureResult;
+    }
+
+
+
     /**
      * 根据参数获取指定页的分页数据
      *
@@ -103,7 +118,13 @@ public class ChapterMeasureManager<C extends IChapter, P extends PageInfo, DP ex
     public P getPageInfo(int chapterIndex, int pageIndex) {
         return getPageInfo(chapterIndex, pageIndex, 0);
     }
+    public P getNextPageInfo(P pageInfo) {
 
+        if(pageInfo==null)
+            return getPageInfo(0,0);
+
+        return getPageInfo(pageInfo.chapterIndex, pageInfo.pageIndex, 1);
+    }
     public P getNextPageInfo(int currentChapterIndex, int currentPageIndex) {
         return getPageInfo(currentChapterIndex, currentPageIndex, 1);
     }
@@ -120,6 +141,11 @@ public class ChapterMeasureManager<C extends IChapter, P extends PageInfo, DP ex
 
     public P getPreviousPageInfo(int currentChapterIndex, int currentPageIndex) {
         return getPageInfo(currentChapterIndex, currentPageIndex, -1);
+    }
+
+    public P getPreviousPageInfo(P currentPageInfo) {
+
+        return getPageInfo(currentPageInfo.chapterIndex, currentPageInfo.pageIndex, -1);
     }
 
     /**

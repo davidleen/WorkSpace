@@ -3,6 +3,7 @@ package com.giants3.io;
 import com.giants3.ByteArrayPool;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -21,11 +22,11 @@ public class FileUtils {
 
     public static final  String DEFAULT_CHARSET="UTF-8";
 
-    public static void safeClose(InputStream inputStream) {
+    public static void safeClose(Closeable closeable) {
 
-        if (inputStream != null) {
+        if (closeable != null) {
             try {
-                inputStream.close();
+                closeable.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

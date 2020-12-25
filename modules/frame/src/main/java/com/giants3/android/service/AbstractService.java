@@ -17,7 +17,7 @@ import com.giants3.android.frame.util.Log;
 public abstract class AbstractService<T extends IBinder> extends Service {
 
 
-    T binder;
+
 
     @Override
     public void onCreate() {
@@ -27,7 +27,7 @@ public abstract class AbstractService<T extends IBinder> extends Service {
         }
         super.onCreate();
 
-        binder=createBinder();
+
     }
 
     protected abstract T createBinder();
@@ -46,7 +46,7 @@ public abstract class AbstractService<T extends IBinder> extends Service {
     @Override
     public   T onBind(Intent intent)
     {
-      return   binder;
+      return   createBinder();
     }
 
 }

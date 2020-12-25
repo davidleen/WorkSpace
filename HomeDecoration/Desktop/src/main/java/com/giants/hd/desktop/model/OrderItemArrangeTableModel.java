@@ -8,6 +8,8 @@ import com.google.inject.Inject;
 
 import javax.swing.*;
 
+import static com.giants.hd.desktop.local.ConstantData.COLUMN_INDEX;
+
 /**
  * 订单表格模型
  */
@@ -21,7 +23,7 @@ public class OrderItemArrangeTableModel extends BaseTableModel<ErpOrderItem> {
     public static int[] columnWidth = new int[]{40, ImageUtils.MAX_PRODUCT_MINIATURE_WIDTH, 120, 120, 100, 100, 60, 60, 100, 100, 150, 60,80};
     private static final String OPERATE = "operate";
     private static final String PRODUCE_TYPE = "produceType";
-    public static String[] fieldName = new String[]{"itm", "thumbnail", "os_no", "prd_no", "pVersion", "bat_no", "ut", "qty", "hpgg", DESCRIBE, "memo", OPERATE, PRODUCE_TYPE};
+    public static String[] fieldName = new String[]{COLUMN_INDEX, "thumbnail", "os_no", "prd_no", "pVersion", "bat_no", "ut", "qty", "hpgg", DESCRIBE, "memo", OPERATE, PRODUCE_TYPE};
 
     public static Class[] classes = new Class[]{Object.class, ImageIcon.class, Object.class, Object.class, Object.class, String.class, String.class, String.class,String.class,String.class,String.class, String.class,String.class};
 

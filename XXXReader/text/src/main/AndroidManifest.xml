@@ -1,2 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.giants3.yourreader.text" />
+    package="com.giants3.yourreader.text">
+
+    <application>
+
+
+        <service android:name=".BookService"
+/>
+    </application>
+
+</manifest>

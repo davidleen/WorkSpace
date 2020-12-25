@@ -416,6 +416,26 @@ public class ErpWorkService extends AbstractErpService {
     }
 
     /**
+     * 查找已经入库但是未完成的订单款项
+     */
+    public RemoteData<ErpOrderItem> searchStockInButUnCompleteOrderItems(String key, int pageIndex, int pageSize) {
+
+
+        String keyLike=StringUtils.sqlLike(key);
+        int count = erpWorkRepository.getStockInButUnCompleteOrderItemCount(keyLike);
+        //配置 url
+        final List<ErpOrderItem> erpWorkFlowOrderItems = erpWorkRepository.searchStockInButUnCompleteOrderItems(keyLike, pageIndex, pageSize);
+
+
+        updatePhotoUrl(erpWorkFlowOrderItems);
+
+
+        return wrapData(pageIndex, pageSize, (count - 1) / pageSize + 1, count, erpWorkFlowOrderItems);
+
+
+    }
+
+    /**
      * 查找 ，并且未完成的订单款项  款项包含已下单，未启动流程
      *
      * @param workFlowStep 下单未排  白胚未入  白胚  颜色  包装  产品库
@@ -449,6 +469,70 @@ public class ErpWorkService extends AbstractErpService {
 
 
     }
+
+
+
+    /**
+     * 查找 ，并且未完成的订单款项  款项包含已下单，未启动流程
+     *
+     * @param workFlowState  {@link ErpWorkFlow#STATE_WORKING}{@link ErpWorkFlow#STATE_COMPLETE} -1匹配所有状态
+     * @param workFlowStep  {@link ErpWorkFlow#STEPS}    -1 匹配所有流程
+     * @param alertType   -1：所有区间 ，0 未预警 1 黄色预警 2 橙色预警 3 红色预警
+
+     * @param pageIndex
+     * @param pageSize
+     */
+    public RemoteData<ErpOrderItem> queryOrderItem(String key, int workFlowState, int workFlowStep,  int alertType,int pageIndex, int pageSize) {
+
+//配置 url
+
+
+        String likeKey=StringUtils.sqlLike(key);
+        int alertTime1=-999;
+        int alertTime2=999;
+        switch (alertType)
+        {
+            case 0:
+                alertTime1=-999;
+                alertTime2=-3;
+                break;
+            case 1:
+                alertTime1=-3;
+                alertTime2=0;
+                break;
+            case 2:
+                alertTime1=0;
+                alertTime2=5;
+                break;
+            case 3:
+                alertTime1=5;
+                alertTime2=999;
+                break;
+
+            case -1:
+            default:
+                    alertTime1=-999;
+                   alertTime2=999;
+        }
+
+
+        int    count = erpWorkRepository.getOrderItemCountOnWorkFlowAlert(likeKey,workFlowState,workFlowStep,alertType);
+
+         List<ErpOrderItem>   erpWorkFlowOrderItems = erpWorkRepository.getOrderItemOnWorkFlowAlert(likeKey, workFlowState,workFlowStep,alertType,pageIndex, pageSize);
+
+
+
+
+        updatePhotoUrl(erpWorkFlowOrderItems);
+
+
+        return wrapData(pageIndex, pageSize, (count - 1) / pageSize + 1, count, erpWorkFlowOrderItems);
+
+
+    }
+
+
+
 
     private void updatePhotoUrl(List<ErpOrderItem> erpWorkFlowOrderItems) {
         for (ErpOrderItem orderItem : erpWorkFlowOrderItems) {

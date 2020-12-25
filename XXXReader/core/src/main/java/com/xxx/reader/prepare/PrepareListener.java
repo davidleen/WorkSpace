@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface PrepareListener {
 
-    void onPagePrepared(List<PageInfo> pageInfos);
+    void onPagePrepared(PreparePageInfo preparePageInfo);
 
 }

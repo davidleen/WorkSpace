@@ -63,6 +63,14 @@ public class ErpWorkRepository extends ErpRepository {
     public String SQL_SUB_WORK_FLOW_STATE = "";
 
 
+    public String SQL_STOCK_IN_ORDER_ITEM=  SqlScriptHelper.readScript("StockInOrderItem.sql").replace("VALUE_COMPLETE_STATE", "" + ErpWorkFlow.STATE_WORKING);
+    ;
+    public String SQL_STOCK_IN_ORDER_ITEM_COUNT=  SqlScriptHelper.readScript("StockInOrderItemCount.sql").replace("VALUE_COMPLETE_STATE", "" + ErpWorkFlow.STATE_WORKING);
+    ;
+
+
+    public String SQL_ORDER_ITEM_ON_WORK_FLOW_ALERT=SqlScriptHelper.readScript("order_item_on_work_flow_alert.sql") ;
+    public String SQL_ORDER_ITEM_ON_WORK_FLOW_ALERT_COUNT=SqlScriptHelper.readScript("order_item_on_work_flow_alert_count.sql") ;
 
 
     public ErpWorkRepository( ) {
@@ -403,8 +411,8 @@ public class ErpWorkRepository extends ErpRepository {
         Query query = getEntityManager().createNativeQuery(SQL_ORDER_ITEM_UNCOMPLETE)
                 .setParameter("os_no", value)
                 .setParameter("prd_no", value)
-                .setParameter("firstRow", pageIndex * pageSize)
-                .setParameter("lastRow", (pageIndex + 1) * pageSize - 1);
+                .setParameter("firstRow", getFirstRow(pageIndex  , pageSize))
+                .setParameter("lastRow", getLastRow(pageIndex,pageSize));
         return getORderItemsFromSQL(query, 0, 0);
 
 
@@ -422,8 +430,8 @@ public class ErpWorkRepository extends ErpRepository {
         Query query = getEntityManager().createNativeQuery(SQL_ORDER_ITEM_UNCOMPLETE.replace("OR b.workflowstate <> 99","").replace("2019-01-01","2019-10-01"))//
                 .setParameter("os_no", value)
                 .setParameter("prd_no", value)
-                .setParameter("firstRow", pageIndex * pageSize)
-                .setParameter("lastRow", (pageIndex + 1) * pageSize - 1);
+                .setParameter("firstRow", getFirstRow(pageIndex  , pageSize))
+                .setParameter("lastRow", getLastRow(pageIndex,pageSize));
         return getORderItemsFromSQL(query, 0, 0);
 
 
@@ -442,12 +450,57 @@ public class ErpWorkRepository extends ErpRepository {
         Query query = getEntityManager().createNativeQuery(SQL_ORDER_ITEM_COMPLETE)
                 .setParameter("os_no", value)
                 .setParameter("prd_no", value)
-        .setParameter("firstRow", pageIndex * pageSize)
-                .setParameter("lastRow", (pageIndex + 1) * pageSize - 1);
+                .setParameter("firstRow", getFirstRow(pageIndex  , pageSize))
+                .setParameter("lastRow", getLastRow(pageIndex,pageSize));
         return getORderItemsFromSQL(query, 0, 0);
 
 
     }
+    /**
+     * 已經完工縂記錄查詢
+     *
+     * @param key
+     * @return
+     */
+    public int getStockInButUnCompleteOrderItemCount(String key) {
+        final String value = StringUtils.sqlLike(key);
+        Query query = getEntityManager().createNativeQuery(SQL_STOCK_IN_ORDER_ITEM_COUNT)
+                .setParameter("os_no", value)
+                .setParameter("prd_no", value);
+        return getCount(query);
+
+    }
+    /**
+     *  成品已经入库，但是未完工的订单数据
+     *
+     * @param key
+     * @return
+     */
+    public List<ErpOrderItem> searchStockInButUnCompleteOrderItems(String key, int pageIndex, int pageSize) {
+
+
+        final String value = StringUtils.sqlLike(key);
+        Query query = getEntityManager().createNativeQuery(SQL_STOCK_IN_ORDER_ITEM)
+                .setParameter("os_no", value)
+                .setParameter("prd_no", value)
+                .setParameter("firstRow", getFirstRow(pageIndex  , pageSize))
+                .setParameter("lastRow", getLastRow(pageIndex,pageSize));
+        return getORderItemsFromSQL(query, 0, 0);
+
+
+    }
+
+
+
+    private int getFirstRow(int pageIndex,int pageSize)
+    {
+        return pageIndex*pageSize+1;
+    }
+    private int getLastRow(int pageIndex,int pageSize)
+    {
+        return (pageIndex+1)*pageSize;
+    }
+
 
     /**
      * 已經完工縂記錄查詢
@@ -732,6 +785,53 @@ public class ErpWorkRepository extends ErpRepository {
 
     }
 
+
+
+    /**
+     * 指定狀態，指定流程，指定預警期的訂單
+     *
+     * @param key
+     * @param workFlowStep
+     * @return
+     */
+    public int getOrderItemCountOnWorkFlowAlert(String key, int workFlowState,int workFlowStep,int alertType) {
+
+
+        final String value = StringUtils.sqlLike(key);
+        Query query = getEntityManager().createNativeQuery(SQL_ORDER_ITEM_ON_WORK_FLOW_ALERT_COUNT)
+                .setParameter("os_no", value)
+                .setParameter("prd_no", value)
+                .setParameter("workFlowStep", workFlowStep)
+                .setParameter("workflowstate", workFlowState)
+                .setParameter("alertType", workFlowState)
+                .setParameter("alertType", alertType)
+                ;
+        return getCount(query);
+
+
+    }
+
+    public List<ErpOrderItem> getOrderItemOnWorkFlowAlert(String key, int workFlowState,int workFlowStep,int alertType , int pageIndex, int pageSize) {
+
+
+        final String value = StringUtils.sqlLike(key);
+        Query query = getEntityManager().createNativeQuery(SQL_ORDER_ITEM_ON_WORK_FLOW_ALERT)
+                .setParameter("os_no", value)
+                .setParameter("prd_no", value)
+                .setParameter("firstRow", getFirstRow(pageIndex  , pageSize))
+                .setParameter("lastRow", getLastRow(pageIndex,pageSize))
+                .setParameter("workFlowStep", workFlowStep)
+                .setParameter("workflowstate", workFlowState)
+                .setParameter("alertType", alertType)
+                ;
+        final List<ErpOrderItem> oRderItemsFromSQL = getORderItemsFromSQL(query, 0, 0);
+
+
+        return oRderItemsFromSQL;
+
+
+    }
+
     public List<ErpOrderItem> searchUnCompleteOrderItemsOnWorkFlow(String key, int workFlowStep, int pageIndex, int pageSize) {
 
 
@@ -739,8 +839,8 @@ public class ErpWorkRepository extends ErpRepository {
         Query query = getEntityManager().createNativeQuery(SQL_ORDER_ITEM_ON_WORK_FLOW)
                 .setParameter("os_no", value)
                 .setParameter("prd_no", value)
-                .setParameter("firstRow", pageIndex * pageSize)
-                .setParameter("lastRow", (pageIndex + 1) * pageSize - 1)
+                .setParameter("firstRow", getFirstRow(pageIndex  , pageSize))
+                .setParameter("lastRow", getLastRow(pageIndex,pageSize))
                 .setParameter("workFlowStep", workFlowStep);
         final List<ErpOrderItem> oRderItemsFromSQL = getORderItemsFromSQL(query, 0, 0);
 

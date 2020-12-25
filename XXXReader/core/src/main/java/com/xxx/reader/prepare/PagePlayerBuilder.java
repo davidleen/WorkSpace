@@ -27,6 +27,6 @@ public class PagePlayerBuilder<C extends IChapter, P extends PageInfo, DP extend
     }
 
     public PagePlayer<C , P , DP , PB > createPrepareLayer() {
-        return new PagePlayer(prepareJob, iDrawable, creator);
+        return new PagePlayer( iDrawable, creator);
     }
 }

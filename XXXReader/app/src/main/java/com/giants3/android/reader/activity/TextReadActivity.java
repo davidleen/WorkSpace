@@ -40,6 +40,7 @@ import com.xxx.reader.prepare.DrawLayer;
 import com.xxx.reader.prepare.PageBitmapCreator;
 import com.xxx.reader.prepare.PagePlayer;
 import com.xxx.reader.prepare.PagePlayerBuilder;
+import com.xxx.reader.prepare.PrepareJob;
 import com.xxx.reader.turnner.SimulatePageTurner;
 
 import java.io.File;
@@ -51,47 +52,62 @@ import java.util.Calendar;
 public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBinding,TextReadViewModel> {
     BookService.BookReadController bookReadController;
       PagePlayer<IChapter, TextPageInfo, DrawParam, TextPageBitmap> prepareLayer ;
+    private IBook iBook;
+    ServiceConnection conn ;
+    DrawParam drawParam;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         init( );
         getViewModel().getBookInfo().observe(this, new Observer<IBook>() {
+
+
             @Override
             public void onChanged(IBook iBook) {
+                TextReadActivity.this.iBook = iBook;
 
 
+                if (bookReadController!=null)
+                {
+                    bookReadController.updateBook(iBook);
+                }
 
-                if (iBook != null)
-                    prepareLayer.updateBook(iBook);
             }
         });
 
         Intent intent=new Intent(this, BookService.class);
-        bindService(intent,new ServiceConnection(){
+          conn = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
 
-                bookReadController= (BookService.BookReadController) service;
+                bookReadController = (BookService.BookReadController) service;
+                if(drawParam!=null)
+                    bookReadController.updateDrawParam(drawParam);
                 bookReadController.setPrepareListener(prepareLayer);
-
-                getViewModel().getBookInfo().observe(TextReadActivity.this, new Observer<IBook>() {
-                    @Override
-                    public void onChanged(IBook iBook) {
-
-
-
-                        if (iBook != null)
-                            bookReadController.updateBook(iBook);
-                    }
-                });
+                if (iBook != null)
+                    bookReadController.updateBook(iBook);
+//                getViewModel().getBookInfo().observe(TextReadActivity.this, new Observer<IBook>() {
+//                    @Override
+//                    public void onChanged(IBook iBook) {
+//
+//
+//
+//                        if (iBook != null)
+//                            bookReadController.updateBook(iBook);
+//                    }
+//                });
 
             }
 
             @Override
             public void onServiceDisconnected(ComponentName name) {
 
+
+
+
             }
-        }, Service.BIND_AUTO_CREATE);
+        };
+        bindService(intent, conn, Service.BIND_AUTO_CREATE);
 
 
 
@@ -121,80 +137,45 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
         final Context context = this;
         final int[] wh = Utils.getScreenDimension(this);
         PagePlayerBuilder<IChapter, TextPageInfo, DrawParam, TextPageBitmap> builder = new PagePlayerBuilder();
+        final ReaderView readerView = getViewBinding().reader;
         builder.setCreator(new PageBitmapCreator<TextPageBitmap>() {
             @Override
             public TextPageBitmap create() {
-                return new TextPageBitmap(context, wh[0], wh[1], getViewBinding().reader);
+                return new TextPageBitmap(context, wh[0], wh[1], readerView);
             }
         });
-        builder.setiDrawable(getViewBinding().reader);
-
-        builder.setPrepareJob(new TextPrepareJob(new Url2FileMapper<IChapter>() {
-            @Override
-            public String map(IChapter iChapter, String url) {
-
-                if (iChapter instanceof EpubChapter) {
+        builder.setiDrawable(readerView);
 
 
-                    String filePath=StorageUtils.getFilePath(iChapter.getFilePath());
-                    if(!new File( filePath).exists()) {
-                        try {
-
-                            FileUtils.writeToFile(filePath, ((EpubChapter) iChapter).getData());
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    return filePath;
-
-
-                }else  if (iChapter instanceof TextChapter)
-                {
-
-                    return  iChapter.getFilePath();
-                }
-
-
-
-                String fileName = String.valueOf(url.hashCode());
-                try {
-                    fileName = URLDecoder.decode(url.substring(url.lastIndexOf("/")), "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                return StorageUtils.getFilePath(fileName);
-            }
-
-            @Override
-            public String map(String chapterName) {
-                return null;
-            }
-        }));
 
 
 
         prepareLayer = builder.createPrepareLayer();
-        DrawParam drawParam = new DrawParam();
+       drawParam= new DrawParam();
         drawParam.width = wh[0] ;
         drawParam.height = wh[1] ;
         prepareLayer.updateDrawParam(drawParam);
-        getViewBinding().reader.setOnSizeChangeListener(new ReaderView.onSizeChangeLister(){
+        readerView.setOnSizeChangeListener(new ReaderView.onSizeChangeLister(){
             @Override
             public void onSizeChanged(int width, int height) {
                 DrawParam drawParam = new DrawParam();
                 drawParam.width = width ;
                 drawParam.height =height;
                 prepareLayer.updateDrawParam(drawParam);
+                TextReadActivity.this.drawParam=drawParam;
+                if(bookReadController!=null)
+                    bookReadController.updateDrawParam(drawParam);
             }
         });
 
-        DrawLayer drawLayer = new DrawLayer(this, prepareLayer, getViewBinding().reader);
+        DrawLayer drawLayer = new DrawLayer(this, prepareLayer, readerView);
 
         PageSwitchListener pageSwitchListener = new PageSwitchListener() {
             @Override
             public boolean canPageChanged(int direction) {
-                return true;
+                if (direction == PageSwitchListener.TURN_PREVIOUS)
+                return bookReadController.canTurnPrevious();
+                return bookReadController.canTurnNext();
             }
 
             @Override
@@ -207,11 +188,16 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
             public void afterPageChanged(int direction) {
 
 
+
+
                 Log.e("afterPageChanged:" + direction);
                 if (direction == PageSwitchListener.TURN_NEXT) {
+
                     prepareLayer.turnNext();
+                    bookReadController.turnNext();
                 } else {
                     prepareLayer.turnPrevious();
+                    bookReadController.turnPrevious();
                 }
 
             }
@@ -226,11 +212,11 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
         IPageTurner pageTurner = null;
       //  pageTurner = new ScrollPageTurner(this, pageSwitchListener, activityTextReaderBinding.reader, prepareLayer);
 //        pageTurner=new SimPageTurner(this,pageSwitchListener,activityTextReaderBinding.reader,prepareLayer);
-     pageTurner=new SimulatePageTurner(this,pageSwitchListener,getViewBinding().reader,prepareLayer);
+     pageTurner=new SimulatePageTurner(this,pageSwitchListener, readerView,prepareLayer);
         //   pageTurner = new SlidePageTurner(this, pageSwitchListener, activityTextReaderBinding.reader, prepareLayer);
 
         drawLayer.setPageTurner(pageTurner);
-        getViewBinding().reader.setDrawLayer(drawLayer);
+        readerView.setDrawLayer(drawLayer);
 
 
 
@@ -242,6 +228,8 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
         if (prepareLayer!=null) {
             prepareLayer.onDestroy();
         }
+        if(conn!=null)
+            unbindService(conn);
 
 
         super.onDestroy();

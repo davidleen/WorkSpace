@@ -47,6 +47,11 @@ public abstract class DestroyableThread extends Thread {
     }
 
 
+    public AtomicBoolean skip = new AtomicBoolean();
+    public void setSkip(boolean skip) {
+        this.skip.set(skip);
+    }
+
     @Override
     public final void run() {
 
@@ -58,7 +63,7 @@ public abstract class DestroyableThread extends Thread {
                 break;
             }
 
-
+            skip.set(false);
             long time = Calendar.getInstance().getTimeInMillis();
 
             runOnThread();
@@ -69,7 +74,8 @@ public abstract class DestroyableThread extends Thread {
 
             //线程进入睡眠等待状态。调用update 中断睡眠，可以继续循环。
             try {
-                Thread.sleep(sleepTime);
+                if(!skip.get())
+                    Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
                 Log.d(e);
                 Log.d(this);

@@ -1,0 +1,126 @@
+[
+  {
+    "columnName": "图片",
+    "fileName": "thumbnail",
+    "width": 60,
+    "aClass": "iMG"
+  },
+  {
+    "columnName": "订单号",
+    "fileName": "os_no",
+    "width": 120,
+    "aClass": "S"
+  },
+  {
+    "columnName": "货号",
+    "fileName": "prd_no",
+    "width": 120,
+    "aClass": "S",
+    "isCombineField": false
+  },
+  {
+    "columnName": "配方号",
+    "fileName": "id_no",
+    "width": 120,
+    "aClass": "S",
+    "isCombineField": false
+  },
+  {
+    "columnName": "合同日期",
+    "fileName": "os_dd",
+    "width": 120,
+    "aClass": "S",
+    "isCombineField": false
+  },
+  {
+    "columnName": "客人代号",
+    "fileName": "cus_no",
+    "width": 120,
+    "aClass": "S",
+    "isCombineField": false
+  },
+  {
+    "columnName": "客号",
+    "fileName": "bat_no",
+    "width": 100,
+    "aClass": "S",
+    "isCombineField": false
+  },
+  {
+    "columnName": "数量",
+    "fileName": "qty",
+    "width": 80,
+    "aClass": "S",
+    "isCombineField": false
+  },
+  {
+    "columnName": "单位",
+    "fileName": "ut",
+    "width": 40,
+    "aClass": "S",
+    "isCombineField": false
+  },
+  {
+    "columnName": "货品规格",
+    "fileName": "hpgg",
+    "width": 100,
+    "aClass": "S",
+    "isCombineField": false
+  },
+  {
+    "columnName": "每箱数",
+    "fileName": "so_zxs",
+    "width": 60,
+    "aClass": "S",
+    "isCombineField": false
+  },
+  {
+    "columnName": "客户箱规",
+    "fileName": "khxg",
+    "width": 120,
+    "aClass": "S",
+    "isCombineField": false
+  },
+  {
+    "columnName": "生产交期",
+    "fileName": "so_data",
+    "width": 120,
+    "aClass": "S",
+    "isCombineField": false
+  },
+  {
+    "columnName": "生产类型",
+    "fileName": "produceTypeName",
+    "width": 100,
+    "aClass": "S",
+    "isCombineField": false
+  },
+  {
+    "columnName": "厂商",
+    "fileName": "factory",
+    "width": 100,
+    "aClass": "S",
+    "isCombineField": false
+  },
+  {
+    "columnName": "当前流程",
+    "fileName": "maxWorkFlowName",
+    "width": 100,
+    "aClass": "S",
+    "isCombineField": false
+  },
+  {
+    "columnName": "当前情况",
+    "fileName": "currentOverDueDay",
+    "width": 100,
+    "aClass": "S",
+    "isCombineField": false
+  },
+  {
+    "columnName": "总进度情况",
+    "fileName": "totalLimit",
+    "width": 100,
+    "aClass": "S",
+    "isCombineField": false
+  }
+]

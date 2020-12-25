@@ -26,6 +26,27 @@ public class OrderReportItem  {
 
     public String id_no;
 
+    /**
+     * 在产状态
+     */
+    public String workState;
+
+    /**
+     * 颜色加工户
+     */
+    public String workerD;
+    /**
+     * 包装加工户
+     */
+    public String workerC;
+
+
+    /**
+     * 备注
+     */
+    public String  memo;
+
+
     public OrderReportItem() {
     }
 
@@ -36,21 +57,25 @@ public class OrderReportItem  {
         if(sqlListResult!=null&&sqlListResult instanceof Object[])
         {
             Object[] coloumValues= (Object[]) sqlListResult;
-            os_no=String.valueOf(coloumValues[0]);
-            cus_no=String.valueOf(coloumValues[1]);
-            prd_no=String.valueOf(coloumValues[2]);
-            saleName=String.valueOf(coloumValues[3]);
-            cus_prd_no=String.valueOf(coloumValues[4]);
-            unit=String.valueOf(coloumValues[5]);
+            os_no=valueOf(coloumValues[0]);
+            cus_no=valueOf(coloumValues[1]);
+            prd_no=valueOf(coloumValues[2]);
+            saleName=valueOf(coloumValues[3]);
+            cus_prd_no=valueOf(coloumValues[4]);
+            unit=valueOf(coloumValues[5]);
 
             try {
                 qty=Integer.valueOf(coloumValues[6].toString());
             } catch (Throwable e) {
                 e.printStackTrace();
             }
-            verifyDate=String.valueOf(coloumValues[7]);
-            sendDate=String.valueOf(coloumValues[8]);
-            id_no=String.valueOf(coloumValues[9]);
+            verifyDate=valueOf(coloumValues[7]);
+            sendDate=valueOf(coloumValues[8]);
+            id_no=valueOf(coloumValues[9]);
+            workState=valueOf(coloumValues[10]);
+            workerC=valueOf(coloumValues[11]);
+            workerD=valueOf(coloumValues[12]);
+            memo="";
 
 
 
@@ -60,6 +85,14 @@ public class OrderReportItem  {
 
 
 
+
+    }
+
+    public String valueOf(Object o)
+    {
+
+        if(o==null) return "";
+        return o.toString();
 
     }
 

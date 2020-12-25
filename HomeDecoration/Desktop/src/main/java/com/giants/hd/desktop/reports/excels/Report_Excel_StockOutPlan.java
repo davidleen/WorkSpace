@@ -91,6 +91,10 @@ public class Report_Excel_StockOutPlan extends  AbstractExcelReporter<List<Order
             addNumber(writableSheet, outItem.qty, 6, row);
             addString(writableSheet, outItem.verifyDate, 7, row);
             addString(writableSheet, outItem.sendDate, 8, row);
+            addString(writableSheet, outItem.workState, 9, row);
+            addString(writableSheet, outItem.workerD, 10, row);
+            addString(writableSheet, outItem.workerC, 11, row);
+            addString(writableSheet, outItem.memo, 12, row);
         }
 
 

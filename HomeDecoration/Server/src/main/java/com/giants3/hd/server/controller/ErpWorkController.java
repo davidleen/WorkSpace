@@ -173,6 +173,27 @@ public class ErpWorkController extends BaseController {
 
         return erpWorkService.searchUnCompleteOrderItems(key, workFlowStep, pageIndex, pageSize);
 
+    }/**
+     * 查詢所有排產未完工
+     *
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/queryOrderItems", method = {RequestMethod.GET})
+    public
+    @ResponseBody
+    RemoteData<ErpOrderItem> queryOrderItems(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam(value = "key" ,defaultValue = "", required = false) String key
+
+            , @RequestParam(value = "workFlowState", defaultValue = "-1", required = false) int workFlowState
+            , @RequestParam(value = "workFlowStep", defaultValue = "-1", required = false) int workFlowStep
+            , @RequestParam(value = "alertType", defaultValue = "-1", required = false) int alertType
+            , @RequestParam(value = "pageIndex", defaultValue = "0", required = false) int pageIndex
+            , @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize
+    ) {
+
+
+        return erpWorkService.queryOrderItem(key,workFlowState, workFlowStep,alertType, pageIndex, pageSize);
+
     }
 
     /**
@@ -192,6 +213,24 @@ public class ErpWorkController extends BaseController {
 
 
         return erpWorkService.searchCompleteOrderItems(key, pageIndex, pageSize);
+
+    }  /**
+     * 查詢成品入库未完工
+     *
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/searchStockInUnCompleteOrderItems", method = {RequestMethod.GET})
+    public
+    @ResponseBody
+    RemoteData<ErpOrderItem> searchStockInUnCompleteOrderItems(@ModelAttribute(Constraints.ATTR_LOGIN_USER) User user, @RequestParam(value = "key", required = false) String key
+
+            , @RequestParam(value = "pageIndex", defaultValue = "0", required = false) int pageIndex
+            , @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize
+    ) {
+
+
+        return erpWorkService.searchStockInButUnCompleteOrderItems(key, pageIndex, pageSize);
 
     }
 

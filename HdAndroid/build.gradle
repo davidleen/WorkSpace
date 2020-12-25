@@ -9,7 +9,7 @@ buildscript {
 //            'appcompat'         : '1.0.2',
 //            'espresso'          : '3.1.1',
 //            'extJunit'          : '1.1.0',
-//            'testRules'         : '1.1.1',
+//            'testRules'         : '1.1.1currentLimitDay',
 //            'testRunner'        : '1.1.1',
     ]
     repositories {
