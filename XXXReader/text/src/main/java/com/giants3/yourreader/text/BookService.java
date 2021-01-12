@@ -191,6 +191,42 @@ public class BookService extends AbstractService<BookService.BookReadController>
             this.prepareListener = prepareListener;
             prepareThread.setPrepareListener(prepareListener);
         }
+
+        public void jump(float progress) {
+
+
+            preparePageInfo.jump(progress);
+            if (prepareListener != null) {
+                prepareListener.onPagePrepared(preparePageInfo);
+            }
+            updateCache();
+        }
+
+        public void previousChapter() {
+            preparePageInfo.previousChapter();
+            if (prepareListener != null) {
+                prepareListener.onPagePrepared(preparePageInfo);
+            }
+            updateCache();
+        }
+
+        public void nextChapter() {
+
+            preparePageInfo.nextChapter();
+            if (prepareListener != null) {
+                prepareListener.onPagePrepared(preparePageInfo);
+            }
+            updateCache();
+        }
+
+        public void destroy() {
+
+            prepareThread.setPrepareListener(null);
+            prepareThread.setDestroy();
+            prepareThread=null;
+
+
+        }
     }
 
 
@@ -215,4 +251,12 @@ public class BookService extends AbstractService<BookService.BookReadController>
     }
 
 
+    @Override
+    public void onDestroy() {
+        controller.destroy();
+        super.onDestroy();
+
+
+
+    }
 }

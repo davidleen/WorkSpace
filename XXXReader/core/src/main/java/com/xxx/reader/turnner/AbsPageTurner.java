@@ -73,13 +73,16 @@ public abstract class AbsPageTurner implements IPageTurner, GestureDetector.OnGe
 
         if(event.getAction()== MotionEvent.ACTION_UP)
         {
-            onActionUp(event);
+            if (onActionUp(event)) {
+                return true;
+            }
         }
         return b;
     }
 
-    protected void onActionUp(MotionEvent event) {
+    protected boolean onActionUp(MotionEvent event) {
 
+        return false;
     }
 
     protected int getDrawHeight() {

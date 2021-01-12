@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import androidx.core.util.Pools;
 import android.view.MotionEvent;
 
+import com.giants3.android.frame.util.BitmapHelper;
 import com.giants3.android.kit.ResourceExtractor;
 import com.giants3.yourreader.text.elements.WordElement;
 import com.xxx.reader.core.DrawParam;
@@ -47,7 +48,9 @@ public class TextPageBitmap extends PageBitmap<TextPageInfo,DrawParam> {
     @Override
     protected void drawPage(TextPageInfo pageInfo, DrawParam drawParam) {
 
-        canvas.drawColor(Color.WHITE);
+        drawable.setBounds(0,0,canvas.getWidth(),canvas.getHeight());
+        drawable.draw(canvas);
+        //canvas.drawColor(Color.WHITE);
         Paint paint = new Paint();
         paint.setTextSize(SettingContent.getInstance().getTextSize());
 //        canvas.drawText("xxxxxxxxxx",500,500, paint);
@@ -66,6 +69,16 @@ public class TextPageBitmap extends PageBitmap<TextPageInfo,DrawParam> {
 //            }
 //        }
 
+        cancelDrawTask();
+        drawTask= new DrawTask(pageInfo,canvas,paint,iDrawable);
+        drawTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+
+
+
+    }
+
+    private void cancelDrawTask() {
         if(drawTask!=null)
         {
             try {
@@ -74,12 +87,6 @@ public class TextPageBitmap extends PageBitmap<TextPageInfo,DrawParam> {
                 e.printStackTrace();
             }
         }
-        drawTask= new DrawTask(pageInfo,canvas,paint,iDrawable);
-        drawTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-
-
-
     }
 
     @Override
@@ -187,5 +194,16 @@ public class TextPageBitmap extends PageBitmap<TextPageInfo,DrawParam> {
 
 
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        cancelDrawTask();
+        canvas.setBitmap(null);
+        BitmapHelper.recycleBitmap(bitmap);
+        bitmap=null;
+        canvas=null;
+
     }
 }

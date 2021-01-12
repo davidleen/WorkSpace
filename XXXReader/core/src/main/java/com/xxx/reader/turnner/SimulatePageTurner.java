@@ -576,7 +576,7 @@ public class SimulatePageTurner extends AbsPageTurner {
     }
 
     @Override
-    protected void onActionUp(MotionEvent event) {
+    protected boolean onActionUp(MotionEvent event) {
 
 
 
@@ -585,7 +585,7 @@ public class SimulatePageTurner extends AbsPageTurner {
         //未开始滚动 不处理，单点击时间 由onSingleTapUp 处理
         if(!scrolling)
         {
-            return;
+            return false;
         }
 
         int startX;int startY;
@@ -629,6 +629,6 @@ public class SimulatePageTurner extends AbsPageTurner {
 //        scroller.startScroll(startX,startY,drawParam.width-startX,drawParam.height-startY,3000);
         computeScroll();
 
-
+        return true;
     }
 }

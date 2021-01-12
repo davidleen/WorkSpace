@@ -7,8 +7,11 @@ import java.util.List;
 
 public class PreparePageInfo {
 
-    LinkedList<PageInfo> pageInfos;
-    int midIndex;
+    int currentChapterIndex;
+    int currentPageIndex;
+
+      LinkedList<PageInfo> pageInfos;
+      int midIndex;
 
     public static final int PREPARE_SIZE=6;
 
@@ -22,6 +25,14 @@ public class PreparePageInfo {
         midIndex=0;
     }
 
+
+    public PageInfo getCurrentPageInfo()
+    {
+        if(size==0) return null;
+        return pageInfos.get(midIndex);
+
+
+    }
 
     public void addPages(List<PageInfo> pageValues) {
 
@@ -38,7 +49,7 @@ public class PreparePageInfo {
 
         pageInfos.add(pageInfo);
         size=pageInfos.size();
-
+        adjustArray();
     }
 
 
@@ -47,6 +58,7 @@ public class PreparePageInfo {
         pageInfos.add(0,pageInfo);
         size=pageInfos.size();
         midIndex++;
+        adjustArray();
     }
 
     public void turnNext() {
@@ -84,6 +96,8 @@ public class PreparePageInfo {
 
         }
 
+        currentChapterIndex=pageInfos.get(midIndex).chapterIndex;
+        currentPageIndex=pageInfos.get(midIndex).pageIndex;
 
 
     }
@@ -94,6 +108,82 @@ public class PreparePageInfo {
 
     public boolean canTurnPrevious() {
         return midIndex>0;
+    }
+
+    public void jump(float progress)
+    {
+
+
+
+
+
+        PageInfo currentP=size==0?null:pageInfos.get(midIndex);
+
+        if(currentP==null) return;
+        int destPageIndex= (int) (currentP.pageCount*progress);
+        destPageIndex=Math.min(destPageIndex,currentP.pageCount-1);
+
+
+        for ( PageInfo  pageInfo:pageInfos)
+        {
+            if(pageInfo.chapterIndex==currentChapterIndex&&pageInfo.pageIndex==destPageIndex)
+            {
+                midIndex= pageInfos.indexOf(pageInfo);
+                adjustArray();
+                return;
+            }
+        }
+        currentChapterIndex=currentP.chapterIndex;
+        currentPageIndex=destPageIndex;
+        clearPages();
+
+
+
+
+
+    }
+    private void clearPages()
+    {
+        pageInfos.clear();
+        midIndex=0;
+        size=0;
+    }
+
+
+    public void nextChapter()
+    {
+        PageInfo currentP=pageInfos.get(midIndex);
+
+        if(currentP!=null)
+        {
+            currentChapterIndex=currentP.chapterIndex+1;
+
+        }else
+        {
+            currentChapterIndex=0;
+        }
+        currentPageIndex=0;
+        clearPages();
+
+    }
+
+    public void previousChapter()
+    {
+
+        PageInfo currentP=pageInfos.get(midIndex);
+
+        if(currentP!=null)
+        {
+            currentChapterIndex=currentP.chapterIndex-1;
+
+        }else
+        {
+            currentChapterIndex=0;
+        }
+        currentPageIndex=0;
+
+        clearPages();
+
     }
 
 }

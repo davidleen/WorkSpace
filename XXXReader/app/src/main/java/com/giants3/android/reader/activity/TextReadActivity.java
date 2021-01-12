@@ -9,6 +9,8 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.view.View;
+import android.widget.SeekBar;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
@@ -35,12 +37,15 @@ import com.xxx.reader.book.IChapter;
 import com.xxx.reader.book.TextChapter;
 import com.xxx.reader.core.DrawParam;
 import com.xxx.reader.core.IPageTurner;
+import com.xxx.reader.core.PageInfo;
 import com.xxx.reader.core.PageSwitchListener;
 import com.xxx.reader.prepare.DrawLayer;
 import com.xxx.reader.prepare.PageBitmapCreator;
 import com.xxx.reader.prepare.PagePlayer;
 import com.xxx.reader.prepare.PagePlayerBuilder;
 import com.xxx.reader.prepare.PrepareJob;
+import com.xxx.reader.prepare.PrepareListener;
+import com.xxx.reader.prepare.PreparePageInfo;
 import com.xxx.reader.turnner.SimulatePageTurner;
 
 import java.io.File;
@@ -49,9 +54,10 @@ import java.net.URLDecoder;
 import java.util.Calendar;
 
 
-public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBinding,TextReadViewModel> {
+public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBinding,TextReadViewModel> implements PrepareListener {
     BookService.BookReadController bookReadController;
       PagePlayer<IChapter, TextPageInfo, DrawParam, TextPageBitmap> prepareLayer ;
+
     private IBook iBook;
     ServiceConnection conn ;
     DrawParam drawParam;
@@ -83,7 +89,7 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
                 bookReadController = (BookService.BookReadController) service;
                 if(drawParam!=null)
                     bookReadController.updateDrawParam(drawParam);
-                bookReadController.setPrepareListener(prepareLayer);
+                bookReadController.setPrepareListener(TextReadActivity.this);
                 if (iBook != null)
                     bookReadController.updateBook(iBook);
 //                getViewModel().getBookInfo().observe(TextReadActivity.this, new Observer<IBook>() {
@@ -127,7 +133,53 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
 
 
 
+        getViewBinding().panelSetting.setVisibility(View.GONE);
+        getViewBinding().panelSetting.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                getViewBinding().panelSetting.setVisibility(View.GONE);
+
+            }
+        });
+
+        getViewBinding().progress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+                if(fromUser)
+                {
+                    bookReadController.jump(progress/100f);
+
+                }
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        getViewBinding().next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                bookReadController.nextChapter();
+            }
+        });
+ getViewBinding().previous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                bookReadController.previousChapter();
+            }
+        });
 
 
 
@@ -138,6 +190,7 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
         final int[] wh = Utils.getScreenDimension(this);
         PagePlayerBuilder<IChapter, TextPageInfo, DrawParam, TextPageBitmap> builder = new PagePlayerBuilder();
         final ReaderView readerView = getViewBinding().reader;
+
         builder.setCreator(new PageBitmapCreator<TextPageBitmap>() {
             @Override
             public TextPageBitmap create() {
@@ -151,6 +204,7 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
 
 
         prepareLayer = builder.createPrepareLayer();
+
        drawParam= new DrawParam();
         drawParam.width = wh[0] ;
         drawParam.height = wh[1] ;
@@ -169,7 +223,16 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
         });
 
         DrawLayer drawLayer = new DrawLayer(this, prepareLayer, readerView);
+        drawLayer.setClickListener(new DrawLayer.MenuClickListener() {
+            @Override
+            public void onMenuAreaClick() {
+                Log.e("~~~~~~~~~~~~~~~~~~");
 
+                getViewBinding().panelSetting.setVisibility(View.VISIBLE);
+
+
+            }
+        });
         PageSwitchListener pageSwitchListener = new PageSwitchListener() {
             @Override
             public boolean canPageChanged(int direction) {
@@ -233,5 +296,24 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
 
 
         super.onDestroy();
+    }
+
+    @Override
+    public void onPagePrepared(PreparePageInfo preparePageInfo) {
+
+        if(preparePageInfo!=null) {
+            PageInfo currentPageInfo = preparePageInfo.getCurrentPageInfo();
+            if(currentPageInfo==null)
+            {
+                getViewBinding().progress.setProgress(0);
+            }else
+            {
+
+                getViewBinding().progress.setProgress(currentPageInfo.pageIndex*100/currentPageInfo.pageCount);
+            }
+            prepareLayer.onPagePrepared(preparePageInfo);
+
+        }
+
     }
 }

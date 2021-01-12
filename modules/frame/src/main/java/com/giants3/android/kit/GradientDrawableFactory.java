@@ -6,7 +6,6 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import androidx.annotation.DrawableRes;
-import androidx.core.content.ContextCompat;
 import android.util.StateSet;
 
 
@@ -98,7 +97,7 @@ public class GradientDrawableFactory {
 
 
     public static final Drawable createClicDrawable(Context context, @DrawableRes int drawableId) {
-        Drawable drawable = ContextCompat.getDrawable(context, drawableId);
+        Drawable drawable = context.getResources().getDrawable( drawableId);
 
         Drawable normal = drawable.mutate();
         normal.setAlpha(127);

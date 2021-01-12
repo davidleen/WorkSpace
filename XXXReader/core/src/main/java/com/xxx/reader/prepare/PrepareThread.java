@@ -128,13 +128,26 @@ public class PrepareThread extends DestroyableThread {
 
 
         int drawNextCount=midIndex +PreparePageInfo.PREPARE_SIZE-size;
+
+        
         PageInfo pageInfo=size==0?null:temp.pageInfos.get(size-1);
+        PageInfo currentPage=size==0?null:temp.pageInfos.get(midIndex);
+        Log.e("drawNextCount:"+drawNextCount+pageInfo);
         for (int i=0;i<drawNextCount;i++)
         {
 
-            if (trySkip()) return;
 
-            PageInfo nextPageInfo = chapterMeasureManager.getNextPageInfo(pageInfo );
+            if (trySkip()) return;
+            PageInfo nextPageInfo;
+            if(pageInfo==null)
+            {
+                nextPageInfo = chapterMeasureManager.getPageInfo(temp.currentChapterIndex,temp.currentPageIndex);
+                currentPage=nextPageInfo;
+            }else
+            {
+                  nextPageInfo = chapterMeasureManager.getNextPageInfo(pageInfo );
+            }
+
             if (trySkip()) return;
             if(nextPageInfo!=null) {
                 Message message = handler.obtainMessage();
@@ -150,13 +163,15 @@ public class PrepareThread extends DestroyableThread {
         }
 
         int drawPreviousCount= PreparePageInfo.PREPARE_SIZE-midIndex;
-        PageInfo firstPageInfo=temp.pageInfos!=null&&temp.pageInfos.size()>0?temp.pageInfos.getFirst():null;
-        if(firstPageInfo!=null)
+        Log.e("drawPreviousCount:"+drawPreviousCount+currentPage);
+        if(currentPage!=null)
         {
+
+
         for (int i=0;i<drawPreviousCount;i++) {
 
             if (trySkip()) return;
-            PageInfo   previousPageInfo = chapterMeasureManager.getPreviousPageInfo(firstPageInfo);
+            PageInfo   previousPageInfo = chapterMeasureManager.getPreviousPageInfo(currentPage);
             if (trySkip()) return;
             if (previousPageInfo != null) {
 
@@ -164,7 +179,7 @@ public class PrepareThread extends DestroyableThread {
                 message.what = MSG_PREVIOUS;
                 message.obj = previousPageInfo;
                 handler.sendMessage(message);
-                firstPageInfo = previousPageInfo;
+                currentPage = previousPageInfo;
             } else {
                 break;
             }

@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.giants3.android.frame.util.Log;
 import com.xxx.reader.core.DrawParam;
 import com.xxx.reader.core.IDrawable;
 import com.xxx.reader.prepare.DrawLayer;
@@ -52,14 +53,21 @@ public class ReaderView  extends View implements IDrawable{
     DrawLayer drawLayer;
 
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        return super.dispatchTouchEvent(event);
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         boolean b = super.onTouchEvent(event);
         if(drawLayer!=null)
         {
-            if(drawLayer.onTouchEvent(event)) return true;
+            boolean result = drawLayer.onTouchEvent(event);
+            Log.e("touch result:"+result+",event:"+event);
+            if(result) return true;
         }
+
         return b;
     }
 

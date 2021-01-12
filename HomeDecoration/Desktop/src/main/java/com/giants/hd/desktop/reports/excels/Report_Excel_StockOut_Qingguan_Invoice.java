@@ -425,16 +425,16 @@ public class Report_Excel_StockOut_Qingguan_Invoice extends SimpleExcelReporter<
 
             String fengqianhao = guihaoMap.get(guihao);
             //合并单元格
-            combineRowAndCell(writableSheet, row, row, 0, 8);
-            setCellAlignLeftCenter(workbook, writableSheet, row, 0);
-            addString(writableSheet, StockStringHelper.generateCombineString(guihao, fengqianhao), 0, row);
+            combineRowAndCell(writableSheet, row, row, 1, 9);
+            setCellAlignLeftCenter(workbook, writableSheet, row, 1);
+            addString(writableSheet, StockStringHelper.generateCombineString(guihao, fengqianhao), 1, row);
             row++;
             List<ErpStockOutItem> groupItems = groupMaps.get(guihao);
             for (ErpStockOutItem outItem : groupItems) {
-
-                addString(writableSheet, outItem.bat_no, 0, row);
-                addString(writableSheet, outItem.prd_no, 1, row);
-                addString(writableSheet, outItem.unit, 2, row);
+                addString(writableSheet, outItem.os_no, 0, row);
+                addString(writableSheet, outItem.bat_no, 1, row);
+                addString(writableSheet, outItem.prd_no, 2, row);
+                addString(writableSheet, outItem.unit, 3, row);
 
                 //addNumber(writableSheet, outItem.stockOutQty, 3, row);
                 totalStockOutQty += outItem.stockOutQty;
@@ -442,31 +442,31 @@ public class Report_Excel_StockOut_Qingguan_Invoice extends SimpleExcelReporter<
                 final int xs =outItem.so_zxs==0?0:( (outItem.stockOutQty - 1) / outItem.so_zxs + 1);
                 totalXs += xs;
 
-                addNumber(writableSheet, xs, 3, row);
+                addNumber(writableSheet, xs, 4, row);
                 //数量
-                addNumber(writableSheet, outItem.stockOutQty, 4, row);
+                addNumber(writableSheet, outItem.stockOutQty, 5, row);
 //描述
-                  addString(writableSheet, outItem.describe, 5, row);
+                  addString(writableSheet, outItem.describe, 6, row);
 
 
                 //包装相关
-                addNumber(writableSheet, Float.valueOf(outItem.so_zxs), 6, row);
+                addNumber(writableSheet, Float.valueOf(outItem.so_zxs), 7, row);
 
-                addString(writableSheet, "/", 7, row);
+                addString(writableSheet, "/", 8, row);
 
 
                 float[] xg = StringUtils.decouplePackageString(outItem.khxg);
-                addNumber(writableSheet, xg[0], 8, row);
-                addString(writableSheet, "*", 9, row);
-                addNumber(writableSheet, xg[1], 10, row);
-                addString(writableSheet, "*", 11, row);
-                addNumber(writableSheet, xg[2], 12, row);
+                addNumber(writableSheet, xg[0], 9, row);
+                addString(writableSheet, "*", 10, row);
+                addNumber(writableSheet, xg[1], 11, row);
+                addString(writableSheet, "*", 12, row);
+                addNumber(writableSheet, xg[2], 13, row);
 
 
                 orderTiji = outItem.xgtj * xs;
 
                 //ttl cbm
-                addString(writableSheet, FloatHelper.formatNumber(orderTiji,3), 13, row);
+                addString(writableSheet, FloatHelper.formatNumber(orderTiji,3), 14, row);
                 totalTiji += orderTiji;
 
 
@@ -477,14 +477,14 @@ public class Report_Excel_StockOut_Qingguan_Invoice extends SimpleExcelReporter<
 
                 final float zjz = outItem.jz1 * xs;
                 totaljz += zjz;
-                addString(writableSheet, FloatHelper.formatNumber(zjz), 14, row);
+                addString(writableSheet, FloatHelper.formatNumber(zjz), 15, row);
 //                //TTL G.W      毛重  按箱数结算
 //                addString(writableSheet, FloatHelper.scale(outItem.mz), 15, row);
 //
 //                //TTL G.W       (kgs)
                 final float zmz = outItem.mz * xs;
                 totalmz += zmz;
-                addString(writableSheet, FloatHelper.formatNumber(zmz), 15, row);
+                addString(writableSheet, FloatHelper.formatNumber(zmz), 16, row);
 
 
 //                //  cbm
@@ -493,7 +493,9 @@ public class Report_Excel_StockOut_Qingguan_Invoice extends SimpleExcelReporter<
 //                addString(writableSheet, FloatHelper.scale(orderTiji, 3), 18, row);
 
                 //Product size (inch)
-                addString(writableSheet, outItem.specInch, 16, row);
+                addString(writableSheet, outItem.specInch, 17, row);
+ //Product size (inch)
+//                addString(writableSheet, outItem., 17, row);
 
 
                 row++;
@@ -505,20 +507,20 @@ public class Report_Excel_StockOut_Qingguan_Invoice extends SimpleExcelReporter<
 
 
         //多少箱子
-        addString(writableSheet, totalXs + " /CTNS", 3, row);
+        addString(writableSheet, totalXs + " /CTNS", 4, row);
         //多少数量
-        addString(writableSheet, totalStockOutQty + " /PCS", 4, row);
+        addString(writableSheet, totalStockOutQty + " /PCS", 5, row);
 //        addString(writableSheet, FloatHelper.scale(totalTiji, 3) + "CBM", 18, row);
 //        addString(writableSheet, FloatHelper.scale(totaljz) + "KGS", 14, row);
 //        addString(writableSheet, FloatHelper.scale(totalmz) + "KGS", 15, row);
 
 
         row++;
-        addString(writableSheet, FloatHelper.formatNumber(totalTiji, 3), 3, row);
+        addString(writableSheet, FloatHelper.formatNumber(totalTiji, 3), 4, row);
         row++;
-        addString(writableSheet, FloatHelper.formatNumber(totaljz), 3, row);
+        addString(writableSheet, FloatHelper.formatNumber(totaljz), 4, row);
         row++;
-        addString(writableSheet, FloatHelper.formatNumber(totalmz), 3, row);
+        addString(writableSheet, FloatHelper.formatNumber(totalmz), 4, row);
 
 
     }

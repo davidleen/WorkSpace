@@ -3,6 +3,7 @@ package com.xxx.reader.prepare;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 import com.xxx.reader.core.DrawParam;
@@ -25,30 +26,33 @@ public class DrawLayer {
 
     private DrawParam drawParam;
 
-
+    private MenuClickListener clickListener;
     public DrawLayer(Context context, BitmapProvider drawCache, IDrawable iDrawable) {
 
 
         this.drawCache = drawCache;
-//        zoomHandler = new ZoomHandler(context, iDrawable);
-//        zoomHandler.setSimpleOnGestureListener(new GestureDetector.SimpleOnGestureListener() {
-//            @Override
-//            public boolean onSingleTapConfirmed(MotionEvent e) {
-//
-//
-//                if (isInMenuArea((int) e.getX(), (int) e.getY())) {
-//                    clickListener.onMenuAreaClick();
-//                }
-//
-//                return super.onSingleTapConfirmed(e);
-//            }
-//
-//
-//        });
-
         this.iDrawable = iDrawable;
+        zoomHandler = new ZoomHandler(context, iDrawable) {
+        };
+        zoomHandler.setSimpleOnGestureListener(new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+
+
+                if (isInMenuArea((int) e.getX(), (int) e.getY())) {
+                    clickListener.onMenuAreaClick();
+                }
+
+                return super.onSingleTapConfirmed(e);
+            }
+
+
+        });
+
+
 
     }
+
 
     private boolean isInMenuArea(int x, int y) {
         return x < drawParam.width * 2 / 3 && x > drawParam.width / 3
@@ -74,7 +78,6 @@ public class DrawLayer {
     public boolean onTouchEvent(MotionEvent event) {
 
 
-
         if (zoomHandler != null && zoomHandler.onTouchEvent(event)) return true;
         if (pageTurner != null)
             return pageTurner.onTouchEvent(event);
@@ -85,23 +88,22 @@ public class DrawLayer {
     public void onDraw(Canvas canvas) {
 
 
-     int  count=  canvas.save();
+        int count = canvas.save();
 
-     canvas.clipRect(0,0,drawParam.width,drawParam.height);
+        canvas.clipRect(0, 0, drawParam.width, drawParam.height);
 
         if (zoomHandler != null)
             zoomHandler.zoom(canvas);
 
-        if (pageTurner != null ) {
-            boolean test=false;
-            if(test) {
+        if (pageTurner != null) {
+            boolean test = false;
+            if (test) {
 
                 Bitmap bitmap = Bitmap.createBitmap(drawParam.width, drawParam.height, Bitmap.Config.ARGB_4444);
                 Canvas tempCanvas = new Canvas(bitmap);
                 pageTurner.onDraw(tempCanvas);
-                canvas.drawBitmap(bitmap,0,0,null);
-            }else
-            {
+                canvas.drawBitmap(bitmap, 0, 0, null);
+            } else {
                 pageTurner.onDraw(canvas);
             }
 
@@ -110,7 +112,6 @@ public class DrawLayer {
 
             BitmapHolder currentBitmap = drawCache.getCurrentBitmap();
             currentBitmap.draw(canvas);
-
 
 
         }
@@ -132,5 +133,14 @@ public class DrawLayer {
             zoomHandler.setSize(drawParam.width, drawParam.height);
     }
 
+    public void setClickListener(MenuClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
+
+
+    public interface MenuClickListener
+    {
+        void onMenuAreaClick();
+    }
 
 }
