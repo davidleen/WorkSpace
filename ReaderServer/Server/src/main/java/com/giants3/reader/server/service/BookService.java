@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +32,8 @@ import java.util.List;
 @Service
 public class BookService extends AbstractService {
 
+    @Value("${rootPath}")
+    private String rootPath;
     @Value("${comicFilePath}")
     private String comicFilePath;
     @Autowired
@@ -79,11 +82,58 @@ public class BookService extends AbstractService {
         return wrapData();
 
 
+    }
+
+
+    public RemoteData<Book> listBooks() {
+
+        File file = new File(rootPath);
+
+        List<File> allChildFile=new ArrayList<>();
+        findAllFiles(allChildFile,file);
+
+        List<Book> books = new ArrayList<>();
+
+        for (int i = 0; i < allChildFile.size(); i++) {
+
+            File item = allChildFile.get(i);
+            Book book = new Book();
+            book.id = i;
+            book.name = item.getName();
+            String relativePath=item.getAbsolutePath().replace(file.getAbsolutePath(),"");
+            book.url = Assets.completeUrl(relativePath);
+            books.add(book);
+        }
+
+
+        return wrapData(books);
 
     }
 
 
-        public RemoteData<ComicChapterInfo> findComicChapters(long bookId) {
+
+    private void findAllFiles(List<File> files,File aFile)
+    {
+        if (aFile==null) return;
+        if(aFile.isFile())
+        {
+            files.add(aFile);
+        }else
+            if(aFile.isDirectory()) {
+                File[] children = aFile.listFiles();
+                if (children != null) {
+                    for (File item : children) {
+                        findAllFiles(files, item);
+                    }
+
+                }
+            }
+
+    }
+
+
+
+    public RemoteData<ComicChapterInfo> findComicChapters(long bookId) {
 
         final ComicBook comicBook = comicBookRepository.findOne(bookId);
 
@@ -122,7 +172,7 @@ public class BookService extends AbstractService {
                         int height = 1000;
                         FileInputStream input = null;
                         try {
-                            input = new FileInputStream(new File(chapterFile,temp));
+                            input = new FileInputStream(new File(chapterFile, temp));
                             final ImageInputStream imageInputStream = ImageIO.createImageInputStream(input);
 
 
@@ -143,8 +193,6 @@ public class BookService extends AbstractService {
 
                             IoUtils.safeClose(input);
                         }
-
-
 
 
                         comicChapterFile.width = width;

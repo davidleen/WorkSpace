@@ -104,7 +104,16 @@ public  abstract  class BaseListViewModelActivity<T extends BaseListViewModel<D>
     protected RecyclerView.LayoutManager getDefaultLayoutManager()
     {
 
-        return new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        return new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        {
+
+            @Override
+            public RecyclerView.LayoutParams generateDefaultLayoutParams() {
+                RecyclerView.LayoutParams layoutParams = super.generateDefaultLayoutParams();
+                layoutParams.width= RecyclerView.LayoutParams.MATCH_PARENT;
+                return layoutParams;
+            }
+        };
     }
 
     public void onItemClick(AbstractRecyclerAdapter adapter,D item,int position)

@@ -54,7 +54,7 @@ public class ApiManager {
 
         generateType=  new RemoteDateParameterizedType( aClass);
        ;
-
+       
         RemoteData<T> remoteData = GsonUtils.fromJson(result,generateType);
         return remoteData;
     }

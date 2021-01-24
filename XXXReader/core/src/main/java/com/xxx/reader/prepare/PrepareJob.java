@@ -28,6 +28,8 @@ public interface PrepareJob<C extends IChapter, P extends PageInfo, DP extends D
     ChapterMeasureResult<P> measureChapter(C iChapter, DP drawParam, Cancelable cancelable, int pageType);
 
 
+      P generateNext(P currentPageInfo, IChapter iChapter, DP drawParam );
 
+      P generatePrevious(P currentPageInfo, IChapter iChapter, DP drawParam );
 
 }

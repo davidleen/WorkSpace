@@ -5,6 +5,7 @@ package com.xxx.reader.comic;
 import com.giants3.android.frame.util.Log;
 import com.xxx.reader.Url2FileMapper;
 import com.xxx.reader.book.ChapterMeasureResult;
+import com.xxx.reader.book.IChapter;
 import com.xxx.reader.core.DrawParam;
 import com.xxx.reader.core.IPageTurner;
 import com.xxx.reader.prepare.Cancelable;
@@ -66,6 +67,16 @@ public class ComicPrepareJob implements PrepareJob<ComicChapter, ComicPageInfo, 
 
         }
 
+    }
+
+    @Override
+    public ComicPageInfo generateNext(ComicPageInfo currentPageInfo, IChapter iChapter, DrawParam drawParam) {
+        return null;
+    }
+
+    @Override
+    public ComicPageInfo generatePrevious(ComicPageInfo currentPageInfo, IChapter iChapter, DrawParam drawParam) {
+        return null;
     }
 
 

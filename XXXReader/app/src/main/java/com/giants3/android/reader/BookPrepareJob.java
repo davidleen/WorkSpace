@@ -13,4 +13,14 @@ public class BookPrepareJob implements PrepareJob<TextChapter, TextPageInfo, Dra
     public ChapterMeasureResult<TextPageInfo> measureChapter(TextChapter iChapter, DrawParam drawParam, Cancelable cancelable, int pageType) {
         return null;
     }
+
+    @Override
+    public TextPageInfo generateNext(TextPageInfo currentPageInfo, IChapter iChapter, DrawParam drawParam) {
+        return null;
+    }
+
+    @Override
+    public TextPageInfo generatePrevious(TextPageInfo currentPageInfo, IChapter iChapter, DrawParam drawParam) {
+        return null;
+    }
 }

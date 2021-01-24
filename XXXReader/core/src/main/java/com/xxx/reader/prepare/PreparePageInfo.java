@@ -13,7 +13,7 @@ public class PreparePageInfo {
       LinkedList<PageInfo> pageInfos;
       int midIndex;
 
-    public static final int PREPARE_SIZE=6;
+    public static final int PREPARE_SIZE=3;
 
     int size;
 

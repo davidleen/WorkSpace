@@ -99,6 +99,13 @@ public class HttpUrl {
 
         return additionInfo(formatter);
 
+    }public static String getBookList() {
+
+        String url = BASE_URL + "api/book/listBooks";
+
+        UrlFormatter formatter = new UrlFormatter(url);
+        return additionInfo(formatter);
+
     }
 
     public static String getAuthCodes() {

@@ -12,11 +12,11 @@ public class Assets {
 
 
     public static   String ServerName;
-
+    public static final  String HOST_NAME="www.giants3.xyz";
     public static void init(String ip,String serverName)
     {
         ServerName=serverName;
-        ASSETS_URL="http://"+ip+":8080/"+serverName+"/api/file/";
+        ASSETS_URL="http://"+HOST_NAME+"/"+serverName+"/api/file/";
     }
 
 

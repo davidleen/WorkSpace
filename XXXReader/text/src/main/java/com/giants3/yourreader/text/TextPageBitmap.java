@@ -129,64 +129,87 @@ public class TextPageBitmap extends PageBitmap<TextPageInfo,DrawParam> {
 
 
             drawHelper.draw(canvas,textPageInfo);
-            textPageInfo.elements=new ArrayList<>();
 
 
 
             drawable.setBounds(0,0,canvas.getWidth(),canvas.getHeight());
             drawable.draw(canvas);
 
+            int i=0;
+            for( WordElement wordElement:textPageInfo.elements)
+            {
+                wordElement.draw(canvas,paint);
+                i++;
+                if (isCancelled()) return null;
+                if(i%10==0) {
+                    iDrawable.updateView();
 
-            float textSize = SettingContent.getInstance().getTextSize();
-            float y= textSize;
-             for (PagePara pagePara:textPageInfo.pageParas)
-             {
+//                    try {
+//                        Thread.sleep(3);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+                }
+                if (isCancelled())return null;
 
-                 float[] xPositions = pagePara.paraTypeset.xPositions;
-                 int[] lineHead=pagePara.paraTypeset.lineHead;
+            }
 
+            iDrawable.updateView();
 
-                 int startLine=pagePara.firstLine==-1?0:pagePara.firstLine;
-                 int lastline=pagePara.lastLine==-1?pagePara.paraTypeset.lineCount-1:pagePara.lastLine-1;
-                 for (int i = startLine; i <=lastline ; i++) {
-
-                    int index=lineHead[i]; int lastIndex=(i==pagePara.paraTypeset.lineCount-1)?(xPositions.length-1):lineHead[i+1]-1 ;
-                     for (int j = index; j <=lastIndex ; j++) {
-
-
-                         WordElement wordElement= new WordElement();
-                         wordElement.word=pagePara.paraTypeset.paragraghData.getContent().substring(j,j+1);
-                         wordElement.x= (int) xPositions[j];
-                         wordElement.y= (int) y;
-
-                         textPageInfo.elements.add(wordElement);
-                         wordElement.draw(canvas,paint);
-                         if (isCancelled())return null;
-
-
-                     }
-
-                     iDrawable.updateView();
-                     try {
-                         Thread.sleep(1);
-                     } catch (InterruptedException e) {
-                         e.printStackTrace();
-                     }
-                     y+=textSize;
-
-                     if(i!=lastline)
-                     {
-                         y+=SettingContent.getInstance().getLineSpace();
-                     }
-
-
-                 }
-
-
-                 y+=SettingContent.getInstance().getParaSpace();
-
-
-             }
+//            float textSize = SettingContent.getInstance().getTextSize();
+//            float y= textSize;
+//             for (PagePara pagePara:textPageInfo.pageParas)
+//             {
+//
+//                 float[] xPositions = pagePara.paraTypeset.xPositions;
+//                 int[] lineHead=pagePara.paraTypeset.lineHead;
+//
+//
+//                 int startLine=pagePara.firstLine==-1?0:pagePara.firstLine;
+//                 int lastline=pagePara.lastLine==-1?pagePara.paraTypeset.lineCount-1:pagePara.lastLine-1;
+//                 for (int i = startLine; i <=lastline ; i++) {
+//
+//                    int index=lineHead[i]; int lastIndex=(i==pagePara.paraTypeset.lineCount-1)?(xPositions.length-1):lineHead[i+1]-1 ;
+//                     for (int j = index; j <=lastIndex ; j++) {
+//
+//
+//                         WordElement wordElement= new WordElement();
+//                         wordElement.word=pagePara.paraTypeset.paragraghData.getContent().substring(j,j+1);
+//                         wordElement.x= (int) xPositions[j];
+//                         wordElement.y= (int) y;
+//
+//                         textPageInfo.elements.add(wordElement);
+//                         wordElement.draw(canvas,paint);
+//
+//
+//                         iDrawable.updateView();
+//                         try {
+//                             Thread.sleep(1);
+//                         } catch (InterruptedException e) {
+//                             e.printStackTrace();
+//                         }
+//                         if (isCancelled())return null;
+//
+//
+//
+//                     }
+//
+//
+//                     y+=textSize;
+//
+//                     if(i!=lastline)
+//                     {
+//                         y+=SettingContent.getInstance().getLineSpace();
+//                     }
+//
+//
+//                 }
+//
+//
+//                 y+=SettingContent.getInstance().getParaSpace();
+//
+//
+//             }
             return null;
 
 

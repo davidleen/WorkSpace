@@ -6,3 +6,5 @@ android_workspace/.gradle/
 android_workspace/.idea/
 
 *.log
+*.class
+*.class

@@ -131,21 +131,19 @@ public class PrepareThread extends DestroyableThread {
 
         
         PageInfo pageInfo=size==0?null:temp.pageInfos.get(size-1);
+        PageInfo firstPageInfo=size==0?null:temp.pageInfos.get(0);
         PageInfo currentPage=size==0?null:temp.pageInfos.get(midIndex);
-        Log.e("drawNextCount:"+drawNextCount+pageInfo);
+        Log.e("drawNextCount:"+drawNextCount+",midindex:"+midIndex+",size:"+size+",info:"+pageInfo);
         for (int i=0;i<drawNextCount;i++)
         {
 
 
             if (trySkip()) return;
             PageInfo nextPageInfo;
+            nextPageInfo = chapterMeasureManager.generateNextPage(pageInfo,temp.currentChapterIndex,0);
             if(pageInfo==null)
             {
-                nextPageInfo = chapterMeasureManager.getPageInfo(temp.currentChapterIndex,temp.currentPageIndex);
                 currentPage=nextPageInfo;
-            }else
-            {
-                  nextPageInfo = chapterMeasureManager.getNextPageInfo(pageInfo );
             }
 
             if (trySkip()) return;
@@ -162,16 +160,23 @@ public class PrepareThread extends DestroyableThread {
 
         }
 
-        int drawPreviousCount= PreparePageInfo.PREPARE_SIZE-midIndex;
+        int drawPreviousCount= PreparePageInfo.PREPARE_SIZE-midIndex-1;
         Log.e("drawPreviousCount:"+drawPreviousCount+currentPage);
-        if(currentPage!=null)
-        {
 
+
+
+        PageInfo   previousPageInfo=firstPageInfo;
+        if(previousPageInfo==null) {
+            previousPageInfo = currentPage;
+        }
+
+        if(previousPageInfo!=null)
+        {
 
         for (int i=0;i<drawPreviousCount;i++) {
 
             if (trySkip()) return;
-            PageInfo   previousPageInfo = chapterMeasureManager.getPreviousPageInfo(currentPage);
+               previousPageInfo = chapterMeasureManager.generatePreviousPage(previousPageInfo);
             if (trySkip()) return;
             if (previousPageInfo != null) {
 
@@ -179,7 +184,6 @@ public class PrepareThread extends DestroyableThread {
                 message.what = MSG_PREVIOUS;
                 message.obj = previousPageInfo;
                 handler.sendMessage(message);
-                currentPage = previousPageInfo;
             } else {
                 break;
             }

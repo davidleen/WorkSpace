@@ -288,5 +288,73 @@ public class ChapterMeasureManager<C extends IChapter, P extends PageInfo, DP ex
         }
     }
 
+    public P generateNextPage(P currentPageInfo)
+    {
+
+
+        return generateNextPage(currentPageInfo,0,0);
+    }
+
+
+    public P generateNextPage(P currentPageInfo,int chapterIndex, long filePos)
+    {
+        if(book==null) return null;
+        IChapter chapter=null;
+        if(currentPageInfo==null)
+        {
+            chapter=book.getChapter(chapterIndex);
+
+
+        }else {
+            chapter=book.getChapter(currentPageInfo.chapterIndex);
+        }
+
+        P  nextPage=prepareJob.generateNext(currentPageInfo,chapter,drawParam);
+        if(nextPage==null&&chapter.getIndex()<book.getChapterCount()-1)
+        {
+
+            chapter=book.getChapter(chapter.getIndex()+1);
+            nextPage=prepareJob.generateNext(null,chapter,drawParam);
+
+
+        }
+
+        return nextPage;
+
+    }
+
+
+    public P generatePreviousPage(P currentPageInfo)
+    {
+        if(book==null) return null;
+        IChapter chapter=null;
+
+        //获取上一页， 当前页必定不能为空。
+        if(currentPageInfo==null) return null;
+
+        P  previousPage=null;
+
+        if(currentPageInfo.isFirstPage)
+        {
+            if(currentPageInfo.chapterIndex>0)
+            {
+
+                chapter=book.getChapter(currentPageInfo.chapterIndex-1);
+                previousPage=prepareJob.generatePrevious(null,chapter,drawParam);
+            }
+
+        }else
+        {
+            chapter=book.getChapter(currentPageInfo.chapterIndex);
+            previousPage=prepareJob.generatePrevious(currentPageInfo,chapter,drawParam);
+
+        }
+
+
+
+
+        return previousPage;
+
+    }
 
 }

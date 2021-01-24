@@ -620,11 +620,22 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
             if (bufstartpos == 0) {
                 this.curpos = 0;
             } else {
-                this.seek(bufstartpos - this.bufsize);
-                if (i < 0)
-                    readstart = this.bufsize + i - 1;
-                else
-                    readstart = this.bufsize - 1;
+                //TODO  这里 bufferstartpos  不足以支持读取前一行，逐步递减，递归 直到文件头
+//                if(bufstartpos>0)
+//                {
+                    this.bufstartpos = Math.max(0,bufstartpos-bufsize) ;
+                    this.bufusedsize = this.fillbuf();
+                     findLastLine();
+
+
+//                }else{
+//
+//                }
+//                this.seek(bufstartpos - this.bufsize);
+//                if (i < 0)
+//                    readstart = this.bufsize + i - 1;
+//                else
+//                    readstart = this.bufsize - 1;
             }
         }
     }

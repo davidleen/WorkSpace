@@ -7,8 +7,10 @@ public class ParagraghData {
     /*段落内容*/
     private String content;
 
-    /*段落在文件中字节位置
+    /*段落在文件中字节位置**/
     public long paragragStart = 0;
+    /*段落在文件中字节位置**/
+    public long paragraghEnd = 0;
 
     /*编码*/
     private int code;

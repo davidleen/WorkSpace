@@ -56,6 +56,16 @@ public class BookController extends BaseController {
 
     }
 
+
+    @RequestMapping(value = "/listBooks", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    RemoteData<Book> listBooks(
+    ) {
+        return bookService.listBooks( );
+
+    }
+
     @RequestMapping(value = "/getChapters", method = RequestMethod.GET)
     public
     @ResponseBody

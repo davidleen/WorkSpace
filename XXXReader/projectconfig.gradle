@@ -1,5 +1,5 @@
 ext{
-    DataVersion='0.0.1'
+    DataVersion='0.0.2'
     getFrameApiVersion='1.4.2'
 
     getViewLibVersion='1.1.5'

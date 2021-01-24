@@ -8,7 +8,7 @@ public class BookListViewModel extends BaseListViewModel<Book> {
 
     @Override
     protected String getListUrl() {
-        return HttpUrl.getComicBookList();
+        return HttpUrl.getBookList();
     }
 
 

@@ -13,10 +13,14 @@ public class PageInfo {
     public int chapterIndex;
 
 
+    public boolean isFirstPage;
+    public boolean isLastPage;
 
     @Override
     public String toString() {
         return "chapterIndex:"+chapterIndex+",pageIndex:"+pageIndex;
 
     }
+
+
 }

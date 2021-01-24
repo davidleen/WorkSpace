@@ -20,4 +20,8 @@ public class Book {
 
 //    @Basic
 //   public int  type;
+
+    @Basic
+    public String url;
+
 }

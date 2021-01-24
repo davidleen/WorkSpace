@@ -31,12 +31,6 @@ public class BookService extends AbstractService<BookService.BookReadController>
 
 
 
-    /**
-     * 缓存工作实现接口   测量，绘制。
-     */
-    PrepareJob  prepareJob;
-
-    List<PageInfo> pageInfos=new ArrayList<>();
     BookReadController controller;
     @Override
     public void onCreate() {

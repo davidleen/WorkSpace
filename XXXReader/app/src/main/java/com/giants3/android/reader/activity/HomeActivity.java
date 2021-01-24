@@ -51,12 +51,20 @@ public class HomeActivity extends  BaseActivity<ActivityHomeBinding> implements 
                     startActivity(intent);
                 }
 
-                break;   case R.id.list: {
-
-                        Routers.openForResult(this,"XXX://bookList",999);
-                }
-
                 break;
+//            case R.id.list: {
+//
+//                        Routers.openForResult(this,"XXX://bookList",999);
+//                }
+//
+//                break;
+
+            case R.id.list: {
+                Intent intent = new Intent(HomeActivity.this, BookListActivity.class);
+                startActivity(intent);
+            }
+
+            break;
         }
     }
 }

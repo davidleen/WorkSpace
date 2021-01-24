@@ -19,6 +19,7 @@ public class FileController extends  BaseController  {
 
 
 
+
     @RequestMapping(value = "/{filePath:.+}", method = RequestMethod.GET )
     @ResponseBody
     public FileSystemResource getProductFile(@PathVariable("filePath") String filePath  ) {
@@ -29,6 +30,30 @@ public class FileController extends  BaseController  {
         logger.info("filePath:"+filePath);
         String[] fileName=filePath.split("__");
       String assetSourceRelativePath=  Assets.urlToPath(filePath);
+
+        logger.info(filePath);
+        String destFilePath=rootPath+assetSourceRelativePath;
+
+        FileSystemResource resource = new FileSystemResource(destFilePath);
+
+        if(resource.exists()) return resource;
+        return null;
+
+
+
+
+    }
+
+
+    @RequestMapping(value = "/book/{filePath:.+}", method = RequestMethod.GET )
+    @ResponseBody
+    public FileSystemResource getBooks(@PathVariable("filePath") String filePath  ) {
+
+
+        logger.info("filePath====:"+filePath);
+
+        logger.info("filePath:"+filePath);
+        String assetSourceRelativePath=  Assets.urlToPath(filePath);
 
         logger.info(filePath);
         String destFilePath=rootPath+assetSourceRelativePath;

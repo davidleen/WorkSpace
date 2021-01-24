@@ -81,6 +81,7 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
                 else
                     textPageInfo.pageIndex=lastTextPageInfo.pageIndex+1;
                 textPageInfo.chapterIndex=iChapter.getIndex();
+                textPageInfo.updateElements( );
                 result.pageValues.add(textPageInfo);
                 lastTextPageInfo=textPageInfo;
             }
@@ -183,6 +184,7 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
 
     private TextPageInfo generateNextPage(TextPageInfo lastTextPageInfo, BufferedRandomAccessFile randomAccessFile, DrawParam drawParam,TXTtypeset txTtypeset) throws IOException {
 
+
         float paraDistance = SettingContent.getInstance().getParaSpace();
         float lineDistance = SettingContent.getInstance().getLineSpace();
         float textSize = SettingContent.getInstance().getTextSize();
@@ -226,9 +228,16 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
         }
 
 
-
+        if(lastPagePara!=null)
+        {
+            randomAccessFile.seek(lastPagePara.paraTypeset.paragraghData.paragraghEnd);
+        }else
+        {
+            randomAccessFile.seek(0);
+        }
 
         String line;
+        long lineStartPoint=  randomAccessFile.getFilePointer();
         while ((line = randomAccessFile.m_readLine()) != null) {
 
 
@@ -243,7 +252,12 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
             float[] xPostions = txTtypeset.typeset(new StringBuffer(line), lineHead, 0);
 
             ParagraghData paragraphData = new ParagraghData();
+
             paragraphData.setContent(line);
+            paragraphData.paragragStart=lineStartPoint;
+            paragraphData.paragraghEnd=randomAccessFile.getFilePointer();
+            lineStartPoint=paragraphData.paragraghEnd;
+
 
             ParaTypeset paraTypeset = new ParaTypeset();
             paraTypeset.lineHead = lineHead;
@@ -297,11 +311,259 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
 
           //  Log.e(line);
         }
+        textPageInfo.isLastPage=line==null;
         return textPageInfo;
 
 
 
 
+
+
+    }
+    private TextPageInfo generatePreviousPage(TextPageInfo currentPageInfo, BufferedRandomAccessFile randomAccessFile, DrawParam drawParam,TXTtypeset txTtypeset) throws IOException {
+
+
+        float paraDistance = SettingContent.getInstance().getParaSpace();
+        float lineDistance = SettingContent.getInstance().getLineSpace();
+        float textSize = SettingContent.getInstance().getTextSize();
+        TextPageInfo textPageInfo = null;
+        float pageHeight = 0;
+        PagePara firstParam = currentPageInfo == null ? null : currentPageInfo.getFirstPagePara();
+        if (firstParam != null && firstParam.firstLine != -1) {
+
+            PagePara pagePara = new PagePara();
+            pagePara.paraTypeset = firstParam.paraTypeset;
+            pagePara.lastLine = firstParam.firstLine;
+
+            int leftLineCount =  firstParam.firstLine;
+
+            float leftParaHeight = leftLineCount * (textSize) + lineDistance * (leftLineCount - 1);
+            if (leftParaHeight < drawParam.height)  //当前能放得下。
+            {
+                pagePara.firstLine = -1;
+                pageHeight += leftParaHeight + paraDistance;
+                if(textPageInfo==null)
+                    textPageInfo=new TextPageInfo();
+                textPageInfo.addParam(pagePara);
+
+                //剩下的空间不足以放置一行文字，直接返回
+                if (pageHeight > drawParam.height || pageHeight + textSize > drawParam.height) {
+                    return textPageInfo;
+                }
+
+            } else {
+                //当前段落就占据了剩余的一页 直接返回
+                int lines = (int) (drawParam.height / (textSize + lineDistance));
+                pagePara.firstLine = firstParam.firstLine - lines;
+                if(textPageInfo==null)
+                    textPageInfo=new TextPageInfo();
+                textPageInfo.addParam(pagePara);
+                return textPageInfo;
+
+            }
+
+
+        }
+
+        String line;
+        long lineStartPoint =0;
+        if(currentPageInfo==null)
+        {
+            //如果当前页未空， 则表示文件尾部开始
+            lineStartPoint=randomAccessFile.length()-1;
+        }else
+        if(firstParam!=null)
+        {
+            lineStartPoint=firstParam.paraTypeset.paragraghData.paragragStart;
+
+        }
+
+        while (lineStartPoint>0){
+            randomAccessFile.seek(lineStartPoint);
+            randomAccessFile.findLastLine();
+            lineStartPoint=randomAccessFile.getFilePointer();
+           line = randomAccessFile.m_readLine();
+
+            if (line==null) {
+
+                break;
+            }
+
+
+            if(StringUtil.isEmpty(line)) continue;
+
+            Log.e("line:"+line);
+            Log.e("post:"+lineStartPoint+"-"+randomAccessFile.getFilePointer());
+
+            int lineLength = line.length();
+            int[] lineHead = new int[lineLength];
+            for (int i = 0; i < lineLength; i++) {
+                lineHead[i]=-1;
+            }
+
+            float[] xPostions = txTtypeset.typeset(new StringBuffer(line), lineHead, 0);
+
+            ParagraghData paragraphData = new ParagraghData();
+
+            paragraphData.setContent(line);
+            paragraphData.paragragStart=lineStartPoint;
+            paragraphData.paragraghEnd=randomAccessFile.getFilePointer();
+
+
+
+            ParaTypeset paraTypeset = new ParaTypeset();
+            paraTypeset.lineHead = lineHead;
+            paraTypeset.paragraghData = paragraphData;
+            paraTypeset.xPositions = xPostions;
+
+
+            if (paraTypeset.getLineCount() <= 0)
+                continue;
+            PagePara pagePara = new PagePara();
+            pagePara.paraTypeset = paraTypeset;
+
+            float paraHeight = paraTypeset.getLineCount() * textSize + lineDistance * (paraTypeset.getLineCount() - 1);
+            if (pageHeight + paraHeight < drawParam.height) {
+                pagePara.firstLine = -1;
+                pagePara.lastLine = -1;
+                if(textPageInfo==null)
+                    textPageInfo=new TextPageInfo();
+                textPageInfo.addParam(pagePara);
+                pageHeight += paraHeight + paraDistance;
+
+                //剩下的空间一行也放不下了。
+                if(pageHeight+textSize>drawParam.height) break;
+            } else {
+                float leftHeight = drawParam.height - pageHeight;
+
+
+                int lastLineCount = (int) (leftHeight / (textSize + lineDistance));
+                if (lastLineCount > 0) {
+                    pagePara.firstLine =paraTypeset.getLineCount()-lastLineCount ;
+                    pagePara.lastLine = -1;
+                    if(textPageInfo==null)
+                        textPageInfo=new TextPageInfo();
+                    textPageInfo.addParam(pagePara);
+
+                } else
+                    if(leftHeight>textSize){
+                        {
+                            pagePara.firstLine = paraTypeset.getLineCount()-1;
+                            pagePara.lastLine = -1;
+                            if(textPageInfo==null)
+                                textPageInfo=new TextPageInfo();
+                            textPageInfo.addParam(pagePara);
+                        }
+                }
+
+
+                break;
+            }
+
+
+          //  Log.e(line);
+        }
+
+        if(textPageInfo!=null)
+            textPageInfo.descSortPara();
+        if(lineStartPoint==0)
+        {//到达章节头了，重新绘制第一页，。
+
+
+            Log.e("到达章节头了，重新绘制第一页，。");
+            textPageInfo=generateNextPage(null,randomAccessFile,drawParam,txTtypeset);
+            textPageInfo.isFirstPage=true;
+        }
+        return textPageInfo;
+
+
+
+
+
+
+    }
+
+
+    @Override
+    public TextPageInfo generateNext(TextPageInfo currentPageInfo, IChapter iChapter, DrawParam drawParam) {
+
+        float textSize = SettingContent.getInstance().getTextSize();
+        int width = drawParam.width;
+        String path = chapterUrl2FileMapper.map(iChapter, iChapter.getUrl());
+        int hgap = (int) SettingContent.getInstance().getWordGap();
+        BufferedRandomAccessFile bufferedRandomAccessFile = null;
+        try {
+            TXTtypeset txTtypeset = new TXTtypeset(textSize, width, hgap);
+            bufferedRandomAccessFile = new BufferedRandomAccessFile(path, "r");
+            int code = TXTReader.regCode(path);
+
+            bufferedRandomAccessFile.setCode(code);
+            TextPageInfo textPageInfo = generateNextPage(currentPageInfo, bufferedRandomAccessFile, drawParam, txTtypeset);
+
+            if (textPageInfo != null) {
+
+                textPageInfo.isFirstPage=currentPageInfo==null;
+                if (currentPageInfo == null)
+
+                    textPageInfo.pageIndex = 0;
+                else
+                    textPageInfo.pageIndex = currentPageInfo.pageIndex + 1;
+                textPageInfo.chapterIndex = iChapter.getIndex();
+                textPageInfo.updateElements();
+
+            }
+
+            return textPageInfo;
+        } catch (Throwable t) {
+            t.printStackTrace();
+        } finally {
+            FileUtils.safeClose(bufferedRandomAccessFile);
+        }
+
+
+        return null;
+
+    }
+
+
+    @Override
+    public TextPageInfo generatePrevious(TextPageInfo currentPageInfo,  IChapter iChapter, DrawParam drawParam)
+    {
+
+
+        float textSize = SettingContent.getInstance().getTextSize();
+        int width = drawParam.width;
+        String path = chapterUrl2FileMapper.map(iChapter, iChapter.getUrl());
+        int hgap = (int) SettingContent.getInstance().getWordGap();
+        BufferedRandomAccessFile bufferedRandomAccessFile = null;
+        try {
+            TXTtypeset txTtypeset = new TXTtypeset(textSize, width, hgap);
+            bufferedRandomAccessFile = new BufferedRandomAccessFile(path, "r");
+            int code = TXTReader.regCode(path);
+
+            bufferedRandomAccessFile.setCode(code);
+            TextPageInfo textPageInfo = generatePreviousPage(currentPageInfo, bufferedRandomAccessFile, drawParam, txTtypeset);
+
+            if (textPageInfo != null) {
+
+//                if (currentPageInfo == null)
+//                    textPageInfo.pageIndex = 0;
+//                else
+//                    textPageInfo.pageIndex = currentPageInfo.pageIndex + 1;
+                textPageInfo.chapterIndex = iChapter.getIndex();
+                textPageInfo.updateElements();
+
+            }
+
+            return textPageInfo;
+        } catch (Throwable t) {
+            t.printStackTrace();
+        } finally {
+            FileUtils.safeClose(bufferedRandomAccessFile);
+        }
+
+
+        return null;
 
 
     }
