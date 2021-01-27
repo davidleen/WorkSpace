@@ -6,6 +6,8 @@ import com.xxx.reader.book.IChapter;
 import com.xxx.reader.core.DrawParam;
 import com.xxx.reader.core.PageInfo;
 
+import java.io.IOException;
+
 /**
  * 缓存处理准备工作
  * <p>
@@ -32,4 +34,5 @@ public interface PrepareJob<C extends IChapter, P extends PageInfo, DP extends D
 
       P generatePrevious(P currentPageInfo, IChapter iChapter, DP drawParam );
 
+    P initPageInfo(IChapter chapter, float progress,  DrawParam drawParam) throws IOException;
 }

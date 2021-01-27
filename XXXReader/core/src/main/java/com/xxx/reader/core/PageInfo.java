@@ -11,7 +11,7 @@ public class PageInfo {
     public int pageIndex;
     public int pageCount;
     public int chapterIndex;
-
+    public float progress;
 
     public boolean isFirstPage;
     public boolean isLastPage;

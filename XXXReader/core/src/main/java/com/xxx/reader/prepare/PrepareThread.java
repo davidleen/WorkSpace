@@ -119,32 +119,51 @@ public class PrepareThread extends DestroyableThread {
 
 //        if (skip.get()) return;
         final  PreparePageInfo temp=preparePageInfo;
-
+        final float progress=temp.progress;
+        final int  currentChapterIndex=temp.currentChapterIndex;
         final int midIndex=temp.midIndex;
-        final int size=temp.size;
+          int size=temp.size;
+        PageInfo currentPage=size==0?null:temp.pageInfos.get(midIndex);
+        PageInfo firstPageInfo=null;
+        PageInfo lastPageInfo=null;
+        if(size==0)
+        {
+            currentPage = chapterMeasureManager.initPageInfo( currentChapterIndex,progress);
+            if (trySkip()) {
+                return;
+            }
+            firstPageInfo=currentPage;
+            lastPageInfo=currentPage;
+            Message message = handler.obtainMessage();
+            message.what = MSG_NEXT;
+            message.obj = currentPage;
+            handler.sendMessage(message);
+            size++;
 
-
+        }else
+        {
+            currentPage= temp.pageInfos.get(midIndex);
+            firstPageInfo=temp.pageInfos.get(0);
+            lastPageInfo=temp.pageInfos.get(size-1);
+        }
+        if (trySkip()) return;
 
 
 
         int drawNextCount=midIndex +PreparePageInfo.PREPARE_SIZE-size;
 
-        
-        PageInfo pageInfo=size==0?null:temp.pageInfos.get(size-1);
-        PageInfo firstPageInfo=size==0?null:temp.pageInfos.get(0);
-        PageInfo currentPage=size==0?null:temp.pageInfos.get(midIndex);
-        Log.e("drawNextCount:"+drawNextCount+",midindex:"+midIndex+",size:"+size+",info:"+pageInfo);
+
+
+        Log.e("drawNextCount:"+drawNextCount+",midindex:"+midIndex+",size:"+size+",info:"+lastPageInfo);
+        PageInfo nextPageInfo=lastPageInfo;
         for (int i=0;i<drawNextCount;i++)
         {
 
 
             if (trySkip()) return;
-            PageInfo nextPageInfo;
-            nextPageInfo = chapterMeasureManager.generateNextPage(pageInfo,temp.currentChapterIndex,0);
-            if(pageInfo==null)
-            {
-                currentPage=nextPageInfo;
-            }
+
+            nextPageInfo = chapterMeasureManager.generateNextPage(nextPageInfo,temp.currentChapterIndex );
+
 
             if (trySkip()) return;
             if(nextPageInfo!=null) {
@@ -152,7 +171,6 @@ public class PrepareThread extends DestroyableThread {
                 message.what = MSG_NEXT;
                 message.obj = nextPageInfo;
                 handler.sendMessage(message);
-                pageInfo=nextPageInfo;
             }else
             {
                 break;
@@ -166,10 +184,6 @@ public class PrepareThread extends DestroyableThread {
 
 
         PageInfo   previousPageInfo=firstPageInfo;
-        if(previousPageInfo==null) {
-            previousPageInfo = currentPage;
-        }
-
         if(previousPageInfo!=null)
         {
 

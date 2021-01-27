@@ -9,6 +9,7 @@ public class PreparePageInfo {
 
     int currentChapterIndex;
     int currentPageIndex;
+    float progress;
 
       LinkedList<PageInfo> pageInfos;
       int midIndex;
@@ -110,6 +111,11 @@ public class PreparePageInfo {
         return midIndex>0;
     }
 
+
+    /**
+     * 章节内跳转
+     * @param progress
+     */
     public void jump(float progress)
     {
 
@@ -120,21 +126,10 @@ public class PreparePageInfo {
         PageInfo currentP=size==0?null:pageInfos.get(midIndex);
 
         if(currentP==null) return;
-        int destPageIndex= (int) (currentP.pageCount*progress);
-        destPageIndex=Math.min(destPageIndex,currentP.pageCount-1);
 
 
-        for ( PageInfo  pageInfo:pageInfos)
-        {
-            if(pageInfo.chapterIndex==currentChapterIndex&&pageInfo.pageIndex==destPageIndex)
-            {
-                midIndex= pageInfos.indexOf(pageInfo);
-                adjustArray();
-                return;
-            }
-        }
-        currentChapterIndex=currentP.chapterIndex;
-        currentPageIndex=destPageIndex;
+        this.progress=progress;
+
         clearPages();
 
 
@@ -152,7 +147,7 @@ public class PreparePageInfo {
 
     public void nextChapter()
     {
-        PageInfo currentP=pageInfos.get(midIndex);
+        PageInfo currentP=pageInfos==null||pageInfos.size()<=midIndex?null:pageInfos.get(midIndex);
 
         if(currentP!=null)
         {
@@ -160,9 +155,10 @@ public class PreparePageInfo {
 
         }else
         {
-            currentChapterIndex=0;
+            currentChapterIndex++;
         }
-        currentPageIndex=0;
+        currentChapterIndex=Math.max(0,currentChapterIndex);
+        progress=0;
         clearPages();
 
     }
@@ -170,7 +166,7 @@ public class PreparePageInfo {
     public void previousChapter()
     {
 
-        PageInfo currentP=pageInfos.get(midIndex);
+        PageInfo currentP=pageInfos==null||pageInfos.size()<=midIndex?null:pageInfos.get(midIndex);
 
         if(currentP!=null)
         {
@@ -178,9 +174,11 @@ public class PreparePageInfo {
 
         }else
         {
-            currentChapterIndex=0;
+            currentChapterIndex--;
+
         }
-        currentPageIndex=0;
+        currentChapterIndex=Math.max(0,currentChapterIndex);
+        progress=0;
 
         clearPages();
 

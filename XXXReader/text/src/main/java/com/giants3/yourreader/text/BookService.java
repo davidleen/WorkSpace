@@ -190,9 +190,6 @@ public class BookService extends AbstractService<BookService.BookReadController>
 
 
             preparePageInfo.jump(progress);
-            if (prepareListener != null) {
-                prepareListener.onPagePrepared(preparePageInfo);
-            }
             updateCache();
         }
 

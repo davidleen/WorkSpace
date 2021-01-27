@@ -13,6 +13,7 @@ import com.xxx.reader.core.CacheUpdateListener;
 import com.xxx.reader.core.DrawParam;
 import com.xxx.reader.core.PageInfo;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -294,9 +295,12 @@ public class ChapterMeasureManager<C extends IChapter, P extends PageInfo, DP ex
 
         return generateNextPage(currentPageInfo,0,0);
     }
+    public P generateNextPage(P currentPageInfo,int chapterIndex)
+    {
+        return generateNextPage(currentPageInfo,chapterIndex,0);
+    }
 
-
-    public P generateNextPage(P currentPageInfo,int chapterIndex, long filePos)
+    public P generateNextPage(P currentPageInfo,int chapterIndex, float progress)
     {
         if(book==null) return null;
         IChapter chapter=null;
@@ -321,6 +325,20 @@ public class ChapterMeasureManager<C extends IChapter, P extends PageInfo, DP ex
 
         return nextPage;
 
+    }
+
+    public P initPageInfo(int chapterIndex, float progress)
+    {
+
+        if(book==null) return null;
+        IChapter  chapter=book.getChapter(chapterIndex);
+
+        try {
+            return  prepareJob.initPageInfo(chapter,progress,drawParam);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 

@@ -303,14 +303,10 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
 
         if(preparePageInfo!=null) {
             PageInfo currentPageInfo = preparePageInfo.getCurrentPageInfo();
-            if(currentPageInfo==null||currentPageInfo.pageCount==0)
-            {
-                getViewBinding().progress.setProgress(0);
-            }else
-            {
 
-                getViewBinding().progress.setProgress(currentPageInfo.pageIndex*100/currentPageInfo.pageCount);
-            }
+
+                getViewBinding().progress.setProgress(currentPageInfo==null?0:(int) (currentPageInfo.progress*100));
+
             prepareLayer.onPagePrepared(preparePageInfo);
 
         }

@@ -227,14 +227,164 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
 
         }
 
-
+        long nextOffset;
         if(lastPagePara!=null)
         {
-            randomAccessFile.seek(lastPagePara.paraTypeset.paragraghData.paragraghEnd);
+            nextOffset=lastPagePara.paraTypeset.paragraghData.paragraghEnd;
         }else
         {
-            randomAccessFile.seek(0);
+            nextOffset=0;
         }
+        randomAccessFile.seek(nextOffset);
+
+                return fillPage(randomAccessFile,pageHeight,textPageInfo,drawParam,txTtypeset);
+
+
+//        if(lastPagePara!=null)
+//        {
+//            randomAccessFile.seek(lastPagePara.paraTypeset.paragraghData.paragraghEnd);
+//        }else
+//        {
+//            randomAccessFile.seek(0);
+//        }
+//
+//        String line;
+//        long lineStartPoint=  randomAccessFile.getFilePointer();
+//        while ((line = randomAccessFile.m_readLine()) != null) {
+//
+//
+//            if(StringUtil.isEmpty(line)) continue;
+//
+//            int lineLength = line.length();
+//            int[] lineHead = new int[lineLength];
+//            for (int i = 0; i < lineLength; i++) {
+//                lineHead[i]=-1;
+//            }
+//
+//            float[] xPostions = txTtypeset.typeset(new StringBuffer(line), lineHead, 0);
+//
+//            ParagraghData paragraphData = new ParagraghData();
+//
+//            paragraphData.setContent(line);
+//            paragraphData.paragragStart=lineStartPoint;
+//            paragraphData.paragraghEnd=randomAccessFile.getFilePointer();
+//            lineStartPoint=paragraphData.paragraghEnd;
+//
+//
+//            ParaTypeset paraTypeset = new ParaTypeset();
+//            paraTypeset.lineHead = lineHead;
+//            paraTypeset.paragraghData = paragraphData;
+//            paraTypeset.xPositions = xPostions;
+//
+//
+//            if (paraTypeset.getLineCount() <= 0)
+//                continue;
+//            PagePara pagePara = new PagePara();
+//            pagePara.paraTypeset = paraTypeset;
+//
+//            float paraHeight = paraTypeset.getLineCount() * textSize + lineDistance * (paraTypeset.getLineCount() - 1);
+//            if (pageHeight + paraHeight < drawParam.height) {
+//                pagePara.firstLine = -1;
+//                pagePara.lastLine = -1;
+//                if(textPageInfo==null)
+//                    textPageInfo=new TextPageInfo();
+//                textPageInfo.addParam(pagePara);
+//                pageHeight += paraHeight + paraDistance;
+//
+//                //剩下的空间一行也放不下了。
+//                if(pageHeight+textSize>drawParam.height) break;
+//            } else {
+//                float leftHeight = drawParam.height - pageHeight;
+//
+//
+//                int lastLineCount = (int) (leftHeight / (textSize + lineDistance));
+//                if (lastLineCount > 0) {
+//                    pagePara.firstLine = -1;
+//                    pagePara.lastLine = lastLineCount;
+//                    if(textPageInfo==null)
+//                        textPageInfo=new TextPageInfo();
+//                    textPageInfo.addParam(pagePara);
+//
+//                } else
+//                    if(leftHeight>textSize){
+//                        {
+//                            pagePara.firstLine = -1;
+//                            pagePara.lastLine = 1;
+//                            if(textPageInfo==null)
+//                                textPageInfo=new TextPageInfo();
+//                            textPageInfo.addParam(pagePara);
+//                        }
+//                }
+//
+//
+//                break;
+//            }
+//
+//
+//          //  Log.e(line);
+//        }
+//        if(textPageInfo!=null)
+//            textPageInfo.isLastPage=line==null;
+//        return textPageInfo;
+
+
+
+
+
+
+    }
+
+    @Override
+    public TextPageInfo initPageInfo(IChapter iChapter, float progress, DrawParam drawParam) throws IOException {
+
+        String path = chapterUrl2FileMapper.map(iChapter, iChapter.getUrl());
+        int width = drawParam.width;
+        int hgap = (int) SettingContent.getInstance().getWordGap();
+        float textSize=SettingContent.getInstance().getTextSize();
+        TXTtypeset txTtypeset = new TXTtypeset(textSize, width, hgap);
+        BufferedRandomAccessFile bufferedRandomAccessFile = null;
+
+            bufferedRandomAccessFile = new BufferedRandomAccessFile(path, "r");
+            int code = TXTReader.regCode(path);
+
+            bufferedRandomAccessFile.setCode(code);
+
+            long offset;
+            if(progress>0)
+            {
+                 offset = (long) (bufferedRandomAccessFile.length() * progress);
+            }else
+            {
+                offset=0;
+            }
+
+            bufferedRandomAccessFile.seek(offset);
+            TextPageInfo textPageInfo=fillPage(bufferedRandomAccessFile,0,null,drawParam,txTtypeset);
+
+                if(textPageInfo!=null)
+                {
+
+
+                        textPageInfo.pageIndex=0;
+                    textPageInfo.chapterIndex=iChapter.getIndex();
+                    textPageInfo.progress=progress;
+                    textPageInfo.updateElements( );
+
+                }
+
+
+                return textPageInfo;
+    }
+
+    private TextPageInfo fillPage(BufferedRandomAccessFile randomAccessFile, float pageHeight, TextPageInfo textPageInfo, DrawParam drawParam, TXTtypeset txTtypeset) throws IOException {
+
+
+        float paraDistance = SettingContent.getInstance().getParaSpace();
+        float lineDistance = SettingContent.getInstance().getLineSpace();
+        float textSize = SettingContent.getInstance().getTextSize();
+
+
+
 
         String line;
         long lineStartPoint=  randomAccessFile.getFilePointer();
@@ -294,14 +444,14 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
                     textPageInfo.addParam(pagePara);
 
                 } else
-                    if(leftHeight>textSize){
-                        {
-                            pagePara.firstLine = -1;
-                            pagePara.lastLine = 1;
-                            if(textPageInfo==null)
-                                textPageInfo=new TextPageInfo();
-                            textPageInfo.addParam(pagePara);
-                        }
+                if(leftHeight>textSize){
+                    {
+                        pagePara.firstLine = -1;
+                        pagePara.lastLine = 1;
+                        if(textPageInfo==null)
+                            textPageInfo=new TextPageInfo();
+                        textPageInfo.addParam(pagePara);
+                    }
                 }
 
 
@@ -309,17 +459,17 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
             }
 
 
-          //  Log.e(line);
+            //  Log.e(line);
         }
-        textPageInfo.isLastPage=line==null;
+        if(textPageInfo!=null)
+            textPageInfo.isLastPage=line==null;
+
+
         return textPageInfo;
-
-
-
-
-
-
     }
+
+
+
     private TextPageInfo generatePreviousPage(TextPageInfo currentPageInfo, BufferedRandomAccessFile randomAccessFile, DrawParam drawParam,TXTtypeset txTtypeset) throws IOException {
 
 
@@ -524,6 +674,8 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
         return null;
 
     }
+
+
 
 
     @Override

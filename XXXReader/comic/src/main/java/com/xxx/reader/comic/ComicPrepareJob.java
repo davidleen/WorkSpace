@@ -11,6 +11,7 @@ import com.xxx.reader.core.IPageTurner;
 import com.xxx.reader.prepare.Cancelable;
 import com.xxx.reader.prepare.PrepareJob;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,6 +77,11 @@ public class ComicPrepareJob implements PrepareJob<ComicChapter, ComicPageInfo, 
 
     @Override
     public ComicPageInfo generatePrevious(ComicPageInfo currentPageInfo, IChapter iChapter, DrawParam drawParam) {
+        return null;
+    }
+
+    @Override
+    public ComicPageInfo initPageInfo(IChapter chapter, float progress, DrawParam drawParam) throws IOException {
         return null;
     }
 
