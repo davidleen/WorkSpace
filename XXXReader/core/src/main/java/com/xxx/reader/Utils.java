@@ -7,6 +7,8 @@ import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
+import com.xxx.reader.turnner.sim.SettingContent;
+
 /**
  * Created by HP on 2018/3/21.
  */
@@ -66,6 +68,7 @@ private static Context baseContext;
     public static void init(Context context)
     {
         baseContext=context;
+        SettingContent.init(context);
     }
 
     public static boolean isLandscape() {

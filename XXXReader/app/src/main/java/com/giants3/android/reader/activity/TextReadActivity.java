@@ -47,6 +47,7 @@ import com.xxx.reader.prepare.PrepareJob;
 import com.xxx.reader.prepare.PrepareListener;
 import com.xxx.reader.prepare.PreparePageInfo;
 import com.xxx.reader.turnner.SimulatePageTurner;
+import com.xxx.reader.turnner.sim.SettingContent;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -54,17 +55,19 @@ import java.net.URLDecoder;
 import java.util.Calendar;
 
 
-public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBinding,TextReadViewModel> implements PrepareListener {
+public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBinding, TextReadViewModel> implements PrepareListener {
     BookService.BookReadController bookReadController;
-      PagePlayer<IChapter, TextPageInfo, DrawParam, TextPageBitmap> prepareLayer ;
+    PagePlayer<IChapter, TextPageInfo, DrawParam, TextPageBitmap> prepareLayer;
 
     private IBook iBook;
-    ServiceConnection conn ;
+    ServiceConnection conn;
     DrawParam drawParam;
+    private PreparePageInfo preparePageInfo;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        init( );
+        init();
         getViewModel().getBookInfo().observe(this, new Observer<IBook>() {
 
 
@@ -73,21 +76,20 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
                 TextReadActivity.this.iBook = iBook;
 
 
-                if (bookReadController!=null)
-                {
+                if (bookReadController != null) {
                     bookReadController.updateBook(iBook);
                 }
 
             }
         });
 
-        Intent intent=new Intent(this, BookService.class);
-          conn = new ServiceConnection() {
+        Intent intent = new Intent(this, BookService.class);
+        conn = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
 
                 bookReadController = (BookService.BookReadController) service;
-                if(drawParam!=null)
+                if (drawParam != null)
                     bookReadController.updateDrawParam(drawParam);
                 bookReadController.setPrepareListener(TextReadActivity.this);
                 if (iBook != null)
@@ -109,12 +111,9 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
             public void onServiceDisconnected(ComponentName name) {
 
 
-
-
             }
         };
         bindService(intent, conn, Service.BIND_AUTO_CREATE);
-
 
 
     }
@@ -129,12 +128,14 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
         return ActivityTextReaderBinding.inflate(getLayoutInflater());
     }
 
-    private void init( ) {
 
+    private Runnable updateProgressRunnable;
+
+    private void init() {
 
 
         getViewBinding().panelSetting.setVisibility(View.GONE);
-        getViewBinding().panelSetting.setOnClickListener( new View.OnClickListener() {
+        getViewBinding().panelSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -145,11 +146,23 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
 
         getViewBinding().progress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            public void onProgressChanged(SeekBar seekBar, final int progress, boolean fromUser) {
 
-                if(fromUser)
-                {
-                    bookReadController.jump(progress/100f);
+                if (fromUser) {
+
+
+                    if (updateProgressRunnable != null) {
+                        getViewBinding().progress.removeCallbacks(updateProgressRunnable);
+                        updateProgressRunnable = null;
+                    }
+                    updateProgressRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            bookReadController.jump(progress / 100f);
+                        }
+                    };
+                    getViewBinding().progress.postDelayed(updateProgressRunnable, 100);
+
 
                 }
 
@@ -173,18 +186,73 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
                 bookReadController.nextChapter();
             }
         });
- getViewBinding().previous.setOnClickListener(new View.OnClickListener() {
+        getViewBinding().previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 bookReadController.previousChapter();
             }
         });
+        getViewBinding().fontAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                bookReadController.fontSizeAdd();
+
+                bindSettingValue();
+
+
+            }
+        });
+        getViewBinding().fontReduce.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                bookReadController.fontSizeReduce();
+                bindSettingValue();
+
+            }
+        });
+        getViewBinding().lineSpaceReduce.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(preparePageInfo!=null)
+                {
+                    PageInfo currentPageInfo = preparePageInfo.getCurrentPageInfo();
+                    if(currentPageInfo instanceof  TextPageInfo)
+                    {
+                        ((TextPageInfo) currentPageInfo).updateElements();
+                    }
+
+
+                    prepareLayer.onPagePrepared(preparePageInfo);
+                }
 
 
 
+
+
+                bookReadController.lineSpaceReduce();
+                bindSettingValue();
+
+            }
+        });
+        getViewBinding().lineSpaceAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                bookReadController.lineSpaceAdd();
+                bindSettingValue();
+
+            }
+        });
+
+
+
+        bindSettingValue();
         SharedPreferences sharedPreferences = getSharedPreferences("setting", Context.MODE_PRIVATE);
-         sharedPreferences.edit().putLong("lastcliptime", Calendar.getInstance().getTimeInMillis()).apply();
+        sharedPreferences.edit().putLong("lastcliptime", Calendar.getInstance().getTimeInMillis()).apply();
 
         final Context context = this;
         final int[] wh = Utils.getScreenDimension(this);
@@ -200,24 +268,21 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
         builder.setiDrawable(readerView);
 
 
-
-
-
         prepareLayer = builder.createPrepareLayer();
 
-       drawParam= new DrawParam();
-        drawParam.width = wh[0] ;
-        drawParam.height = wh[1] ;
+        drawParam = new DrawParam();
+        drawParam.width = wh[0];
+        drawParam.height = wh[1];
         prepareLayer.updateDrawParam(drawParam);
-        readerView.setOnSizeChangeListener(new ReaderView.onSizeChangeLister(){
+        readerView.setOnSizeChangeListener(new ReaderView.onSizeChangeLister() {
             @Override
             public void onSizeChanged(int width, int height) {
                 DrawParam drawParam = new DrawParam();
-                drawParam.width = width ;
-                drawParam.height =height;
+                drawParam.width = width;
+                drawParam.height = height;
                 prepareLayer.updateDrawParam(drawParam);
-                TextReadActivity.this.drawParam=drawParam;
-                if(bookReadController!=null)
+                TextReadActivity.this.drawParam = drawParam;
+                if (bookReadController != null)
                     bookReadController.updateDrawParam(drawParam);
             }
         });
@@ -237,7 +302,7 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
             @Override
             public boolean canPageChanged(int direction) {
                 if (direction == PageSwitchListener.TURN_PREVIOUS)
-                return bookReadController.canTurnPrevious();
+                    return bookReadController.canTurnPrevious();
                 return bookReadController.canTurnNext();
             }
 
@@ -249,8 +314,6 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
 
             @Override
             public void afterPageChanged(int direction) {
-
-
 
 
                 Log.e("afterPageChanged:" + direction);
@@ -273,25 +336,23 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
 
 
         IPageTurner pageTurner = null;
-      //  pageTurner = new ScrollPageTurner(this, pageSwitchListener, activityTextReaderBinding.reader, prepareLayer);
+        //  pageTurner = new ScrollPageTurner(this, pageSwitchListener, activityTextReaderBinding.reader, prepareLayer);
 //        pageTurner=new SimPageTurner(this,pageSwitchListener,activityTextReaderBinding.reader,prepareLayer);
-     pageTurner=new SimulatePageTurner(this,pageSwitchListener, readerView,prepareLayer);
+        pageTurner = new SimulatePageTurner(this, pageSwitchListener, readerView, prepareLayer);
         //   pageTurner = new SlidePageTurner(this, pageSwitchListener, activityTextReaderBinding.reader, prepareLayer);
 
         drawLayer.setPageTurner(pageTurner);
         readerView.setDrawLayer(drawLayer);
 
 
-
-
     }
 
     @Override
     protected void onDestroy() {
-        if (prepareLayer!=null) {
+        if (prepareLayer != null) {
             prepareLayer.onDestroy();
         }
-        if(conn!=null)
+        if (conn != null)
             unbindService(conn);
 
 
@@ -300,16 +361,25 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
 
     @Override
     public void onPagePrepared(PreparePageInfo preparePageInfo) {
+        this.preparePageInfo = preparePageInfo;
 
-        if(preparePageInfo!=null) {
+        if (preparePageInfo != null) {
+
             PageInfo currentPageInfo = preparePageInfo.getCurrentPageInfo();
 
 
-                getViewBinding().progress.setProgress(currentPageInfo==null?0:(int) (currentPageInfo.progress*100));
+            getViewBinding().progress.setProgress(currentPageInfo == null ? 0 : (int) (currentPageInfo.startPos * 100/currentPageInfo.fileSize));
 
             prepareLayer.onPagePrepared(preparePageInfo);
 
         }
 
+    }
+
+
+    public void bindSettingValue()
+    {
+        getViewBinding().fontSize.setText(String.valueOf(SettingContent.getInstance().getTextSize()));
+        getViewBinding().lineSpace.setText(String.valueOf(SettingContent.getInstance().getLineSpace()));
     }
 }

@@ -1,5 +1,8 @@
 package com.giants3.yourreader.text;
 
+import com.giants3.pools.ObjectFactory;
+import com.giants3.pools.ObjectPool;
+import com.giants3.pools.PoolCenter;
 import com.giants3.yourreader.text.elements.WordElement;
 import com.xxx.reader.core.PageInfo;
 import com.xxx.reader.turnner.sim.SettingContent;
@@ -17,8 +20,9 @@ public class TextPageInfo extends PageInfo {
     public List<WordElement> elements;
 
     public List<PagePara> pageParas;
-    public long startPos;
-    public long endPos;
+
+    public float pageHeight;
+
 
 
     public void addParam(PagePara pagePara) {
@@ -38,8 +42,42 @@ public class TextPageInfo extends PageInfo {
 
     public void updateElements( ) {
 
+        //计算startPos，计算 endPos
+        startPos=0;endPos=0;
+        if(pageParas!=null&&pageParas.size()>0)
+        {
+
+            PagePara firstPagePara = getFirstPagePara();
+            long paragragStart = firstPagePara.paraTypeset.paragraghData.paragragStart;
+            if(firstPagePara.firstLine==-1)
+            {startPos=paragragStart;}else
+            {
+                startPos=paragragStart+firstPagePara.paraTypeset.lineHead[firstPagePara.firstLine];
+            }
+
+
+            PagePara lastPagePara = getLastPagePara();
+            long paragraghEnd = lastPagePara.paraTypeset.paragraghData.paragraghEnd;
+            if(lastPagePara.lastLine==-1)
+            {endPos=paragraghEnd;}else
+            {
+                endPos=paragraghEnd+lastPagePara.paraTypeset.lineHead[lastPagePara.lastLine];
+            }
+
+
+        }
+
+
+        ObjectPool<WordElement> objectPool= PoolCenter.getObjectPool(WordElement.class,10000);
+
+
+
+
+
+
 
         if (elements != null) {
+            objectPool.release(elements);
             elements.clear();
         } else {
             elements = new ArrayList<>();
@@ -61,7 +99,7 @@ public class TextPageInfo extends PageInfo {
                 for (int j = index; j <= lastIndex; j++) {
 
 
-                    WordElement wordElement = new WordElement();
+                    WordElement wordElement =objectPool.newObject();
                     wordElement.word = pagePara.paraTypeset.paragraghData.getContent().substring(j, j + 1);
                     wordElement.x = (int) xPositions[j];
                     wordElement.y = (int) y;
@@ -76,11 +114,18 @@ public class TextPageInfo extends PageInfo {
                 {
                     y+= SettingContent.getInstance().getLineSpace();
                 }
+                if(y>pageHeight) break;
             }
 
             y+=SettingContent.getInstance().getParaSpace();
+            if(y>pageHeight) break;
 
         }
+
+
+
+
+
     }
 
     public  PagePara getFirstPagePara() {
@@ -120,6 +165,18 @@ public class TextPageInfo extends PageInfo {
 
         return isFirstPage;
 
+
+    }
+
+
+    public void updateOnLineSpaceAndParaSpace() {
+
+
+
+
+
+
+            updateElements();
 
     }
 }

@@ -1,4 +1,4 @@
-package com.giants3.hd.utils.pools;
+package com.giants3.pools;
 
 import java.util.HashMap;
 import java.util.Map;

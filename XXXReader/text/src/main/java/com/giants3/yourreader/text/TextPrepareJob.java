@@ -81,7 +81,9 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
                 else
                     textPageInfo.pageIndex=lastTextPageInfo.pageIndex+1;
                 textPageInfo.chapterIndex=iChapter.getIndex();
+                textPageInfo.pageHeight=drawParam.height;
                 textPageInfo.updateElements( );
+                textPageInfo.fileSize=bufferedRandomAccessFile.length();
                 result.pageValues.add(textPageInfo);
                 lastTextPageInfo=textPageInfo;
             }
@@ -181,8 +183,13 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
 
     }
 
-
     private TextPageInfo generateNextPage(TextPageInfo lastTextPageInfo, BufferedRandomAccessFile randomAccessFile, DrawParam drawParam,TXTtypeset txTtypeset) throws IOException {
+
+        PagePara lastPagePara = lastTextPageInfo == null ? null : lastTextPageInfo.getLastPagePara();
+        return generateNextPage2(lastPagePara,randomAccessFile,drawParam,txTtypeset );
+
+    }
+    private TextPageInfo generateNextPage2( PagePara lastPagePara   , BufferedRandomAccessFile randomAccessFile, DrawParam drawParam,TXTtypeset txTtypeset) throws IOException {
 
 
         float paraDistance = SettingContent.getInstance().getParaSpace();
@@ -190,7 +197,7 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
         float textSize = SettingContent.getInstance().getTextSize();
         TextPageInfo textPageInfo = null;
         float pageHeight = 0;
-        PagePara lastPagePara = lastTextPageInfo == null ? null : lastTextPageInfo.getLastPagePara();
+
         if (lastPagePara != null && lastPagePara.lastLine != -1) {
 
             PagePara pagePara = new PagePara();
@@ -236,6 +243,9 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
             nextOffset=0;
         }
         randomAccessFile.seek(nextOffset);
+
+
+
 
                 return fillPage(randomAccessFile,pageHeight,textPageInfo,drawParam,txTtypeset);
 
@@ -335,7 +345,7 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
     }
 
     @Override
-    public TextPageInfo initPageInfo(IChapter iChapter, float progress, DrawParam drawParam) throws IOException {
+    public TextPageInfo initPageInfo(IChapter iChapter, long fileOffset, DrawParam drawParam) throws IOException {
 
         String path = chapterUrl2FileMapper.map(iChapter, iChapter.getUrl());
         int width = drawParam.width;
@@ -350,16 +360,58 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
             bufferedRandomAccessFile.setCode(code);
 
             long offset;
-            if(progress>0)
+            if(fileOffset>0)
             {
-                 offset = (long) (bufferedRandomAccessFile.length() * progress);
+                if(fileOffset>=bufferedRandomAccessFile.length())
+                {
+                    offset= bufferedRandomAccessFile.length()-100;
+                }else
+                    offset = fileOffset;
             }else
             {
                 offset=0;
             }
 
             bufferedRandomAccessFile.seek(offset);
-            TextPageInfo textPageInfo=fillPage(bufferedRandomAccessFile,0,null,drawParam,txTtypeset);
+            PagePara lastPagePara=null;
+            if(offset!=0)
+            {
+               bufferedRandomAccessFile.findLastLine();
+               long parastart=bufferedRandomAccessFile.getFilePointer();
+               String line=bufferedRandomAccessFile.m_readLine();
+               //定位到偏移量所在段落
+               while(parastart+line.length()<=offset)
+               {
+                   parastart=bufferedRandomAccessFile.getFilePointer();
+                   line=bufferedRandomAccessFile.m_readLine();
+
+               }
+
+
+                   ParaTypeset paraTypeset = typesetPara(line, txTtypeset, parastart, bufferedRandomAccessFile.getFilePointer());
+
+                       lastPagePara=new PagePara();
+                       lastPagePara.paraTypeset=paraTypeset;
+                       lastPagePara.firstLine=-1;
+                       lastPagePara.lastLine=-1;
+                       //找出当前offset 所在行数
+                       for (int i = 1; i <paraTypeset.getLineCount() ; i++) {
+                           if(parastart+paraTypeset.lineHead[i]>offset)
+                           {
+
+                               lastPagePara.lastLine=i-1;
+                               break;
+
+                           }
+
+                       }
+
+
+
+            }
+
+
+            TextPageInfo textPageInfo=generateNextPage2( lastPagePara,bufferedRandomAccessFile,  drawParam,txTtypeset);
 
                 if(textPageInfo!=null)
                 {
@@ -367,8 +419,12 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
 
                         textPageInfo.pageIndex=0;
                     textPageInfo.chapterIndex=iChapter.getIndex();
-                    textPageInfo.progress=progress;
+                    textPageInfo.pageHeight=drawParam.height;
+
                     textPageInfo.updateElements( );
+                    textPageInfo.fileSize=bufferedRandomAccessFile.length();
+                    //当前页初始化pos 重置为传递进来的offset值
+                    textPageInfo.startPos=fileOffset;
 
                 }
 
@@ -393,26 +449,14 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
 
             if(StringUtil.isEmpty(line)) continue;
 
-            int lineLength = line.length();
-            int[] lineHead = new int[lineLength];
-            for (int i = 0; i < lineLength; i++) {
-                lineHead[i]=-1;
-            }
-
-            float[] xPostions = txTtypeset.typeset(new StringBuffer(line), lineHead, 0);
-
-            ParagraghData paragraphData = new ParagraghData();
-
-            paragraphData.setContent(line);
-            paragraphData.paragragStart=lineStartPoint;
-            paragraphData.paragraghEnd=randomAccessFile.getFilePointer();
-            lineStartPoint=paragraphData.paragraghEnd;
 
 
-            ParaTypeset paraTypeset = new ParaTypeset();
-            paraTypeset.lineHead = lineHead;
-            paraTypeset.paragraghData = paragraphData;
-            paraTypeset.xPositions = xPostions;
+
+
+            ParaTypeset paraTypeset =
+                    typesetPara(line,txTtypeset,lineStartPoint,randomAccessFile.getFilePointer());
+            lineStartPoint=paraTypeset.paragraghData.paragraghEnd;
+
 
 
             if (paraTypeset.getLineCount() <= 0)
@@ -469,6 +513,36 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
     }
 
 
+
+
+    private ParaTypeset typesetPara(String line ,TXTtypeset txTtypeset,long fileStartPos,long fileEndPos)
+    {
+
+        int lineLength = line.length();
+        int[] lineHead = new int[lineLength];
+        for (int i = 0; i < lineLength; i++) {
+            lineHead[i]=-1;
+        }
+
+        float[] xPostions = txTtypeset.typeset(new StringBuffer(line), lineHead, 0);
+
+        ParagraghData paragraphData = new ParagraghData();
+
+        paragraphData.setContent(line);
+        paragraphData.paragragStart=fileStartPos;
+        paragraphData.paragraghEnd=fileEndPos;
+
+
+        ParaTypeset paraTypeset = new ParaTypeset();
+        paraTypeset.lineHead = lineHead;
+        paraTypeset.paragraghData = paragraphData;
+        paraTypeset.xPositions = xPostions;
+
+
+
+        return paraTypeset;
+
+    }
 
     private TextPageInfo generatePreviousPage(TextPageInfo currentPageInfo, BufferedRandomAccessFile randomAccessFile, DrawParam drawParam,TXTtypeset txTtypeset) throws IOException {
 
@@ -616,12 +690,16 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
 
         if(textPageInfo!=null)
             textPageInfo.descSortPara();
-        if(lineStartPoint==0)
+        {
+
+
+        }
+        if(lineStartPoint==0&& textPageInfo.getFirstPagePara().firstLine==-1)
         {//到达章节头了，重新绘制第一页，。
 
 
             Log.e("到达章节头了，重新绘制第一页，。");
-            textPageInfo=generateNextPage(null,randomAccessFile,drawParam,txTtypeset);
+            textPageInfo=generateNextPage2(null,randomAccessFile,drawParam,txTtypeset);
             textPageInfo.isFirstPage=true;
         }
         return textPageInfo;
@@ -659,7 +737,11 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
                 else
                     textPageInfo.pageIndex = currentPageInfo.pageIndex + 1;
                 textPageInfo.chapterIndex = iChapter.getIndex();
+
+                textPageInfo.pageHeight=drawParam.height;
                 textPageInfo.updateElements();
+                textPageInfo.fileSize=bufferedRandomAccessFile.length();
+
 
             }
 
@@ -703,7 +785,10 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
 //                else
 //                    textPageInfo.pageIndex = currentPageInfo.pageIndex + 1;
                 textPageInfo.chapterIndex = iChapter.getIndex();
+
+                textPageInfo.pageHeight=drawParam.height;
                 textPageInfo.updateElements();
+                textPageInfo.fileSize=bufferedRandomAccessFile.length();
 
             }
 

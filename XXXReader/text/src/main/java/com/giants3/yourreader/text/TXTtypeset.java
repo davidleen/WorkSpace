@@ -21,7 +21,7 @@ public class TXTtypeset {
 
 
     public float textSize=0;
-    private static byte[] charWidths = null;
+    private   byte[] charWidths = null;
 
 
     private int h_spacing;
@@ -577,7 +577,7 @@ public class TXTtypeset {
         }
     }
 
-    public static void clearTypeset() {
+    public   void clearTypeset() {
 
         if (charWidths != null) {
 

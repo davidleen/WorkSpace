@@ -81,7 +81,7 @@ public class ComicPrepareJob implements PrepareJob<ComicChapter, ComicPageInfo, 
     }
 
     @Override
-    public ComicPageInfo initPageInfo(IChapter chapter, float progress, DrawParam drawParam) throws IOException {
+    public ComicPageInfo initPageInfo(IChapter chapter, long offset, DrawParam drawParam) throws IOException {
         return null;
     }
 

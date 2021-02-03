@@ -1,6 +1,7 @@
-package com.giants3.hd.utils.pools;
+package com.giants3.pools;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -49,6 +50,19 @@ public class ObjectPool<T> implements ObjectFactory<T> {
     public void release(T data) {
         if (objPool.size() < maxCount) {
             objPool.add(data);
+        }
+
+    }
+
+
+    /**
+     * release an obj  list make it unuse if no bigger than the maxCount add to pool<list> or simply drop it , let gc help him.
+     *
+     * @param collection
+     */
+    public void release(Collection<T> collection) {
+        if (objPool.size() < maxCount) {
+            objPool.addAll(collection);
         }
 
     }

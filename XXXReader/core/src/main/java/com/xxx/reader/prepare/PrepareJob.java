@@ -34,5 +34,5 @@ public interface PrepareJob<C extends IChapter, P extends PageInfo, DP extends D
 
       P generatePrevious(P currentPageInfo, IChapter iChapter, DP drawParam );
 
-    P initPageInfo(IChapter chapter, float progress,  DrawParam drawParam) throws IOException;
+    P initPageInfo(IChapter chapter, long  fileOffset,  DrawParam drawParam) throws IOException;
 }

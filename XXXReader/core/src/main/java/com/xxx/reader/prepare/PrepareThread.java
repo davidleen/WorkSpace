@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PrepareThread extends DestroyableThread {
 
+    public static final long DELAY=16;
     public static final int MSG_UPDATE_PAGES=99;
     public static final int MSG_NEXT=100;
     public static final int MSG_PREVIOUS=98;
@@ -119,7 +120,7 @@ public class PrepareThread extends DestroyableThread {
 
 //        if (skip.get()) return;
         final  PreparePageInfo temp=preparePageInfo;
-        final float progress=temp.progress;
+        final long fileOffset=temp.currentPageOffset;
         final int  currentChapterIndex=temp.currentChapterIndex;
         final int midIndex=temp.midIndex;
           int size=temp.size;
@@ -128,7 +129,7 @@ public class PrepareThread extends DestroyableThread {
         PageInfo lastPageInfo=null;
         if(size==0)
         {
-            currentPage = chapterMeasureManager.initPageInfo( currentChapterIndex,progress);
+            currentPage = chapterMeasureManager.initPageInfo( currentChapterIndex,fileOffset);
             if (trySkip()) {
                 return;
             }
@@ -137,7 +138,7 @@ public class PrepareThread extends DestroyableThread {
             Message message = handler.obtainMessage();
             message.what = MSG_NEXT;
             message.obj = currentPage;
-            handler.sendMessage(message);
+            handler.sendMessageDelayed(message,DELAY);
             size++;
 
         }else
@@ -170,7 +171,7 @@ public class PrepareThread extends DestroyableThread {
                 Message message = handler.obtainMessage();
                 message.what = MSG_NEXT;
                 message.obj = nextPageInfo;
-                handler.sendMessage(message);
+                handler.sendMessageDelayed(message,DELAY);
             }else
             {
                 break;
@@ -197,7 +198,7 @@ public class PrepareThread extends DestroyableThread {
                 Message message = handler.obtainMessage();
                 message.what = MSG_PREVIOUS;
                 message.obj = previousPageInfo;
-                handler.sendMessage(message);
+                handler.sendMessageDelayed(message,DELAY);
             } else {
                 break;
             }
@@ -277,17 +278,25 @@ public class PrepareThread extends DestroyableThread {
 //            e.printStackTrace();
 //        }
 //        Log.e(skip.get());
-        if (skip.get())
+        if (skip.get()) {
+
+            clearHandler();
             return true;
+        }
         return false;
     }
 
+    private void clearHandler() {
 
+        handler.removeMessages(MSG_UPDATE_PAGES);
+        handler.removeMessages(MSG_PREVIOUS);
+        handler.removeMessages(MSG_NEXT);
+    }
 
 
     @Override
     protected void onDestroy() {
-
+        clearHandler();
 
 
     }
@@ -364,5 +373,11 @@ public class PrepareThread extends DestroyableThread {
 
     public void setPrepareListener(PrepareListener prepareListener) {
         this.prepareListener = prepareListener;
+    }
+
+    @Override
+    public void setSkip(boolean skip) {
+        super.setSkip(skip);
+        clearHandler();
     }
 }

@@ -1,4 +1,4 @@
-package com.giants3.hd.utils.pools;
+package com.giants3.pools;
 
 /**
  * 对象工厂接口

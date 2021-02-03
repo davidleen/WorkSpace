@@ -37,7 +37,6 @@ dependencies {
     compileOnly "androidx.databinding:viewbinding:3.6.0"
     testImplementation 'junit:junit:4.12'
 
-
     api project(':library-android')
 
     compileOnly "com.jakewharton:butterknife:${versions.BUTTERKNIFE_VERSION}"

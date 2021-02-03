@@ -20,12 +20,12 @@ import com.xxx.reader.prepare.PrepareJob;
 import com.xxx.reader.prepare.PrepareListener;
 import com.xxx.reader.prepare.PreparePageInfo;
 import com.xxx.reader.prepare.PrepareThread;
+import com.xxx.reader.turnner.sim.SettingContent;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class BookService extends AbstractService<BookService.BookReadController> {
 
@@ -216,6 +216,52 @@ public class BookService extends AbstractService<BookService.BookReadController>
             prepareThread.setDestroy();
             prepareThread=null;
 
+
+        }
+
+        public void fontSizeReduce() {
+
+            float textSize = SettingContent.getInstance().getTextSize();
+            if(textSize<12) return;
+            textSize--;
+
+            SettingContent.getInstance().setTextSize(textSize);
+            preparePageInfo.onSettingChange();
+            updateCache();
+
+        }
+
+        public void fontSizeAdd() {
+
+            float textSize = SettingContent.getInstance().getTextSize();
+            if(textSize>60) return;
+            textSize++;
+            SettingContent.getInstance().setTextSize(textSize);
+            preparePageInfo.onSettingChange();
+            updateCache();
+
+        }
+
+        public void lineSpaceReduce() {
+
+            float textSize = SettingContent.getInstance().getLineSpace();
+            if(textSize<=0) return;
+            textSize--;
+
+            SettingContent.getInstance().setLineSpace(textSize);
+            preparePageInfo.onSettingChange();
+            updateCache();
+
+        }
+
+        public void lineSpaceAdd() {
+
+            float textSize = SettingContent.getInstance().getLineSpace();
+            if(textSize>60) return;
+            textSize++;
+            SettingContent.getInstance().setLineSpace(textSize);
+            preparePageInfo.onSettingChange();
+            updateCache();
 
         }
     }

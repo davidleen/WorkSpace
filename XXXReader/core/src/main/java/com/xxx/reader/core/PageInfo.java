@@ -11,10 +11,13 @@ public class PageInfo {
     public int pageIndex;
     public int pageCount;
     public int chapterIndex;
-    public float progress;
 
     public boolean isFirstPage;
     public boolean isLastPage;
+
+    public long startPos;
+    public long endPos;
+    public long fileSize;
 
     @Override
     public String toString() {

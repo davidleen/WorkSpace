@@ -327,14 +327,14 @@ public class ChapterMeasureManager<C extends IChapter, P extends PageInfo, DP ex
 
     }
 
-    public P initPageInfo(int chapterIndex, float progress)
+    public P initPageInfo(int chapterIndex, long fileOffset)
     {
 
         if(book==null) return null;
         IChapter  chapter=book.getChapter(chapterIndex);
 
         try {
-            return  prepareJob.initPageInfo(chapter,progress,drawParam);
+            return  prepareJob.initPageInfo(chapter,fileOffset,drawParam);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

@@ -27,7 +27,7 @@ public class BookPrepareJob implements PrepareJob<TextChapter, TextPageInfo, Dra
     }
 
     @Override
-    public TextPageInfo initPageInfo(IChapter chapter, float progress, DrawParam drawParam) throws IOException {
+    public TextPageInfo initPageInfo(IChapter chapter, long offset, DrawParam drawParam) throws IOException {
         return null;
     }
 }

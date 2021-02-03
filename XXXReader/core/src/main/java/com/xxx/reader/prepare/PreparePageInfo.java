@@ -9,7 +9,8 @@ public class PreparePageInfo {
 
     int currentChapterIndex;
     int currentPageIndex;
-    float progress;
+    long  currentPageOffset;
+    long  currentPageFileSize;
 
       LinkedList<PageInfo> pageInfos;
       int midIndex;
@@ -83,6 +84,7 @@ public class PreparePageInfo {
     private  void adjustArray()
     {
 
+        if(size==0) return;
         if(midIndex<size-PREPARE_SIZE)
         {
              pageInfos.remove(size-1);
@@ -98,7 +100,8 @@ public class PreparePageInfo {
         }
 
         currentChapterIndex=pageInfos.get(midIndex).chapterIndex;
-        currentPageIndex=pageInfos.get(midIndex).pageIndex;
+        currentPageFileSize=pageInfos.get(midIndex).fileSize;
+        currentPageOffset=pageInfos.get(midIndex).startPos;
 
 
     }
@@ -122,13 +125,7 @@ public class PreparePageInfo {
 
 
 
-
-        PageInfo currentP=size==0?null:pageInfos.get(midIndex);
-
-        if(currentP==null) return;
-
-
-        this.progress=progress;
+        this.currentPageOffset= (long) (currentPageFileSize*progress);
 
         clearPages();
 
@@ -137,7 +134,21 @@ public class PreparePageInfo {
 
 
     }
-    private void clearPages()
+
+
+    public void onSettingChange()
+    {
+
+
+        if(pageInfos.size()>0)
+        {
+            PageInfo pageInfo = pageInfos.get(midIndex);
+            currentPageOffset=  pageInfo.startPos ;
+        }
+        clearPages();
+
+    }
+    public  void clearPages()
     {
         pageInfos.clear();
         midIndex=0;
@@ -158,7 +169,7 @@ public class PreparePageInfo {
             currentChapterIndex++;
         }
         currentChapterIndex=Math.max(0,currentChapterIndex);
-        progress=0;
+
         clearPages();
 
     }
@@ -178,7 +189,6 @@ public class PreparePageInfo {
 
         }
         currentChapterIndex=Math.max(0,currentChapterIndex);
-        progress=0;
 
         clearPages();
 

@@ -18,6 +18,6 @@ include ':NetWork'
 project(':NetWork').projectDir = new File('../modules/NetWork')
 
 //
-//include ':library-java'
-//project(':library-java').projectDir = new File('../modules/library-java')
+include ':library-java'
+project(':library-java').projectDir = new File('../modules/library-java')
 
