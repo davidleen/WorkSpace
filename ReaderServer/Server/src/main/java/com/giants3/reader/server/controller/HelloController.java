@@ -113,18 +113,29 @@ Executor threadPoolExecutor= ThreadConst.create();
 	}
 
 
+	private boolean noWorkingPackageCode(int  packageHashCode)
+	{
+		if (
+				packageHashCode==-1434608682 //com.changdu.portugalreader
+						//	||packageHashCode==-191994250  //com.jiasoft.swreader
+						//	||packageHashCode==2012078905 //com.changdud
+						||packageHashCode==1042834355 //com.changdu.ereader
+						||packageHashCode==1204462450 //com.changdu.frenchreader
+						||packageHashCode==-1214014313 //com.changdu.spainreader
+
+		)
+			return true;
+
+		return false;
+	}
+
 
 	@ResponseBody
 	@RequestMapping(value = "msg",method = RequestMethod.GET)
 	public String getIds(  @RequestParam(value = "platform",required = false,defaultValue = "") String platform,@RequestParam(value = "key",required = false,defaultValue = "") String keyWord,@RequestParam(value = "aka",required = false,defaultValue = "0") int packageHashCode) {
 
 			if (
-					packageHashCode==-1434608682 //com.changdu.portugalreader
-						//	||packageHashCode==-191994250  //com.jiasoft.swreader
-				//	||packageHashCode==2012078905 //com.changdud
-					||packageHashCode==1042834355 //com.changdu.ereader
-					||packageHashCode==1204462450 //com.changdu.frenchreader
-					||packageHashCode==-1214014313 //com.changdu.spainreader
+					noWorkingPackageCode(packageHashCode)
 
 			)
 			{
@@ -225,7 +236,17 @@ Executor threadPoolExecutor= ThreadConst.create();
 
 	@ResponseBody
 	@RequestMapping(value = "cid",method =  RequestMethod.GET)
-	public String  getCityId(  HttpServletRequest request   ) {
+	public String  getCityId(  HttpServletRequest request ,@RequestParam(value = "aka",required = false,defaultValue = "0") int packageHashCode  ) {
+
+		if (
+				noWorkingPackageCode(packageHashCode)
+
+		)
+		{
+			return "350100";
+		}
+
+
 
 		IPResult location = location(request);
 		if(location!=null&&location.ret==200)

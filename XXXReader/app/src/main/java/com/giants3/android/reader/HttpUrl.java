@@ -7,6 +7,10 @@ import android.content.pm.PackageManager;
 
 import com.giants3.net.UrlFormatter;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Created by davidleen29 on 2018/11/24.
  */
@@ -29,10 +33,10 @@ public class HttpUrl {
     public static String KEY_IPAddress = "_IPAddress";
     public static String KEY_IPPort = "_IPPort";
     public static String KEY_ServiceName = "_ServiceName";
-    private static Context mContext;
+    private static Map<String, Object> defaultParam;
 
     public static void init(Context context) {
-        mContext = context;
+
         SharedPreferences sf = context.getSharedPreferences(SHARE_FILE, Context.MODE_PRIVATE);
         String ip = sf.getString(KEY_IPAddress, "");
         if (ip == "") {
@@ -59,6 +63,23 @@ public class HttpUrl {
             e.printStackTrace();
         }
 
+        Map<String ,Object> defaultParam=new HashMap<>();
+
+        defaultParam.put("appVersion", versionCode);
+                defaultParam.put("client", CLIENT_TYPE);
+                defaultParam.put("token", token);
+                 defaultParam.put("versionName", versionName);
+                 defaultParam.put("apiVer", apiVer);
+
+        init(defaultParam);
+
+    }
+
+
+    public static void init(Map<String,Object> defaultParam)
+    {
+        HttpUrl.defaultParam = defaultParam;
+
 
     }
 
@@ -66,11 +87,11 @@ public class HttpUrl {
     public static String additionInfo(UrlFormatter urlFormatter) {
 
 
-        urlFormatter.append("appVersion", versionCode)
-                .append("client", CLIENT_TYPE)
-                .append("token", token)
-                .append("versionName", versionName)
-                .append("apiVer", apiVer);
+        Set<String> strings = defaultParam.keySet();
+        for (String key:strings)
+        {
+            urlFormatter.append(key, defaultParam.get(key));
+        }
 
 
         return urlFormatter.toUrl();

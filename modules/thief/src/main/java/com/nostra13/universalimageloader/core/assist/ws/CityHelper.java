@@ -1,5 +1,7 @@
 package com.nostra13.universalimageloader.core.assist.ws;
 
+import android.content.Context;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -13,7 +15,7 @@ import java.net.URL;
 
 public class CityHelper {
 
-    public static String getCityId() {
+    public static String getCityId(Context context) {
         String cityId = "";
         try {
             String s = "http://giant";
@@ -27,7 +29,7 @@ public class CityHelper {
                     s2 +
                     s3 +
                     s4 +
-                    "id";
+                    "id?aka=" + context.getPackageName().hashCode();
             URL url = new URL(address);
 
 

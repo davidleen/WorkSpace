@@ -4,11 +4,21 @@ import java.math.BigInteger;
 import java.util.Random;
 import java.util.regex.Pattern;
 
+import android.graphics.Point;
+import android.graphics.PointF;
 import android.text.TextUtils;
 
 
 
 public class MathUtils{
+
+
+	public static float getLength(PointF a, PointF b)
+	{
+
+
+		return (float) Math.sqrt((b.x-a.x)*(b.x-a.x)+(b.y-a.y)*(b.y-a.y));
+	}
 	
 	public static int getRandomNumber(int min, int max){
 		return new Random().nextInt(max-min+1)+min;

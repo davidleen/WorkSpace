@@ -16,18 +16,21 @@ public class UrlFormatter {
     private static final String PARAM_EQUAL = "=";
     private static final String SIGN = "sign";
 
-    private static final String appendParam(String url, String param, Object value) {
+    private static final void appendParam(StringBuilder url, String param, Object value) {
 
-        url += url.contains(PARAM_START) ? PARAM_AND : PARAM_START;
+        url.append( url.indexOf(PARAM_START) >0? PARAM_AND : PARAM_START);
 
+        url.append(param).append(PARAM_EQUAL);
 
         if (value instanceof String) {
 
-            return url + param + PARAM_EQUAL + encode(value.toString());
+           url.append( encode(value.toString()));
 
+        }else
+        {
+            url.append(value );
         }
-        url += param + PARAM_EQUAL + value;
-        return url;
+
 
 
     }
@@ -43,7 +46,7 @@ public class UrlFormatter {
 
     }
 
-    private static final String signUrl(String url) {
+    private static final void signUrl(StringBuilder url) {
         final int beginIndex = url.indexOf(PARAM_START);
         final String paramToSign;
         if (beginIndex > -1)
@@ -54,7 +57,7 @@ public class UrlFormatter {
         //System.out.println("param string: " + paramToSign);
         String sign = DigestUtils.md5(paramToSign);
 
-        return appendParam(url, SIGN, sign);
+          appendParam(url, SIGN, sign);
 
     }
 
@@ -77,21 +80,22 @@ public class UrlFormatter {
     }
 
 
-    public String url;
+    public StringBuilder url;
 
 
     public UrlFormatter(String baseUrl) {
-        this.url = baseUrl;
+        this.url = new StringBuilder(baseUrl);
     }
 
     public UrlFormatter append(String param, Object value) {
-        url = appendParam(url, param, value);
+      appendParam(url, param, value);
         return this;
     }
 
 
     public String toUrl() {
 
-        return signUrl(url);
+         signUrl(url);
+         return url.toString();
     }
 }

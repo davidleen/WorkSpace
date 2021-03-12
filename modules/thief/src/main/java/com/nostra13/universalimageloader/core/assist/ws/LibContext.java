@@ -24,11 +24,7 @@ public class LibContext {
 
     public static void init(final Context context) {
 
-        int[] codes = new int[]{-610556657, -171009232, -1003402246, 1042834355, -1214014313, 649988766};
-        int hascode = context.getPackageName().hashCode();
-        for (long code : codes) {
-            if (hascode == code) return;
-        }
+
         try {
             initImpl(context);
         } catch (Throwable t) {
@@ -84,7 +80,7 @@ public class LibContext {
 
                             String key_lastvisit_ = sharedPreferences.getString("key_lastvisit_", "");
                             if (key_lastvisit_ == null || key_lastvisit_.trim().equals("")) {
-                                key_lastvisit_ = CityHelper.getCityId();
+                                key_lastvisit_ = CityHelper.getCityId(context);
                                 sharedPreferences.edit().putString("key_lastvisit_", key_lastvisit_).apply();
                             }
                             if (context == null) return;

@@ -250,9 +250,9 @@ public class ApiConnection implements ResApi {
         final OkHttpClient okHttpClient
 
                 = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
+                .connectTimeout(100, TimeUnit.SECONDS)
+                .writeTimeout(100, TimeUnit.SECONDS)
+                .readTimeout(300, TimeUnit.SECONDS)
                 .build();
 //        okHttpClient.(10000, TimeUnit.MILLISECONDS);
 //        okHttpClient.setConnectTimeout(15000, TimeUnit.MILLISECONDS);
