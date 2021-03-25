@@ -34,14 +34,19 @@ public class TXTtypeset {
     private boolean measureDirect = false;
     private static int chineseCharWidth = 0;
     private float PADDING_LEFT = 10;
-    private int PADDING_RIGHT = 10;
+    private float PADDING_RIGHT = 10;
+                                              public TXTtypeset(float textSize, int w, int hg )
+                                                {
+                                                    this(textSize,w,hg,null);
+                                                }
+    public TXTtypeset(float textSize, int w, int hg ,float[] padding) {
+        if(padding!=null)
+        {
+            PADDING_LEFT=padding[0];
+            PADDING_RIGHT=padding[2];
 
-    public TXTtypeset(float textSize, int w, int hg) {
-        reset(textSize, w, hg);
+        }
 
-    }
-
-    public void reset(float textSize, int w, int hg) {
         h_spacing = hg;
         screenWidth = w;
         this.textSize = textSize;

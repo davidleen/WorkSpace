@@ -6,35 +6,33 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.SeekBar;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.giants3.android.adapter.AbstractRecyclerAdapter;
 import com.giants3.android.frame.util.Log;
-import com.giants3.android.frame.util.StorageUtils;
+import com.giants3.android.reader.R;
 import com.giants3.android.reader.databinding.ActivityTextReaderBinding;
-import com.giants3.android.reader.entity.User;
+import com.xxx.reader.TextScheme;
 import com.giants3.android.reader.vm.TextReadViewModel;
-import com.giants3.android.reader.vm.UserModel;
-import com.giants3.file.FileContentType;
-import com.giants3.io.FileUtils;
-import com.giants3.reader.book.EpubChapter;
+import com.giants3.yourreader.text.BackgroundManager;
 import com.giants3.yourreader.text.BookService;
 import com.giants3.yourreader.text.TextPageBitmap;
 import com.giants3.yourreader.text.TextPageInfo;
-import com.giants3.yourreader.text.TextPrepareJob;
 import com.xxx.reader.ReaderView;
-import com.xxx.reader.Url2FileMapper;
+import com.xxx.reader.TextSchemeContent;
 import com.xxx.reader.Utils;
-import com.xxx.reader.book.BookFactory;
 import com.xxx.reader.book.IBook;
 import com.xxx.reader.book.IChapter;
-import com.xxx.reader.book.TextChapter;
 import com.xxx.reader.core.DrawParam;
 import com.xxx.reader.core.IPageTurner;
 import com.xxx.reader.core.PageInfo;
@@ -43,16 +41,13 @@ import com.xxx.reader.prepare.DrawLayer;
 import com.xxx.reader.prepare.PageBitmapCreator;
 import com.xxx.reader.prepare.PagePlayer;
 import com.xxx.reader.prepare.PagePlayerBuilder;
-import com.xxx.reader.prepare.PrepareJob;
 import com.xxx.reader.prepare.PrepareListener;
 import com.xxx.reader.prepare.PreparePageInfo;
 import com.xxx.reader.turnner.SimulatePageTurner;
 import com.xxx.reader.turnner.sim.SettingContent;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.Calendar;
+import java.util.List;
 
 
 public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBinding, TextReadViewModel> implements PrepareListener {
@@ -79,6 +74,61 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
                 if (bookReadController != null) {
                     bookReadController.updateBook(iBook);
                 }
+
+            }
+        });
+        getViewModel().schemeChange.observe(this, new Observer<Boolean>() {
+
+
+            @Override
+            public void onChanged(Boolean  schemeChanged) {
+
+                if (schemeChanged) {
+
+                    BackgroundManager.getInstance().reset();
+                    prepareLayer.updateCache();
+
+                }
+
+
+
+
+            }
+        });
+        getViewModel().dayModeLiveData.observe(this, new Observer<Boolean>() {
+
+
+            @Override
+            public void onChanged(Boolean  schemeChanged) {
+
+                if (schemeChanged) {
+
+                    BackgroundManager.getInstance().reset();
+                    prepareLayer.updateCache();
+
+                }
+
+               updateStyleModeView();
+
+
+
+
+            }
+        });
+
+        getViewModel().textSchemes.observe(this, new Observer<List<TextScheme>>() {
+
+
+            @Override
+            public void onChanged(List<TextScheme> themes) {
+                RecyclerView.LayoutManager layoutManager = getViewBinding().themes.getLayoutManager();
+                if(layoutManager instanceof GridLayoutManager
+                )
+                {
+                    ((GridLayoutManager)layoutManager).setSpanCount(Math.max(1,themes.size()));
+                }
+              AbstractRecyclerAdapter adapter= (AbstractRecyclerAdapter) getViewBinding().themes.getAdapter();
+                adapter.setDataArray(themes);
 
             }
         });
@@ -118,6 +168,11 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
 
     }
 
+    private void updateStyleModeView() {
+
+        getViewBinding().styleMode.setImageResource(TextSchemeContent.getDayMode()?R.mipmap.text_bg_night:R.mipmap.text_bg_day);
+    }
+
     @Override
     protected Class<TextReadViewModel> getViewModelClass() {
         return TextReadViewModel.class;
@@ -133,14 +188,109 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
 
     private void init() {
 
+        updateStyleModeView();
+        getViewBinding().themes.setLayoutManager(new GridLayoutManager(this,1));
+        final TextSchemeAdapter textSchemeAdapter=new TextSchemeAdapter(this);
+        getViewBinding().themes.setAdapter(textSchemeAdapter);
+        textSchemeAdapter.setOnItemClickListener(new AbstractRecyclerAdapter.OnItemClickListener<TextScheme>() {
+            @Override
+            public void onItemClick(TextScheme item, int position) {
+
+
+
+                getViewModel().updateScheme(item);
+                textSchemeAdapter.notifyDataSetChanged();
+
+
+
+            }
+        });
+
+
+        getViewBinding().styleMode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+
+
+                Context context=v.getContext();
+
+                final Animation outAni = AnimationUtils.loadAnimation(context,
+                        R.anim.scale_out_from_center);
+                final Animation inAni = AnimationUtils.loadAnimation(context,
+                        R.anim.scale_in_from_center);
+
+
+                if (TextSchemeContent.getDayMode()) {// 白天模式
+                    v.startAnimation(outAni);
+                    v.setVisibility(View.GONE);
+                    outAni.setAnimationListener(new Animation.AnimationListener() {
+
+                        @Override
+                        public void onAnimationStart(Animation arg0) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation arg0) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation arg0) {
+                            getViewBinding().styleMode.setImageResource(R.mipmap.text_bg_day);
+                            v.startAnimation(inAni);
+                            v.setVisibility(View.VISIBLE);
+                        }
+                    });
+
+
+
+                } else {
+
+                    v.startAnimation(outAni);
+                    v.setVisibility(View.GONE);
+                    outAni.setAnimationListener(new Animation.AnimationListener() {
+
+                        @Override
+                        public void onAnimationStart(Animation arg0) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation arg0) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation arg0) {
+                            getViewBinding().styleMode.setImageResource(R.mipmap.text_bg_night);
+                            v.startAnimation(inAni);
+                            v.setVisibility(View.VISIBLE);
+                        }
+                    });
+
+
+
+                }
+
+                getViewModel().changeStyleMode();
+
+
+
+
+            }
+        });
 
         getViewBinding().panelSetting.setVisibility(View.GONE);
         getViewBinding().panelSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                getViewBinding().panelSetting.setVisibility(View.GONE);
 
+
+                getViewBinding().styleMode.clearAnimation();
+                getViewBinding().styleMode.startAnimation(AnimationUtils.loadAnimation(TextReadActivity.this, R.anim.hide_right_anim));
+               getViewBinding().panelSetting.setVisibility(View.GONE);
             }
         });
 
@@ -249,7 +399,6 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
         });
 
 
-
         bindSettingValue();
         SharedPreferences sharedPreferences = getSharedPreferences("setting", Context.MODE_PRIVATE);
         sharedPreferences.edit().putLong("lastcliptime", Calendar.getInstance().getTimeInMillis()).apply();
@@ -277,6 +426,8 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
         readerView.setOnSizeChangeListener(new ReaderView.onSizeChangeLister() {
             @Override
             public void onSizeChanged(int width, int height) {
+
+                BackgroundManager.getInstance().update(width,height);
                 DrawParam drawParam = new DrawParam();
                 drawParam.width = width;
                 drawParam.height = height;
@@ -294,6 +445,9 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
                 Log.e("~~~~~~~~~~~~~~~~~~");
 
                 getViewBinding().panelSetting.setVisibility(View.VISIBLE);
+                getViewBinding().styleMode.clearAnimation();
+                getViewBinding().styleMode.startAnimation(AnimationUtils.loadAnimation(TextReadActivity.this, R.anim.show_right_anim));
+                getViewModel().onSettingPanelShow();
 
 
             }

@@ -710,11 +710,11 @@ public class SimPageTurner extends AbsPageTurner {
 //                canvas.drawBitmap(bottomPage, 0, 0, mPaint);
                 bottomPage.draw(canvas);
                 canvas.restore();
-                if (!PageTurnHelper.isDayModeTitleLineColor()) {
+
                     GradientDrawable mBackShadowDrawable = PageTurnHelper.getBackShadowDrawableLR();
                     mBackShadowDrawable.setBounds(PageTurnHelper.getUndersideShadowRect(mTouchBottom, mFoldBottom, mShape));
                     mBackShadowDrawable.draw(canvas);
-                }
+
             } else {
                 Path tempPath = PageTurnHelper.drawPolygon(mBezierHorizontal.start, mBezierHorizontal.vertex,
                         mBezierVertical.vertex, mBezierVertical.start, mCorner);
@@ -729,12 +729,12 @@ public class SimPageTurner extends AbsPageTurner {
                 bottomPage.draw(canvas);
                 canvas.restore();
                 canvas.rotate(mDegrees, mBezierHorizontal.start.x, mBezierHorizontal.start.y);
-                if (!PageTurnHelper.isDayModeTitleLineColor()) {
+
                     GradientDrawable mBackShadowDrawable = mIsRtLb ?
                             PageTurnHelper.getBackShadowDrawableLR() : PageTurnHelper.getBackShadowDrawableRL();
                     mBackShadowDrawable.setBounds(PageTurnHelper.getUndersideShadowRect(mIsRtLb, mBezierHorizontal, mDiagonal, mTouch2Corner));
                     mBackShadowDrawable.draw(canvas);
-                }
+
             }
             canvas.restore();
         }
@@ -751,13 +751,13 @@ public class SimPageTurner extends AbsPageTurner {
             canvas.save();
             canvas.clipPath(lastPath, Region.Op.XOR);
             canvas.clipRect(0, 0, mShape.width, mShape.height);
-            if (!PageTurnHelper.isDayModeTitleLineColor()) {
+
                 GradientDrawable mCurrentPageShadow = PageTurnHelper.getFrontShadowDrawableVRL();
                 mCurrentPageShadow.setBounds(PageTurnHelper.getCurrentHorizontalShadowRect(mTouchBottom,
                         mFoldBottom, mTouch2Corner * 0.17f, mShape));
 
                 mCurrentPageShadow.draw(canvas);
-            }
+
             canvas.restore();
         }
     }
@@ -781,7 +781,7 @@ public class SimPageTurner extends AbsPageTurner {
                 canvas.clipPath(PageTurnHelper.drawPolygon(shadowVertexPoint, mTouchMove,
                         mBezierHorizontal.control, mBezierHorizontal.start), Region.Op.INTERSECT);
                 canvas.clipRect(0, 0, mShape.width, mShape.height);
-                if (!PageTurnHelper.isDayModeTitleLineColor()) {
+
                     mCurrentPageShadow = mIsRtLb ? PageTurnHelper.getFrontShadowDrawableVLR() : PageTurnHelper.getFrontShadowDrawableVRL();
                     mCurrentPageShadow.setBounds(PageTurnHelper.getCurrentHorizontalShadowRect(mIsRtLb,
                             mBezierHorizontal, mDiagonal, touch2Corner));
@@ -789,7 +789,7 @@ public class SimPageTurner extends AbsPageTurner {
                     canvas.rotate(PageTurnHelper.getDegrees(mTouchMove.x - mBezierHorizontal.control.x, mBezierHorizontal.control.y - mTouchMove.y),
                             mBezierHorizontal.control.x, mBezierHorizontal.control.y);
                     mCurrentPageShadow.draw(canvas);
-                }
+
                 canvas.restore();
             }
 
@@ -801,7 +801,7 @@ public class SimPageTurner extends AbsPageTurner {
                 canvas.clipPath(PageTurnHelper.drawPolygon(shadowVertexPoint, mTouchMove,
                         mBezierVertical.control, mBezierVertical.start), Region.Op.INTERSECT);
                 canvas.clipRect(0, 0, mShape.width, mShape.height);
-                if (!PageTurnHelper.isDayModeTitleLineColor()) {
+
                     mCurrentPageShadow = mIsRtLb ? PageTurnHelper.getFrontShadowDrawableHTB() : PageTurnHelper.getFrontShadowDrawableHBT();
                     Rect currentVerticalShadowRect = PageTurnHelper.getCurrentVerticalShadowRect(mIsRtLb,
                             mBezierVertical, mDiagonal, touch2Corner, mShape);
@@ -811,7 +811,7 @@ public class SimPageTurner extends AbsPageTurner {
                     canvas.rotate(degrees, mBezierVertical.control.x, mBezierVertical.control.y);
                     mCurrentPageShadow.draw(canvas);
                     canvas.drawRect(currentVerticalShadowRect,mPaint);
-                }
+
                 canvas.restore();
             }
         }
@@ -842,11 +842,11 @@ public class SimPageTurner extends AbsPageTurner {
                 canvas.restore();
 
 
-                if (!PageTurnHelper.isDayModeTitleLineColor()) {
+
                     GradientDrawable mFolderShadowDrawable = PageTurnHelper.getFolderShadowDrawableLR();
                     mFolderShadowDrawable.setBounds(PageTurnHelper.getCurrentBackShadowRect(mTouchBottom, mFoldBottom, mShape));
                     mFolderShadowDrawable.draw(canvas);
-                }
+
             } else {
                 canvas.clipPath(lastPath);
                 canvas.clipPath(PageTurnHelper.drawPolygon(mBezierVertical.vertex, mBezierHorizontal.vertex,
@@ -866,12 +866,12 @@ public class SimPageTurner extends AbsPageTurner {
 
 
                 canvas.rotate(mDegrees, mBezierHorizontal.start.x, mBezierHorizontal.start.y);
-                if (!PageTurnHelper.isDayModeTitleLineColor()) {
+
                     GradientDrawable mFolderShadowDrawable = mIsRtLb ?
                             PageTurnHelper.getFolderShadowDrawableLR() : PageTurnHelper.getFolderShadowDrawableRL();
                     mFolderShadowDrawable.setBounds(PageTurnHelper.getCurrentBackShadowRect(mIsRtLb, mBezierHorizontal, mBezierVertical, mDiagonal));
                     mFolderShadowDrawable.draw(canvas);
-                }
+
             }
             canvas.restore();
 
@@ -903,10 +903,10 @@ public class SimPageTurner extends AbsPageTurner {
 
 
         }
-        Log.e("trun"+turnMoveDirection);
+//        Log.e("trun"+turnMoveDirection);
         if (!(turnMoveDirection==TURN_NONE)) {//&&(isInAnimation() || isTouched)
             try {
-                Log.e("trun======================"+turnMoveDirection);
+//                Log.e("trun======================"+turnMoveDirection);
                 onTurn(canvas, bitmapProvider, turnMoveDirection);
 
             } catch (Throwable throwable) {
@@ -1005,7 +1005,7 @@ public class SimPageTurner extends AbsPageTurner {
 
             drawable.updateView();
 
-            Log.e("doPageTurning！！！！！！！！！scroller.isFinished():=" + scroller.isFinished() + ",x=" + x + ",scroller.getFinalX()=" + scroller.getFinalX() + "------y=" + y + "，scroller.getFinalY()=" + scroller.getFinalY());
+            //Log.e("doPageTurning！！！！！！！！！scroller.isFinished():=" + scroller.isFinished() + ",x=" + x + ",scroller.getFinalX()=" + scroller.getFinalX() + "------y=" + y + "，scroller.getFinalY()=" + scroller.getFinalY());
 
             boolean scollEnd = false;
             if (scroller.isFinished()) {

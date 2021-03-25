@@ -59,6 +59,7 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
         float textSize = SettingContent.getInstance().getTextSize();
         int width = drawParam.width;
         int hgap = (int) SettingContent.getInstance().getWordGap();
+        float[] paddings=SettingContent.getInstance().getPaddings();
 
         TXTtypeset txTtypeset = new TXTtypeset(textSize, width, hgap);
 
@@ -694,7 +695,7 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
 
 
         }
-        if(lineStartPoint==0&& textPageInfo.getFirstPagePara().firstLine==-1)
+        if(lineStartPoint==0&&textPageInfo!=null&&(textPageInfo.getFirstPagePara()!=null)&&(textPageInfo.getFirstPagePara().firstLine==-1))
         {//到达章节头了，重新绘制第一页，。
 
 

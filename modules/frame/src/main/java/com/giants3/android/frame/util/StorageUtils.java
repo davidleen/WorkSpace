@@ -43,7 +43,7 @@ public class StorageUtils {
 
     public static final String getFilePath(String fileName)
     {
-        String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + root + File.separator + fileName;
+        String filePath = getRootPath() + File.separator + fileName;
         return filePath;
 
     }
@@ -98,7 +98,7 @@ public class StorageUtils {
     }
 
     public static String getRootPath() {
+        return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + root;
 
-        return getFilePath(root);
     }
 }

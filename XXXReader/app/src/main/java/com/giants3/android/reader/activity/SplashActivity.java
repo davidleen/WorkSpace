@@ -6,8 +6,10 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.giants3.android.frame.util.StorageUtils;
 import com.giants3.android.reader.R;
 import com.giants3.android.reader.databinding.ActivitySplashBinding;
+import com.giants3.android.reader.scheme.TextSchemeHelper;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnPermissionDenied;
@@ -36,6 +38,11 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding> {
 
     @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void doCreate(final Bundle savedInstanceState) {
+        //do same init work
+        TextSchemeHelper.init(this.getApplicationContext());
+
+
+
         goToHome();
     }
     private void goToHome() {

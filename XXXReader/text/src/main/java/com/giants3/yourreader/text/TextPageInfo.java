@@ -9,6 +9,7 @@ import com.xxx.reader.turnner.sim.SettingContent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
 
 /**
  * Created by davidleen29 on 2018/12/31.
@@ -17,12 +18,13 @@ import java.util.List;
 public class TextPageInfo extends PageInfo {
 
 
-    public List<WordElement> elements;
+    public List<WordElement> elements=new ArrayList<>();
 
     public List<PagePara> pageParas;
 
     public float pageHeight;
 
+     Object lock=new Object();
 
 
     public void addParam(PagePara pagePara) {
@@ -71,55 +73,50 @@ public class TextPageInfo extends PageInfo {
         ObjectPool<WordElement> objectPool= PoolCenter.getObjectPool(WordElement.class,10000);
 
 
+        synchronized (elements) {
 
 
-
-
-
-        if (elements != null) {
             objectPool.release(elements);
             elements.clear();
-        } else {
-            elements = new ArrayList<>();
-        }
-        float textSize=SettingContent.getInstance().getTextSize();
-        float y = textSize;
-        for (PagePara pagePara : pageParas) {
 
-            float[] xPositions = pagePara.paraTypeset.xPositions;
-            int[] lineHead = pagePara.paraTypeset.lineHead;
+            float textSize = SettingContent.getInstance().getTextSize();
+            float y = textSize;
+            for (PagePara pagePara : pageParas) {
+
+                float[] xPositions = pagePara.paraTypeset.xPositions;
+                int[] lineHead = pagePara.paraTypeset.lineHead;
 
 
-            int startLine = pagePara.firstLine == -1 ? 0 : pagePara.firstLine;
-            int lastline = pagePara.lastLine == -1 ? pagePara.paraTypeset.lineCount - 1 : pagePara.lastLine - 1;
-            for (int i = startLine; i <= lastline; i++) {
+                int startLine = pagePara.firstLine == -1 ? 0 : pagePara.firstLine;
+                int lastline = pagePara.lastLine == -1 ? pagePara.paraTypeset.lineCount - 1 : pagePara.lastLine - 1;
+                for (int i = startLine; i <= lastline; i++) {
 
-                int index = lineHead[i];
-                int lastIndex = (i == pagePara.paraTypeset.lineCount - 1) ? (xPositions.length - 1) : lineHead[i + 1] - 1;
-                for (int j = index; j <= lastIndex; j++) {
+                    int index = lineHead[i];
+                    int lastIndex = (i == pagePara.paraTypeset.lineCount - 1) ? (xPositions.length - 1) : lineHead[i + 1] - 1;
+                    for (int j = index; j <= lastIndex; j++) {
 
 
-                    WordElement wordElement =objectPool.newObject();
-                    wordElement.word = pagePara.paraTypeset.paragraghData.getContent().substring(j, j + 1);
-                    wordElement.x = (int) xPositions[j];
-                    wordElement.y = (int) y;
+                        WordElement wordElement = objectPool.newObject();
+                        wordElement.word = pagePara.paraTypeset.paragraghData.getContent().substring(j, j + 1);
+                        wordElement.x = (int) xPositions[j];
+                        wordElement.y = (int) y;
 
-                    elements.add(wordElement);
+                        elements.add(wordElement);
+                    }
+
+
+                    y += textSize;
+
+                    if (i != lastline) {
+                        y += SettingContent.getInstance().getLineSpace();
+                    }
+                    if (y > pageHeight) break;
                 }
 
+                y += SettingContent.getInstance().getParaSpace();
+                if (y > pageHeight) break;
 
-                y+=textSize;
-
-                if(i!=lastline)
-                {
-                    y+= SettingContent.getInstance().getLineSpace();
-                }
-                if(y>pageHeight) break;
             }
-
-            y+=SettingContent.getInstance().getParaSpace();
-            if(y>pageHeight) break;
-
         }
 
 
@@ -177,6 +174,17 @@ public class TextPageInfo extends PageInfo {
 
 
             updateElements();
+
+    }
+
+    @Override
+    public void recycle()
+    {
+        synchronized (elements) {
+            ObjectPool<WordElement> objectPool= PoolCenter.getObjectPool(WordElement.class,10000);
+            objectPool.release(elements);
+            elements.clear();
+        }
 
     }
 }

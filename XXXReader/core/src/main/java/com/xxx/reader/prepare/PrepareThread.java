@@ -60,6 +60,7 @@ public class PrepareThread extends DestroyableThread {
                     case MSG_NEXT: {
                         PageInfo measuredResult = (PageInfo) msg.obj;
                         if (measuredResult != null) {
+                            measuredResult.isReady=true;
                             preparePageInfo.addPage(measuredResult);
 
                             if (getPrepareListener() != null) {
@@ -76,6 +77,8 @@ public class PrepareThread extends DestroyableThread {
                     case MSG_PREVIOUS: {
                         PageInfo measuredResult = (PageInfo) msg.obj;
                         if (measuredResult != null) {
+
+                            measuredResult.isReady=true;
                             preparePageInfo.addHead(measuredResult);
 
                             if (getPrepareListener() != null) {

@@ -19,11 +19,16 @@ public class PageInfo {
     public long endPos;
     public long fileSize;
 
+
+    public volatile  boolean isReady=false;
     @Override
     public String toString() {
         return "chapterIndex:"+chapterIndex+",pageIndex:"+pageIndex;
 
     }
+
+    public void recycle()
+    {}
 
 
 }

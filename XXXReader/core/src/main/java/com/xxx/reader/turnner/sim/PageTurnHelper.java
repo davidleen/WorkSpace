@@ -55,8 +55,6 @@ public class PageTurnHelper {
     private static ColorMatrixColorFilter colorMatrixColorFilter;
     private static Matrix matrix;
 
-    private static SoftReference<Bitmap> coverLayer;
-    private static int coverColor = -1;
 
     private static Rect bookBoxRect;
 
@@ -626,6 +624,7 @@ public class PageTurnHelper {
         }
 
           outRect.set(left, (int) bezierHorizontal.start.y, right, (int) (diagonal + bezierHorizontal.start.y));
+
     }
 
     public static Rect getUndersideShadowRect(boolean isLeft, PointF move, PointF fold, Shape shape) {
@@ -841,6 +840,10 @@ public class PageTurnHelper {
 
     public static void getCurrentBackAreaMatrix(Matrix output,PointF corner, Bezier bezierHorizontal, Bezier bezierVertical)
     {
+
+    }
+    public static void getCurrentBackAreaMatrix(Matrix output,PointF corner, Bezier bezierHorizontal, Bezier bezierVertical,PointF mDrag)
+    {
         output.reset();
         float dis = (float) Math.hypot(corner.x - bezierHorizontal.control.x, bezierVertical.control.y - corner.y);
         float f8 = (corner.x - bezierHorizontal.control.x) / dis;
@@ -851,6 +854,7 @@ public class PageTurnHelper {
         matrixArray[4] = 1 - 2 * f8 * f8;
 
         output.setValues(matrixArray);
+
         output.preTranslate(-bezierHorizontal.control.x, -bezierHorizontal.control.y);
         output.postTranslate(bezierHorizontal.control.x, bezierHorizontal.control.y);
 
@@ -1022,7 +1026,7 @@ public class PageTurnHelper {
     }
 
     private static ShadowDrawable getShadowDrawable() {
-        int mode = SettingContent.getInstance().getDayNeightMode();
+        int mode = SettingContent.getInstance().getStyleMode();
 
         if (getDrawableShadows()[mode] == null) {
             synchronized (ShadowDrawable.class) {
@@ -1070,10 +1074,8 @@ public class PageTurnHelper {
         private GradientDrawable mFrontShadowDrawableVRL;
 
         private ShadowDrawable() {
-            int mode = SettingContent.getInstance().getDayNeightMode();
-            if (isDayModeTitleLineColor()) {
-                mode = SettingContent.MODE_NIGHT;
-            }
+            int mode = SettingContent.getInstance().getStyleMode();
+
             //翻起页折起边缘阴影
             mFolderShadowDrawableRL = new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, COLOR[mode]);
             mFolderShadowDrawableRL.setGradientType(GradientDrawable.LINEAR_GRADIENT);
@@ -1176,15 +1178,5 @@ public class PageTurnHelper {
 
     }
 
-    public static boolean isDayModeTitleLineColor() {
-//        if (SettingContent.getInstance().getDayMode()) {//白天模式夜间一和夜间二左右翻页白色边缘暂时这么处理
-//            String title = SettingContent.getInstance().getSettingSchemeName();
-//            if (title.equals("夜间一") || title.equals("夜间二") || title.equals("黑色幻夜")) {
-//                return true;
-//            } else {
-//                return false;
-//            }
-//        }
-        return false;
-    }
+
 }

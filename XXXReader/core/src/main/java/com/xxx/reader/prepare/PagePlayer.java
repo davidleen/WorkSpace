@@ -219,6 +219,12 @@ public class PagePlayer<C extends IChapter, P extends PageInfo, DP extends DrawP
     @Override
     public void updateCache() {
 
+
+        for (int i = 0; i < MAX_CACHE_SIZE; i++) {
+            cacheBitmaps[i].invalidate();
+        }
+
+
     }
 
 

@@ -1,7 +1,10 @@
 package com.xxx.reader.prepare;
 
+import android.view.MotionEvent;
+
 import com.xxx.reader.core.PageInfo;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,7 +21,7 @@ public class PreparePageInfo {
     public static final int PREPARE_SIZE=3;
 
     int size;
-
+ 
 
     public PreparePageInfo()
     {
@@ -87,13 +90,15 @@ public class PreparePageInfo {
         if(size==0) return;
         if(midIndex<size-PREPARE_SIZE)
         {
-             pageInfos.remove(size-1);
-             size--;
+            PageInfo remove = pageInfos.remove(size - 1);
+            recycle(remove);
+            size--;
 
         }
         if (midIndex>=PREPARE_SIZE)
         {
-            pageInfos.remove(0);
+            PageInfo remove = pageInfos.remove(0);
+            recycle(remove);
             midIndex--;
             size--;
 
@@ -102,6 +107,32 @@ public class PreparePageInfo {
         currentChapterIndex=pageInfos.get(midIndex).chapterIndex;
         currentPageFileSize=pageInfos.get(midIndex).fileSize;
         currentPageOffset=pageInfos.get(midIndex).startPos;
+
+
+    }
+
+    private void recycle(PageInfo remove) {
+
+
+        if(remove!=null) {
+            remove.recycle();
+            remove.isReady=false;
+        }
+
+
+
+
+    }
+
+    private void recycle(Collection<PageInfo> remove) {
+
+        for (PageInfo pageInfo:remove)
+        {
+            recycle(pageInfo);
+        }
+
+
+
 
 
     }
@@ -150,6 +181,7 @@ public class PreparePageInfo {
     }
     public  void clearPages()
     {
+        recycle(pageInfos);
         pageInfos.clear();
         midIndex=0;
         size=0;

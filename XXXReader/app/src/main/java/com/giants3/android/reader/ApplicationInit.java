@@ -11,6 +11,7 @@ import com.giants3.android.frame.util.ToastHelper;
 import com.giants3.android.kit.ResourceExtractor;
 import com.giants3.android.network.ApiConnection;
 import com.giants3.android.reader.domain.ResApiFactory;
+import com.giants3.android.storage.KVFactory;
 import com.github.mzule.activityrouter.router.RouterCallback;
 import com.github.mzule.activityrouter.router.RouterCallbackProvider;
 import com.github.mzule.activityrouter.router.SimpleRouterCallback;
@@ -29,6 +30,7 @@ public class ApplicationInit extends Application  implements RouterCallbackProvi
             //chrome 浏览器下 输入以下地址：	chrome://inspect/#devices
 //			com.facebook.stetho.Stetho.initializeWithDefaults(this);
         }
+        KVFactory.init(this);
         ResApiFactory.getInstance().setResApi(new ApiConnection());
         ToastHelper.init(this);
         HttpUrl.init(this);

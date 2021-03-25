@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.IntDef;
 
 import com.giants3.android.frame.util.Log;
+import com.giants3.android.storage.KVFactory;
 import com.tencent.mmkv.MMKV;
 
 import java.lang.annotation.Retention;
@@ -16,6 +17,7 @@ import java.lang.annotation.RetentionPolicy;
 
 public class SettingContent {
 
+    public static final String SETTING_CACHE_NAME="settings";
 
     public static final String KEY_TEXT_SIZE ="text_size_to_read";
     public static final String KEY_PARA_SPACE ="para_gap";
@@ -23,12 +25,11 @@ public class SettingContent {
     private static final float DEFAULT_PARA_SPACE = 50;
     private static final float DEFAULT_LINE_SPACE = 20;
     private static final String KEY_LINE_SPACE = "line_space";
+    private static final String KEY_STYLE_MODE = "style_mode";
 
     public static void init(Context context)
     {
 
-        String rootDir = MMKV.initialize(context);
-        Log.e(rootDir);
 
 
     }
@@ -46,8 +47,13 @@ public class SettingContent {
         return settingContent;
     }
 
-    public int getDayNeightMode() {
-        return MODE_DAY;
+    public int getStyleMode() {
+        return KVFactory.getInstance(SETTING_CACHE_NAME).getInt(KEY_STYLE_MODE,MODE_DAY);
+    }
+
+
+    public void setStyleMode(int styleMode) {
+          KVFactory.getInstance(SETTING_CACHE_NAME).putInt(KEY_STYLE_MODE,styleMode);
     }
 
     public   @IndentMode  int getSettingIndentMode() {
@@ -62,27 +68,31 @@ public class SettingContent {
     }
 
     public float getTextSize() {
-        return MMKV.defaultMMKV().getFloat(KEY_TEXT_SIZE,DEFAULT_TEXT_SIZE);
+        return KVFactory.getInstance(SETTING_CACHE_NAME).getFloat(KEY_TEXT_SIZE,DEFAULT_TEXT_SIZE);
     }
 
     public void setTextSize(float textSize)
     {
-        MMKV.defaultMMKV().putFloat(KEY_TEXT_SIZE,textSize);
+        KVFactory.getInstance(SETTING_CACHE_NAME).putFloat(KEY_TEXT_SIZE,textSize);
     }
 
     public float getLineSpace() {
 
 
-        return MMKV.defaultMMKV().getFloat(KEY_LINE_SPACE,DEFAULT_LINE_SPACE);
+        return KVFactory.getInstance(SETTING_CACHE_NAME).getFloat(KEY_LINE_SPACE,DEFAULT_LINE_SPACE);
     }
     public void setLineSpace(float lineSpace) {
 
 
-          MMKV.defaultMMKV().putFloat(KEY_LINE_SPACE,lineSpace);
+          KVFactory.getInstance(SETTING_CACHE_NAME).putFloat(KEY_LINE_SPACE,lineSpace);
     }
 
     public float getParaSpace() {
-          return MMKV.defaultMMKV().getFloat(KEY_PARA_SPACE,DEFAULT_PARA_SPACE);
+          return KVFactory.getInstance(SETTING_CACHE_NAME).getFloat(KEY_PARA_SPACE,DEFAULT_PARA_SPACE);
+    }
+  float[] paddings= new float[]{10,10,10,10};
+    public float[] getPaddings() {
+        return paddings;
     }
 
     //用 @IntDef "包住" 常量，这里使用@IntDef来代替Enum枚举，也可以使用@StringDef。它会像Enum枚举一样在编译时期检查变量的赋值情况！

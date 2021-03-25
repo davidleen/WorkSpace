@@ -46,4 +46,6 @@ dependencies {
     api "androidx.recyclerview:recyclerview:${ANDROID_X_VERSION}"
 
 
+    compile 'com.giants3.android.nativelib:gZip:1.0.3'
+    api "com.tencent:mmkv-static:${TECENT_MMKV_VERSION}"
 }

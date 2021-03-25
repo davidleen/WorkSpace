@@ -117,7 +117,7 @@ public abstract class PageBitmap<P extends PageInfo, D extends DrawParam> extend
     public void invalidate()
     {
 
-
+        drawPage(pageInfo,drawParam);
 
     }
 

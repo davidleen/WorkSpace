@@ -92,8 +92,8 @@ public class DrawLayer {
 
         canvas.clipRect(0, 0, drawParam.width, drawParam.height);
 
-        if (zoomHandler != null)
-            zoomHandler.zoom(canvas);
+//        if (zoomHandler != null)
+//            zoomHandler.zoom(canvas);
 
         if (pageTurner != null) {
             boolean test = false;

@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.graphics.PointF;
@@ -16,9 +15,10 @@ import android.os.Message;
 import android.view.MotionEvent;
 import android.view.animation.CycleInterpolator;
 import android.view.animation.Interpolator;
-import android.view.animation.LinearInterpolator;
 
 import com.giants3.android.frame.util.Log;
+import com.xxx.reader.TextSchemeContent;
+import com.xxx.reader.core.BuildConfig;
 import com.xxx.reader.core.DrawParam;
 import com.xxx.reader.core.IDrawable;
 import com.xxx.reader.core.PageSwitchListener;
@@ -36,16 +36,17 @@ public class SimulatePageTurner extends AbsPageTurner {
     private boolean isDirectionSetting = false;
     private boolean scrolling = false;
 
-
-    Interpolator interpolator=new CycleInterpolator(0.5f);
     boolean useInter=true;
 
-    private Path currentPageArea=new Path();
+    private Path currentPageArea =new Path();
+    private Path currentPageXORArea =new Path();
     private Path downPageArea =new Path();
     private Rect downPageShadowRect=new Rect();
     private Path currentBackArea=new Path();
     Simulate simulate;
 
+
+    BitmapMesh bitmapMesh=new BitmapMesh();
 
 
     private boolean hasStartScroll = false;
@@ -90,12 +91,19 @@ public class SimulatePageTurner extends AbsPageTurner {
         simulate = new Simulate();
         mPaint=new Paint();
         strokePaint=new Paint();
-        strokePaint.setColor(Color.parseColor("#33ff0000"));
-        strokePaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        strokePaint.setStrokeWidth(3);
+        strokePaint.setColor(Color.parseColor("#ffff00"));
+        strokePaint.setStyle(Paint.Style.STROKE);
+        strokePaint.setStrokeWidth(20);
+
+
+        fillPaint=new Paint();
+        fillPaint.setColor(Color.parseColor("#80ff00ff"));
+        fillPaint.setStyle(Paint.Style.FILL_AND_STROKE);
     }
+    public boolean DEBUG=false&&BuildConfig.DEBUG;
     Paint mPaint;
     Paint strokePaint;
+    Paint fillPaint;
     Matrix currentBackMatrix=new Matrix();
 
     Path autoFlipPath=new Path();
@@ -103,7 +111,6 @@ public class SimulatePageTurner extends AbsPageTurner {
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
 
 
         if(isDirectionSetting)
@@ -133,12 +140,34 @@ public class SimulatePageTurner extends AbsPageTurner {
 
 
 
+
                 //绘制上面页
+//             long time=System.currentTimeMillis();
+              simulate.generateCurrentXORPageArea(currentPageXORArea);
+//                canvas.save();
+//                canvas.clipPath(currentPageXORArea, Region.Op.XOR);
+//                topPage.draw(canvas);
+//                canvas.restore();
+//               Log.e("time use in draw current Page:"+(System.currentTimeMillis()-time));
+
+//                long time=System.currentTimeMillis();
+//                simulate.generateCurrentPageArea(currentPageArea);
+//                canvas.save();
+//                canvas.clipPath(currentPageArea);
+//                topPage.draw(canvas);
+//                canvas.restore();
+//                Log.e("time use in draw current Page:"+(System.currentTimeMillis()-time));
+
+
+
+               // long time=System.currentTimeMillis();
+
                 simulate.generateCurrentPageArea(currentPageArea);
-                canvas.save();
-                canvas.clipPath(currentPageArea, Region.Op.XOR);
-                topPage.draw(canvas);
-                canvas.restore();
+
+                topPage.draw(canvas,currentPageArea);
+
+              //  Log.e("time use in draw current Page:"+(System.currentTimeMillis()-time));
+
 
                 //绘制上面页的背面
                 simulate.generateCurrentBackPageArea(currentBackArea);
@@ -149,13 +178,31 @@ public class SimulatePageTurner extends AbsPageTurner {
                 canvas.clipPath(currentBackArea, Region.Op.INTERSECT);
 
 
-             mPaint.setColorFilter(PageTurnHelper.getColorMatrixColorFilter());
+                mPaint.setColorFilter(PageTurnHelper.getColorMatrixColorFilter());
                 simulate.generateCurrentBackMatrix(currentBackMatrix);
                 canvas.setMatrix(currentBackMatrix);
+
                 topPage.draw(canvas,mPaint);
-                canvas.drawColor(Color.parseColor("#33ffff00"));
+//                if (simulate.isHorizontalTurning) {
+//                    bitmapMesh.calculateHorizontal(simulate.mDragTop ,simulate.mFoldTop );
+//                }else
+//                {
+//                    bitmapMesh.calculate(simulate.mBezierHorizontal ,simulate.mBezierVertical );
+//                }
+//
+//                canvas.drawBitmapMesh(topPage.getBitmap(),BitmapMesh.WIDTH,BitmapMesh.HEIGHT,bitmapMesh.verts,0,null,0,mPaint);
+//                canvas.drawBitmap(topPage.getBitmap(),0,0,mPaint);
+
+                // canvas.drawColor(Color.parseColor("#33ffff00"));
                 //canvas.drawPath(currentBackArea,strokePaint);
+//                canvas.drawColor(Color.parseColor("#a0f9d7b1"));
+                canvas.drawColor(TextSchemeContent.getBackPageColor());
                 canvas.restore();
+
+                if(DEBUG)
+                {
+                    canvas.drawPath(currentBackArea,strokePaint);
+                }
 
                // simulate.drawCurrentHorizontalPageShadow(canvas,currentPageArea);
             }
@@ -165,7 +212,7 @@ public class SimulatePageTurner extends AbsPageTurner {
 
                 simulate.generateDownPageArea(downPageArea);
                 canvas.save();
-                canvas.clipPath(currentPageArea);
+                canvas.clipPath(currentPageXORArea);
                 canvas.clipPath(downPageArea, Region.Op.INTERSECT);
                 bottomPage.draw(canvas);
 
@@ -176,12 +223,15 @@ public class SimulatePageTurner extends AbsPageTurner {
             }
 
 
-            simulate.drawCurrentPageShadow(canvas,currentPageArea);
+            simulate.drawCurrentPageShadow(canvas, currentPageXORArea);
 
 
 //            mCanvas.restore();
 
-
+            if(DEBUG) {
+//                canvas.drawPath(currentPageXORArea, fillPaint);
+                canvas.drawPath(currentPageArea, fillPaint);
+            }
 
 
         }else
@@ -294,18 +344,18 @@ public class SimulatePageTurner extends AbsPageTurner {
             {
                 boolean posTan = pathMeasure.getPosTan(offsetX, pos, tag);
 
-//                Log.e("==========pos:" + pos[0] + ", " + pos[1] +",posTan:"+posTan)  ;
-                offsetX= (int) pos[0];
-                offsetY= (int) pos[1];
+             //Log.e("offsetX:"+offsetX+",==========pos:" + pos[0] + ", " + pos[1] +",posTan:"+posTan)  ;
+                offsetX= (int) (pos[0]+0.5f);
+                offsetY= (int) (pos[1]+0.5f);
 
             }
 
 
 //            Log.e("==========offsetX:" + offsetX + ",offsetY:" + offsetY + ",isDirectionSetting:" + isDirectionSetting+",direction:"+direction);
 
-            offsetY=Math.min(drawParam.height-1,Math.max(offsetY,1));
-            offsetX=Math.max(-drawParam.width+1,Math.min(offsetX,drawParam.width-1));
-//            Log.e("==========offsetX:" + offsetX + ",offsetY:" + offsetY + ",isDirectionSetting:" + isDirectionSetting+",direction:"+direction);
+            offsetY=Math.min(drawParam.height,Math.max(offsetY,1));
+            offsetX=Math.max(-drawParam.width+1,Math.min(offsetX,drawParam.width));
+//            Log.e("==========offsetX:" + offsetX + ",offsetY:" + offsetY + ",isDirectionSetting:" + isDirectionSetting+",direction:"+direction+",useInter:"+useInter);
             simulate.calculatePoints(offsetX, offsetY);
 
             drawable.updateView();
@@ -371,6 +421,7 @@ public class SimulatePageTurner extends AbsPageTurner {
 
         return false;
     }
+
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
@@ -455,6 +506,7 @@ public class SimulatePageTurner extends AbsPageTurner {
     public void updateDrawParam(DrawParam drawParam) {
         super.updateDrawParam(drawParam);
         simulate.updateDraParam(drawParam);
+        bitmapMesh.init(drawParam);
     }
 
     private void doScrollTo(int x, int y) {

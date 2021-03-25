@@ -2,9 +2,12 @@ package com.giants3.yourreader.text;
 
 import android.app.Application;
 import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import androidx.core.util.Pools;
@@ -13,6 +16,7 @@ import android.view.MotionEvent;
 import com.giants3.android.frame.util.BitmapHelper;
 import com.giants3.android.kit.ResourceExtractor;
 import com.giants3.yourreader.text.elements.WordElement;
+import com.xxx.reader.TextSchemeContent;
 import com.xxx.reader.core.DrawParam;
 import com.xxx.reader.core.IDrawable;
 import com.xxx.reader.core.PageBitmap;
@@ -30,14 +34,22 @@ public class TextPageBitmap extends PageBitmap<TextPageInfo,DrawParam> {
 
 
     Bitmap bitmap;
+    BitmapShader bitmapShader;
     DrawTask drawTask;
     Canvas canvas;
-   Drawable drawable = ResourceExtractor.getDrawable(R.mipmap.bg1);
-
+    Paint paint;
+    Paint aPaint;
+    BackgroundDrawer backgroundDrawer;
     public TextPageBitmap(Context context,int screenWidth, int screenHeight, IDrawable iDrawable) {
         super(screenWidth, screenHeight, iDrawable);
         bitmap=Bitmap.createBitmap(screenWidth,screenHeight, Bitmap.Config.ARGB_8888);
+        bitmapShader=new BitmapShader(bitmap, Shader.TileMode.CLAMP,Shader.TileMode.CLAMP);
         canvas =new Canvas(bitmap);
+          paint = new Paint();
+        aPaint = new Paint();
+        aPaint.setShader(bitmapShader);
+        backgroundDrawer=new BackgroundDrawer();
+
     }
 
     @Override
@@ -48,15 +60,14 @@ public class TextPageBitmap extends PageBitmap<TextPageInfo,DrawParam> {
     @Override
     protected void drawPage(TextPageInfo pageInfo, DrawParam drawParam) {
 
-        drawable.setBounds(0,0,canvas.getWidth(),canvas.getHeight());
-        drawable.draw(canvas);
-        //canvas.drawColor(Color.WHITE);
-        Paint paint = new Paint();
-        paint.setTextSize(SettingContent.getInstance().getTextSize());
+
+
+            //canvas.drawColor(Color.WHITE);
+
 //        canvas.drawText("xxxxxxxxxx",500,500, paint);
 //        Log.e("draw Pageinfo");
 //
-        if(pageInfo==null||pageInfo.pageParas==null) return;
+            if (pageInfo == null || pageInfo.pageParas == null) return;
 //        float y=0;
 //        for(PagePara pagePara:pageInfo.pageParas)
 //        {
@@ -69,9 +80,9 @@ public class TextPageBitmap extends PageBitmap<TextPageInfo,DrawParam> {
 //            }
 //        }
 
-        cancelDrawTask();
-        drawTask= new DrawTask(pageInfo,canvas,paint,iDrawable);
-        drawTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            cancelDrawTask();
+            drawTask = new DrawTask(pageInfo, canvas, backgroundDrawer,paint, iDrawable);
+            drawTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 
 
@@ -105,20 +116,36 @@ public class TextPageBitmap extends PageBitmap<TextPageInfo,DrawParam> {
 
     }
 
+    @Override
+    public void draw(Canvas canvas,   Path path) {
 
-    private  class DrawTask extends AsyncTask
+        if(path!=null)
+        {
+            canvas.drawPath(path,aPaint);
+        }else
+        {
+            canvas.drawBitmap(bitmap,0,0,null);
+        }
+
+
+
+    }
+
+    private  static class DrawTask extends AsyncTask
     {
 
         public TextPageInfo textPageInfo;
         TextPageDrawHelper drawHelper;
         Canvas canvas;
+        private BackgroundDrawer backgroundDrawer;
         Paint paint;
         IDrawable iDrawable;
 
-        public DrawTask(TextPageInfo textPageInfo,Canvas canvas,Paint paint,IDrawable iDrawable)
+        public DrawTask(TextPageInfo textPageInfo,Canvas canvas,BackgroundDrawer backgroundDrawer,Paint paint,IDrawable iDrawable)
         {
             this.textPageInfo = textPageInfo;
             this.canvas = canvas;
+            this.backgroundDrawer = backgroundDrawer;
             this.paint = paint;
             this.iDrawable = iDrawable;
 
@@ -128,33 +155,40 @@ public class TextPageBitmap extends PageBitmap<TextPageInfo,DrawParam> {
         protected Object doInBackground(Object[] objects) {
 
 
-            drawHelper.draw(canvas,textPageInfo);
+
+            if(textPageInfo.isReady) {
 
 
+                BackgroundManager.getInstance().draw(canvas);
 
-            drawable.setBounds(0,0,canvas.getWidth(),canvas.getHeight());
-            drawable.draw(canvas);
+                backgroundDrawer.draw(canvas);
+                paint.setTextSize(SettingContent.getInstance().getTextSize());
+                paint.setColor(TextSchemeContent.getTextColor());
+                drawHelper.draw(canvas, textPageInfo);
+                synchronized (textPageInfo.elements) {
 
-            int i=0;
-            for( WordElement wordElement:textPageInfo.elements)
-            {
-                wordElement.draw(canvas,paint);
-                i++;
-                if (isCancelled()) return null;
-                if(i%10==0) {
-                    iDrawable.updateView();
+
+                    int i = 0;
+                    for (WordElement wordElement : textPageInfo.elements) {
+                        wordElement.draw(canvas, paint);
+                        i++;
+                        if (isCancelled()) return null;
+                        if (i % 10 == 0) {
+                            iDrawable.updateView();
 
 //                    try {
 //                        Thread.sleep(3);
 //                    } catch (InterruptedException e) {
 //                        e.printStackTrace();
 //                    }
+                        }
+                        if (isCancelled()) return null;
+
+                    }
+
                 }
-                if (isCancelled())return null;
 
-            }
-
-            iDrawable.updateView();
+                iDrawable.updateView();
 
 //            float textSize = SettingContent.getInstance().getTextSize();
 //            float y= textSize;
@@ -210,6 +244,7 @@ public class TextPageBitmap extends PageBitmap<TextPageInfo,DrawParam> {
 //
 //
 //             }
+            }
             return null;
 
 
@@ -228,5 +263,10 @@ public class TextPageBitmap extends PageBitmap<TextPageInfo,DrawParam> {
         bitmap=null;
         canvas=null;
 
+    }
+
+    @Override
+    public Bitmap getBitmap() {
+        return bitmap;
     }
 }

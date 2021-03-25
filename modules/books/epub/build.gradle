@@ -26,7 +26,6 @@ dependencies {
 
     compile project(':library-java')
     compile project(path: ':frame')
-    compile 'com.giants3.android.nativelib:gZip:1.0.3'
     compile project(path: ':core')
 
 //    implementation  'nl.siegmann.epublib:epublib-core:4.0'

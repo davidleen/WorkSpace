@@ -188,7 +188,7 @@ public class FileUtils {
         File newFile = new File(absoluteFilePath);
         if(newFile.isDirectory()&&!newFile.exists()) newFile.mkdirs();
         File parentFile = newFile.getParentFile();
-        if (!parentFile.exists())
+        if (parentFile!=null&&!parentFile.exists())
             parentFile.mkdirs();
 //        int
 //                index = absoluteFilePath.lastIndexOf(FileUtils.SEPARATOR);

@@ -1,5 +1,8 @@
 package com.giants3.android.reader.vm;
 
+import android.app.Application;
+
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -13,6 +16,10 @@ import java.lang.reflect.Type;
 public abstract class BaseListViewModel<D> extends BaseViewModel {
 
     private final MutableLiveData<RemoteData<D>> listResult = new MutableLiveData<>();
+
+    public BaseListViewModel(@NonNull Application application) {
+        super(application);
+    }
 
 
     public void loadData() {

@@ -59,6 +59,8 @@ import java.util.List;
  * least-recently-used buffers are disposed.
  */
 public class ByteArrayPool {
+
+    public static final int DEFAULT_BUFF_SIZE=1024;
     /** The buffer pool, arranged both by last use and by buffer size */
     private List<byte[]> mBuffersByLastUse = new LinkedList<byte[]>();
     private List<byte[]> mBuffersBySize = new ArrayList<byte[]>(64);
@@ -88,13 +90,18 @@ public class ByteArrayPool {
     }
 
 
-     static ByteArrayPool  pool =new ByteArrayPool(1024*10);
+     static ByteArrayPool  pool =new ByteArrayPool(DEFAULT_BUFF_SIZE*10);
      public   static   ByteArrayPool  getInstance()
      {
 
          return pool;
 
      }
+
+
+    public synchronized byte[] getBuf() {
+         return getBuf(DEFAULT_BUFF_SIZE);
+    }
     /**
      * Returns a buffer from the pool if one is available in the requested size, or allocates a new
      * one if a pooled one is not available.

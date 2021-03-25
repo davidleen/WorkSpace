@@ -11,6 +11,7 @@ import android.graphics.Region;
 import android.graphics.drawable.GradientDrawable;
 
 import com.giants3.android.frame.util.Log;
+import com.giants3.android.frame.util.MathUtils;
 import com.xxx.reader.PointUtils;
 import com.xxx.reader.core.BuildConfig;
 import com.xxx.reader.core.DrawParam;
@@ -30,9 +31,11 @@ public class Simulate {
     public PointF mDrag = new PointF(0.0f, 0.0f);      //翻起页顶点=拖拽点
     public PointF mDragTop = new PointF(0.0f, 0.0f);      //翻起位置上顶点
     public PointF mDragBottom = new PointF(0.0f, 0.0f);      //翻起位置底部顶点
+    public PointF mLeftTop = new PointF(0.0f, 0.0f);      //翻起位置底部顶点
+    public PointF mLeftBottom = new PointF(0.0f, 0.0f);      //翻起位置底部顶点
 
-    private PageTurnHelper.Bezier mBezierHorizontal = new PageTurnHelper.Bezier();                 //贝塞尔曲线
-    private PageTurnHelper.Bezier mBezierVertical = new PageTurnHelper.Bezier();                 //另一条贝塞尔曲线
+    public PageTurnHelper.Bezier mBezierHorizontal = new PageTurnHelper.Bezier();                 //贝塞尔曲线
+    public PageTurnHelper.Bezier mBezierVertical = new PageTurnHelper.Bezier();                 //另一条贝塞尔曲线
     //拖拽时 对应的页边角。
     public PointF mDragCorner = new PointF();  //拖拽时 对应的页边角。
     public PointF destCorner = new PointF();
@@ -64,7 +67,10 @@ public class Simulate {
     private boolean mIsRtLb=true;       //是否属于右上左下
     private float mDiagonal;     //对角线
 
-
+    /**
+     * 正负值   1表示正向 对角在右下方。   -1 表示负向  对角在右上方。
+     */
+    private int signature;
     /**
      * 拖拽点阴影顶点位置。
      */
@@ -99,6 +105,14 @@ public class Simulate {
     public void calculatePoints(float offsetX, float offsetY) {
 
 
+
+
+
+
+
+
+
+
         if (isHorizontalTurning) {
             mDrag.set(offsetX, offsetY);
 
@@ -112,53 +126,87 @@ public class Simulate {
 
 
         } else {
-
-            mDrag.set(offsetX, offsetY);
-
-
-            float v = (mDrag.x - mPinedPoint.x) / drawParam.width;
-          float   folderRate=v>0?0.5f:(1+v)*0.5f;
-
-
+            //计算出真正拖拽点对应的点
+            mDrag.x=offsetX;
+            mDrag.y=offsetY;
             PointUtils.middle(mMidle, mDrag, mDragCorner);
+            //计算出最大高度的拖拽点对应的点
+            float folderRate=0.25f;
+            float Cx=Math.min(mMidle.x,mDragCorner.x*folderRate/(1+folderRate));
 
-
-            //计算控制点。
-            mBezierHorizontal.control.x = mMidle.x - (mMidle.y - mDragCorner.y) * (mMidle.y - mDragCorner.y) / (mDragCorner.x - mMidle.x);
-            mBezierHorizontal.control.y = mDragCorner.y;
-            //计算起点（）
-            mBezierHorizontal.start.x =   mBezierHorizontal.control.x - (mDragCorner.x - mBezierHorizontal.control.x) *folderRate ;
-            mBezierHorizontal.start.y = mDragCorner.y;
-
-
-         //   翻页限制检查
-            if (mBezierHorizontal.start.x < -0.1f) {
-
-                float width = mDragCorner.x - mBezierHorizontal.start.x;
-                float radio = (mPinedPoint.x - mBezierHorizontal.start.x) / width;
-                float newOffsetX = mDrag.x + (mDragCorner.x - mDrag.x) * radio;
-                float newOffsetY = mDrag.y + (mDragCorner.y - mDrag.y) * radio;
-                // Log.e("newOffsetX:"+newOffsetX+",newOffsetY:"+newOffsetY+",mBezierHorizontal.start.x:"+mBezierHorizontal.start.x);
-                calculatePoints(newOffsetX, newOffsetY);
-                return;
-
+            float middleHeight = (float) Math.sqrt((mMidle.x - Cx) * (mDragCorner.x - mMidle.x));
+            float maxMiddleY=signature*(mDragCorner.y- middleHeight);
+            float maxDragY=maxMiddleY*2-mDragCorner.y;
+            //与点击位置比较，
+            if( signature==1)
+            {
+                mDrag.y=Math.max( maxDragY ,offsetY);
+            }else
+            {
+                mDrag.y=Math.min(maxDragY,offsetY);
             }
 
 
-            //计算控制点。
-            mBezierVertical.control.y = mMidle.y - (mMidle.x - mDragCorner.x) * (mMidle.x - mDragCorner.x) / (mDragCorner.y - mMidle.y);
-            mBezierVertical.control.x = mDragCorner.x;
-            //计算起点（）
-            mBezierVertical.start.y = mBezierVertical.control.y - (mDragCorner.y - mBezierVertical.control.y) * 0.5f;
-            mBezierVertical.start.x = mDragCorner.x;
+
+            //重新计算中点
+            PointUtils.middle(mMidle, mDrag, mDragCorner);
+            /**
+             * 点重合
+              */
+
+            if(MathUtils.getLength(mDrag,mDragCorner)<=1)
+            {
+                mBezierHorizontal.control.set(mDrag);
+                mBezierHorizontal.start.set(mDrag);
+                mBezierHorizontal.end.set(mDrag);
+                mBezierVertical.start.set(mDrag);
+                mBezierVertical.control.set(mDrag);
+                mBezierVertical.end.set(mDrag);
+            }else {
 
 
-            //计算横线贝塞尔线的终点（两条贝塞尔线起点连线 跟 拖动点与贝塞尔控制点连线 的交点）
-            PointUtils.calculateCross(mBezierHorizontal.end, mDrag, mBezierHorizontal.control, mBezierHorizontal.start, mBezierVertical.start);
+                //计算控制点。
+                mBezierHorizontal.control.x = Math.min(mMidle.x,mMidle.x - (mMidle.y - mDragCorner.y) * (mMidle.y - mDragCorner.y) / (mDragCorner.x - mMidle.x));
+                mBezierHorizontal.control.y = mDragCorner.y;
+                //计算起点（）
+                mBezierHorizontal.start.x = mBezierHorizontal.control.x - (mDragCorner.x - mBezierHorizontal.control.x) * folderRate;
+                mBezierHorizontal.start.y = mDragCorner.y;
 
-            //计算纵向贝塞尔线的终点（两条贝塞尔线起点连线 跟 拖动点与纵向贝塞尔控制点连线 的交点）
-            PointUtils.calculateCross(mBezierVertical.end, mDrag, mBezierVertical.control, mBezierHorizontal.start, mBezierVertical.start);
+//
+//                //   翻页限制检查
+//                if (mBezierHorizontal.start.x <0f) {
+//
+//                    float width = mDragCorner.x - mBezierHorizontal.start.x;
+//                    float radio = (mPinedPoint.x - mBezierHorizontal.start.x) / width;
+//                    float newOffsetX = mDrag.x + (mDragCorner.x - mDrag.x) * radio;
+//                    float newOffsetY = mDrag.y + (mDragCorner.y - mDrag.y) * radio;
+//                    // Log.e("newOffsetX:"+newOffsetX+",newOffsetY:"+newOffsetY+",mBezierHorizontal.start.x:"+mBezierHorizontal.start.x);
+//                    calculatePoints(newOffsetX, newOffsetY);
+//                    return;
+//
+//                }
 
+
+                //计算控制点。
+                float dividerValue=(mDragCorner.y-mMidle.y);
+                if(dividerValue==0){
+                    dividerValue=signature*0.000001f;
+                }
+                mBezierVertical.control.y = mMidle.y - (mMidle.x - mDragCorner.x) * (mMidle.x - mDragCorner.x) /dividerValue;
+                mBezierVertical.control.x = mDragCorner.x;
+                //计算起点（）
+                mBezierVertical.start.y = mBezierVertical.control.y - (mDragCorner.y - mBezierVertical.control.y) *folderRate;
+                mBezierVertical.start.x = mDragCorner.x;
+
+
+                //计算横线贝塞尔线的终点（两条贝塞尔线起点连线 跟 拖动点与贝塞尔控制点连线 的交点）
+                PointUtils.calculateCross(mBezierHorizontal.end, mDrag, mBezierHorizontal.control, mBezierHorizontal.start, mBezierVertical.start);
+
+                //计算纵向贝塞尔线的终点（两条贝塞尔线起点连线 跟 拖动点与纵向贝塞尔控制点连线 的交点）
+                PointUtils.calculateCross(mBezierVertical.end, mDrag, mBezierVertical.control, mBezierHorizontal.start, mBezierVertical.start);
+
+
+            }
 
             mBezierHorizontal.calculateVertex();
             mBezierVertical.calculateVertex();
@@ -175,6 +223,8 @@ public class Simulate {
 
         this.drawParam = drawParam;
         mDiagonal= (float) Math.hypot(drawParam.width,drawParam.height);
+        mLeftTop.set(0,0);
+        mLeftBottom.set(0,drawParam.height);
     }
 
     public void setDirection(float eX, float eY) {
@@ -205,8 +255,10 @@ public class Simulate {
                 destCorner.set(-drawParam.width,0);
                 startScrollPoint.set(startScrollX,0);
                 endScrollPoint.set(endScrollX,0);
+                signature=-1;
             } else {
                 mDragCorner.set(drawParam.width, drawParam.height);
+                signature=1;
                 mPinedPoint.set(0, drawParam.height);
                 destCorner.set(-drawParam.width,drawParam.height);
                 startScrollPoint.set(startScrollX,drawParam.height);
@@ -226,28 +278,94 @@ public class Simulate {
     public void draw(Canvas canvas) {
 
 
-//        if (BuildConfig.DEBUG) {
-//            int radius = 10;
-//            canvas.drawCircle(mDrag.x, mDrag.y, radius, paint);
-//            canvas.drawCircle(mDragCorner.x, mDragCorner.y, radius, paint);
-//            canvas.drawCircle(mMidle.x, mMidle.y, radius, paint);
-//            mBezierVertical.draw(canvas, paint);
-//            mBezierHorizontal.draw(canvas, paint);
-//
-//
-//            canvas.drawCircle(shadowVertexPoint.x, shadowVertexPoint.y, 3, paint);
-//
-//        }
+        if (BuildConfig.DEBUG) {
+            int radius = 10;
+            canvas.drawCircle(mDrag.x, mDrag.y, radius, paint);
+            canvas.drawCircle(mDragCorner.x, mDragCorner.y, radius, paint);
+            canvas.drawCircle(mMidle.x, mMidle.y, radius, paint);
+            mBezierVertical.draw(canvas, paint);
+            mBezierHorizontal.draw(canvas, paint);
+
+
+            canvas.drawCircle(shadowVertexPoint.x, shadowVertexPoint.y, 3, paint);
+
+
+            canvas.drawCircle(mFoldTop.x, mFoldTop.y, radius, paint);
+            canvas.drawCircle(mFoldBottom.x, mFoldBottom.y, radius, paint);
+            canvas.drawCircle(mCornerTop.x, mCornerTop.y, radius, paint);
+
+        }
 
     }
 
-    public void generateCurrentPageArea(Path currentPageArea) {
+    public void generateCurrentXORPageArea(Path currentPageArea) {
 
         if (isHorizontalTurning) {
             drawPolygon(currentPageArea,mDragBottom, mCornerBottom, mCornerTop, mDragTop);
         } else
         {
             drawCurrentPagePolygon(currentPageArea,mBezierHorizontal, mBezierVertical, mDrag, mDragCorner);
+        }
+
+
+    }
+
+    public void generateCurrentPageArea(Path currentPageArea) {
+
+        if (isHorizontalTurning) {
+            drawPolygon(currentPageArea,mDragBottom, mLeftBottom, mLeftTop, mDragTop);
+
+        } else
+        {
+
+
+
+
+            currentPageArea.reset();
+
+
+            //if(!mDrag.equals(mDragCorner)) {
+                currentPageArea.moveTo(mBezierVertical.start.x, mBezierVertical.start.y);
+             //   if(mBezierVertical.start.x>=0&&mBezierHorizontal.start.x>=0&&Math.abs(mBezierVertical.start.x-mBezierHorizontal.start.x)>1) {
+
+                    currentPageArea.quadTo(mBezierVertical.control.x, mBezierVertical.control.y, mBezierVertical.end.x, mBezierVertical.end.y);
+                    currentPageArea.lineTo(mDrag.x, mDrag.y);
+                    if (mBezierHorizontal.end.x != Float.NaN && mBezierHorizontal.end.y != Float.NaN)
+                        currentPageArea.lineTo(mBezierHorizontal.end.x, mBezierHorizontal.end.y);
+                    currentPageArea.quadTo(mBezierHorizontal.control.x, mBezierHorizontal.control.y, mBezierHorizontal.start.x, mBezierHorizontal.start.y);
+//                }else
+//                {
+//                    currentPageArea.lineTo(mBezierHorizontal.start.x, mBezierHorizontal.start.y);
+//                }
+//            }else
+//            {
+//                currentPageArea.lineTo(mDragCorner.x,mDragCorner.y);
+//            }
+
+            if(mDragCorner.y>drawParam.height/2)//右下角
+            {
+                currentPageArea.lineTo(0,drawParam.height);
+                currentPageArea.lineTo(0,0);
+                currentPageArea.lineTo(mDragCorner.x,0);
+
+            }else
+            {
+                currentPageArea.lineTo(0,0);
+                currentPageArea.lineTo(0,drawParam.height);
+                currentPageArea.lineTo(mDragCorner.x,drawParam.height);
+            }
+
+
+
+            currentPageArea.close();
+
+
+//            Log.e("mDragCorner:"+mDragCorner+",mBezierVertical.start:"+mBezierVertical.start+",mDrag:"+mDrag+",mBezierHorizontal.start:"+mBezierHorizontal.start+",currentPageArea:"+currentPageArea);
+//            Log.e("mBezierVertical.control:"+mBezierVertical.control +",mBezierVertical.end:"+mBezierVertical.end );
+//            Log.e("mBezierHorizontal.control:"+mBezierHorizontal.control +",mBezierHorizontal.end:"+mBezierHorizontal.end );
+
+
+
         }
 
 
@@ -330,7 +448,7 @@ public class Simulate {
         }
         else
         {
-            PageTurnHelper.getCurrentBackAreaMatrix(matrix,mDragCorner, mBezierHorizontal, mBezierVertical);
+            PageTurnHelper.getCurrentBackAreaMatrix(matrix,mDragCorner, mBezierHorizontal, mBezierVertical,mDrag);
 
 
 
@@ -350,14 +468,14 @@ public class Simulate {
             canvas.save();
             canvas.clipPath(lastPath, Region.Op.XOR);
             canvas.clipRect(0, 0, drawParam.width, drawParam.height);
-            if (!PageTurnHelper.isDayModeTitleLineColor()) {
+
                 GradientDrawable mCurrentPageShadow = PageTurnHelper.getFrontShadowDrawableVRL();
                   PageTurnHelper.getCurrentHorizontalShadowRect(currentBezierShadowRect,mDragBottom,
                         mFoldBottom, mTouch2Corner * 0.17f, drawParam);
                 mCurrentPageShadow.setBounds(currentBezierShadowRect);
 
                 mCurrentPageShadow.draw(canvas);
-            }
+
             canvas.restore();
         }
 
@@ -412,7 +530,7 @@ public class Simulate {
                         mBezierHorizontal.control, mBezierHorizontal.start);
                 canvas.clipPath(BezierShadowPath, Region.Op.INTERSECT);
                 canvas.clipRect(0, 0, mShape.width, mShape.height);
-                if (!PageTurnHelper.isDayModeTitleLineColor()) {
+
                     mCurrentPageShadow = mIsRtLb ? PageTurnHelper.getFrontShadowDrawableVLR() : PageTurnHelper.getFrontShadowDrawableVRL();
 
                      PageTurnHelper.getCurrentHorizontalShadowRect(currentBezierShadowRect,mIsRtLb,
@@ -425,7 +543,7 @@ public class Simulate {
                     mCurrentPageShadow.draw(canvas);
 
                    // canvas.drawRect(currentBezierShadowRect,paint);
-                }
+
                 canvas.restore();
             }
 
@@ -438,7 +556,7 @@ public class Simulate {
                         mBezierVertical.control, mBezierVertical.start);
                 canvas.clipPath(BezierShadowPath, Region.Op.INTERSECT);
                 canvas.clipRect(0, 0, mShape.width, mShape.height);
-                if (!PageTurnHelper.isDayModeTitleLineColor()) {
+
                     mCurrentPageShadow = mIsRtLb ? PageTurnHelper.getFrontShadowDrawableHTB() : PageTurnHelper.getFrontShadowDrawableHBT();
                       PageTurnHelper.getCurrentVerticalShadowRect(currentBezierShadowRect,mIsRtLb,
                             mBezierVertical, mDiagonal, touch2Corner, mShape);
@@ -447,7 +565,7 @@ public class Simulate {
                     canvas.rotate(degrees, mBezierVertical.control.x, mBezierVertical.control.y);
                     mCurrentPageShadow.draw(canvas);
                    // canvas.drawRect(currentBezierShadowRect,paint);
-                }
+
                 canvas.restore();
             }
         }
@@ -462,24 +580,23 @@ public class Simulate {
         if(isHorizontalTurning)
         {
 
-            if (!PageTurnHelper.isDayModeTitleLineColor()) {
+
                 GradientDrawable mBackShadowDrawable = PageTurnHelper.getBackShadowDrawableLR();
                 PageTurnHelper.getUndersideShadowRect(bottomShadowRect,mDragBottom, mFoldBottom, drawParam);
                 mBackShadowDrawable.setBounds(bottomShadowRect);
                 mBackShadowDrawable.draw(canvas);
-            }
 
 
         }else {
 
             canvas.rotate(mDegrees, mBezierHorizontal.start.x, mBezierHorizontal.start.y);
-            if (!PageTurnHelper.isDayModeTitleLineColor()) {
+
                 GradientDrawable mBackShadowDrawable = mIsRtLb ?
                         PageTurnHelper.getBackShadowDrawableLR() : PageTurnHelper.getBackShadowDrawableRL();
                 PageTurnHelper.getUndersideShadowRect(bottomShadowRect,mIsRtLb, mBezierHorizontal, mDiagonal, mTouch2Corner);
                 mBackShadowDrawable.setBounds(bottomShadowRect);
                 mBackShadowDrawable.draw(canvas);
-            }
+
 
         }
     }

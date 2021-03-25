@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">text</string>
+
+    <string-array name="scheme_names">
+
+
+    </string-array>
+    <integer-array name="scheme_bg_drawable">
+
+        <item >@mipmap/bg1</item>
+
+    </integer-array> <integer-array name="scheme_bg_color">
+
+        <item >@color/bg_color_1</item>
+
+    </integer-array>
+
 </resources>

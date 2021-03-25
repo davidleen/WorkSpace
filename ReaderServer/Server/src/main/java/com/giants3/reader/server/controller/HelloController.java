@@ -215,7 +215,7 @@ Executor threadPoolExecutor= ThreadConst.create();
 
 
 		String url=String.format(requestIpUrl,request.getRemoteAddr());
-		//String url=String.format(requestIpUrl,"localhost");
+//		String url=String.format(requestIpUrl,"localhost");
 		String result = "";
 		try {
 		  result=	client.getWithStringReturned(url, headers );
@@ -251,7 +251,13 @@ Executor threadPoolExecutor= ThreadConst.create();
 		IPResult location = location(request);
 		if(location!=null&&location.ret==200)
 		{
-			return location.data==null?"":location.data.city_id;
+			 if(location.data==null) return "";
+			 if(location.data.country_id.equalsIgnoreCase("CN"))
+			 {
+			 	return location.data.city_id;
+			 }else
+			 	return "350100";
+
 		}
 
 

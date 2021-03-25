@@ -44,7 +44,7 @@ public class ReaderView  extends View implements IDrawable{
 
     private void init()
     {
-        setLayerType(LAYER_TYPE_SOFTWARE, null);
+        setLayerType(LAYER_TYPE_HARDWARE, null);
     }
     public void setDrawLayer(DrawLayer drawLayer) {
         this.drawLayer = drawLayer;
@@ -64,7 +64,7 @@ public class ReaderView  extends View implements IDrawable{
         if(drawLayer!=null)
         {
             boolean result = drawLayer.onTouchEvent(event);
-            Log.e("touch result:"+result+",event:"+event);
+//            Log.e("touch result:"+result+",event:"+event);
             if(result) return true;
         }
 
@@ -75,6 +75,7 @@ public class ReaderView  extends View implements IDrawable{
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+//        Log.e("readerview=======");
         if(drawLayer!=null)
         {
             drawLayer.onDraw(canvas);

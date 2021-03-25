@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import com.giants3.android.frame.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -37,7 +38,16 @@ public abstract class AbstractRecyclerAdapter<V extends AbsRecycleViewHolder<D>,
     public AbstractRecyclerAdapter(Context context) {
         this(context, null);
     }
+    /**
+     * set the datas Arrays and notify update
+     *
+     * @param arrayData
+     */
+    public void setDataArray(D[] arrayData) {
 
+        setDataArray(Arrays.asList(arrayData));
+
+    }
     /**
      * set the datas Arrays and notify update
      *

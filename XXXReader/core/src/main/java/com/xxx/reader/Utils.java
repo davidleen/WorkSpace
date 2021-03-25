@@ -69,6 +69,7 @@ private static Context baseContext;
     {
         baseContext=context;
         SettingContent.init(context);
+        com.giants3.android.frame.util.Utils.init(context);
     }
 
     public static boolean isLandscape() {

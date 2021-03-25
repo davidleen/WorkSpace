@@ -27,6 +27,13 @@ public class PointUtils {
      * 求解直线touch,control和直线bezierHorizontalStart,bezierVerticalStart的交点坐标
      */
     public static void calculateCross(PointF outPut, PointF p1, PointF p2, PointF s1, PointF s2) {
+        if((p2.x - p1.x) == 0.0f)
+        {
+            outPut.x=p1.x;
+            outPut.y=p1.y;
+            return;
+        }
+
         // 二元函数通式： y=ax+b
         float a1 = (p2.y - p1.y) / (p2.x - p1.x);
         float b1 = ((p1.x * p2.y) - (p2.x * p1.y)) / (p1.x - p2.x);

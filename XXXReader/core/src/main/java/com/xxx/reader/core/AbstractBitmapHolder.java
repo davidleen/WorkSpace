@@ -3,6 +3,7 @@ package com.xxx.reader.core;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.view.MotionEvent;
 
 import com.xxx.reader.text.layout.BitmapHolder;
@@ -48,5 +49,15 @@ public class AbstractBitmapHolder implements BitmapHolder {
     @Override
     public void draw(Canvas canvas, Paint mPaint) {
 
+    }
+
+    @Override
+    public void draw(Canvas canvas,     Path path) {
+
+    }
+
+    @Override
+    public Bitmap getBitmap() {
+        return null;
     }
 }
