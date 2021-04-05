@@ -5,13 +5,18 @@ import android.content.Intent;
 import android.content.Context;
 import android.net.Uri;
 
+import com.giants3.android.convert.JsonFactory;
+import com.giants3.android.convert.JsonParser;
 import com.giants3.android.frame.util.Log;
 import com.giants3.android.frame.util.StorageUtils;
 import com.giants3.android.frame.util.ToastHelper;
+import com.giants3.android.image.ImageLoader;
+import com.giants3.android.image.ImageLoaderFactory;
 import com.giants3.android.kit.ResourceExtractor;
 import com.giants3.android.network.ApiConnection;
 import com.giants3.android.reader.domain.ResApiFactory;
 import com.giants3.android.storage.KVFactory;
+import com.giants3.pools.ObjectFactory;
 import com.github.mzule.activityrouter.router.RouterCallback;
 import com.github.mzule.activityrouter.router.RouterCallbackProvider;
 import com.github.mzule.activityrouter.router.SimpleRouterCallback;
@@ -37,6 +42,18 @@ public class ApplicationInit extends Application  implements RouterCallbackProvi
         StorageUtils.setRoot("AAAAAAA");
         ResourceExtractor.context=this;
         Utils.init(getApplicationContext());
+        ImageLoaderFactory.init(new ObjectFactory<ImageLoader>() {
+            @Override
+            public ImageLoader newObject() {
+                return new UILImageLoader(ApplicationInit.this);
+            }
+        });
+        JsonFactory.init(new ObjectFactory<JsonParser>() {
+            @Override
+            public JsonParser newObject() {
+              return new GsonParser();
+            }
+        });
 
 
     }

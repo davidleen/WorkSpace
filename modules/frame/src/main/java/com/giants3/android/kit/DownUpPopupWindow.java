@@ -1,4 +1,4 @@
-package com.giants3.android.kit;
+       package com.giants3.android.kit;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,7 +21,7 @@ import com.giants3.android.frame.util.Log;
  *  统一处理一些公共方法， popup 自下往上
  *
  */
-public abstract class DownUpPopupWindow<VH extends DownUpPopupWindow.ViewHolder> extends AbsPopupWindow<VH> {
+public abstract class DownUpPopupWindow<VH extends AbsPopupWindow.ViewHolder> extends AbsPopupWindow<VH> {
 
 
 
@@ -39,10 +39,6 @@ public abstract class DownUpPopupWindow<VH extends DownUpPopupWindow.ViewHolder>
 
 
 
-    public interface ViewHolder extends AbsPopupWindow.ViewHolder {
-
-
-    }
 
 
     public void show(){

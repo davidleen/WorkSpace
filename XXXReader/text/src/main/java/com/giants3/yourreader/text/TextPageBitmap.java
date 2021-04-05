@@ -16,6 +16,7 @@ import android.view.MotionEvent;
 import com.giants3.android.frame.util.BitmapHelper;
 import com.giants3.android.kit.ResourceExtractor;
 import com.giants3.yourreader.text.elements.WordElement;
+import com.xxx.reader.BackgroundManager;
 import com.xxx.reader.TextSchemeContent;
 import com.xxx.reader.core.DrawParam;
 import com.xxx.reader.core.IDrawable;
@@ -40,12 +41,14 @@ public class TextPageBitmap extends PageBitmap<TextPageInfo,DrawParam> {
     Paint paint;
     Paint aPaint;
     BackgroundDrawer backgroundDrawer;
-    public TextPageBitmap(Context context,int screenWidth, int screenHeight, IDrawable iDrawable) {
+    public TextPageBitmap(Context context,int screenWidth, int screenHeight, IDrawable iDrawable,Paint paint) {
         super(screenWidth, screenHeight, iDrawable);
         bitmap=Bitmap.createBitmap(screenWidth,screenHeight, Bitmap.Config.ARGB_8888);
         bitmapShader=new BitmapShader(bitmap, Shader.TileMode.CLAMP,Shader.TileMode.CLAMP);
         canvas =new Canvas(bitmap);
-          paint = new Paint();
+        this.paint = paint;
+
+
         aPaint = new Paint();
         aPaint.setShader(bitmapShader);
         backgroundDrawer=new BackgroundDrawer();
@@ -164,6 +167,7 @@ public class TextPageBitmap extends PageBitmap<TextPageInfo,DrawParam> {
                 backgroundDrawer.draw(canvas);
                 paint.setTextSize(SettingContent.getInstance().getTextSize());
                 paint.setColor(TextSchemeContent.getTextColor());
+
                 drawHelper.draw(canvas, textPageInfo);
                 synchronized (textPageInfo.elements) {
 

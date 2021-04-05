@@ -14,9 +14,6 @@ import com.xxx.reader.prepare.PrepareJob;
 import com.xxx.reader.turnner.sim.SettingContent;
 
 import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by davidleen29 on 2019/1/1.
@@ -58,7 +55,7 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
 
         float textSize = SettingContent.getInstance().getTextSize();
         int width = drawParam.width;
-        int hgap = (int) SettingContent.getInstance().getWordGap();
+        int hgap = (int) SettingContent.getInstance().getWordSpace();
         float[] paddings=SettingContent.getInstance().getPaddings();
 
         TXTtypeset txTtypeset = new TXTtypeset(textSize, width, hgap);
@@ -350,7 +347,7 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
 
         String path = chapterUrl2FileMapper.map(iChapter, iChapter.getUrl());
         int width = drawParam.width;
-        int hgap = (int) SettingContent.getInstance().getWordGap();
+        int hgap = (int) SettingContent.getInstance().getWordSpace();
         float textSize=SettingContent.getInstance().getTextSize();
         TXTtypeset txTtypeset = new TXTtypeset(textSize, width, hgap);
         BufferedRandomAccessFile bufferedRandomAccessFile = null;
@@ -719,7 +716,7 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
         float textSize = SettingContent.getInstance().getTextSize();
         int width = drawParam.width;
         String path = chapterUrl2FileMapper.map(iChapter, iChapter.getUrl());
-        int hgap = (int) SettingContent.getInstance().getWordGap();
+        int hgap = (int) SettingContent.getInstance().getWordSpace();
         BufferedRandomAccessFile bufferedRandomAccessFile = null;
         try {
             TXTtypeset txTtypeset = new TXTtypeset(textSize, width, hgap);
@@ -769,7 +766,7 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
         float textSize = SettingContent.getInstance().getTextSize();
         int width = drawParam.width;
         String path = chapterUrl2FileMapper.map(iChapter, iChapter.getUrl());
-        int hgap = (int) SettingContent.getInstance().getWordGap();
+        int hgap = (int) SettingContent.getInstance().getWordSpace();
         BufferedRandomAccessFile bufferedRandomAccessFile = null;
         try {
             TXTtypeset txTtypeset = new TXTtypeset(textSize, width, hgap);

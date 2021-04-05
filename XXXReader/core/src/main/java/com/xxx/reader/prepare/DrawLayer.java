@@ -96,7 +96,7 @@ public class DrawLayer {
 //            zoomHandler.zoom(canvas);
 
         if (pageTurner != null) {
-            boolean test = false;
+            boolean test = true;
             if (test) {
 
                 Bitmap bitmap = Bitmap.createBitmap(drawParam.width, drawParam.height, Bitmap.Config.ARGB_4444);

@@ -2,6 +2,7 @@ package com.giants3.hd.android.helper;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import com.giants3.hd.android.HdApplication;
 import com.giants3.hd.android.R;
@@ -105,4 +106,7 @@ public class ImageLoaderFactory {
         }
         return imageLoader;
     }
+
+
+
 }

@@ -13,6 +13,10 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModel;
+
+import com.giants3.android.frame.util.AndroidCompatUtils;
 import com.giants3.android.frame.util.Log;
 
 public  abstract class AbsPopupWindow <VH extends AbsPopupWindow.ViewHolder> extends PopupWindow {
@@ -24,7 +28,9 @@ public  abstract class AbsPopupWindow <VH extends AbsPopupWindow.ViewHolder> ext
         super(context);
         this.mContext = context;
 
-        View contentView = createContentView(context);
+        wh = createViewHolder(context);
+
+        View contentView =wh.getRoot();
         setContentView(contentView);
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         if(canAutoDismiss()) {
@@ -58,8 +64,6 @@ public  abstract class AbsPopupWindow <VH extends AbsPopupWindow.ViewHolder> ext
         setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
         setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
-        wh = createViewHolder();
-        wh.bind(contentView);
 
 
 
@@ -116,18 +120,13 @@ public  abstract class AbsPopupWindow <VH extends AbsPopupWindow.ViewHolder> ext
     protected void onDismiss()
     {}
 
-    /**
-     * 创建面板界面布局
-     * @param context
-     * @return
-     */
-    protected abstract View createContentView(Context context);
+
 
     /**
      * 创建界面绑定对象
      * @return
      */
-    protected abstract VH createViewHolder();
+    protected abstract VH createViewHolder(Context context);
     /**
      * 获取界面绑定对象
      * @return
@@ -145,8 +144,28 @@ public  abstract class AbsPopupWindow <VH extends AbsPopupWindow.ViewHolder> ext
 
     public interface ViewHolder {
 
-        void bind(View v);
+
+        View getRoot();
     }
+
+
+    public class   SimpleViewHolder  implements  ViewHolder{
+
+        private View view;
+
+        public SimpleViewHolder(View view)
+        {
+
+            this.view = view;
+        }
+
+        @Override
+        public View getRoot()
+        {
+            return view;
+        }
+    }
+
 
 
     public void show(){
@@ -171,4 +190,8 @@ public  abstract class AbsPopupWindow <VH extends AbsPopupWindow.ViewHolder> ext
     {
         return Gravity.CENTER;
     }
+
+
+
+
 }

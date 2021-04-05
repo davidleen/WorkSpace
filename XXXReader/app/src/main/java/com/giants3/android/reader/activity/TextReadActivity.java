@@ -1,11 +1,15 @@
 package com.giants3.android.reader.activity;
 
+import android.app.Activity;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
@@ -19,17 +23,25 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.giants3.android.adapter.AbstractRecyclerAdapter;
+import com.giants3.android.convert.JsonFactory;
+import com.giants3.android.frame.util.FragmentForResult;
 import com.giants3.android.frame.util.Log;
+import com.giants3.android.frame.util.StringUtil;
 import com.giants3.android.reader.R;
+import com.giants3.android.reader.adapter.TextSchemeAdapter;
 import com.giants3.android.reader.databinding.ActivityTextReaderBinding;
+import com.giants3.android.reader.scheme.TypefaceEntity;
+import com.giants3.android.reader.scheme.TypefaceHelper;
+import com.giants3.android.reader.window.TypesetPopupWindow;
 import com.xxx.reader.TextScheme;
 import com.giants3.android.reader.vm.TextReadViewModel;
-import com.giants3.yourreader.text.BackgroundManager;
+import com.xxx.reader.BackgroundManager;
 import com.giants3.yourreader.text.BookService;
 import com.giants3.yourreader.text.TextPageBitmap;
 import com.giants3.yourreader.text.TextPageInfo;
 import com.xxx.reader.ReaderView;
 import com.xxx.reader.TextSchemeContent;
+import com.xxx.reader.ThreadConst;
 import com.xxx.reader.Utils;
 import com.xxx.reader.book.IBook;
 import com.xxx.reader.book.IChapter;
@@ -58,6 +70,8 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
     ServiceConnection conn;
     DrawParam drawParam;
     private PreparePageInfo preparePageInfo;
+
+    Paint paint;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -187,7 +201,13 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
     private Runnable updateProgressRunnable;
 
     private void init() {
+        paint=new Paint();
+        paint.setSubpixelText(true);
+        paint.setStrokeWidth(1);
+        paint.setColor(TextSchemeContent.getTextColor());
+        paint.setTextSize(SettingContent.getInstance().getTextSize());
 
+        updateTypeface();
         updateStyleModeView();
         getViewBinding().themes.setLayoutManager(new GridLayoutManager(this,1));
         final TextSchemeAdapter textSchemeAdapter=new TextSchemeAdapter(this);
@@ -287,10 +307,7 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
             public void onClick(View v) {
 
 
-
-                getViewBinding().styleMode.clearAnimation();
-                getViewBinding().styleMode.startAnimation(AnimationUtils.loadAnimation(TextReadActivity.this, R.anim.hide_right_anim));
-               getViewBinding().panelSetting.setVisibility(View.GONE);
+                hideSettingPanel();
             }
         });
 
@@ -363,37 +380,87 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
 
             }
         });
-        getViewBinding().lineSpaceReduce.setOnClickListener(new View.OnClickListener() {
+//        getViewBinding().lineSpaceReduce.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                if(preparePageInfo!=null)
+//                {
+//                    PageInfo currentPageInfo = preparePageInfo.getCurrentPageInfo();
+//                    if(currentPageInfo instanceof  TextPageInfo)
+//                    {
+//                        ((TextPageInfo) currentPageInfo).updateElements();
+//                    }
+//
+//
+//                    prepareLayer.onPagePrepared(preparePageInfo);
+//                }
+//
+//
+//
+//
+//
+//                bookReadController.lineSpaceReduce();
+//                bindSettingValue();
+//
+//            }
+//        });
+//        getViewBinding().lineSpaceAdd.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                bookReadController.lineSpaceAdd();
+//                bindSettingValue();
+//
+//            }
+//        });
+        getViewBinding().typeface.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(preparePageInfo!=null)
-                {
-                    PageInfo currentPageInfo = preparePageInfo.getCurrentPageInfo();
-                    if(currentPageInfo instanceof  TextPageInfo)
-                    {
-                        ((TextPageInfo) currentPageInfo).updateElements();
+
+
+            final     TypesetPopupWindow womdpw=new TypesetPopupWindow(TextReadActivity.this, new TypesetPopupWindow.TypesetUpdateListener() {
+                    @Override
+                    public void onNewTypeface(TypefaceEntity typeface) {
+
+
+                        updateTypeface(typeface);
                     }
 
+                    @Override
+                    public void updateVGap(float vGap) {
+                        bookReadController.updateLineSpace(vGap);
+                        bindSettingValue();
 
-                    prepareLayer.onPagePrepared(preparePageInfo);
-                }
+                    }
+
+                    @Override
+                    public void updateHGap(float hGap) {
+                        bookReadController.updateWordSpace(hGap);
+                    }
+
+                    @Override
+                    public void updateTextStyle(Paint.Style style) {
+
+
+                        paint.setStyle(style);
+                        prepareLayer.updateCache();
+
+                    }
+
+                    @Override
+                    public void goMoreTypefaces() {
+                        jumpTypeface(TextReadActivity.this);
+
+                    }
+                });
+                womdpw.show();
+
+                hideSettingPanel();
 
 
 
-
-
-                bookReadController.lineSpaceReduce();
-                bindSettingValue();
-
-            }
-        });
-        getViewBinding().lineSpaceAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                bookReadController.lineSpaceAdd();
-                bindSettingValue();
 
             }
         });
@@ -411,7 +478,7 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
         builder.setCreator(new PageBitmapCreator<TextPageBitmap>() {
             @Override
             public TextPageBitmap create() {
-                return new TextPageBitmap(context, wh[0], wh[1], readerView);
+                return new TextPageBitmap(context, wh[0], wh[1], readerView,paint);
             }
         });
         builder.setiDrawable(readerView);
@@ -501,6 +568,54 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
 
     }
 
+    private void hideSettingPanel() {
+        getViewBinding().styleMode.clearAnimation();
+        getViewBinding().styleMode.startAnimation(AnimationUtils.loadAnimation(TextReadActivity.this, R.anim.hide_right_anim));
+        getViewBinding().panelSetting.setVisibility(View.GONE);
+    }
+
+
+    private void updateTypeface()
+    {
+
+        String typefaceString = SettingContent.getInstance().getTypeface();
+        TypefaceEntity entity= JsonFactory.getInstance().fromJson(typefaceString,TypefaceEntity.class);
+        updateTypeface(entity);
+
+    }
+
+
+    private void updateTypeface(final TypefaceEntity entity)
+    {
+
+
+
+        new AsyncTask<Void,Void,Typeface>() {
+            @Override
+            protected Typeface doInBackground(Void[] objects) {
+
+                Typeface typeface=null;
+                if(entity!=null&& !StringUtil.isEmpty(entity.getTypeface()))
+                    typeface=TypefaceHelper.createFromFile(entity.getTypeface());
+                return typeface;
+            }
+
+            @Override
+            protected void onPostExecute(Typeface typeface) {
+
+
+                if(typeface!=null) {
+                    paint.setTypeface(typeface);// 获取字体
+
+                    prepareLayer.updateCache();
+                }
+
+            }
+        }.executeOnExecutor(ThreadConst.THREAD_POOL_EXECUTOR);
+
+
+    }
+
     @Override
     protected void onDestroy() {
         if (prepareLayer != null) {
@@ -534,6 +649,21 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
     public void bindSettingValue()
     {
         getViewBinding().fontSize.setText(String.valueOf(SettingContent.getInstance().getTextSize()));
-        getViewBinding().lineSpace.setText(String.valueOf(SettingContent.getInstance().getLineSpace()));
+
+    }
+
+    private void jumpTypeface(Activity activity) {
+        FragmentForResult.startForResult(activity, TypefaceActivity.class, 0, null, new FragmentForResult.ActResult() {
+            @Override
+            public void onActivityResult(int requestCode, int resultCode, Intent data) {
+                if (resultCode == Activity.RESULT_OK) {
+                    //updateTypeface();
+
+                    updateTypeface();
+
+                }
+
+            }
+        });
     }
 }

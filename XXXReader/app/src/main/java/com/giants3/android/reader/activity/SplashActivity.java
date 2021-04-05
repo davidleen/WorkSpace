@@ -10,6 +10,7 @@ import com.giants3.android.frame.util.StorageUtils;
 import com.giants3.android.reader.R;
 import com.giants3.android.reader.databinding.ActivitySplashBinding;
 import com.giants3.android.reader.scheme.TextSchemeHelper;
+import com.giants3.android.reader.scheme.TypefaceHelper;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnPermissionDenied;
@@ -40,6 +41,7 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding> {
     public void doCreate(final Bundle savedInstanceState) {
         //do same init work
         TextSchemeHelper.init(this.getApplicationContext());
+       TypefaceHelper.init(this.getApplicationContext());
 
 
 

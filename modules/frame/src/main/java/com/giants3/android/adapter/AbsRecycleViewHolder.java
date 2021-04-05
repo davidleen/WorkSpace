@@ -17,6 +17,8 @@ public abstract class AbsRecycleViewHolder<D > extends RecyclerView.ViewHolder
         }
 
 
+
+
         public  abstract void bindData( D data,int position);
 
 

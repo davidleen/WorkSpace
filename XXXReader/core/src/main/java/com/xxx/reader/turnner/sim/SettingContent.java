@@ -25,7 +25,9 @@ public class SettingContent {
     private static final float DEFAULT_PARA_SPACE = 50;
     private static final float DEFAULT_LINE_SPACE = 20;
     private static final String KEY_LINE_SPACE = "line_space";
+    private static final String KEY_WORD_SPACE = "word_space";
     private static final String KEY_STYLE_MODE = "style_mode";
+    private static final String KEY_TYPE_FACE_NAME = "typeface";
 
     public static void init(Context context)
     {
@@ -95,6 +97,24 @@ public class SettingContent {
         return paddings;
     }
 
+    public String getTextStyle() {
+        return null;
+    }
+
+    public String getTypeface() {
+        return KVFactory.getDefault().getString(KEY_TYPE_FACE_NAME,"");
+        
+    }
+
+    public void setTypeface(String typefaceJsonString) {
+          KVFactory.getDefault().putString(KEY_TYPE_FACE_NAME,typefaceJsonString);
+    }
+
+    public void setWorkSpace(float hGap) {
+
+        KVFactory.getInstance(SETTING_CACHE_NAME).putFloat(KEY_WORD_SPACE,hGap);
+    }
+
     //用 @IntDef "包住" 常量，这里使用@IntDef来代替Enum枚举，也可以使用@StringDef。它会像Enum枚举一样在编译时期检查变量的赋值情况！
     @IntDef({INDENT_DISABLE, INDENT_TWO_CHAR, INDENT_ONE_CHAR})
     // @Retention 定义策略，是默认注解
@@ -103,9 +123,9 @@ public class SettingContent {
     public @interface IndentMode {}
 
 
-    public float getWordGap()
+    public float getWordSpace()
     {
-        return 10;
+       return KVFactory.getInstance(SETTING_CACHE_NAME).getFloat(KEY_WORD_SPACE,10);
     }
 
 }

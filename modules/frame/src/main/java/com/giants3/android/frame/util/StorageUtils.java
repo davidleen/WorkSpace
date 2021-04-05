@@ -48,41 +48,8 @@ public class StorageUtils {
 
     }
 
-    public static String readStringFromFile(String keyInitData) {
-        String filePath=getFilePath(keyInitData);
-        return  FileUtils.readStringFromFile(filePath);
-    }
-
-    /**
-     * 获取绝对路径的相对路径
-     *
-     * @param absolutePath 　绝对路径
-     * @return
-     */
-    public synchronized static String getRelativePath(String absolutePath) {
-        if (absolutePath == null || absolutePath.length() == 0) {
-            return "";
-        }
-
-            return absolutePath;
-
-    }
-
-    /**
-     * 获取相对路径的绝对路径（适用于文件的读取）
-     *
-     * @param relativePath 　相对路径
-     * @return 绝对路径，路径不存在，则返回null
-     */
-    public synchronized static String getAbsolutePath(String relativePath) {
-        if ((relativePath == null) || (relativePath.equals(""))) {
-            return "";
-        }
 
 
-
-        return relativePath;
-    }
 
     public static String getAbsolutePathIgnoreExist(String relativePath) {
         return getFilePath(relativePath);

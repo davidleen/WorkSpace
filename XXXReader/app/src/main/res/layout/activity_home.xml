@@ -44,4 +44,15 @@
         app:layout_constraintTop_toBottomOf="@+id/text"
         />
 
+    <TextView
+        android:id="@+id/typeface"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:background="@android:drawable/list_selector_background"
+        android:gravity="center"
+        android:text="字体"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

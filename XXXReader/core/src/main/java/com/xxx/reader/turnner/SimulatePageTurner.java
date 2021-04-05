@@ -1,5 +1,6 @@
 package com.xxx.reader.turnner;
 
+import android.app.backup.BackupManager;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -17,6 +18,7 @@ import android.view.animation.CycleInterpolator;
 import android.view.animation.Interpolator;
 
 import com.giants3.android.frame.util.Log;
+import com.xxx.reader.BackgroundManager;
 import com.xxx.reader.TextSchemeContent;
 import com.xxx.reader.core.BuildConfig;
 import com.xxx.reader.core.DrawParam;
@@ -116,6 +118,7 @@ public class SimulatePageTurner extends AbsPageTurner {
         if(isDirectionSetting)
         {
 
+            BackgroundManager.getInstance().draw(canvas);
 
             //获取当前页和底页
             BitmapHolder topPage = null;
@@ -193,7 +196,7 @@ public class SimulatePageTurner extends AbsPageTurner {
 //                canvas.drawBitmapMesh(topPage.getBitmap(),BitmapMesh.WIDTH,BitmapMesh.HEIGHT,bitmapMesh.verts,0,null,0,mPaint);
 //                canvas.drawBitmap(topPage.getBitmap(),0,0,mPaint);
 
-                // canvas.drawColor(Color.parseColor("#33ffff00"));
+//                 canvas.drawColor(Color.parseColor("#ffff00"));
                 //canvas.drawPath(currentBackArea,strokePaint);
 //                canvas.drawColor(Color.parseColor("#a0f9d7b1"));
                 canvas.drawColor(TextSchemeContent.getBackPageColor());

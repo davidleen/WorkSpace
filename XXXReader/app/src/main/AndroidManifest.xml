@@ -14,41 +14,31 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ComicReadActivity">
-
-        </activity><activity android:name=".activity.TextReadActivity">
-
-        </activity>
-
-
-        <activity android:name=".ComicListActivity">
-        </activity><activity android:name=".activity.ChapterListActivity">
-        </activity>
-        <activity android:name=".activity.BookListActivity">
-
-        </activity>
-
+        <activity android:name=".activity.TypefaceActivity"></activity>
+        <activity android:name=".ComicReadActivity"></activity>
+        <activity android:name=".activity.TextReadActivity"></activity>
+        <activity android:name=".ComicListActivity"></activity>
+        <activity android:name=".activity.ChapterListActivity"></activity>
+        <activity android:name=".activity.BookListActivity"></activity>
         <activity android:name=".activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
-        <activity android:name=".activity.HomeActivity">
-
-        </activity>
-
+        <activity android:name=".activity.HomeActivity"></activity>
         <activity android:name=".activity.OpenFileActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
             <intent-filter>
-                <!--系统预定义各种文件类型配对-->
+
+                <!-- 系统预定义各种文件类型配对 -->
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:scheme="file" />
@@ -61,22 +51,18 @@
                 <data android:mimeType="text/html" />
                 <data android:mimeType="application/x-rar-compressed" />
                 <data android:mimeType="application/pdf" />
-
-
             </intent-filter>
-
-
             <intent-filter>
-                <!--系统未知文件类型，使用后缀名判断,有可能是 vnd.android.package-archive  也有可能根本就是null -->
+
+                <!-- 系统未知文件类型，使用后缀名判断,有可能是 vnd.android.package-archive  也有可能根本就是null -->
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:scheme="file" />
                 <data android:scheme="content" />
-
                 <data android:mimeType="application/vnd.android.package-archive" />
                 <data android:mimeType="*/*" />
-
                 <data android:host="*" />
                 <data android:pathPattern=".*\\.ndz" />
                 <data android:pathPattern=".*\\.txt" />
@@ -91,8 +77,6 @@
                 <data android:pathPattern=".*\\.zip" />
                 <data android:pathPattern=".*\\.html" />
                 <data android:pathPattern=".*\\.rar" />
-
-
             </intent-filter>
         </activity>
         <activity
@@ -100,23 +84,20 @@
             android:theme="@android:style/Theme.NoDisplay">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="${SCHEME}" /><!--改成自己的scheme-->
-            </intent-filter>
-        </activity>
 
-        <!--全面屏处理-->
+                <data android:scheme="${SCHEME}" /> <!-- 改成自己的scheme -->
+            </intent-filter>
+        </activity> <!-- 全面屏处理 -->
         <meta-data
             android:name="android.max_aspect"
-            android:value="2.1"></meta-data>
-        <!-- 所有嵌套依赖的支持包配置，全部替换为默认配置，避免support编译版本不一致问题。 -->
+            android:value="2.1" /> <!-- 所有嵌套依赖的支持包配置，全部替换为默认配置，避免support编译版本不一致问题。 -->
         <meta-data
             android:name="android.support.VERSION"
             android:value="${ANDROID_SUPPORT_VERSION}"
             tools:replace="android:value" />
-
-
     </application>
 
 </manifest>

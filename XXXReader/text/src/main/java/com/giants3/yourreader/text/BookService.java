@@ -244,27 +244,40 @@ public class BookService extends AbstractService<BookService.BookReadController>
 
         public void lineSpaceReduce() {
 
-            float textSize = SettingContent.getInstance().getLineSpace();
-            if(textSize<=0) return;
-            textSize--;
+            float lineSpace = SettingContent.getInstance().getLineSpace();
+            if(lineSpace<=0) return;
+            lineSpace--;
+            updateLineSpace(lineSpace);
 
-            SettingContent.getInstance().setLineSpace(textSize);
-            preparePageInfo.onSettingChange();
-            updateCache();
 
         }
 
         public void lineSpaceAdd() {
 
-            float textSize = SettingContent.getInstance().getLineSpace();
-            if(textSize>60) return;
-            textSize++;
-            SettingContent.getInstance().setLineSpace(textSize);
+            float lineSpace = SettingContent.getInstance().getLineSpace();
+            if(lineSpace>60) return;
+            lineSpace++;
+            updateLineSpace(lineSpace);
+
+
+        }
+
+        public  void updateLineSpace(float lineSpace)
+        {
+            SettingContent.getInstance().setLineSpace(lineSpace);
             preparePageInfo.onSettingChange();
             updateCache();
 
+
+        }
+
+        public void updateWordSpace(float hGap) {
+            SettingContent.getInstance().setWorkSpace(hGap);
+            preparePageInfo.onSettingChange();
+            updateCache();
         }
     }
+
 
 
     public static interface  PageController extends IBinder

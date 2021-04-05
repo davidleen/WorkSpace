@@ -86,10 +86,11 @@ public class Simulate {
      */
     Rect currentBezierShadowRect=new Rect();
 
+    public  boolean  DEBUG=BuildConfig.DEBUG&&false;
 
 
     public Simulate() {
-        if (BuildConfig.DEBUG) {
+        if (DEBUG) {
             paint = new Paint();
             paint.setColor(Color.RED);
         }
@@ -278,7 +279,7 @@ public class Simulate {
     public void draw(Canvas canvas) {
 
 
-        if (BuildConfig.DEBUG) {
+        if (DEBUG) {
             int radius = 10;
             canvas.drawCircle(mDrag.x, mDrag.y, radius, paint);
             canvas.drawCircle(mDragCorner.x, mDragCorner.y, radius, paint);

@@ -56,75 +56,10 @@ public class TextSchemeHelper {
 
 
         String filePath = "TextScheme.zip";
-        //check storage textscheme directory
-        String absolutePath = StorageUtils.getFilePath(filePath);
+        boolean newFileInited = AssetHelper.copyFileToSD(context, filePath);
 
-
-        if (StringUtil.isEmpty(absolutePath)) return;
-
-
-        if(BuildConfig.DEBUG)
-        {
-            new File(absolutePath).delete();
-        }
-        boolean newZipFile = false;
-        File file = new File(absolutePath);
-        if (!file.exists()) {
-            newZipFile = true;
-        } else {
-
-
-            MD5 md5=new MD5();
-            String md5File = md5.md5File(file);
-            String md5Stream="";
-            InputStream is=null;
-            try {
-                is = context.getAssets().open(filePath);
-                md5Stream = md5.md5Stream(is);
-                newZipFile = !md5File.equals(md5Stream);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                FileUtils.safeClose(is);
-            }
-
-
-        }
-
-        if (newZipFile) {
-
-            FileUtils.makeDirs(absolutePath);
-            FileOutputStream fileOutputStream = null;
-            InputStream open = null;
-            try {
-
-                open = context.getAssets().open(filePath);
-                fileOutputStream = new FileOutputStream(file);
-                FileUtils.copyStream(open, fileOutputStream);
-
-                //ZipJNIInterface.UnZip()
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-
-                IoUtils.safeClose(open);
-                IoUtils.safeClose(fileOutputStream);
-            }
-
-            try {
-                ZipFile zipFile=new ZipFile(absolutePath);
-                zipFile.size();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            ZipHelper.unZip(absolutePath, StorageUtils.getRootPath( ));
-
-
-
-            boolean dayMode= TextSchemeContent.getDayMode();
+        if (!newFileInited) return ;
+        boolean dayMode= TextSchemeContent.getDayMode();
 
             TextScheme[] schemes=TextSchemeLoader.loadAllScheme(context);
 
@@ -178,7 +113,6 @@ public class TextSchemeHelper {
 
 
 
-        }
 
     }
 

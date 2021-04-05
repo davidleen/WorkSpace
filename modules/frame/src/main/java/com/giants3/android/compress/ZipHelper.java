@@ -11,6 +11,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -21,7 +23,8 @@ public class ZipHelper {
         try {
 
 
-              zis=new ZipInputStream(new FileInputStream(zipFilePath));
+              zis=new ZipInputStream(new FileInputStream(zipFilePath) );
+
             ZipEntry zipEntry       = null;
             while ((zipEntry=zis.getNextEntry())!=null){
                 if(zipEntry.isDirectory()){//若是目录

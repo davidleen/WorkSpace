@@ -5,16 +5,14 @@ import android.view.LayoutInflater;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.viewbinding.ViewBinding;
 
+import com.giants3.ClassHelper;
 import com.giants3.android.widgets.IViewWaiting;
 import com.giants3.android.widgets.WaitingDialog;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 
 /**
  * Created by davidleen29 on 2018/11/25.
@@ -37,7 +35,10 @@ public abstract class BaseActivity<T extends ViewBinding> extends AppCompatActiv
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = createViewBinding();
+
+        binding= createViewBinding();
+        if(binding==null)
+            binding =createViewBindAuto();
         if (binding != null)
             setContentView(binding.getRoot());
         viewWaiting=createViewWaiting();
@@ -60,27 +61,24 @@ public abstract class BaseActivity<T extends ViewBinding> extends AppCompatActiv
 
 
 
-    protected abstract   T createViewBinding();
+    protected     T createViewBinding()
+    {
+        return null;
+    }
 
     protected T createViewBindAuto()
     {
 
+
+
+
         T restult=null;
-        Type genericSuperclass = getClass().getGenericSuperclass();
         try {
-            if(genericSuperclass instanceof ParameterizedType)
-            {
-                Type actualTypeArgument = ((ParameterizedType) genericSuperclass).getActualTypeArguments()[0];
-
-                if(actualTypeArgument instanceof  Class) {
-                    Class<T> clas = (Class<T>) actualTypeArgument;
+                    Class<T> clas = ClassHelper.findParameterizedClass(getClass(),BaseActivity.class,ViewBinding.class);
                     Method inflate = clas.getMethod("inflate", LayoutInflater.class);
-                     restult= (T) inflate.invoke(null,LayoutInflater.from(this));
-
-                }
+                    restult= (T) inflate.invoke(null,LayoutInflater.from(this));
 
 
-            }
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }   catch (InvocationTargetException e) {
@@ -94,6 +92,7 @@ public abstract class BaseActivity<T extends ViewBinding> extends AppCompatActiv
 
 
     }
+
 
 
     protected T getViewBinding() {
