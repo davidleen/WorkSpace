@@ -1,4 +1,4 @@
-       package com.giants3.android.kit;
+package com.giants3.android.kit;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,17 +15,16 @@ import android.widget.PopupWindow;
 
 import com.giants3.android.frame.R;
 import com.giants3.android.frame.util.Log;
+
 /**
- *  自下往上的弹出对话框
- *
- *  统一处理一些公共方法， popup 自下往上
- *
+ * 自下往上的弹出对话框
+ * <p>
+ * 统一处理一些公共方法， popup 自下往上
  */
-public abstract class DownUpPopupWindow<VH extends AbsPopupWindow.ViewHolder> extends AbsPopupWindow<VH> {
+public abstract class DownUpPopupWindow  extends AbsPopupWindow  {
 
 
-
-    public DownUpPopupWindow(Context context) {
+    public DownUpPopupWindow(Activity context) {
         super(context);
 
 
@@ -38,17 +37,14 @@ public abstract class DownUpPopupWindow<VH extends AbsPopupWindow.ViewHolder> ex
     }
 
 
-
-
-
-    public void show(){
+    public void show() {
         try {
-            showAtLocation(((Activity) mContext).getWindow().getDecorView(), Gravity.BOTTOM, 0, 0);
-        }catch (Throwable t)
-        {
+            showAtLocation(activity.getWindow().getDecorView(), Gravity.BOTTOM, 0, 0);
+        } catch (Throwable t) {
             Log.e(t);
         }
     }
+
 
 
 }

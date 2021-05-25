@@ -15,4 +15,5 @@ public class AuthCodes {
     public String code;
     public int itemIndex;
     public String platform;
+    public String device;
 }

@@ -15,9 +15,9 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
 <body>
 
-<form method="POST" enctype="multipart/form-data" class="ajax_form"
+<form method="POST" enctype="multipart/form-data" class="ajax_form" id="form_code"
 >
-    Add Codes <br/> <br/>
+      Codes <br/> <br/>
 
      Code: <br/>
     <input id="id_code" value=""
@@ -53,22 +53,34 @@
 
 
 
-
+<div  id="panel_search">
 平台选择:
 <select  id="search_platform"   style="width:100px">
     <option></option>
 </select>
 <button type="button" id="btn_reload">搜索</button>
+</div>
 <table id="example" class="display" style="width:100%">
 </table>
 <br/>
 <br/>
-
+<div  id="panel_message">
 口令被请求总次数: ${requestCodeTime}<br/>
 今日请求次数: ${requestCodeTimeToday}<br/>
-
+</div>
 
 <script type="text/javascript">
+    var userAgentInfo = navigator.userAgent;
+    console.log('这部设备是：'+userAgentInfo);
+
+    var index = userAgentInfo.indexOf("(");
+    if(index>-1)
+    {
+        index=index+1;
+        var index2 = userAgentInfo.indexOf(")");
+        if(index2==-1) index2=userAgentInfo.length-1;
+        userAgentInfo=userAgentInfo.substr(index,index2-index)
+    }
 
     var platid=   [1,2,3]
     var platname=  ["淘口令","快手","抖音"]
@@ -84,6 +96,15 @@
 
     }
 
+    function getDevice() {
+
+
+    }
+    function replaceReg( str){
+
+        var regexp = /((http|ftp|https|file):\/\/([\w\-]+\.)+[\w\-]+(\/[\w\u4e00-\u9fa5\-\.\/?\@\%\!\&=\+\~\:\#\;\,]*)?)/ig;
+        return str.replace(regexp,function(m){return '<a href="'+m+'">'+m+'</a>';})
+    }
     function addItems(select)
     {
 
@@ -111,6 +132,23 @@
     $(document).ready(function () {
 
 
+
+
+
+        var viewOly=${viewOnly};
+        if (viewOly) {
+            $("#panel_search").hide()
+            $("#panel_message").hide()
+            $("#form_rate").hide()
+            $("#form_code").hide()
+        }
+        else {
+            $("#panel_search").show()
+            $("#panel_message").show()
+            $("#form_rate").show()
+            $("#form_code").show()
+        }
+
         addItems(document.getElementById("id_platform"))
         var  serach_platform=document.getElementById("search_platform")
         addItems(serach_platform)
@@ -121,7 +159,7 @@
             "serverSide": true
               , "paging": false
             , "ordering": false
-            , "searching": true
+            , "searching": !viewOly
             , "ajax":
                 {
                     url: "${server}/api/authcodes"
@@ -143,6 +181,13 @@
                     title: "口令"
                     , "data": "code"
                     , width: "20%"
+                    ,render:function (data, type, row, meta) {
+                        try {
+                            return replaceReg(data);
+                        }catch (e) {
+                            return data
+                        }
+                    }
                 }
                 , {
                     title: "平台"
@@ -157,21 +202,29 @@
 
                          return data
                     }
-                } , {
+                }
+
+
+
+
+                , {
                     title: ""
                     , width: "20%"
                     ,data:""
                     , defaultContent: ""
-                    , "render": function ( data, type, row, meta ) {
+                    , "render": viewOly?null:function ( data, type, row, meta ) {
                         var content = '<a href="#" onclick=deleteRow('+row.id+') >删除</a>';
                         return content;
                     }
                 }
-               , {
-                    title: " "
-                    , defaultContent: ""
 
+                , {
+                    title: "设备"
+                    , data: "device"
+                    , width: "30%"
+                    ,defaultContent:""
                 }
+
 
 
             ]
@@ -185,6 +238,10 @@
                     type: 'POST',
                     dataType: 'text',
                     url: "${server}/api/addCode"
+                    ,data:
+                        {
+                            'device': userAgentInfo
+                        }
                     ,success: function(text, textStatus, xhr) {
 
 

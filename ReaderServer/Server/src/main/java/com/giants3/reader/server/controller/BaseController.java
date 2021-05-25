@@ -1,5 +1,6 @@
 package com.giants3.reader.server.controller;
 
+import com.giants3.reader.RemoteDataWrapper;
 import com.giants3.reader.noEntity.RemoteData;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
@@ -37,7 +38,7 @@ public class BaseController  implements InitializingBean, DisposableBean {
         List<T> datas = new ArrayList<>();
         datas.add(data);
 
-        return wrapData(0, datas.size(), 1, datas.size(), datas);
+        return RemoteDataWrapper.wrapData(0, datas.size(), 1, datas.size(), datas);
 
 
     }
@@ -61,63 +62,9 @@ public class BaseController  implements InitializingBean, DisposableBean {
 
     }
 
-    /**
-     * 封装正常的返回结果。
-     *
-     * @param datas
-     * @param <T>
-     * @return
-     */
-    public <T> RemoteData<T> wrapData(List<T> datas) {
 
 
-        return wrapData(0, datas == null ? 0 : datas.size(), 1, datas == null ? 0 : datas.size(), datas);
 
-
-    }
-
-
-    /**
-     * 封装正常的返回结果。
-     *
-     * @param <T>
-     * @return
-     */
-    public <T> RemoteData<T> wrapData() {
-
-
-        return wrapData(null);
-
-
-    }
-
-    /**
-     * 封装正常的返回结果。
-     *
-     * @param datas
-     * @param <T>
-     * @return
-     */
-
-    public <T> RemoteData<T> wrapData(int pageIndex, int pageSize, int pageCount, int totalCount, List<T> datas) {
-
-        RemoteData<T> remoteData = new RemoteData<T>();
-        remoteData.pageIndex = pageIndex;
-        remoteData.pageSize = pageSize;
-        remoteData.pageCount = pageCount;
-        remoteData.totalCount = totalCount;
-
-        int defaultSize = datas == null || datas.size() < 10 ? 10 : datas.size();
-        remoteData.datas = new ArrayList<T>(defaultSize);
-        if (datas != null)
-            remoteData.datas.addAll(datas);
-        remoteData.code = RemoteData.CODE_SUCCESS;
-
-        remoteData.message = "operation sucessed";
-        return remoteData;
-
-
-    }
 
     /**
      * Returns a new object which specifies the the wanted result page.

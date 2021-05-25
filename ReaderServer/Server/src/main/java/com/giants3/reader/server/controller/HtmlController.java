@@ -32,6 +32,21 @@ public class HtmlController {
 
     @RequestMapping(value = "auth_codes", method = RequestMethod.GET)
     public String auth_codes(ModelMap model) {
+        fillModel(model);
+        model.addAttribute("viewOnly",false);
+        return "auth_codes";
+    }
+      @RequestMapping(value = "view_codes", method = RequestMethod.GET)
+    public String view_codes(ModelMap model) {
+          fillModel(model);
+          model.addAttribute("viewOnly",true);
+        return "auth_codes";
+    }
+
+
+    private void fillModel(ModelMap model)
+    {
+
         model.addAttribute("message", "Hello world!");
         model.addAttribute("server", Assets.ServerName);
         Settings settings = authService.getSettings();
@@ -39,8 +54,11 @@ public class HtmlController {
         model.addAttribute("rate", settings==null?0:settings.rate);
         model.addAttribute("requestCodeTime", settings==null?0:settings.authCodeRequestTime);
         model.addAttribute("requestCodeTimeToday", analytics==null?0:analytics.requestTime);
-        return "auth_codes";
-    } @RequestMapping(value = "table_test", method = RequestMethod.GET)
+    }
+
+
+
+    @RequestMapping(value = "table_test", method = RequestMethod.GET )
     public String table_test(ModelMap model) {
         model.addAttribute("message", "Hello world!");
         model.addAttribute("server", Assets.ServerName);

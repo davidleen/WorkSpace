@@ -12,12 +12,12 @@ public class PoolCenter {
     private static final Map<Class<?>, ObjectPool<?>> pools = new HashMap<Class<?>, ObjectPool<?>>();
 
 
-    public synchronized static final ObjectPool getObjectPool(final Class<?> c) {
+    public synchronized static final <T> ObjectPool getObjectPool(final Class<T> c) {
        return getObjectPool(c,100);
 
     }
 
-    public synchronized static final ObjectPool getObjectPool(final Class<?> c,int size) {
+    public synchronized static final <T>  ObjectPool getObjectPool(final Class<T> c,int size) {
         ObjectPool result = null;
         if (pools.containsKey(c)) {
             result = (ObjectPool) pools.get(c);
@@ -34,11 +34,11 @@ public class PoolCenter {
 
     private static final Map<Class<?>, ObjectFactory<?>> factorys = new HashMap<Class<?>, ObjectFactory<?>>();
 
-    public synchronized static final ObjectFactory getObjectFactory(
-            final Class<?> c) {
-        ObjectFactory<?> result = null;
+    public synchronized static final <T> ObjectFactory<T> getObjectFactory(
+            final Class<T> c) {
+        ObjectFactory<T> result = null;
         if (factorys.containsKey(c)) {
-            result = factorys.get(c);
+            result = (ObjectFactory<T>) factorys.get(c);
         }
 
         if (result == null) {
@@ -47,14 +47,14 @@ public class PoolCenter {
 
                 @Override
                 public Object newObject() {
-                    // TODO Auto-generated method stub
+
                     try {
                         return c.newInstance();
                     } catch (IllegalAccessException e) {
-                        // TODO Auto-generated catch block
+
                         e.printStackTrace();
                     } catch (InstantiationException e) {
-                        // TODO Auto-generated catch block
+
                         e.printStackTrace();
                     }
                     throw new RuntimeException(new StringBuilder(

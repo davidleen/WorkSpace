@@ -11,7 +11,7 @@ targetCompatibility = 1.7
 version='1.1.7'
 description='测试库模块'
 ext{
-u
+
     PROJ_WEBSITEURL='https://github.com/davidleen/AnnotationAdapter'
     PROJ_ISSUETRACKERURL='https://github.com/davidleen/AnnotationAdapter'
     PROJ_VCSURL='https://github.com/davidleen/AnnotationAdapter.git'

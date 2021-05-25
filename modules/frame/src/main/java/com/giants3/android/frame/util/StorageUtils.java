@@ -49,7 +49,10 @@ public class StorageUtils {
     }
 
 
-
+    public static String readStringFromFile(String keyInitData) {
+        String filePath=getFilePath(keyInitData);
+        return  FileUtils.readStringFromFile(filePath);
+    }
 
     public static String getAbsolutePathIgnoreExist(String relativePath) {
         return getFilePath(relativePath);

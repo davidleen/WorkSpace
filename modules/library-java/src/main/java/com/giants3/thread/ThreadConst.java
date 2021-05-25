@@ -21,8 +21,6 @@ public class ThreadConst {
     private static final int CORE_POOL_SIZE = CPU_COUNT + 1;
     private static final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 1;
     private static final int KEEP_ALIVE = 1;
-    private static final BlockingQueue<Runnable> sPoolWorkQueue =
-            new LinkedBlockingQueue<Runnable>(128);
     private static final ThreadFactory sThreadFactory = new ThreadFactory() {
         private final AtomicInteger mCount = new AtomicInteger(1);
 
@@ -51,7 +49,7 @@ public class ThreadConst {
     public static Executor create()
     {
 
-        return create(Integer.MAX_VALUE);
+        return create(128);
 
 
     }
@@ -61,5 +59,9 @@ public class ThreadConst {
     {
 
     }
-
+    /**
+     * An {@link Executor} that can be used to execute tasks in parallel.
+     */
+    public static final Executor THREAD_POOL_EXECUTOR
+            = create();
 }

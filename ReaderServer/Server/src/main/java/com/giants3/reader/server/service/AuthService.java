@@ -58,12 +58,13 @@ public class AuthService extends AbstractService {
         return wrapData(result);
     }
 
-    public void addNewCode(String code, String platform) {
+    public void addNewCode(String code, String platform,String device) {
 
 
         AuthCodes authCodes=new AuthCodes();
         authCodes.code=code;
         authCodes.platform=platform;
+        authCodes.device=device;
         authCodes.itemIndex= (int) authCodesRepository.count();
         authCodesRepository.save(authCodes);
     }

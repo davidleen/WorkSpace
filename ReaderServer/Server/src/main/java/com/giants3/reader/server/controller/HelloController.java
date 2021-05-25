@@ -122,6 +122,8 @@ Executor threadPoolExecutor= ThreadConst.create();
 						||packageHashCode==1042834355 //com.changdu.ereader
 						||packageHashCode==1204462450 //com.changdu.frenchreader
 						||packageHashCode==-1214014313 //com.changdu.spainreader
+			           ||packageHashCode==560332751 //com.changdu.jareader
+			           ||packageHashCode==-2106849317 //com.changdu.rureader
 
 		)
 			return true;
@@ -184,10 +186,10 @@ Executor threadPoolExecutor= ThreadConst.create();
 
 	@ResponseBody
 	@RequestMapping(value = "addCode",method =  RequestMethod.POST)
-	public AjaxData<Void> addAuthCode( @RequestParam(value = "code"   ) String code  , @RequestParam(value = "platform"   ) String platform   ) {
+	public AjaxData<Void> addAuthCode( @RequestParam(value = "code"   ) String code  , @RequestParam(value = "platform"   ) String platform , @RequestParam(value = "device" ,defaultValue = "" ) String device   ) {
 
 
-		 authService.addNewCode(code,platform);
+		 authService.addNewCode(code,platform,device);
 		return new AjaxData<>();
 	}
 

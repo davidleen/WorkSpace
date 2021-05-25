@@ -1,6 +1,5 @@
 package com.giants3.exception;
 
-
 import com.giants3.utils.StringUtils;
 
 public class HdException extends Exception {

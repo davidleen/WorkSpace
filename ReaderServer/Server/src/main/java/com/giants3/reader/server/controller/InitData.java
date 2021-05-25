@@ -56,8 +56,8 @@ public class InitData implements ApplicationListener<ContextRefreshedEvent> {
 
 
 
-            bookService.addOne();
-            bookService.addOneComic();
+//            bookService.addOne();
+//            bookService.addOneComic();
 
 
 
