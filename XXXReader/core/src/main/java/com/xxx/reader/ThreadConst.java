@@ -33,7 +33,6 @@ public class ThreadConst {
      * An {@link Executor} that can be used to execute tasks in parallel.
      */
     public static final Executor THREAD_POOL_EXECUTOR
-            = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
-            TimeUnit.SECONDS, sPoolWorkQueue, sThreadFactory, new  ThreadPoolExecutor.DiscardOldestPolicy());
+            = com.giants3.thread.ThreadConst.THREAD_POOL_EXECUTOR;
 
 }

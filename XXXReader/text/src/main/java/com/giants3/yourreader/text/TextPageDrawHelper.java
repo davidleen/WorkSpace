@@ -1,12 +1,13 @@
 package com.giants3.yourreader.text;
 
-import android.content.Context;
 import android.graphics.Canvas;
+
+import com.xxx.reader.text.page.TextPageInfo2;
 
 public class TextPageDrawHelper {
 
 
-    public void draw(Canvas canvas,TextPageInfo textPageInfo)
+    public void draw(Canvas canvas, TextPageInfo2 textPageInfo)
     {
 
 

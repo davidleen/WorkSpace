@@ -6,11 +6,17 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.giants3.android.frame.util.Log;
-import com.xxx.reader.book.ChapterMeasureResult;
+import com.xxx.reader.book.IBook;
+import com.xxx.reader.book.IChapter;
 import com.xxx.reader.core.DestroyableThread;
 import com.xxx.reader.core.PageInfo;
+import com.xxx.reader.text.page.PageData;
+import com.xxx.reader.text.page.PageTyping;
+import com.xxx.reader.text.page.TextPageInfo2;
+import com.xxx.reader.text.page.TypeParam;
+import com.xxx.reader.text.page.Typing;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.io.File;
 
 /**
  * 数据准备线程，
@@ -19,88 +25,42 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PrepareThread extends DestroyableThread {
 
+    private IBook iBook;
+    private TypeParam typeParam;
     public static final long DELAY=16;
-    public static final int MSG_UPDATE_PAGES=99;
     public static final int MSG_NEXT=100;
     public static final int MSG_PREVIOUS=98;
+    public static final int MSG_PREPARE_CHAPTER=101;
     private Handler handler;
     private int maxCacheSize;
     //每个页面的准备顺序   当前  下一页 ， 上一页 ，下下页，  上上页
     int[] indexOfPage;// = new int[]{0, 1, -1, 2, -2}
     private PrepareListener prepareListener;
     private PreparePageInfo preparePageInfo;
+    private PageTyping pageTyping;
 
-    public PrepareThread(final PreparePageInfo preparePageInfo, ChapterMeasureManager chapterMeasureManager, int maxCacheSize ) {
+    public void updateBook(IBook iBook)
+    {
+        this.iBook=iBook;
+    }  public void updatePageTyping(PageTyping pageTyping)
+    {
+        this.pageTyping=pageTyping;
+    }
+
+    public void updateTypeParam(TypeParam typeParam)
+    {
+        this.typeParam=typeParam;
+    }
+
+    public PrepareThread(final PreparePageInfo preparePageInfo,   int maxCacheSize,Handler handler ) {
         this.preparePageInfo = preparePageInfo;
 
-        handler=new Handler(){
 
-
-            @Override
-            public void handleMessage(Message msg) {
-
-
-                switch (msg.what) {
-                    case MSG_UPDATE_PAGES: {
-                        preparePageInfo.pageInfos.clear();
-                        ChapterMeasureResult measuredResult = (ChapterMeasureResult) msg.obj;
-                        if (measuredResult != null) {
-
-                            preparePageInfo.addPages(measuredResult.pageValues);
-
-                            if (getPrepareListener() != null) {
-                                getPrepareListener().onPagePrepared(preparePageInfo);
-                            }
-                        }
-                    }
-
-
-                        break;
-
-                    case MSG_NEXT: {
-                        PageInfo measuredResult = (PageInfo) msg.obj;
-                        if (measuredResult != null) {
-                            measuredResult.isReady=true;
-                            preparePageInfo.addPage(measuredResult);
-
-                            if (getPrepareListener() != null) {
-                                getPrepareListener().onPagePrepared(preparePageInfo);
-                            }
-                        }
-
-                    }
-
-
-
-                        break;
-
-                    case MSG_PREVIOUS: {
-                        PageInfo measuredResult = (PageInfo) msg.obj;
-                        if (measuredResult != null) {
-
-                            measuredResult.isReady=true;
-                            preparePageInfo.addHead(measuredResult);
-
-                            if (getPrepareListener() != null) {
-                                getPrepareListener().onPagePrepared(preparePageInfo);
-                            }
-                        }
-
-                    }
-
-
-
-                    break;
-                }
-
-
-            }
-        };
-        this.chapterMeasureManager = chapterMeasureManager;
         this.maxCacheSize = maxCacheSize;
 
         indexOfPage = new int[maxCacheSize];
-        this.setPrepareListener(getPrepareListener());
+        this.handler = handler;
+
         for (int i = 0; i < maxCacheSize; i++) {
 
             indexOfPage[i] = ((int) Math.pow(-1, i + 1)) * ((i + 1) / 2);
@@ -120,7 +80,9 @@ public class PrepareThread extends DestroyableThread {
     @Override
     protected void runOnThread() {
 
-
+        if(iBook==null) return;
+        if(typeParam==null) return;
+        if(pageTyping==null) return;
 //        if (skip.get()) return;
         final  PreparePageInfo temp=preparePageInfo;
         final long fileOffset=temp.currentPageOffset;
@@ -128,146 +90,142 @@ public class PrepareThread extends DestroyableThread {
         final int midIndex=temp.midIndex;
           int size=temp.size;
         PageInfo currentPage=size==0?null:temp.pageInfos.get(midIndex);
-        PageInfo firstPageInfo=null;
-        PageInfo lastPageInfo=null;
+        PageInfo prePage=null;
+        PageInfo prePrePage=null;
+        PageInfo nextPage=null;
+        PageInfo nextNextPage=null;
+
         if(size==0)
         {
-            currentPage = chapterMeasureManager.initPageInfo( currentChapterIndex,fileOffset);
+
+            IChapter iChapter=iBook.getChapter(currentChapterIndex);
+            if(iChapter==null||!new File(iChapter.getFilePath()).exists())
+            {
+                handler.removeMessages(MSG_PREPARE_CHAPTER);
+                Message message = handler.obtainMessage();
+                message.what = MSG_PREPARE_CHAPTER;
+                message.arg1 = currentChapterIndex;
+                handler.sendMessageDelayed(message, 300);
+                return ;
+            }
+            currentPage = pageTyping.typePage(iChapter,fileOffset,typeParam)  ;
             if (trySkip()) {
                 return;
             }
-            firstPageInfo=currentPage;
-            lastPageInfo=currentPage;
-            Message message = handler.obtainMessage();
-            message.what = MSG_NEXT;
-            message.obj = currentPage;
-            handler.sendMessageDelayed(message,DELAY);
-            size++;
+
+            if(currentPage!=null) {
+                currentPage.setChapterInfo(iChapter);
+                Message message = handler.obtainMessage();
+                message.what = MSG_NEXT;
+                message.obj = currentPage;
+                handler.sendMessageDelayed(message, DELAY);
+            }
 
         }else
         {
-            currentPage= temp.pageInfos.get(midIndex);
-            firstPageInfo=temp.pageInfos.get(0);
-            lastPageInfo=temp.pageInfos.get(size-1);
+            currentPage= temp.getCurrentPageInfo();
+            prePage=temp.getPrePage();
+            nextPage=temp.getNextPage();
+            prePrePage=temp.getPrePrePage();
+            nextNextPage=temp.getNextNextPage();
         }
         if (trySkip()) return;
 
 
 
-        int drawNextCount=midIndex +PreparePageInfo.PREPARE_SIZE-size;
 
+        if(currentPage==null) return;
 
-
-        Log.e("drawNextCount:"+drawNextCount+",midindex:"+midIndex+",size:"+size+",info:"+lastPageInfo);
-        PageInfo nextPageInfo=lastPageInfo;
-        for (int i=0;i<drawNextCount;i++)
+        if(nextPage==null)
         {
 
 
-            if (trySkip()) return;
 
-            nextPageInfo = chapterMeasureManager.generateNextPage(nextPageInfo,temp.currentChapterIndex );
+            PageInfo   nextPageInfo = drawNextPage(currentPage);
+            if (trySkip()) {
+                return;
+            }
 
 
-            if (trySkip()) return;
             if(nextPageInfo!=null) {
                 Message message = handler.obtainMessage();
                 message.what = MSG_NEXT;
                 message.obj = nextPageInfo;
-                handler.sendMessageDelayed(message,DELAY);
-            }else
-            {
-                break;
+                handler.sendMessageDelayed(message, DELAY);
             }
 
+
+            nextPage=nextPageInfo;
         }
 
-        int drawPreviousCount= PreparePageInfo.PREPARE_SIZE-midIndex-1;
-        Log.e("drawPreviousCount:"+drawPreviousCount+currentPage);
-
-
-
-        PageInfo   previousPageInfo=firstPageInfo;
-        if(previousPageInfo!=null)
+        if(prePage==null)
         {
+            PageInfo   previousPage =  drawPrePage(currentPage);;
+            if (trySkip()) {
+                return;
+            }
 
-        for (int i=0;i<drawPreviousCount;i++) {
-
-            if (trySkip()) return;
-               previousPageInfo = chapterMeasureManager.generatePreviousPage(previousPageInfo);
-            if (trySkip()) return;
-            if (previousPageInfo != null) {
-
+            if(previousPage!=null) {
                 Message message = handler.obtainMessage();
                 message.what = MSG_PREVIOUS;
-                message.obj = previousPageInfo;
-                handler.sendMessageDelayed(message,DELAY);
-            } else {
-                break;
+                message.obj = previousPage;
+                handler.sendMessageDelayed(message, DELAY);
             }
+
+
+            prePage=previousPage;
         }
 
+
+
+
+        if(nextPage!=null&&nextNextPage==null)
+        {
+
+
+
+            PageInfo   nextPageInfo = drawNextPage(nextPage) ;
+            if (trySkip()) {
+                return;
+            }
+            if(nextPageInfo!=null) {
+
+                Message message = handler.obtainMessage();
+                message.what = MSG_NEXT;
+                message.obj = nextPageInfo;
+                handler.sendMessageDelayed(message, DELAY);
+
+                nextNextPage = nextPageInfo;
+            }
+
+
         }
-//        if(size==0)
-//        {
-//
-//
-//            ChapterMeasureResult measuredResult = chapterMeasureManager.measureResult(0, new Cancelable() {
-//                @Override
-//                public boolean isCancelled() {
-//                    return false;
-//                }
-//            });
-//
-//            Message message = handler.obtainMessage();
-//                message.what=MSG_UPDATE_PAGES;
-//                message.obj=measuredResult;
-//                handler.sendMessage(message);
-//
-//        }else
-//        if(size==0)
-//        {
-//
-//
-//            ChapterMeasureResult measuredResult = chapterMeasureManager.measureResult(0, new Cancelable() {
-//                @Override
-//                public boolean isCancelled() {
-//                    return false;
-//                }
-//            });
-//
-//            Message message = handler.obtainMessage();
-//                message.what=MSG_UPDATE_PAGES;
-//                message.obj=measuredResult;
-//                handler.sendMessage(message);
-//
-//        }else
-//        {
-//
-//
-//            if (midIndex>size-PreparePageInfo.PREPARE_SIZE) {
-//                PageInfo pageInfo = chapterMeasureManager.getNextPageInfo(temp.pageInfos.get(size - 1) );
-//                Message message = handler.obtainMessage();
-//                message.what=MSG_NEXT;
-//                message.obj=pageInfo;
-//                handler.sendMessage(message);
-//
-//            }else
-//                if(midIndex<=3)
-//                {
-//
-//
-//                        PageInfo measuredResult = chapterMeasureManager.getPreviousPageInfo(temp.pageInfos.get(0) );
-//
-//                        Message message = handler.obtainMessage();
-//                        message.what = MSG_PREVIOUS;
-//                        message.obj = measuredResult;
-//                        handler.sendMessage(message);
-//
-//
-//                }
-//
-//        }
+
+
+        if(prePage!=null&&prePrePage==null)
+        {
+            PageInfo   previousPage = drawPrePage(prePage) ;
+            if (trySkip()) {
+                return;
+            }
+
+            if(previousPage!=null) {
+                Message message = handler.obtainMessage();
+                message.what = MSG_PREVIOUS;
+                message.obj = previousPage;
+                handler.sendMessageDelayed(message, DELAY);
+            }
+
+
+            prePrePage=previousPage;
+        }
+
+
+
+
+
+
+
 
 
 
@@ -275,12 +233,7 @@ public class PrepareThread extends DestroyableThread {
     }
 
     private boolean trySkip() {
-//        try {
-//            Thread.sleep(1000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        Log.e(skip.get());
+
         if (skip.get()) {
 
             clearHandler();
@@ -291,7 +244,6 @@ public class PrepareThread extends DestroyableThread {
 
     private void clearHandler() {
 
-        handler.removeMessages(MSG_UPDATE_PAGES);
         handler.removeMessages(MSG_PREVIOUS);
         handler.removeMessages(MSG_NEXT);
     }
@@ -305,13 +257,80 @@ public class PrepareThread extends DestroyableThread {
     }
 
 
-    private static final int MID_CACHE_INDEX = 2;
-    private ChapterMeasureManager chapterMeasureManager;
-    private int currentPageCount;
+
+
+
+    private IChapter findBookChapterInfo(IChapter iChapter ,int offset) {
+        if (iChapter == null) return null;
+        int destIndex=iChapter.getIndex()+offset;
+        if (destIndex < 0||destIndex>=iBook.getChapterCount()) return null;
+        IChapter destChapter=iBook.getChapter(destIndex);
+        if (destChapter == null||!new File(destChapter.getFilePath()).exists()) {
+
+            handler.removeMessages(MSG_PREPARE_CHAPTER);
+            Message message = handler.obtainMessage();
+            message.what = MSG_PREPARE_CHAPTER;
+            message.arg1 = destIndex;
+            handler.sendMessageDelayed(message, 300);
+              return null;
+        }
+        return destChapter;
+    }
+
+    private PageInfo drawNextPage(PageInfo lastPage)
+    {
+        if (lastPage == null) return null;
+        IChapter iChapter=lastPage.getChapterInfo();
+        if(lastPage.isLastPage())
+        {
+            iChapter=findNextChapter(iChapter);
+            lastPage=null;
+        }
+        if(iChapter==null) return null;
+
+        PageInfo pageInfo = pageTyping.typePageNext(iChapter, typeParam, lastPage);
+        if(pageInfo!=null) pageInfo.setChapterInfo(iChapter);
+        return pageInfo;
+
+    };
+
+    private PageInfo drawPrePage(PageInfo lastPage)
+    {
+        if (lastPage == null) return null;
+        IChapter iChapter=lastPage.getChapterInfo();
+        if(lastPage.isFirstPage())
+        {
+            iChapter=findPrePage(iChapter);
+            lastPage=null;
+        }
+        if(iChapter==null) return null;
+
+        PageInfo pageInfo = pageTyping.typePagePre(iChapter, typeParam, lastPage);
+        if(pageInfo!=null)
+        {
+            pageInfo.setChapterInfo(iChapter);
+        }
+        return pageInfo;
+
+    };
 
 
 
 
+
+    private IChapter findNextChapter(IChapter iChapter)
+    {
+
+        return findBookChapterInfo(iChapter,1);
+
+    }
+
+    private IChapter findPrePage(IChapter iChapter)
+    {
+
+        return findBookChapterInfo(iChapter,-1);
+
+    }
 
 //    /**
 //     * 缓存页面的额绘制，
@@ -359,16 +378,6 @@ public class PrepareThread extends DestroyableThread {
 //    }
 
 
-    private static final int MaxCacheSize=30;
-    private void trimList()
-    {
-        if(preparePageInfo.pageInfos.size()>maxCacheSize)
-        {
-            int trimSize=preparePageInfo.pageInfos.size()-maxCacheSize;
-
-
-        }
-    }
 
     public PrepareListener getPrepareListener() {
         return prepareListener;

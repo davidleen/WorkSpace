@@ -3,13 +3,21 @@ package com.xxx.reader;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Shader;
+import android.graphics.drawable.Drawable;
 
 import com.giants3.android.frame.util.Utils;
+import com.giants3.android.kit.ResourceExtractor;
 import com.xxx.reader.TextScheme;
 import com.xxx.reader.TextSchemeContent;
+import com.xxx.reader.core.R;
+import com.xxx.reader.turnner.sim.SettingContent;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -18,10 +26,12 @@ public class BackgroundManager {
 
     private Bitmap background;
 
+    BitmapShader backgroundShader;
     AtomicBoolean ready=new AtomicBoolean(false);
 
 
     private static BackgroundManager instance =new BackgroundManager();
+
 
 
     public static BackgroundManager getInstance()
@@ -42,12 +52,50 @@ public class BackgroundManager {
     public void unRegister(Activity activity)
     {}
 
+    public void drawBackgroundNeeded(Canvas canvas)
+    {
+        if(ready.get())
+        {
 
+
+            if(SettingContent.getInstance().isBookSideEffect())
+            {
+                canvas.drawBitmap(background,0,0,null);
+            }
+        }
+
+    }
+
+                    Rect src=new Rect();
+                    Rect dest=new Rect();
     public  void draw(Canvas canvas)
     {
 
         if(ready.get())
         {
+
+
+
+            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+            if(SettingContent.getInstance().isBookSideEffect())
+            {
+
+
+                Rect bookSidePadding = SettingContent.getInstance().getBookSidePadding();
+                src.left= bookSidePadding.left;
+                src.top= bookSidePadding.top;
+                src.right=lastWidth- bookSidePadding.right ;
+                src.bottom=lastHeight- bookSidePadding.bottom ;
+
+                dest.top=0;
+                dest.left=0;
+                dest.right=src.right-src.left;
+                dest.bottom=src.bottom-src.top;
+
+                canvas.drawBitmap(background,src,dest,null);
+
+
+            }else
 
 
             canvas.drawBitmap(background,0,0,null);
@@ -69,12 +117,13 @@ public class BackgroundManager {
         {
              int[] wh= Utils.getScreenWH();
             background=Bitmap.createBitmap(wh[0],wh[1],Bitmap.Config.RGB_565);
+            backgroundShader=new BitmapShader(background, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
         }
 
-        if(lastHeight==height&&lastWidth==width)
-        {
-            return;
-        }
+//        if(lastHeight==height&&lastWidth==width)
+//        {
+//            return;
+//        }
 
         lastHeight=height;
         lastWidth=width;
@@ -100,6 +149,7 @@ public class BackgroundManager {
         ready.set(false);
 
         Canvas canvas=new Canvas(background);
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         if(TextSchemeContent.getBackgroundType()== TextScheme.BACKGROUND_TYPE_IMAGE)
         {
 
@@ -137,6 +187,28 @@ public class BackgroundManager {
 
 
 
+        if (SettingContent.getInstance().isBookSideEffect())
+        {
+
+            Drawable drawable= ResourceExtractor.getDrawable( R.mipmap.book_rect_left);
+
+            drawable.setBounds(0,0,drawable.getIntrinsicWidth(),canvas.getHeight());
+            drawable.draw(canvas);
+
+            Drawable right= ResourceExtractor.getDrawable( R.mipmap.book_rect_right);
+            right.setBounds(canvas.getWidth()-right.getIntrinsicWidth(),0,canvas.getWidth(),canvas.getHeight());
+            right.draw(canvas);
+
+
+            Drawable bottom= ResourceExtractor.getDrawable( R.mipmap.book_rect_bottom);
+            bottom.setBounds(0,canvas.getHeight()-bottom.getIntrinsicHeight(),canvas.getWidth(),canvas.getHeight());
+            bottom.draw(canvas);
+        }
+
+
+
+
+
         ready.set(true);
 
 
@@ -148,4 +220,7 @@ public class BackgroundManager {
 
 
     }
+
+
+
 }

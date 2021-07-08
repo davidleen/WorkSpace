@@ -20,23 +20,10 @@ public class TXTReader extends AbsReader {
     private static final String PATH_HTML_TEMP = "/temp/html/";
     public static final String EXTENSION_TEMP_PARSE_PAHT = ".txt";
 
-    public static final int UNKOWN = 0;
-    public static final int GB18030 = 1;
-    public static final int GB2312 = 2;
-
-    public static final int GBK = 3;
-    public static final int UTF_8 = 4;
-    public static final int BIG5 = 5;
-    public static final int UTF16_LE = 6;
-    public static final int UTF16_BE = 7;
-    public static final int ASCII = 8;
-
     /**
      * 所有段落结束位置， 即每一个回车字符位置。
      */
     long[] paragraphEndPositions;
-    public static final String[] ENCODINGS = new String[]{"UTF-8", "GB18030", "GB2312", "GBK",
-            "UTF-8", "BIG5", "UTF16-LE", "UTF16-BE", "ASCII"};
 
     //章末附加类型数据  赞图标
     public static final int APPENDIX_TYPE_PRAISE = 3;
@@ -235,7 +222,7 @@ public class TXTReader extends AbsReader {
         File file = new File(filename);
         if (!file.exists()) {
             Log.i("regCode(String filename) file not exits");
-            return UNKOWN;
+            return Charset.UNKOWN;
         }
 
         RandomAccessFileInputStream bInputStream;
@@ -244,37 +231,37 @@ public class TXTReader extends AbsReader {
             bInputStream.seek(0);
         } catch (Exception e) {
             Log.e(e);
-            return GBK;
+            return Charset.GBK;
         }
-        int code = GBK;
+        int code = Charset.GBK;
         try {
             int p = (bInputStream.read() << 8) + bInputStream.read();
             switch (p) {
                 case 0xefbb:
-                    code = UTF_8;
+                    code = Charset.UTF_8;
                     break;
                 case 0xfffe:
-                    code = UTF16_LE;
+                    code = Charset.UTF16_LE;
                     break;
                 case 0xfeff:
-                    code = UTF16_BE;
+                    code = Charset.UTF16_BE;
                     break;
             }
 
-            if (code == GBK) {
+            if (code == Charset.GBK) {
                 String chset = new TextCharsetDetector().guestFileEncoding(file);
                 if (chset.equals("GB18030")) {
-                    code = GB18030;
+                    code = Charset.GB18030;
                 } else if (chset.equals("GB2312")) {
-                    code = GB2312;
+                    code = Charset.GB2312;
                 } else if (chset.equals("GBK")) {
-                    code = GBK;
+                    code = Charset.GBK;
                 } else if (chset.equals("UTF-8")) {
-                    code = UTF_8;
+                    code = Charset.UTF_8;
                 } else if (chset.equals("Big5")) {
-                    code = BIG5;
+                    code = Charset.BIG5;
                 } else if (chset.equals("UTF-16LE")) {
-                    code = UTF16_LE;
+                    code = Charset.UTF16_LE;
                 } else if (chset.equals("windows-1252")) {
                     InputStream is = null;
                     try {
@@ -295,11 +282,11 @@ public class TXTReader extends AbsReader {
                         }
                     }
                 } else if (chset.equals("UTF-16BE")) {
-                    code = UTF16_BE;
+                    code = Charset.UTF16_BE;
                 } else if (chset.equals("ASCII")) {
-                    code = ASCII;
+                    code = Charset.ASCII;
                 } else {
-                    code = GBK;
+                    code = Charset.GBK;
                 }
                 Log.d("chset" + chset);
             }
@@ -323,7 +310,7 @@ public class TXTReader extends AbsReader {
     }
 
     public static int guessEncoding(byte[] bcode, int nNewLength) {
-        int code = GBK;
+        int code = Charset.GBK;
 
         int iUnicode = 0;
         int iGbkSymbol = 0;
@@ -371,26 +358,18 @@ public class TXTReader extends AbsReader {
                 || iUtf8Symbol > iGbkSymbol && iUtf8Symbol > iUniCodeBig && iUtf8Symbol > iUnicode
                 || iGbkSymbol == 0 && iUtf8Symbol == 0 && iUnicode == 0 && iUniCodeBig == 0) {
             if (iUnicode == 0) {
-                code = GBK;
+                code = Charset.GBK;
             } else {
-                code = UTF16_LE;
+                code = Charset.UTF16_LE;
             }
         } else if (iUniCodeBig > iGbkSymbol && iUniCodeBig > iUtf8Symbol && iUniCodeBig > iUnicode) {
             // m_bHasJugdeCode = TRUE;
-            code = UTF16_BE;
+            code = Charset.UTF16_BE;
         } else {
             // m_bHasJugdeCode = TRUE;
-            code = GBK;// GEnCodeTextLittle;
+            code = Charset.GBK;// GEnCodeTextLittle;
         }
         return code;
-    }
-
-    /**
-     * @param code
-     * @return
-     */
-    public static String getEncoding(int code) {
-        return ENCODINGS[code];
     }
 
     public static boolean isUTF8(byte[] str) {
@@ -474,7 +453,7 @@ public class TXTReader extends AbsReader {
         BufferedReader br = null;
         try {
             br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName),
-                    ENCODINGS[code]));
+                    Charset.ENCODINGS[code]));
             int length = 2048;
             char[] buffer = new char[2048];
             while ((length = br.read(buffer, 0, 2048)) > 0) {

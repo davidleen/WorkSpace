@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.giants3.android.adapter.AbstractRecyclerAdapter;
 import com.giants3.android.frame.util.AndroidCompatUtils;
@@ -21,12 +23,14 @@ import com.giants3.android.reader.adapter.TypefaceAdapter;
 import com.giants3.android.reader.databinding.PopTypeFaceBinding;
 import com.giants3.android.reader.scheme.TypefaceEntity;
 import com.giants3.android.reader.vm.TypesetViewModel;
+import com.giants3.android.reader.vm.ViewModelHelper;
+import com.xxx.reader.TextSchemeContent;
 import com.xxx.reader.turnner.sim.SettingContent;
 
 /**
  * 排版弹窗
  */
-public class TypesetPopupWindow extends DownUpPopupWindow<AbsPopupWindow.SimpleViewHolder> {
+public class TypesetPopupWindow extends DownUpPopupWindow {
 
 
     PopTypeFaceBinding binding;
@@ -35,12 +39,12 @@ public class TypesetPopupWindow extends DownUpPopupWindow<AbsPopupWindow.SimpleV
     public TypesetPopupWindow(final AppCompatActivity activity, final TypesetUpdateListener listener) {
         super(activity);
 
-        binding.typeface.setLayoutManager(new GridLayoutManager(activity, 6));
+        binding.typeface.setLayoutManager(new LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false));
         adapter = new TypefaceAdapter(activity);
         binding.typeface.setAdapter(adapter);
         updateLineSpace();
         updateWordSpace();
-        TypesetViewModel typefaceViewModel = createViewModel(TypesetViewModel.class);
+        TypesetViewModel typefaceViewModel = ViewModelHelper.createViewModel( activity,TypesetViewModel.class);
         typefaceViewModel.loadData();
 
 
@@ -114,39 +118,34 @@ public class TypesetPopupWindow extends DownUpPopupWindow<AbsPopupWindow.SimpleV
             @Override
             public void onClick(View v) {
 
+
                 listener.goMoreTypefaces();
                 dismiss();
 
             }
         });
 
+
     }
 
     private void updateLineSpace() {
 
         binding.lineSpace.setText(String.valueOf(SettingContent.getInstance().getLineSpace()));
-    } private void updateWordSpace() {
+    }
+
+    private void updateWordSpace() {
 
         binding.wordSpace.setText(String.valueOf(SettingContent.getInstance().getWordSpace()));
     }
 
 
-
     @Override
-    protected SimpleViewHolder createViewHolder(Context context) {
+    protected View createContent(Context context) {
         binding = PopTypeFaceBinding.inflate(LayoutInflater.from(context));
-        return new SimpleViewHolder(binding.getRoot());
+        return binding.getRoot();
     }
 
-    protected <T extends ViewModel> T createViewModel(Class<T> modelClass) {
-        Activity activity = AndroidCompatUtils.findActivityFromContext(mContext);
-        if (activity instanceof BaseViewModelActivity) {
 
-            return ((BaseViewModelActivity) activity).getViewModelProvider().get(modelClass);
-
-        }
-        return null;
-    }
 
 
     public interface TypesetUpdateListener {

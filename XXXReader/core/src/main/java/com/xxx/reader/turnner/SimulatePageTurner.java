@@ -137,8 +137,7 @@ public class SimulatePageTurner extends AbsPageTurner {
 
 
 
-            Path lastPath = null;
-            if (topPage != null) {
+            if (topPage != null ) {
 
 
 
@@ -146,7 +145,7 @@ public class SimulatePageTurner extends AbsPageTurner {
 
                 //绘制上面页
 //             long time=System.currentTimeMillis();
-              simulate.generateCurrentXORPageArea(currentPageXORArea);
+
 //                canvas.save();
 //                canvas.clipPath(currentPageXORArea, Region.Op.XOR);
 //                topPage.draw(canvas);
@@ -165,9 +164,13 @@ public class SimulatePageTurner extends AbsPageTurner {
 
                // long time=System.currentTimeMillis();
 
-                simulate.generateCurrentPageArea(currentPageArea);
 
-                topPage.draw(canvas,currentPageArea);
+
+                simulate.generateCurrentPageArea(currentPageArea);
+                canvas.save();
+                canvas.clipPath(currentPageArea);
+                topPage.draw(canvas);
+                canvas.restore();
 
               //  Log.e("time use in draw current Page:"+(System.currentTimeMillis()-time));
 
@@ -178,7 +181,7 @@ public class SimulatePageTurner extends AbsPageTurner {
                 canvas.save();
 
 
-                canvas.clipPath(currentBackArea, Region.Op.INTERSECT);
+               canvas.clipPath(currentBackArea, Region.Op.INTERSECT);
 
 
                 mPaint.setColorFilter(PageTurnHelper.getColorMatrixColorFilter());
@@ -210,7 +213,7 @@ public class SimulatePageTurner extends AbsPageTurner {
                // simulate.drawCurrentHorizontalPageShadow(canvas,currentPageArea);
             }
 
-
+            simulate.generateCurrentXORPageArea(currentPageXORArea);
             if (bottomPage != null) {
 
                 simulate.generateDownPageArea(downPageArea);
@@ -685,5 +688,12 @@ public class SimulatePageTurner extends AbsPageTurner {
         computeScroll();
 
         return true;
+    }
+
+    @Override
+    public boolean isInAnimation() {
+
+
+        return isDirectionSetting;
     }
 }

@@ -16,7 +16,17 @@ import com.xxx.reader.turnner.sim.SettingContent;
 public class Utils {
 
 private static Context baseContext;
+    /**
+     * @return get device screen width and height 获取屏幕宽高
+     */
+    public static int[] getScreenWH() {
+        int[] wh = new int[2];
 
+        DisplayMetrics metrics = baseContext.getResources().getDisplayMetrics();
+        wh[0] = metrics.widthPixels;
+        wh[1] = metrics.heightPixels;
+        return wh;
+    }
     /**
      * 获取android设备真实的屏幕宽高。
      *

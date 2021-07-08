@@ -1,6 +1,5 @@
 package com.giants3.yourreader.text;
 
-import com.giants3.pools.ObjectFactory;
 import com.giants3.pools.ObjectPool;
 import com.giants3.pools.PoolCenter;
 import com.giants3.yourreader.text.elements.WordElement;
@@ -9,7 +8,6 @@ import com.xxx.reader.turnner.sim.SettingContent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
 
 /**
  * Created by davidleen29 on 2018/12/31.
@@ -22,9 +20,9 @@ public class TextPageInfo extends PageInfo {
 
     public List<PagePara> pageParas;
 
+
     public float pageHeight;
 
-     Object lock=new Object();
 
 
     public void addParam(PagePara pagePara) {
@@ -45,25 +43,28 @@ public class TextPageInfo extends PageInfo {
     public void updateElements( ) {
 
         //计算startPos，计算 endPos
-        startPos=0;endPos=0;
+        setStartPos(0);
+        setEndPos(0);
         if(pageParas!=null&&pageParas.size()>0)
         {
 
             PagePara firstPagePara = getFirstPagePara();
             long paragragStart = firstPagePara.paraTypeset.paragraghData.paragragStart;
             if(firstPagePara.firstLine==-1)
-            {startPos=paragragStart;}else
             {
-                startPos=paragragStart+firstPagePara.paraTypeset.lineHead[firstPagePara.firstLine];
+                setStartPos(paragragStart);}else
+            {
+                setStartPos(paragragStart+firstPagePara.paraTypeset.lineHead[firstPagePara.firstLine]);
             }
 
 
             PagePara lastPagePara = getLastPagePara();
             long paragraghEnd = lastPagePara.paraTypeset.paragraghData.paragraghEnd;
             if(lastPagePara.lastLine==-1)
-            {endPos=paragraghEnd;}else
             {
-                endPos=paragraghEnd+lastPagePara.paraTypeset.lineHead[lastPagePara.lastLine];
+                setEndPos(paragraghEnd);}else
+            {
+                setEndPos(paragraghEnd+lastPagePara.paraTypeset.lineHead[lastPagePara.lastLine]);
             }
 
 
@@ -153,14 +154,14 @@ public class TextPageInfo extends PageInfo {
 
     public boolean isFirstPageOfChapter() {
 
-        return isFirstPage;
+        return isFirstPage();
 
 
     }
 
     public boolean isLastPageOfChapter() {
 
-        return isFirstPage;
+        return isFirstPage();
 
 
     }

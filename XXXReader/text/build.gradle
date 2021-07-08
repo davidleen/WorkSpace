@@ -34,4 +34,6 @@ dependencies {
     api project(path: ':frame')
     api project(path: ':core')
     api project(path: ':epub')
+
+    implementation group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
 }

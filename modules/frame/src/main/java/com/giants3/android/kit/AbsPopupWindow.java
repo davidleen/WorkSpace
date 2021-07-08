@@ -15,22 +15,20 @@ import android.widget.PopupWindow;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModel;
+import androidx.viewbinding.ViewBinding;
 
 import com.giants3.android.frame.util.AndroidCompatUtils;
 import com.giants3.android.frame.util.Log;
 
-public  abstract class AbsPopupWindow <VH extends AbsPopupWindow.ViewHolder> extends PopupWindow {
-    private VH wh;
-    protected Context mContext;
+public  abstract class AbsPopupWindow  extends PopupWindow {
+
+    protected Activity activity;
 
 
-    public AbsPopupWindow(Context context) {
-        super(context);
-        this.mContext = context;
-
-        wh = createViewHolder(context);
-
-        View contentView =wh.getRoot();
+    public AbsPopupWindow(Activity activity) {
+        super(activity);
+        this.activity = activity;
+        View contentView =createContent(activity);
         setContentView(contentView);
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         if(canAutoDismiss()) {
@@ -87,15 +85,16 @@ public  abstract class AbsPopupWindow <VH extends AbsPopupWindow.ViewHolder> ext
     }
 
 
+    protected abstract View createContent(Context context);
+
     public  abstract int getAnimationStyle();
 
 
     protected void setToppestAlpha(int alpha)
     {
 
-        if(mContext instanceof Activity)
-        {
-            Activity toppest= ((Activity) mContext);
+
+            Activity toppest= activity;
 
             while (toppest.getParent()!=null)
             {
@@ -108,7 +107,7 @@ public  abstract class AbsPopupWindow <VH extends AbsPopupWindow.ViewHolder> ext
             }
 
 
-        }
+
 
     }
 
@@ -121,20 +120,6 @@ public  abstract class AbsPopupWindow <VH extends AbsPopupWindow.ViewHolder> ext
     {}
 
 
-
-    /**
-     * 创建界面绑定对象
-     * @return
-     */
-    protected abstract VH createViewHolder(Context context);
-    /**
-     * 获取界面绑定对象
-     * @return
-     */
-    protected  VH getViewHolder()
-    {
-        return wh;
-    }
 
 
 
@@ -149,7 +134,7 @@ public  abstract class AbsPopupWindow <VH extends AbsPopupWindow.ViewHolder> ext
     }
 
 
-    public class   SimpleViewHolder  implements  ViewHolder{
+    public class   SimpleViewHolder  implements  ViewHolder {
 
         private View view;
 
@@ -170,7 +155,7 @@ public  abstract class AbsPopupWindow <VH extends AbsPopupWindow.ViewHolder> ext
 
     public void show(){
         try {
-            showAtLocation(((Activity) mContext).getWindow().getDecorView(),getLayoutGravity(), 0, 0);
+            showAtLocation(activity.getWindow().getDecorView(),getLayoutGravity(), 0, 0);
         }catch (Throwable t)
         {
             Log.e(t);

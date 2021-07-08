@@ -14,12 +14,23 @@ public class ObjectPool<T> implements ObjectFactory<T> {
     private ObjectFactory<T> factory;
     private int maxCount;
     private List<T> objPool;
+    private int createCount;
+    /**
+     * 新建对象超过最大缓存数时候，是否新建对象
+     */
+    private boolean disableOverSizeCreate;
 
-    public ObjectPool(ObjectFactory<T> factory, int maxCount) {
+    public ObjectPool(ObjectFactory<T> factory, int maxPoolSize)
+    {
+        this(factory,maxPoolSize,false);
+
+    }
+    public ObjectPool(ObjectFactory<T> factory, int maxCount,boolean disableOverSizeCreate) {
         super();
         this.factory = factory;
         this.maxCount = maxCount;
         objPool = new ArrayList<T>(maxCount);
+        this.disableOverSizeCreate = disableOverSizeCreate;
     }
 
     /**
@@ -29,17 +40,25 @@ public class ObjectPool<T> implements ObjectFactory<T> {
      */
     @Override
     public T newObject() {
+        synchronized (objPool) {
+            if (objPool.size() > 0) {
+                return objPool.remove(objPool.size() - 1);
 
-        if (objPool.size() > 0) {
-            return objPool.remove(objPool.size() - 1);
+            } else {
+                //是否超出最大缓存数且不能新建。
+                if(disableOverSizeCreate&&createCount>=maxCount)
+                {
+                    return null;
+                }
+                else
+                {
+                    T t = factory.newObject();
+                    createCount++;
+                    return t;
+                }
+            }
 
-        } else {
-            if (factory != null)
-                return factory.newObject();
-            else
-                return null;
         }
-
     }
 
     /**
@@ -48,8 +67,16 @@ public class ObjectPool<T> implements ObjectFactory<T> {
      * @param data
      */
     public void release(T data) {
-        if (objPool.size() < maxCount) {
-            objPool.add(data);
+        if(data==null) return;
+        synchronized (objPool) {
+            if (objPool.size() < maxCount) {
+                objPool.add(data);
+            }
+            if (objPool.size() > maxCount) {
+                objPool.remove(objPool.size() - 1);
+
+            }
+            System.out.println(data.getClass()+"free object in pool:"+objPool.size()+",createCount:"+createCount);
         }
 
     }
@@ -61,15 +88,19 @@ public class ObjectPool<T> implements ObjectFactory<T> {
      * @param collection
      */
     public void release(Collection<T> collection) {
-        if (objPool.size() < maxCount) {
-            objPool.addAll(collection);
+        synchronized (objPool) {
+            if (objPool.size() < maxCount) {
+                objPool.addAll(collection);
+            }
         }
 
     }
 
     public void clear() {
-        objPool.clear();
+        synchronized (objPool) {
+            objPool.clear();
 
+        }
     }
 }
 

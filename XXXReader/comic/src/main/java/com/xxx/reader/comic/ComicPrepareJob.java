@@ -124,7 +124,7 @@ public class ComicPrepareJob implements PrepareJob<ComicChapter, ComicPageInfo, 
 
 
                 ComicPageInfo comicPageInfo = new ComicPageInfo();
-
+                comicPageInfo.setChapterInfo(iChapter);
 
                 //每张图上起点
                 int offset = drawParam.height * i;
@@ -135,7 +135,7 @@ public class ComicPrepareJob implements PrepareJob<ComicChapter, ComicPageInfo, 
 
 
                 comicPageInfo.pageIndex = pageIndex++;
-                comicPageInfo.chapterIndex = iChapter.getIndex();
+
 
                 pageInfos.add(comicPageInfo);
                 if (cancelable.isCancelled()) return null;
@@ -178,7 +178,7 @@ public class ComicPrepareJob implements PrepareJob<ComicChapter, ComicPageInfo, 
 
             if (cancelable.isCancelled()) return null;
             ComicPageInfo comicPageInfo = new ComicPageInfo();
-
+            comicPageInfo.setChapterInfo(iChapter);
 
             ComicPageInfo.BitmapFrame bitmapFrame = comicPageInfo.add(chapterItem.downloadUrl, filemapper.map(iChapter, chapterItem.downloadUrl), 0, chapterItem.width, chapterItem.height);
 
@@ -206,7 +206,7 @@ public class ComicPrepareJob implements PrepareJob<ComicChapter, ComicPageInfo, 
 
 
             comicPageInfo.pageIndex = pageIndex++;
-            comicPageInfo.chapterIndex = iChapter.getIndex();
+
 
             totalPictureHeight += chapterItem.height;
             pageInfos.add(comicPageInfo);

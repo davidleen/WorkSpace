@@ -11,18 +11,13 @@ import android.graphics.Point;
 public class WordElement extends Element {
 
 
-    
     int color;
     float size;
-    boolean bold;
-    //[0,-0.25]
-    float skewX;
-    //drawPos
-    float baseLine;
-  public   String word;
+    int textStyle;
+    public String word;
 
-  public int x;
-  public int y;
+    public int x;
+    public int y;
     int paraIndex;
     int lineIndex;
 

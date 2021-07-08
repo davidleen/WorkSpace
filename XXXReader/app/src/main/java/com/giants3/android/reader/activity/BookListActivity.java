@@ -39,7 +39,7 @@ public class BookListActivity extends BaseListViewModelActivity<BookListViewMode
     }
 
     @Override
-    public void onItemClick(AbstractRecyclerAdapter adapter, Book item, int position) {
+    public void onItemClick(AbstractRecyclerAdapter adapter, final Book item, int position) {
 
 
 
@@ -52,7 +52,7 @@ public class BookListActivity extends BaseListViewModelActivity<BookListViewMode
 
             if(new File(path).exists())
             {
-                openBook(path);
+                openBook(path,item.url,item.id);
             }
             else
             {
@@ -68,7 +68,7 @@ public class BookListActivity extends BaseListViewModelActivity<BookListViewMode
                         super.onPostExecute(o);
                         if(o)
                         {
-                            openBook(path);
+                            openBook(path,item.url,item.id);
                         }
 
 
@@ -91,7 +91,7 @@ public class BookListActivity extends BaseListViewModelActivity<BookListViewMode
 //
 //            intent.putExtra("bookid",item.id);
 //            startActivity(intent);
-            Routers.openForResult(this, Uri.parse("XXX://chapterList?bookId="+item.id),111);
+            Routers.openForResult(this, Uri.parse("XXX://chapterList?bookId="+item.id+"&bookUrl="+item.url),111);
         }
 
 
@@ -105,10 +105,12 @@ public class BookListActivity extends BaseListViewModelActivity<BookListViewMode
     }
 
 
-    private void openBook(String path)
+    private void openBook(String path,String bookUrl,long bookId)
     {
         Intent intent = new Intent(BookListActivity.this, TextReadActivity.class);
         intent.putExtra("filePath", path);
+        intent.putExtra("bookUrl", bookUrl);
+        intent.putExtra("bookId", String.valueOf(bookId));
         startActivity(intent);
     }
 

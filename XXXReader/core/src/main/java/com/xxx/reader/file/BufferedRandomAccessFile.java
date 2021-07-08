@@ -50,6 +50,10 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
     public void setCode(int code) {
         this.code = code;
     }
+    public int getCode()
+    {
+        return code;
+    }
 
     public BufferedRandomAccessFile(String name, String mode, int bufferSize)
             throws IOException {
@@ -198,7 +202,7 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
                 if (buf[i] == 0x0A) {
                     if (isFirst) {
                         switch (code) {
-                            case TXTReader.UTF16_LE:
+                            case Charset.UTF16_LE:
                                 if (buf[i + 1] != 0) {
                                     continue;
                                 }
@@ -210,7 +214,7 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
                         }
                     } else {
                         switch (code) {
-                            case TXTReader.UTF16_LE:
+                            case Charset.UTF16_LE:
                                 if (buf[i + 1] != 0) {
                                     continue;
                                 }
@@ -282,7 +286,7 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
                 if (buf[i] == 0x0A) {
                     if (isFirst) {
                         switch (code) {
-                            case TXTReader.UTF16_LE:
+                            case Charset.UTF16_LE:
                                 if (buf[i + 1] != 0) {
                                     continue;
                                 }
@@ -296,7 +300,7 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
                         }
                     } else {
                         switch (code) {
-                            case TXTReader.UTF16_LE:
+                            case Charset.UTF16_LE:
                                 if (buf[i + 1] != 0) {
                                     continue;
                                 }
@@ -375,7 +379,7 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
                 if (buf[i] == 0x0A) {
                     if (isFirst) {
                         switch (code) {
-                            case TXTReader.UTF16_LE:
+                            case Charset.UTF16_LE:
                                 if (buf[i + 1] != 0) {
                                     continue;
                                 }
@@ -388,7 +392,7 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
                         }
                     } else {
                         switch (code) {
-                            case TXTReader.UTF16_LE:
+                            case Charset.UTF16_LE:
                                 if (buf[i + 1] != 0) {
                                     continue;
                                 }
@@ -528,7 +532,7 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
                     templen--;
                     if (isFirst) {
                         switch (code) {
-                            case TXTReader.UTF16_LE:
+                            case Charset.UTF16_LE:
                                 templen++;
                             default:
                                 result = getString(this.buf, readstart, templen);
@@ -536,7 +540,7 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
                         }
                     } else {
                         switch (code) {
-                            case TXTReader.UTF16_LE:
+                            case Charset.UTF16_LE:
                                 templen++;
                             default:
                                 if (l + templen >= temp.length) {
@@ -592,7 +596,7 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
 
     public void findLastLine() throws IOException {
         int readstart;
-        if (code == TXTReader.UTF16_BE || code == TXTReader.UTF16_LE)
+        if (code == Charset.UTF16_BE || code == Charset.UTF16_LE)
             readstart = (int) (this.curpos - this.bufstartpos - 3);
         else
             readstart = (int) (this.curpos - this.bufstartpos - 2);
@@ -601,7 +605,7 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
             for (i = readstart; i > 0; i--) {
                 if (buf[i] == 0x0A) {
                     switch (code) {
-                        case TXTReader.UTF16_LE:
+                        case Charset.UTF16_LE:
                             if (buf[i + 1] != 0) {
                                 continue;
                             }
@@ -697,7 +701,7 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
         }
         try {
             string = new String(data, startIndex < 0 ? 0 : startIndex, length,
-                    TXTReader.getEncoding(code));
+                    Charset.getEncoding(code));
         } catch (UnsupportedEncodingException e) {
             string = null;
             Log.e(e);

@@ -29,6 +29,7 @@ public class HomeActivity extends  BaseActivity<ActivityHomeBinding> implements 
         getViewBinding().text.setOnClickListener(this);
         getViewBinding().list.setOnClickListener(this);
         getViewBinding().typeface.setOnClickListener(this);
+        getViewBinding().test.setOnClickListener(this);
         LibContext.init(getApplicationContext());
 
     }
@@ -50,17 +51,19 @@ public class HomeActivity extends  BaseActivity<ActivityHomeBinding> implements 
                 break;
                 case R.id.text: {
                     Intent intent = new Intent(HomeActivity.this, TextReadActivity.class);
-                    intent.putExtra("filePath", StorageUtils.getFilePath("__books__epub__大唐双龙传.epub"));
+                    intent.putExtra("filePath", StorageUtils.getFilePath("__books__epub__氣泡戀人.epub"));
                     startActivity(intent);
                 }
 
                 break;
-//            case R.id.list: {
-//
-//                        Routers.openForResult(this,"XXX://bookList",999);
-//                }
-//
-//                break;
+            case R.id.test: {
+
+                Intent intent = new Intent(HomeActivity.this, TestReadActivity.class);
+                intent.putExtra("filePath", StorageUtils.getFilePath("__books__epub__氣泡戀人.epub"));
+                startActivity(intent);
+                }
+
+                break;
 
             case R.id.list: {
                 Intent intent = new Intent(HomeActivity.this, BookListActivity.class);

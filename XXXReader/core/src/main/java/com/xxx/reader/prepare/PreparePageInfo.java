@@ -1,7 +1,6 @@
 package com.xxx.reader.prepare;
 
-import android.view.MotionEvent;
-
+import com.giants3.pools.PoolCenter;
 import com.xxx.reader.core.PageInfo;
 
 import java.util.Collection;
@@ -14,6 +13,8 @@ public class PreparePageInfo {
     int currentPageIndex;
     long  currentPageOffset;
     long  currentPageFileSize;
+
+
 
       LinkedList<PageInfo> pageInfos;
       int midIndex;
@@ -39,6 +40,36 @@ public class PreparePageInfo {
 
     }
 
+
+    public PageInfo getPrePage()
+    {
+
+        if(midIndex-1>=0)
+            return pageInfos.get(midIndex-1);
+        return null;
+    }
+
+
+
+    public PageInfo getPrePrePage()
+    {
+        if(midIndex-2>=0)
+            return pageInfos.get(midIndex-2);
+        return null;
+    }
+    public PageInfo getNextPage()
+    {
+        if(midIndex+1<size)
+            return pageInfos.get(midIndex+1);
+        return null;
+    }
+
+    public PageInfo getNextNextPage()
+    {
+        if(midIndex+2<size)
+            return pageInfos.get(midIndex+2);
+        return null;
+    }
     public void addPages(List<PageInfo> pageValues) {
 
 
@@ -48,7 +79,7 @@ public class PreparePageInfo {
     }
 
 
-    public void addPage(PageInfo pageInfo) {
+    public void addLast(PageInfo pageInfo) {
 
         if(pageInfo==null) return;
 
@@ -58,7 +89,7 @@ public class PreparePageInfo {
     }
 
 
-    public void addHead(PageInfo pageInfo) {
+    public void addFirst(PageInfo pageInfo) {
         if(pageInfo==null) return;
         pageInfos.add(0,pageInfo);
         size=pageInfos.size();
@@ -104,9 +135,9 @@ public class PreparePageInfo {
 
         }
 
-        currentChapterIndex=pageInfos.get(midIndex).chapterIndex;
-        currentPageFileSize=pageInfos.get(midIndex).fileSize;
-        currentPageOffset=pageInfos.get(midIndex).startPos;
+        currentChapterIndex=pageInfos.get(midIndex).getChapterInfo().getIndex();
+        currentPageFileSize= pageInfos.get(midIndex).getFileSize();
+        currentPageOffset= pageInfos.get(midIndex).getStartPos();
 
 
     }
@@ -117,7 +148,9 @@ public class PreparePageInfo {
         if(remove!=null) {
             remove.recycle();
             remove.isReady=false;
+            PoolCenter.getObjectPool(PageInfo.class).release(remove);
         }
+
 
 
 
@@ -174,8 +207,18 @@ public class PreparePageInfo {
         if(pageInfos.size()>0)
         {
             PageInfo pageInfo = pageInfos.get(midIndex);
-            currentPageOffset=  pageInfo.startPos ;
+            currentPageOffset= pageInfo.getStartPos();
         }
+        clearPages();
+
+    }
+
+    public void resetAll()
+    {
+
+
+
+        currentPageOffset=0;
         clearPages();
 
     }
@@ -194,7 +237,7 @@ public class PreparePageInfo {
 
         if(currentP!=null)
         {
-            currentChapterIndex=currentP.chapterIndex+1;
+            currentChapterIndex=currentP.getChapterInfo().getIndex()+1;
 
         }else
         {
@@ -213,8 +256,7 @@ public class PreparePageInfo {
 
         if(currentP!=null)
         {
-            currentChapterIndex=currentP.chapterIndex-1;
-
+            currentChapterIndex=currentP.getChapterInfo().getIndex()-1;
         }else
         {
             currentChapterIndex--;

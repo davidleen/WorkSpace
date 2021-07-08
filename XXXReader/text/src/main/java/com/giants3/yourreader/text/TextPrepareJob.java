@@ -78,10 +78,10 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
                 if(lastTextPageInfo==null) textPageInfo.pageIndex=0;
                 else
                     textPageInfo.pageIndex=lastTextPageInfo.pageIndex+1;
-                textPageInfo.chapterIndex=iChapter.getIndex();
+                textPageInfo.setChapterInfo(iChapter);
                 textPageInfo.pageHeight=drawParam.height;
                 textPageInfo.updateElements( );
-                textPageInfo.fileSize=bufferedRandomAccessFile.length();
+                textPageInfo.setFileSize(bufferedRandomAccessFile.length());
                 result.pageValues.add(textPageInfo);
                 lastTextPageInfo=textPageInfo;
             }
@@ -416,13 +416,13 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
 
 
                         textPageInfo.pageIndex=0;
-                    textPageInfo.chapterIndex=iChapter.getIndex();
+                    textPageInfo.setChapterInfo(iChapter);
                     textPageInfo.pageHeight=drawParam.height;
 
                     textPageInfo.updateElements( );
-                    textPageInfo.fileSize=bufferedRandomAccessFile.length();
+                    textPageInfo.setFileSize(bufferedRandomAccessFile.length());
                     //当前页初始化pos 重置为传递进来的offset值
-                    textPageInfo.startPos=fileOffset;
+                    textPageInfo.setStartPos(fileOffset);
 
                 }
 
@@ -504,7 +504,7 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
             //  Log.e(line);
         }
         if(textPageInfo!=null)
-            textPageInfo.isLastPage=line==null;
+            textPageInfo.setLastPage(line==null);
 
 
         return textPageInfo;
@@ -698,7 +698,7 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
 
             Log.e("到达章节头了，重新绘制第一页，。");
             textPageInfo=generateNextPage2(null,randomAccessFile,drawParam,txTtypeset);
-            textPageInfo.isFirstPage=true;
+            textPageInfo.setFirstPage(true);
         }
         return textPageInfo;
 
@@ -713,6 +713,13 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
     @Override
     public TextPageInfo generateNext(TextPageInfo currentPageInfo, IChapter iChapter, DrawParam drawParam) {
 
+
+
+
+
+
+
+
         float textSize = SettingContent.getInstance().getTextSize();
         int width = drawParam.width;
         String path = chapterUrl2FileMapper.map(iChapter, iChapter.getUrl());
@@ -724,21 +731,25 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
             int code = TXTReader.regCode(path);
 
             bufferedRandomAccessFile.setCode(code);
+
+
+
+
             TextPageInfo textPageInfo = generateNextPage(currentPageInfo, bufferedRandomAccessFile, drawParam, txTtypeset);
 
             if (textPageInfo != null) {
 
-                textPageInfo.isFirstPage=currentPageInfo==null;
+                textPageInfo.setFirstPage(currentPageInfo==null);
                 if (currentPageInfo == null)
 
                     textPageInfo.pageIndex = 0;
                 else
                     textPageInfo.pageIndex = currentPageInfo.pageIndex + 1;
-                textPageInfo.chapterIndex = iChapter.getIndex();
+                textPageInfo.setChapterInfo(iChapter);
 
                 textPageInfo.pageHeight=drawParam.height;
                 textPageInfo.updateElements();
-                textPageInfo.fileSize=bufferedRandomAccessFile.length();
+                textPageInfo.setFileSize(bufferedRandomAccessFile.length());
 
 
             }
@@ -782,11 +793,11 @@ public class TextPrepareJob implements PrepareJob<IChapter, TextPageInfo, DrawPa
 //                    textPageInfo.pageIndex = 0;
 //                else
 //                    textPageInfo.pageIndex = currentPageInfo.pageIndex + 1;
-                textPageInfo.chapterIndex = iChapter.getIndex();
+                textPageInfo.setChapterInfo(iChapter);
 
                 textPageInfo.pageHeight=drawParam.height;
                 textPageInfo.updateElements();
-                textPageInfo.fileSize=bufferedRandomAccessFile.length();
+                textPageInfo.setFileSize(bufferedRandomAccessFile.length());
 
             }
 

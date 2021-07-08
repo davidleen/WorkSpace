@@ -11,6 +11,14 @@ public class TextSchemeContent {
     public static final String BACK_GROUND_IMAGE_PATH = "backGroundImagePath";
     private static final String TEXT_COLOR = "textColor";
 
+    public static final String KEY_TEXT_STYLE ="text_style_to_read";
+
+
+
+    public static final int TEXT_STYLE_BOLD=1;
+    public static final int TEXT_STYLE_ITALIC=2;
+    public static final int TEXT_STYLE_UNDERLINE=4;
+
     private static   int mode =SettingContent.getInstance().getStyleMode();
 
     public static int getBackgroundType() {
@@ -136,4 +144,15 @@ public class TextSchemeContent {
         return ColorStateListFactory.alphaColor( getBackGroundColor(),0.625f);
     }
 
+
+    public static int getTextStyle() {
+        return KVFactory.getInstance(TEXT_SCHEME_NAME).getInt(KEY_TEXT_STYLE,0);
+    }
+
+
+
+
+    public static void setTextStyle(int textStyle) {
+        KVFactory.getInstance(TEXT_SCHEME_NAME).putInt(KEY_TEXT_STYLE,textStyle);
+    }
 }

@@ -1,6 +1,8 @@
 package com.giants3.reader.book;
 
 
+import com.giants3.android.frame.util.StorageUtils;
+import com.giants3.android.frame.util.StringUtil;
 import com.xxx.reader.book.IChapter;
 
 import java.io.File;
@@ -111,7 +113,12 @@ public class EpubChapter implements IChapter {
 
     @Override
     public String getName() {
-        return resource.getResource().getTitle();
+        String title = resource.getResource().getTitle();
+        if(StringUtil.isEmpty(title))
+        {
+            title=resource.getResource().getHref();
+        }
+        return title;
     }
 
     @Override
@@ -121,7 +128,9 @@ public class EpubChapter implements IChapter {
 
     @Override
     public String getFilePath() {
-        return book.getTitle()+File.separator+resource.getResource().getHref();
+
+        String path = book.getTitle() + File.separator + resource.getResource().getHref();
+        return  StorageUtils.getFilePath(path);
     }
 
     @Override

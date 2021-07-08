@@ -422,7 +422,7 @@ public class TXTtypeset {
     }
 
     // 不能在行首出现的字符
-    private final boolean isInvalidHeadChar(char charIn) {
+    public static final boolean isInvalidHeadChar(char charIn) {
         switch (charIn) {
             case '；':
             case ';':
@@ -452,7 +452,7 @@ public class TXTtypeset {
     }
 
     // 不能在行尾部出现的字符
-    private final boolean isInvalidEndChar(char charIn) {
+    public  static final boolean isInvalidEndChar(char charIn) {
         switch (charIn) {
             case '、':
             case '’':
@@ -611,7 +611,7 @@ public class TXTtypeset {
             return chineseCharWidth;
         }
         if (charWidths[c] == 0 || measureDirect) {
-            charWidths[c] = (byte) paint.measureText(c + "");
+            charWidths[c] = (byte) paint.measureText(c + "");  
         }
         return charWidths[c] & 0xff;
     }

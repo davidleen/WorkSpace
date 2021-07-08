@@ -2,17 +2,17 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="#ffffff"
     android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:layout_height="wrap_content">
+    android:paddingRight="16dp">
 
 
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
-        android:gravity="center"
         android:layout_height="40dp"
+        android:gravity="center"
         android:text="字体"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -21,8 +21,8 @@
         android:id="@+id/btn_typeface"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBaseline_toBaselineOf="@+id/title"
         android:text="更多"
+        app:layout_constraintBaseline_toBaselineOf="@+id/title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -35,7 +35,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title" />
-
 
 
     <LinearLayout
@@ -80,6 +79,7 @@
 
 
     <LinearLayout
+        android:id="@+id/panel_line_space"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"

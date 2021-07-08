@@ -8,3 +8,4 @@ android_workspace/.idea/
 *.log
 *.class
 *.class
+modules/library-java/out/

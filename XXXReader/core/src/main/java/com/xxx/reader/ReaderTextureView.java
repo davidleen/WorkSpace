@@ -88,7 +88,7 @@ public class ReaderTextureView extends TextureView implements IDrawable, Texture
         drawParam.width=width;
         drawParam.height=height;
 
-        drawParam.padding=new int[]{30,80,30,80};
+        drawParam.padding=new float[]{30,80,30,80};
         if(drawLayer!=null)
         {
             drawLayer.updateDrawParam(drawParam);

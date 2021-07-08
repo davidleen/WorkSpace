@@ -12,19 +12,19 @@ public class PoolCenter {
     private static final Map<Class<?>, ObjectPool<?>> pools = new HashMap<Class<?>, ObjectPool<?>>();
 
 
-    public synchronized static final <T> ObjectPool getObjectPool(final Class<T> c) {
+    public synchronized static final <T> ObjectPool<T> getObjectPool(final Class<T> c) {
        return getObjectPool(c,100);
 
     }
 
-    public synchronized static final <T>  ObjectPool getObjectPool(final Class<T> c,int size) {
-        ObjectPool result = null;
+    public synchronized static final <T>  ObjectPool<T>  getObjectPool(final Class<T> c,int size) {
+        ObjectPool<T> result = null;
         if (pools.containsKey(c)) {
             result = (ObjectPool) pools.get(c);
         }
 
         if (result == null) {
-            result = new ObjectPool(getObjectFactory(c), size);
+            result = new ObjectPool<T>(getObjectFactory(c), size);
             pools.put(c, result);
         }
 
@@ -68,5 +68,10 @@ public class PoolCenter {
 
         return result;
 
+    }
+
+    public static <K> void register(Class<K> kClass, ObjectFactory<K> factory,int maxPoolSize,boolean disableOverSizeCreate)
+    {
+        pools.put(kClass,new ObjectPool<K>(factory,maxPoolSize,disableOverSizeCreate));
     }
 }

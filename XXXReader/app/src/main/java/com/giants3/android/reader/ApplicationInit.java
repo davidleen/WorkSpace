@@ -3,6 +3,7 @@ package com.giants3.android.reader;
 import android.app.Application;
 import android.content.Intent;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 
 import com.giants3.android.convert.JsonFactory;
@@ -17,6 +18,8 @@ import com.giants3.android.network.ApiConnection;
 import com.giants3.android.reader.domain.ResApiFactory;
 import com.giants3.android.storage.KVFactory;
 import com.giants3.pools.ObjectFactory;
+import com.giants3.pools.ObjectPool;
+import com.giants3.pools.PoolCenter;
 import com.github.mzule.activityrouter.router.RouterCallback;
 import com.github.mzule.activityrouter.router.RouterCallbackProvider;
 import com.github.mzule.activityrouter.router.SimpleRouterCallback;
@@ -54,7 +57,14 @@ public class ApplicationInit extends Application  implements RouterCallbackProvi
               return new GsonParser();
             }
         });
+        PoolCenter.register(Bitmap.class, new ObjectFactory<Bitmap>() {
+            @Override
+            public Bitmap newObject() {
 
+                int[] screenWH = Utils.getScreenWH();
+                return Bitmap.createBitmap(screenWH[0],screenWH[1], Bitmap.Config.ARGB_8888);
+            }
+        },2,true);
 
     }
 

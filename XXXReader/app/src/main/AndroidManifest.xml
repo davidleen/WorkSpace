@@ -15,7 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".activity.TypefaceActivity"></activity>
-        <activity android:name=".ComicReadActivity"></activity>
+
+        <activity android:name=".activity.TestReadActivity"></activity>
         <activity android:name=".activity.TextReadActivity"></activity>
         <activity android:name=".ComicListActivity"></activity>
         <activity android:name=".activity.ChapterListActivity"></activity>

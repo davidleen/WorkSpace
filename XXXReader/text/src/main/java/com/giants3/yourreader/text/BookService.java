@@ -1,12 +1,17 @@
 package com.giants3.yourreader.text;
 
+import android.os.AsyncTask;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 
 import com.giants3.android.frame.util.StorageUtils;
+import com.giants3.android.frame.util.Utils;
 import com.giants3.android.service.AbstractService;
 import com.giants3.io.FileUtils;
 import com.giants3.reader.book.EpubChapter;
+import com.xxx.reader.ThreadConst;
 import com.xxx.reader.Url2FileMapper;
 import com.xxx.reader.book.IBook;
 import com.xxx.reader.book.IChapter;
@@ -20,11 +25,17 @@ import com.xxx.reader.prepare.PrepareJob;
 import com.xxx.reader.prepare.PrepareListener;
 import com.xxx.reader.prepare.PreparePageInfo;
 import com.xxx.reader.prepare.PrepareThread;
+import com.xxx.reader.text.page.TextPageInfo2Typing;
+import com.xxx.reader.text.page.TypeParam;
 import com.xxx.reader.turnner.sim.SettingContent;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+
+import static com.xxx.reader.prepare.PrepareThread.MSG_NEXT;
+import static com.xxx.reader.prepare.PrepareThread.MSG_PREPARE_CHAPTER;
+import static com.xxx.reader.prepare.PrepareThread.MSG_PREVIOUS;
 
 
 public class BookService extends AbstractService<BookService.BookReadController> {
@@ -48,61 +59,119 @@ public class BookService extends AbstractService<BookService.BookReadController>
          * 最大的缓存数量
          */
         public static int MAX_CACHE_SIZE = 5;
-        /**
-         * 章节测量分页功能处理类。
-         */
-        ChapterMeasureManager  chapterMeasureManager;
+
         PrepareThread prepareThread;
-        PrepareJob prepareJob;
+
         private PrepareListener prepareListener;
         PreparePageInfo preparePageInfo;
+        private IBook iBook;
+
         public BookReadController ()
         {
 
             preparePageInfo=new PreparePageInfo();
-              prepareJob = new TextPrepareJob(new Url2FileMapper<IChapter>() {
+
+           Handler    handler=new Handler(){
+
+
                 @Override
-                public String map(IChapter iChapter, String url) {
-
-                    if (iChapter instanceof EpubChapter) {
+                public void handleMessage(Message msg) {
 
 
-                        String filePath = StorageUtils.getFilePath(iChapter.getFilePath());
-                        if (!new File(filePath).exists()) {
-                            try {
+                    switch (msg.what) {
 
-                                FileUtils.writeToFile(filePath, ((EpubChapter) iChapter).getData());
 
-                            } catch (Exception e) {
-                                e.printStackTrace();
+
+                        case MSG_PREPARE_CHAPTER: {
+
+                       int chapterIndex=msg.arg1;
+
+                        IChapter iChapter=iBook.getChapter(chapterIndex);
+
+                        if(iChapter instanceof EpubChapter)
+                        {
+                            String filePath = iChapter.getFilePath();
+                            if (!new File(filePath).exists()) {
+
+
+                                new AsyncTask (){
+                                    @Override
+                                    protected Object doInBackground(Object[] objects) {
+
+                                        try {
+
+                                            FileUtils.writeToFile(filePath, ((EpubChapter) iChapter).getData());
+
+
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+
+
+                                        return null;
+                                    }
+
+                                    @Override
+                                    protected void onPostExecute(Object o) {
+                                        super.onPostExecute(o);
+                                        updateCache();
+                                    }
+                                }.executeOnExecutor(ThreadConst.THREAD_POOL_EXECUTOR);
+
                             }
                         }
-                        return filePath;
 
 
-                    } else if (iChapter instanceof TextChapter) {
 
-                        return iChapter.getFilePath();
+
+
+
+
+
+                            break;
+                        }
+                        case MSG_NEXT: {
+                            PageInfo measuredResult = (PageInfo) msg.obj;
+                            if (measuredResult != null) {
+                                measuredResult.isReady=true;
+                                preparePageInfo.addLast(measuredResult);
+
+                                if (prepareListener != null) {
+                                    prepareListener.onPagePrepared(preparePageInfo);
+                                }
+                            }
+
+                        }
+
+
+
+                        break;
+
+                        case MSG_PREVIOUS: {
+                            PageInfo measuredResult = (PageInfo) msg.obj;
+                            if (measuredResult != null) {
+
+                                measuredResult.isReady=true;
+                                preparePageInfo.addFirst(measuredResult);
+
+                                if (prepareListener != null) {
+                                    prepareListener.onPagePrepared(preparePageInfo);
+                                }
+                            }
+
+                        }
+
+
+
+                        break;
                     }
 
 
-                    String fileName = String.valueOf(url.hashCode());
-                    try {
-                        fileName = URLDecoder.decode(url.substring(url.lastIndexOf("/")), "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                    return StorageUtils.getFilePath(fileName);
                 }
-
-                @Override
-                public String map(String chapterName) {
-                    return null;
-                }
-            });
-            chapterMeasureManager = new ChapterMeasureManager<>(this, prepareJob, IPageTurner.HORIZENTAL);
-
-            prepareThread = new PrepareThread(preparePageInfo,chapterMeasureManager, MAX_CACHE_SIZE);
+            };
+            prepareThread = new PrepareThread(preparePageInfo,  MAX_CACHE_SIZE,handler);
+            prepareThread.updatePageTyping(new TextPageInfo2Typing());
             prepareThread.start();
         }
 
@@ -110,17 +179,37 @@ public class BookService extends AbstractService<BookService.BookReadController>
 
         public void updateDrawParam(DrawParam drawParam)
         {
-            if(chapterMeasureManager!=null)
-            {
-                chapterMeasureManager.updateDrawParam(drawParam);
-            }
+
+
+            preparePageInfo.onSettingChange();
+            prepareThread.updateTypeParam(createTypePara(drawParam));
+
+            updateCache();
         }
 
+        private TypeParam createTypePara(DrawParam drawParam)
+        {
+            TypeParam typeParam = new TypeParam();
+            int[] screenWH = Utils.getScreenWH();
+            typeParam.width =drawParam.width;
+            typeParam.height = drawParam.height;
+            typeParam.textSize = SettingContent.getInstance().getTextSize();
+            typeParam.lineSpace = (int) SettingContent.getInstance().getLineSpace();
+            typeParam.wordSpace = (int) SettingContent.getInstance().getWordSpace();
+            typeParam.paragraphSpace = (int) SettingContent.getInstance().getParaSpace();
+            typeParam.includeFontPadding = true;
+            typeParam.padding = SettingContent.getInstance().getPaddings();
+
+            return typeParam;
+        }
         public void updateBook(IBook  iBook)
         {
+            this.iBook = iBook;
 
 
-            chapterMeasureManager.setbook(iBook);
+
+            prepareThread.updateBook(iBook);
+            preparePageInfo.resetAll();
             updateCache();
 
                 //step 1 检查下载
@@ -135,7 +224,8 @@ public class BookService extends AbstractService<BookService.BookReadController>
         }
         public boolean canTurnPrevious()
         {
-          return  preparePageInfo.canTurnPrevious();
+          return  preparePageInfo
+                  .canTurnPrevious();
         }
 
 
@@ -169,6 +259,16 @@ public class BookService extends AbstractService<BookService.BookReadController>
 
         }
 
+
+        /**
+         * 更新排版相关参数
+         * @param txTtypeset
+         */
+        public void updateTypeset(TXTtypeset txTtypeset)
+        {
+
+        }
+
         @Override
         public boolean canPageChangedNext() {
             return false;
@@ -183,7 +283,7 @@ public class BookService extends AbstractService<BookService.BookReadController>
         public void setPrepareListener(PrepareListener prepareListener) {
 
             this.prepareListener = prepareListener;
-            prepareThread.setPrepareListener(prepareListener);
+
         }
 
         public void jump(float progress) {
@@ -231,12 +331,30 @@ public class BookService extends AbstractService<BookService.BookReadController>
 
         }
 
+
+        public void bookSideEffectChanged()
+        {
+
+
+            preparePageInfo.onSettingChange();
+            updateCache();
+        }
+
         public void fontSizeAdd() {
 
             float textSize = SettingContent.getInstance().getTextSize();
             if(textSize>60) return;
             textSize++;
             SettingContent.getInstance().setTextSize(textSize);
+            preparePageInfo.onSettingChange();
+            updateCache();
+
+        }
+
+        public void fontStyleChange() {
+
+
+
             preparePageInfo.onSettingChange();
             updateCache();
 

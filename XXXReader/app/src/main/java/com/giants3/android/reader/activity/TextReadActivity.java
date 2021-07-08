@@ -1,13 +1,12 @@
 package com.giants3.android.reader.activity;
 
 import android.app.Activity;
-import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,6 +14,7 @@ import android.os.IBinder;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
 
 import androidx.annotation.Nullable;
@@ -32,7 +32,12 @@ import com.giants3.android.reader.adapter.TextSchemeAdapter;
 import com.giants3.android.reader.databinding.ActivityTextReaderBinding;
 import com.giants3.android.reader.scheme.TypefaceEntity;
 import com.giants3.android.reader.scheme.TypefaceHelper;
+import com.giants3.android.reader.window.BooksPopupWindow;
 import com.giants3.android.reader.window.TypesetPopupWindow;
+import com.giants3.android.service.ServiceBinderHelper;
+import com.giants3.android.window.WindowHelper;
+import com.giants3.reader.entity.Book;
+import com.xxx.reader.text.page.ParaTypeset;
 import com.xxx.reader.TextScheme;
 import com.giants3.android.reader.vm.TextReadViewModel;
 import com.xxx.reader.BackgroundManager;
@@ -67,12 +72,18 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
     PagePlayer<IChapter, TextPageInfo, DrawParam, TextPageBitmap> prepareLayer;
 
     private IBook iBook;
-    ServiceConnection conn;
     DrawParam drawParam;
     private PreparePageInfo preparePageInfo;
-
+    private  DrawLayer drawLayer;
     Paint paint;
 
+    private
+
+    IPageTurner pageTurner = null;
+
+
+    private boolean isBookServiceBound;
+    private ServiceBinderHelper bookServiceBinder;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,39 +158,116 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
             }
         });
 
-        Intent intent = new Intent(this, BookService.class);
-        conn = new ServiceConnection() {
+
+        getViewBinding().switchBook.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
+            public void onClick(View v) {
 
-                bookReadController = (BookService.BookReadController) service;
-                if (drawParam != null)
-                    bookReadController.updateDrawParam(drawParam);
-                bookReadController.setPrepareListener(TextReadActivity.this);
-                if (iBook != null)
-                    bookReadController.updateBook(iBook);
-//                getViewModel().getBookInfo().observe(TextReadActivity.this, new Observer<IBook>() {
-//                    @Override
-//                    public void onChanged(IBook iBook) {
-//
-//
-//
-//                        if (iBook != null)
-//                            bookReadController.updateBook(iBook);
-//                    }
-//                });
 
-            }
+                final BooksPopupWindow window=new BooksPopupWindow(TextReadActivity.this ,new BooksPopupWindow.BookSelectListener(){
+                    @Override
+                    public void onBookPick(final Book book) {
 
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
+
+                        getViewModel().updateBook(book.id,book.name,book.url);
+
+
+
+
+                    }
+                });
+                window.show();
+
+                hideSettingPanel();
+
 
 
             }
-        };
-        bindService(intent, conn, Service.BIND_AUTO_CREATE);
+        });
+        getViewBinding().menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
 
+                getViewModel().goChapterList();
+
+
+                hideSettingPanel();
+
+
+
+            }
+        });
+
+//        Intent intent = new Intent(this, BookService.class);
+//        conn = new ServiceConnection() {
+//            @Override
+//            public void onServiceConnected(ComponentName name, IBinder service) {
+//
+//                bookReadController = (BookService.BookReadController) service;
+//                if (drawParam != null)
+//                    bookReadController.updateDrawParam(drawParam);
+//                bookReadController.setPrepareListener(TextReadActivity.this);
+//                if (iBook != null)
+//                    bookReadController.updateBook(iBook);
+////                getViewModel().getBookInfo().observe(TextReadActivity.this, new Observer<IBook>() {
+////                    @Override
+////                    public void onChanged(IBook iBook) {
+////
+////
+////
+////                        if (iBook != null)
+////                            bookReadController.updateBook(iBook);
+////                    }
+////                });
+//
+//            }
+//
+//            @Override
+//            public void onServiceDisconnected(ComponentName name) {
+//
+//
+//            }
+//        };
+        if (!isBookServiceBound) {
+            bookServiceBinder.bindService(new ServiceBinderHelper.BindResultListener() {
+                @Override
+                public void onBindResult(boolean bindResult) {
+
+                    isBookServiceBound = bindResult;
+                }
+
+                @Override
+                public void onServiceConnected(ComponentName name, IBinder service) {
+
+                    bookReadController = (BookService.BookReadController) service;
+                    handleOnServiceBinder();
+
+                }
+
+                @Override
+                public void onServiceDisconnected(ComponentName name) {
+                    //do nothing
+
+                }
+            });
+        }else
+        {
+            handleOnServiceBinder();
+        }
+
+
+    }
+
+    private void handleOnServiceBinder()
+    {
+        if(bookReadController!=null) {
+            if (drawParam != null)
+                bookReadController.updateDrawParam(drawParam);
+            bookReadController.setPrepareListener(TextReadActivity.this);
+            if (iBook != null)
+                bookReadController.updateBook(iBook);
+        }
     }
 
     private void updateStyleModeView() {
@@ -201,12 +289,15 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
     private Runnable updateProgressRunnable;
 
     private void init() {
+
+
+        getSupportActionBar().hide();
         paint=new Paint();
         paint.setSubpixelText(true);
         paint.setStrokeWidth(1);
         paint.setColor(TextSchemeContent.getTextColor());
         paint.setTextSize(SettingContent.getInstance().getTextSize());
-
+        bookServiceBinder=new ServiceBinderHelper(this,BookService.class);
         updateTypeface();
         updateStyleModeView();
         getViewBinding().themes.setLayoutManager(new GridLayoutManager(this,1));
@@ -420,11 +511,11 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
 
 
 
-            final     TypesetPopupWindow womdpw=new TypesetPopupWindow(TextReadActivity.this, new TypesetPopupWindow.TypesetUpdateListener() {
+            final     TypesetPopupWindow window=new TypesetPopupWindow(TextReadActivity.this, new TypesetPopupWindow.TypesetUpdateListener() {
                     @Override
                     public void onNewTypeface(TypefaceEntity typeface) {
 
-
+                        SettingContent.getInstance().setTypeface (JsonFactory.getInstance().toJson(typeface));
                         updateTypeface(typeface);
                     }
 
@@ -455,7 +546,7 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
 
                     }
                 });
-                womdpw.show();
+                window.show();
 
                 hideSettingPanel();
 
@@ -489,23 +580,41 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
         drawParam = new DrawParam();
         drawParam.width = wh[0];
         drawParam.height = wh[1];
+        drawParam.padding =SettingContent.getInstance().getPaddings();
         prepareLayer.updateDrawParam(drawParam);
-        readerView.setOnSizeChangeListener(new ReaderView.onSizeChangeLister() {
+        final ReaderView.onSizeChangeLister onSizeChangeLister = new ReaderView.onSizeChangeLister() {
             @Override
             public void onSizeChanged(int width, int height) {
 
-                BackgroundManager.getInstance().update(width,height);
+                BackgroundManager.getInstance().update(width, height);
                 DrawParam drawParam = new DrawParam();
-                drawParam.width = width;
-                drawParam.height = height;
+                int boxMarginH = 0;
+                int boxMarginV = 0;
+                if (SettingContent.getInstance().isBookSideEffect()) {
+                    Rect bookSidePadding = SettingContent.getInstance().getBookSidePadding();
+                    boxMarginH = bookSidePadding.left + bookSidePadding.right;
+                    boxMarginV = bookSidePadding.top + bookSidePadding.bottom;
+
+
+                }
+//
+
+                drawParam.width = width - boxMarginH;
+                drawParam.height = height - boxMarginV;
+
+                if(pageTurner!=null)
+                {
+                    pageTurner.updateDrawParam(drawParam);
+                }
                 prepareLayer.updateDrawParam(drawParam);
                 TextReadActivity.this.drawParam = drawParam;
                 if (bookReadController != null)
                     bookReadController.updateDrawParam(drawParam);
             }
-        });
+        };
+        readerView.setOnSizeChangeListener(onSizeChangeLister);
 
-        DrawLayer drawLayer = new DrawLayer(this, prepareLayer, readerView);
+        drawLayer = new DrawLayer(this, prepareLayer, readerView);
         drawLayer.setClickListener(new DrawLayer.MenuClickListener() {
             @Override
             public void onMenuAreaClick() {
@@ -555,8 +664,6 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
             }
         };
 
-
-        IPageTurner pageTurner = null;
         //  pageTurner = new ScrollPageTurner(this, pageSwitchListener, activityTextReaderBinding.reader, prepareLayer);
 //        pageTurner=new SimPageTurner(this,pageSwitchListener,activityTextReaderBinding.reader,prepareLayer);
         pageTurner = new SimulatePageTurner(this, pageSwitchListener, readerView, prepareLayer);
@@ -565,6 +672,158 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
         drawLayer.setPageTurner(pageTurner);
         readerView.setDrawLayer(drawLayer);
 
+
+        boolean fullScreen =SettingContent.getInstance().isFullScreen();
+        getViewBinding().fullScreen.setChecked(fullScreen);
+        updateFullScreen(fullScreen);
+
+        getViewBinding().fullScreen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+
+                SettingContent.getInstance().setFullScreen(isChecked);
+                updateFullScreen(isChecked);
+                prepareLayer.updateCache();
+
+
+            }
+        });
+
+        boolean bold = (TextSchemeContent.TEXT_STYLE_BOLD & TextSchemeContent.getTextStyle()) !=0;
+        getViewBinding().bold.setChecked(bold);
+        updatePaintBold(bold);
+
+        getViewBinding().bold.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+
+                int textStyle = TextSchemeContent.getTextStyle();
+                if(isChecked)
+                {
+                    textStyle|=TextSchemeContent.TEXT_STYLE_BOLD;
+                }else
+                  textStyle&=~TextSchemeContent.TEXT_STYLE_BOLD;
+
+                TextSchemeContent.setTextStyle(textStyle);
+
+                updatePaintBold(isChecked);
+
+
+            }
+        });
+
+        boolean italic = (TextSchemeContent.TEXT_STYLE_ITALIC & TextSchemeContent.getTextStyle()) !=0;
+        getViewBinding().italic.setChecked(italic);
+        updatePaintItalic(italic);
+        getViewBinding().italic.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+
+
+
+                int textStyle = TextSchemeContent.getTextStyle();
+                if(isChecked)
+                {
+                    textStyle|=TextSchemeContent.TEXT_STYLE_ITALIC;
+                }else
+                    textStyle&=~TextSchemeContent.TEXT_STYLE_ITALIC;
+
+                TextSchemeContent.setTextStyle(textStyle);
+                updatePaintItalic(isChecked);
+
+
+            }
+        });
+
+        boolean underLine = (TextSchemeContent.TEXT_STYLE_UNDERLINE & TextSchemeContent.getTextStyle()) !=0;
+        getViewBinding().underline.setChecked(underLine);
+        updatePaintUnderLine(underLine);
+        getViewBinding().underline.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+
+
+
+                int textStyle = TextSchemeContent.getTextStyle();
+                if(isChecked)
+                {
+                    textStyle|=TextSchemeContent.TEXT_STYLE_UNDERLINE;
+                }else
+                    textStyle&=~TextSchemeContent.TEXT_STYLE_UNDERLINE;
+
+                TextSchemeContent.setTextStyle(textStyle);
+                updatePaintUnderLine(isChecked);
+
+
+            }
+        });
+        getViewBinding().sideEffect.setChecked(SettingContent.getInstance().isBookSideEffect());
+
+        getViewBinding().sideEffect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                SettingContent.getInstance().setBookSideEffect(isChecked);
+                onSizeChangeLister.onSizeChanged(readerView.getWidth(),readerView.getHeight());
+                bookReadController.bookSideEffectChanged();
+
+
+
+            }
+        });
+
+
+
+    }
+
+    private void updateFullScreen(boolean isChecked) {
+
+        WindowHelper.fullScreen(this,isChecked);
+    }
+
+    private void updatePaintUnderLine(boolean underLine) {
+
+
+        int newFlag = paint.getFlags();
+        if (underLine) {
+            newFlag |=   Paint.UNDERLINE_TEXT_FLAG;
+        } else {
+            newFlag &=   ~Paint.UNDERLINE_TEXT_FLAG;
+        }
+        paint.setFlags(newFlag);// 获取字体
+        if(prepareLayer!=null)
+            prepareLayer.updateCache();
+
+    }
+
+    private void updatePaintItalic(boolean italic) {
+
+        if (italic) {
+            paint.setTextSkewX(-0.25f);
+        } else {
+            paint.setTextSkewX(0);
+        }
+
+        prepareLayer.updateCache();
+    }
+
+
+    private void updatePaintBold(boolean bold)
+    {
+
+        int newFlag = paint.getFlags();
+        if (bold) {
+            newFlag |=   Paint.FAKE_BOLD_TEXT_FLAG;
+        } else {
+            newFlag &=   ~Paint.FAKE_BOLD_TEXT_FLAG;
+        }
+        paint.setFlags(newFlag);
+        if(prepareLayer!=null)
+            prepareLayer.updateCache();
 
     }
 
@@ -606,8 +865,9 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
 
                 if(typeface!=null) {
                     paint.setTypeface(typeface);// 获取字体
-
-                    prepareLayer.updateCache();
+                    ParaTypeset.setPaint(paint);
+                    if(bookReadController!=null)
+                        bookReadController.fontStyleChange();
                 }
 
             }
@@ -621,8 +881,9 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
         if (prepareLayer != null) {
             prepareLayer.onDestroy();
         }
-        if (conn != null)
-            unbindService(conn);
+        if(isBookServiceBound)
+            bookServiceBinder.unbindService();
+
 
 
         super.onDestroy();
@@ -637,7 +898,7 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
             PageInfo currentPageInfo = preparePageInfo.getCurrentPageInfo();
 
 
-            getViewBinding().progress.setProgress(currentPageInfo == null ? 0 : (int) (currentPageInfo.startPos * 100/currentPageInfo.fileSize));
+            getViewBinding().progress.setProgress(currentPageInfo == null||currentPageInfo.getFileSize()==0 ? 0 : (int) (currentPageInfo.getStartPos() * 100/ currentPageInfo.getFileSize()));
 
             prepareLayer.onPagePrepared(preparePageInfo);
 
@@ -657,7 +918,6 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
             @Override
             public void onActivityResult(int requestCode, int resultCode, Intent data) {
                 if (resultCode == Activity.RESULT_OK) {
-                    //updateTypeface();
 
                     updateTypeface();
 

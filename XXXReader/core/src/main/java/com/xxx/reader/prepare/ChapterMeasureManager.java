@@ -116,19 +116,8 @@ public class ChapterMeasureManager<C extends IChapter, P extends PageInfo, DP ex
         return chapterMeasureResult.pageValues.get(pageIndex + offset);
     }
 
-    public P getPageInfo(int chapterIndex, int pageIndex) {
-        return getPageInfo(chapterIndex, pageIndex, 0);
-    }
-    public P getNextPageInfo(P pageInfo) {
 
-        if(pageInfo==null)
-            return getPageInfo(0,0);
 
-        return getPageInfo(pageInfo.chapterIndex, pageInfo.pageIndex, 1);
-    }
-    public P getNextPageInfo(int currentChapterIndex, int currentPageIndex) {
-        return getPageInfo(currentChapterIndex, currentPageIndex, 1);
-    }
 
     public boolean canPageChangedPrevious(int currentChapterIndex, int currentPageIndex) {
 
@@ -136,18 +125,13 @@ public class ChapterMeasureManager<C extends IChapter, P extends PageInfo, DP ex
 
     }
 
-    public boolean canPageChangedNext(int currentChapterIndex, int currentPageIndex) {
-        return getNextPageInfo(currentChapterIndex, currentPageIndex) != null;
-    }
+
 
     public P getPreviousPageInfo(int currentChapterIndex, int currentPageIndex) {
         return getPageInfo(currentChapterIndex, currentPageIndex, -1);
     }
 
-    public P getPreviousPageInfo(P currentPageInfo) {
 
-        return getPageInfo(currentPageInfo.chapterIndex, currentPageInfo.pageIndex, -1);
-    }
 
     /**
      * /**
@@ -278,8 +262,6 @@ public class ChapterMeasureManager<C extends IChapter, P extends PageInfo, DP ex
         synchronized (measureTasks) {
             for (PreparingTask task : measureTasks) {
                 task.cancel(true);
-
-
             }
             measureTasks.clear();
         }
@@ -304,24 +286,14 @@ public class ChapterMeasureManager<C extends IChapter, P extends PageInfo, DP ex
     {
         if(book==null) return null;
         IChapter chapter=null;
-        if(currentPageInfo==null)
-        {
-            chapter=book.getChapter(chapterIndex);
 
-
-        }else {
-            chapter=book.getChapter(currentPageInfo.chapterIndex);
-        }
-
-        P  nextPage=prepareJob.generateNext(currentPageInfo,chapter,drawParam);
-        if(nextPage==null&&chapter.getIndex()<book.getChapterCount()-1)
-        {
-
+            chapter= currentPageInfo.getChapterInfo();
+        if (currentPageInfo.isLastPage()) {
             chapter=book.getChapter(chapter.getIndex()+1);
-            nextPage=prepareJob.generateNext(null,chapter,drawParam);
-
-
+            currentPageInfo=null;
         }
+        P  nextPage=prepareJob.generateNext(currentPageInfo,chapter,drawParam);
+
 
         return nextPage;
 
@@ -352,18 +324,18 @@ public class ChapterMeasureManager<C extends IChapter, P extends PageInfo, DP ex
 
         P  previousPage=null;
 
-        if(currentPageInfo.isFirstPage)
+        if(currentPageInfo.isFirstPage())
         {
-            if(currentPageInfo.chapterIndex>0)
+            IChapter currentChapter=currentPageInfo.getChapterInfo();
+            if(currentChapter.getIndex()>0)
             {
-
-                chapter=book.getChapter(currentPageInfo.chapterIndex-1);
+                chapter=book.getChapter(currentChapter.getIndex()-1);
                 previousPage=prepareJob.generatePrevious(null,chapter,drawParam);
             }
 
         }else
         {
-            chapter=book.getChapter(currentPageInfo.chapterIndex);
+            chapter=currentPageInfo.getChapterInfo();
             previousPage=prepareJob.generatePrevious(currentPageInfo,chapter,drawParam);
 
         }

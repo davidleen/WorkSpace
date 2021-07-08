@@ -55,4 +55,21 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
+
+
+    <TextView
+        android:id="@+id/test"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:background="@android:drawable/list_selector_background"
+        android:layout_marginTop="30dp"
+        android:text="测试"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/typeface"
+
+        />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
