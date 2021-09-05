@@ -17,6 +17,7 @@ import com.xxx.reader.core.IDrawable;
 import com.xxx.reader.core.IPageTurner;
 import com.xxx.reader.text.layout.BitmapHolder;
 import com.xxx.reader.text.layout.BitmapProvider;
+import com.xxx.reader.turnner.AbsPageTurner;
 import com.xxx.reader.turnner.sim.SettingContent;
 
 
@@ -100,11 +101,13 @@ public class DrawLayer {
         BackgroundManager.getInstance().drawBackgroundNeeded(canvas);
 
         canvas.save();
-        canvas.clipRect(0, 0, drawParam.width, drawParam.height);
+
 
         if (SettingContent.getInstance().isBookSideEffect()) {
             Rect bookSidePadding = SettingContent.getInstance().getBookSidePadding();
+
             canvas.translate(bookSidePadding.left, 0);
+            canvas.clipRect(0, 0, drawParam.width-bookSidePadding.left-bookSidePadding.right, drawParam.height-bookSidePadding.top-bookSidePadding.bottom);
         }
 //        if (zoomHandler != null)
 //            zoomHandler.zoom(canvas);
@@ -175,6 +178,16 @@ public class DrawLayer {
 
     public void setClickListener(MenuClickListener clickListener) {
         this.clickListener = clickListener;
+    }
+
+    public void prePage() {
+
+        pageTurner.prePage();
+
+    }
+
+    public void nextPage() {
+        pageTurner.nextPage();
     }
 
 

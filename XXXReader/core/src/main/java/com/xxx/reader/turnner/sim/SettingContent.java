@@ -31,6 +31,7 @@ public class SettingContent {
     private static final float DEFAULT_LINE_SPACE = 20;
     private static final String KEY_LINE_SPACE = "line_space";
     private static final String KEY_WORD_SPACE = "word_space";
+    private static final String KEY_PAGE_TURN_MODE = "page_turn_mode";
     private static final String KEY_STYLE_MODE = "style_mode";
     private static final String KEY_TYPE_FACE_NAME = "typeface";
     private static final String KEY_FULL_READ_SCREEN = "read_full_screen";
@@ -139,6 +140,37 @@ public class SettingContent {
     @Retention(RetentionPolicy.SOURCE)
     //接口定义
     public @interface IndentMode {}
+
+
+
+    //用 @IntDef "包住" 常量，这里使用@IntDef来代替Enum枚举，也可以使用@StringDef。它会像Enum枚举一样在编译时期检查变量的赋值情况！
+    @IntDef({PageTurnMode.MODE_LR, PageTurnMode.MODE_UD })
+    // @Retention 定义策略，是默认注解
+    @Retention(RetentionPolicy.SOURCE)
+    //接口定义
+    public @interface PageTurnMode {
+
+
+
+
+        public static final int MODE_UD=1<<4;
+        public static final int MODE_LR=2<<4;
+        public static final int MODE_LR_SIM=MODE_LR|1;
+        public static final int MODE_LR_SLIP=MODE_LR|2;
+        public static final int MODE_LR_SCROLL=MODE_LR|4;
+    }
+
+
+    public @PageTurnMode int getPageTurnMode()
+    {
+        return KVFactory.getInstance(SETTING_CACHE_NAME).getInt(KEY_PAGE_TURN_MODE,PageTurnMode.MODE_LR_SIM);
+    }
+
+
+    public    void setPageTurnMode( @PageTurnMode int pageTurnMode)
+    {
+          KVFactory.getInstance(SETTING_CACHE_NAME).putInt(KEY_PAGE_TURN_MODE,pageTurnMode);
+    }
 
 
     public float getWordSpace()

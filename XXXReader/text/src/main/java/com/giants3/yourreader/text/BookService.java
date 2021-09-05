@@ -26,6 +26,7 @@ import com.xxx.reader.prepare.PrepareListener;
 import com.xxx.reader.prepare.PreparePageInfo;
 import com.xxx.reader.prepare.PrepareThread;
 import com.xxx.reader.text.page.TextPageInfo2Typing;
+import com.xxx.reader.text.page.TextReaderManager;
 import com.xxx.reader.text.page.TypeParam;
 import com.xxx.reader.turnner.sim.SettingContent;
 
@@ -43,10 +44,12 @@ public class BookService extends AbstractService<BookService.BookReadController>
 
 
     BookReadController controller;
+
     @Override
     public void onCreate() {
         super.onCreate();
         controller=new BookReadController();
+
     }
 
     @Override
@@ -55,6 +58,9 @@ public class BookService extends AbstractService<BookService.BookReadController>
     }
 
     public static class BookReadController extends Binder implements PageController, CacheUpdateListener {
+
+        TextReaderManager textReaderManager;
+        TextPageInfo2Typing typing;
         /**
          * 最大的缓存数量
          */
@@ -65,11 +71,14 @@ public class BookService extends AbstractService<BookService.BookReadController>
         private PrepareListener prepareListener;
         PreparePageInfo preparePageInfo;
         private IBook iBook;
+        private DrawParam drawParam;
 
         public BookReadController ()
         {
 
             preparePageInfo=new PreparePageInfo();
+            textReaderManager=new TextReaderManager();
+            typing= new TextPageInfo2Typing(textReaderManager);
 
            Handler    handler=new Handler(){
 
@@ -171,7 +180,7 @@ public class BookService extends AbstractService<BookService.BookReadController>
                 }
             };
             prepareThread = new PrepareThread(preparePageInfo,  MAX_CACHE_SIZE,handler);
-            prepareThread.updatePageTyping(new TextPageInfo2Typing());
+            prepareThread.updatePageTyping(typing);
             prepareThread.start();
         }
 
@@ -179,8 +188,7 @@ public class BookService extends AbstractService<BookService.BookReadController>
 
         public void updateDrawParam(DrawParam drawParam)
         {
-
-
+            this.drawParam = drawParam;
             preparePageInfo.onSettingChange();
             prepareThread.updateTypeParam(createTypePara(drawParam));
 
@@ -191,8 +199,14 @@ public class BookService extends AbstractService<BookService.BookReadController>
         {
             TypeParam typeParam = new TypeParam();
             int[] screenWH = Utils.getScreenWH();
-            typeParam.width =drawParam.width;
-            typeParam.height = drawParam.height;
+            if(drawParam!=null) {
+                typeParam.width = drawParam.width;
+                typeParam.height = drawParam.height;
+            }else
+            {
+                typeParam.width = screenWH[0];
+                typeParam.height =screenWH[1];
+            }
             typeParam.textSize = SettingContent.getInstance().getTextSize();
             typeParam.lineSpace = (int) SettingContent.getInstance().getLineSpace();
             typeParam.wordSpace = (int) SettingContent.getInstance().getWordSpace();
@@ -284,6 +298,7 @@ public class BookService extends AbstractService<BookService.BookReadController>
 
             this.prepareListener = prepareListener;
 
+
         }
 
         public void jump(float progress) {
@@ -327,6 +342,7 @@ public class BookService extends AbstractService<BookService.BookReadController>
 
             SettingContent.getInstance().setTextSize(textSize);
             preparePageInfo.onSettingChange();
+            prepareThread.updateTypeParam(createTypePara(drawParam));
             updateCache();
 
         }
@@ -337,6 +353,7 @@ public class BookService extends AbstractService<BookService.BookReadController>
 
 
             preparePageInfo.onSettingChange();
+            prepareThread.updateTypeParam(createTypePara(drawParam));
             updateCache();
         }
 
@@ -347,6 +364,7 @@ public class BookService extends AbstractService<BookService.BookReadController>
             textSize++;
             SettingContent.getInstance().setTextSize(textSize);
             preparePageInfo.onSettingChange();
+            prepareThread.updateTypeParam(createTypePara(drawParam));
             updateCache();
 
         }
@@ -356,6 +374,7 @@ public class BookService extends AbstractService<BookService.BookReadController>
 
 
             preparePageInfo.onSettingChange();
+            prepareThread.updateTypeParam(createTypePara(drawParam));
             updateCache();
 
         }
@@ -384,6 +403,7 @@ public class BookService extends AbstractService<BookService.BookReadController>
         {
             SettingContent.getInstance().setLineSpace(lineSpace);
             preparePageInfo.onSettingChange();
+            prepareThread.updateTypeParam(createTypePara(drawParam));
             updateCache();
 
 
@@ -392,7 +412,35 @@ public class BookService extends AbstractService<BookService.BookReadController>
         public void updateWordSpace(float hGap) {
             SettingContent.getInstance().setWorkSpace(hGap);
             preparePageInfo.onSettingChange();
+            prepareThread.updateTypeParam(createTypePara(drawParam));
             updateCache();
+        }
+
+
+        /**
+         * 填充要朗读的数据，
+         * @param playData
+         */
+        public void fillPlayData(PlayData playData,PlayData lastPlayed) {
+
+            PageInfo currentPageInfo = preparePageInfo.getCurrentPageInfo();
+            if(lastPlayed!=null&&lastPlayed.fileEndPos>=currentPageInfo.getEndPos())
+            {
+                //切换下一页
+                if(canTurnNext()) {
+                    turnNext();
+                    currentPageInfo = preparePageInfo.getCurrentPageInfo();
+                }else {
+
+                }
+
+            }
+
+
+           // String sentence=    currentPageInfo.findNextSentence(lastPlayed==null?currentPageInfo.getStartPos():lastPlayed.fileEndPos);
+
+
+
         }
     }
 

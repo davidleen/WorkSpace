@@ -23,6 +23,7 @@ public class ServiceBinderHelper {
     private Class<?> serviceClass;
     private ServiceConnection serviceConnection;
 
+
     public ServiceBinderHelper(Context context, Class<?> serviceClass) {
         this.context = context.getApplicationContext();
         this.serviceClass = serviceClass;

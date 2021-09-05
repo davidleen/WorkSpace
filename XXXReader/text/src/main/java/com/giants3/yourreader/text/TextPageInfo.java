@@ -18,165 +18,19 @@ public class TextPageInfo extends PageInfo {
 
     public List<WordElement> elements=new ArrayList<>();
 
-    public List<PagePara> pageParas;
 
 
     public float pageHeight;
 
 
 
-    public void addParam(PagePara pagePara) {
-        if (pageParas == null) {
-            pageParas = new ArrayList<>();
-        }
-        pageParas.add(pagePara);
-    }
-
-    public PagePara getLastPagePara() {
-
-        if (pageParas == null || pageParas.size() <= 0) return null;
-
-
-        return pageParas.get(pageParas.size() - 1);
-    }
-
-    public void updateElements( ) {
-
-        //计算startPos，计算 endPos
-        setStartPos(0);
-        setEndPos(0);
-        if(pageParas!=null&&pageParas.size()>0)
-        {
-
-            PagePara firstPagePara = getFirstPagePara();
-            long paragragStart = firstPagePara.paraTypeset.paragraghData.paragragStart;
-            if(firstPagePara.firstLine==-1)
-            {
-                setStartPos(paragragStart);}else
-            {
-                setStartPos(paragragStart+firstPagePara.paraTypeset.lineHead[firstPagePara.firstLine]);
-            }
-
-
-            PagePara lastPagePara = getLastPagePara();
-            long paragraghEnd = lastPagePara.paraTypeset.paragraghData.paragraghEnd;
-            if(lastPagePara.lastLine==-1)
-            {
-                setEndPos(paragraghEnd);}else
-            {
-                setEndPos(paragraghEnd+lastPagePara.paraTypeset.lineHead[lastPagePara.lastLine]);
-            }
-
-
-        }
-
-
-        ObjectPool<WordElement> objectPool= PoolCenter.getObjectPool(WordElement.class,10000);
-
-
-        synchronized (elements) {
-
-
-            objectPool.release(elements);
-            elements.clear();
-
-            float textSize = SettingContent.getInstance().getTextSize();
-            float y = textSize;
-            for (PagePara pagePara : pageParas) {
-
-                float[] xPositions = pagePara.paraTypeset.xPositions;
-                int[] lineHead = pagePara.paraTypeset.lineHead;
-
-
-                int startLine = pagePara.firstLine == -1 ? 0 : pagePara.firstLine;
-                int lastline = pagePara.lastLine == -1 ? pagePara.paraTypeset.lineCount - 1 : pagePara.lastLine - 1;
-                for (int i = startLine; i <= lastline; i++) {
-
-                    int index = lineHead[i];
-                    int lastIndex = (i == pagePara.paraTypeset.lineCount - 1) ? (xPositions.length - 1) : lineHead[i + 1] - 1;
-                    for (int j = index; j <= lastIndex; j++) {
-
-
-                        WordElement wordElement = objectPool.newObject();
-                        wordElement.word = pagePara.paraTypeset.paragraghData.getContent().substring(j, j + 1);
-                        wordElement.x = (int) xPositions[j];
-                        wordElement.y = (int) y;
-
-                        elements.add(wordElement);
-                    }
-
-
-                    y += textSize;
-
-                    if (i != lastline) {
-                        y += SettingContent.getInstance().getLineSpace();
-                    }
-                    if (y > pageHeight) break;
-                }
-
-                y += SettingContent.getInstance().getParaSpace();
-                if (y > pageHeight) break;
-
-            }
-        }
-
-
-
-
-
-    }
-
-    public  PagePara getFirstPagePara() {
-
-        if (pageParas == null || pageParas.size() <= 0) return null;
-
-
-        return pageParas.get(0);
-    }
-
-
-    /**
-     * 将段落倒排处理。
-     */
-    public void descSortPara() {
-
-
-        int size = pageParas.size();
-        int minIndex = size / 2;
-        PagePara temp;
-        for (int i = 0; i < minIndex; i++) {
-            temp=pageParas.get(i);
-            int switchIndex = size - i - 1;
-            pageParas.set(i,pageParas.get(switchIndex));
-            pageParas.set(switchIndex,temp);
-        }
-    }
-
-    public boolean isFirstPageOfChapter() {
-
-        return isFirstPage();
-
-
-    }
-
-    public boolean isLastPageOfChapter() {
-
-        return isFirstPage();
-
-
-    }
-
-
-    public void updateOnLineSpaceAndParaSpace() {
 
 
 
 
 
 
-            updateElements();
 
-    }
 
     @Override
     public void recycle()

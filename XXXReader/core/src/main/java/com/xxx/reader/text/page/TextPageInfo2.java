@@ -46,4 +46,9 @@ public class TextPageInfo2 extends PageInfo {
     public long getFileSize() {
         return pageData.fileSize;
     }
+
+    @Override
+    public float getPageDrawHeight() {
+        return pageData.height;
+    }
 }

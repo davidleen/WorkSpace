@@ -57,7 +57,7 @@ public class ParaTypeset {
         @SettingContent.IndentMode int indentCount=SettingContent.getInstance().getSettingIndentMode();
 
 
-        float  aTextWidth=getTextWidth();
+        float  aTextWidth= getEmptyCharTextWidth();
 
         float x=0                ;
 
@@ -72,20 +72,25 @@ public class ParaTypeset {
 
         //遍历所有字符
         int length=s.length();
-        char currentChar;
-        int maxHeight=0;
-        for (int i = 0; i < length; i++) {
 
-            currentChar=s.charAt(i);
+        int maxHeight=0;
+        for (int i = 0; i < length;  ) {
+
+            char[] chars = Character.toChars(s.codePointAt(i));
+            int step=chars.length;
+            String text=String.valueOf(chars);
+
+
 
             float charTextSie=textSizes==null||textSizes.length<=i?textSize:textSizes[i];
             float charHeight=getTextHeight(charTextSie,includeFontPadding);
-            if(isEmptyChar(currentChar))
+            if(isEmptyText(text))
             {
+                i+=step;
                 continue;
             }
 
-            float textWidth=getTextWidth( currentChar,charTextSie);
+            float textWidth=getTextWidth( text,charTextSie);
             boolean newLine=false;
             if(x+textWidth>right)
             {
@@ -98,7 +103,7 @@ public class ParaTypeset {
                 lineData= PoolCenter.getObjectFactory(LineData.class).newObject();
                 paraData.addLine(lineData);
 
-                i--;
+
                 x=left;
                 continue;
 
@@ -115,7 +120,7 @@ public class ParaTypeset {
 
 
                 WordData wordData= PoolCenter.getObjectFactory(WordData.class).newObject();
-                wordData.word=currentChar;
+                wordData.word=text;
                 wordData.index=i;
 
                 wordData.textSize=charTextSie;
@@ -128,6 +133,7 @@ public class ParaTypeset {
 
 
 
+                i+=step;
 
                 //存放不下下一个字符
                 if(x+textWidth+wordSpace>=right)
@@ -140,36 +146,18 @@ public class ParaTypeset {
                     paraData.addLine(lineData);
                     x=left;
 
-                    continue;
 
+
+                }else {
+
+                    x += textWidth + wordSpace;
                 }
-
-                x+=textWidth+wordSpace;
             
 
 
 
 
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -216,10 +204,10 @@ public class ParaTypeset {
 
 
 
-    private static float getTextWidth( )
+    private static float getEmptyCharTextWidth( )
     {
 
-       return getTextWidth(  ' ',paint.getTextSize());
+       return getTextWidth(  ' ' );
 
     }
 
@@ -227,10 +215,30 @@ public class ParaTypeset {
     static float[] charWidth=new float[CACHE_WIDTH_SIZE];
     static float  chineseCharWidth=0;
     static float[] textHeight=new float[200];
-    private static float getTextWidth( char c,float textSize)
+
+    private static float getTextWidth(String text,float textSize)
+    {
+        if(textSize==paint.getTextSize()&&text.length()==1) {
+
+                return getTextWidth(text.charAt(0));
+
+        }else
+        {
+            float originTextSize=paint.getTextSize();
+            paint.setTextSize(textSize);
+            float v = getTextWidth(text);
+            paint.setTextSize(originTextSize);
+            return v;
+        }
+
+    }
+
+
+
+    private static float getTextWidth( char c )
     {
 
-        if(textSize==paint.getTextSize()) {
+
 
             if (c > '\u4e00' && c < '\u9fbf') {
                 if (chineseCharWidth < 1) {
@@ -243,24 +251,16 @@ public class ParaTypeset {
             float v = charWidth[hashCode];
             if (v == 0) {
 
-                v = paint.measureText(String.valueOf(c));
+                v =  getTextWidth(String.valueOf(c));
                 charWidth[hashCode] = v;
             }
             return v;
-
-        }else
-        {
-            float originTextSize=paint.getTextSize();
-            paint.setTextSize(textSize);
-           float v = paint.measureText(String.valueOf(c));
-
-           paint.setTextSize(originTextSize);
-           return v;
-        }
+    }
 
 
-
-
+    private static float getTextWidth(String text)
+    {
+        return  paint.measureText(text);
     }
 
 
@@ -291,7 +291,9 @@ public class ParaTypeset {
 
 
     // 空格判断参考 http://zh.wikipedia.org/zh/%E7%A9%BA%E6%A0%BC
-    protected static final boolean isEmptyChar(char ch) {
+    protected static final boolean isEmptyText(String text) {
+        if(text.length()>1) return false;
+        char ch=text.charAt(0);
         if (ch == 0x00a0 || ch == 0x0020 || ch == '\t' || (ch >= 0x2002 && ch <= 0x200D)
                 || ch == '　' || ch == 0x202f) {
             return true;

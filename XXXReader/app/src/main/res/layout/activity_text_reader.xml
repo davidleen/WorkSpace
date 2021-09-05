@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-
     <FrameLayout
         android:id="@+id/panel_setting"
         android:layout_width="match_parent"
@@ -28,17 +27,23 @@
             <Button
                 android:id="@+id/menu"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="left|top"
-                android:text="目录"
-                android:layout_height="wrap_content"/>
+                android:text="目录" />
 
-                <Button
-                    android:id="@+id/switch_book"
-                    android:layout_width="wrap_content"
-                    android:layout_gravity="right|top"
-                    android:text="切换书籍"
-                    android:layout_height="wrap_content"/>
-
+            <Button
+                android:id="@+id/tts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|top"
+                android:layout_marginRight="100dp"
+                android:text="听书" />
+            <Button
+                android:id="@+id/switch_book"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|top"
+                android:text="切换书籍" />
 
 
         </FrameLayout>
@@ -59,7 +64,54 @@
             android:layout_gravity="bottom"
             android:background="@color/colorPrimary"
             android:clickable="true"
+
             android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="翻页模式" />
+
+                <RadioGroup
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/turn_sim"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="模拟" />
+
+                    <RadioButton
+                        android:id="@+id/turn_slip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="滑动" />
+
+                    <RadioButton
+                        android:id="@+id/turn_scroll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="滚动" />
+
+                    <RadioButton
+                        android:id="@+id/turn_up_down"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="上下" />
+
+
+                </RadioGroup>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -70,7 +122,16 @@
                     android:id="@+id/previous"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="previous" />
+                    android:text="pre" />
+
+
+                <TextView
+                    android:id="@+id/prePage"
+                    android:padding="5dp"
+                    android:layout_width="wrap_content"
+                    android:textSize="18sp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/symbol_pre_page" />
 
                 <androidx.appcompat.widget.AppCompatSeekBar
                     android:id="@+id/progress"
@@ -80,6 +141,14 @@
                     android:max="100"
                     android:min="0"
                     android:progress="0" />
+
+                <TextView
+                    android:id="@+id/nextPage"
+                    android:layout_width="wrap_content"
+                    android:padding="5dp"
+                    android:textSize="18sp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/symbol_next_page" />
 
                 <Button
                     android:id="@+id/next"

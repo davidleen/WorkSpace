@@ -67,17 +67,7 @@ public class ChapterMeasureManager<C extends IChapter, P extends PageInfo, DP ex
     }
 
 
-    public  ChapterMeasureResult<P> measureResult( int chapterIndex,Cancelable cancelable) {
 
-        if(book==null) return null;
-        C iChapter = book.getChapter(chapterIndex);
-        if(iChapter==null) return  null;
-        ChapterMeasureResult<P> chapterMeasureResult = null;
-
-            chapterMeasureResult = prepareJob.measureChapter(iChapter, drawParam, cancelable, pageType);
-
-        return chapterMeasureResult;
-    }
 
 
 
@@ -271,80 +261,12 @@ public class ChapterMeasureManager<C extends IChapter, P extends PageInfo, DP ex
         }
     }
 
-    public P generateNextPage(P currentPageInfo)
-    {
-
-
-        return generateNextPage(currentPageInfo,0,0);
-    }
-    public P generateNextPage(P currentPageInfo,int chapterIndex)
-    {
-        return generateNextPage(currentPageInfo,chapterIndex,0);
-    }
-
-    public P generateNextPage(P currentPageInfo,int chapterIndex, float progress)
-    {
-        if(book==null) return null;
-        IChapter chapter=null;
-
-            chapter= currentPageInfo.getChapterInfo();
-        if (currentPageInfo.isLastPage()) {
-            chapter=book.getChapter(chapter.getIndex()+1);
-            currentPageInfo=null;
-        }
-        P  nextPage=prepareJob.generateNext(currentPageInfo,chapter,drawParam);
-
-
-        return nextPage;
-
-    }
-
-    public P initPageInfo(int chapterIndex, long fileOffset)
-    {
-
-        if(book==null) return null;
-        IChapter  chapter=book.getChapter(chapterIndex);
-
-        try {
-            return  prepareJob.initPageInfo(chapter,fileOffset,drawParam);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-
-    public P generatePreviousPage(P currentPageInfo)
-    {
-        if(book==null) return null;
-        IChapter chapter=null;
-
-        //获取上一页， 当前页必定不能为空。
-        if(currentPageInfo==null) return null;
-
-        P  previousPage=null;
-
-        if(currentPageInfo.isFirstPage())
-        {
-            IChapter currentChapter=currentPageInfo.getChapterInfo();
-            if(currentChapter.getIndex()>0)
-            {
-                chapter=book.getChapter(currentChapter.getIndex()-1);
-                previousPage=prepareJob.generatePrevious(null,chapter,drawParam);
-            }
-
-        }else
-        {
-            chapter=currentPageInfo.getChapterInfo();
-            previousPage=prepareJob.generatePrevious(currentPageInfo,chapter,drawParam);
-
-        }
 
 
 
 
-        return previousPage;
 
-    }
+
+
 
 }

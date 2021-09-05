@@ -23,6 +23,7 @@ project(':frame').projectDir = new File('../modules/frame')
 
 
 include ':core',    ':comic', ':domain'
+include ':api'
 
 include ':app'
 include ':text'
@@ -33,5 +34,9 @@ project(':epub').projectDir = new File('../modules/books/epub')
 
 include ':thief'
 project(':thief').projectDir = new File('../modules/thief')
+
+
+include ':tts_pico'
+project(':tts_pico').projectDir = new File('../modules/tts_pico')
 
 

@@ -81,4 +81,11 @@ public class PageInfo {
     public void setFileSize(long fileSize) {
         this.fileSize = fileSize;
     }
+
+
+    public float getPageDrawHeight()
+    {
+        return 0;
+    }
+
 }

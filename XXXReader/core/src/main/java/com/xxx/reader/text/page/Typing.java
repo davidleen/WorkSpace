@@ -31,10 +31,10 @@ public class Typing {
       return   typeParam.height-typeParam.padding[01]-typeParam.padding[3];
     }
 
-    public static PageData typePrePage(PageData lastPageData, IChapter iChapter, TypeParam typeParam)  {
+    public static PageData typePrePage(PageData lastPageData, IChapter iChapter, TypeParam typeParam,TextReaderManager textReaderManager)  {
 
         if (lastPageData == null||lastPageData.getFirstPara()==null) {
-            return typePage(null, iChapter, -100, typeParam);
+            return typePage(null, iChapter, -100, typeParam,textReaderManager);
         }
 
 
@@ -77,12 +77,8 @@ public class Typing {
         {
             BufferedRandomAccessFile randomAccessFile = null;
             try {
-                String filePath=iChapter.getFilePath();
-                randomAccessFile = new BufferedRandomAccessFile(filePath, "r");
-                int code = TXTReader.regCode(filePath);
-                randomAccessFile.setCode(code);
-
-
+                randomAccessFile=textReaderManager.open(iChapter);
+                int code=randomAccessFile.getCode();
 
 
                 while(totalHeight-typeParam.paragraphSpace-typeParam.textSize>0&&filePos!=0)
@@ -137,7 +133,8 @@ public class Typing {
                 Log.e(t);
             }finally {
 
-                FileUtils.safeClose(randomAccessFile);
+                textReaderManager.closeReader(iChapter,randomAccessFile);
+
             }
 
 
@@ -153,7 +150,7 @@ public class Typing {
         if(filePos==0)
         {
 
-            typePageNext(newPageData,iChapter,0,typeParam,null);
+            typePageNext(newPageData,iChapter,0,typeParam,null,textReaderManager);
             newPageData.isFirstPage=true;
         }else {
 
@@ -196,10 +193,10 @@ public class Typing {
     }
 
 
-    public static PageData typePage(PageData lastPage, IChapter iChapter, long startPos, TypeParam typeParam)  {
+    public static PageData typePage(PageData lastPage, IChapter iChapter, long startPos, TypeParam typeParam,TextReaderManager textReaderManager)  {
 
 
-        PageData pageData = typePageNext( iChapter, startPos, typeParam, lastPage);
+        PageData pageData = typePageNext( iChapter, startPos, typeParam, lastPage,textReaderManager);
         pageData.update();
         return pageData;
 
@@ -222,15 +219,16 @@ public class Typing {
     }
 
 
-    public static PageData  typePageNext(  IChapter iChapter, long startPos, TypeParam typeParam, PageData lastPage)  {
+    public static PageData  typePageNext(  IChapter iChapter, long startPos, TypeParam typeParam, PageData lastPage,TextReaderManager textReaderManager)  {
 
         PageData pageData=createPageData(typeParam);
-        typePageNext(pageData,iChapter,startPos,typeParam,lastPage);
+        typePageNext(pageData,iChapter,startPos,typeParam,lastPage,textReaderManager);
+        pageData.update();
         return pageData;
 
     }
 
-    public static void   typePageNext(PageData pageData, IChapter iChapter, long startPos, TypeParam typeParam, PageData lastPage)  {
+    public static void   typePageNext(PageData pageData, IChapter iChapter, long startPos, TypeParam typeParam, PageData lastPage,TextReaderManager textReaderManager)  {
 
 
 
@@ -300,12 +298,8 @@ public class Typing {
 
         BufferedRandomAccessFile randomAccessFile = null;
         try {
-            String filePath=iChapter.getFilePath();
-
-            randomAccessFile = new BufferedRandomAccessFile(filePath, "r");
-            int code = TXTReader.regCode(filePath);
-            randomAccessFile.setCode(code);
-
+            randomAccessFile=textReaderManager.open(iChapter);
+            int code=randomAccessFile.getCode();
             pageData.fileSize=randomAccessFile.length();
             if (lineStartPoint < 0) {
                 lineStartPoint = randomAccessFile.length() + lineStartPoint;

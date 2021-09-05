@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tip_tts_data_miss">当前语音包缺失， 请下载对应语音包。</string>
+
+    <string name="no_feature">暂不支持该功能</string>
+</resources>

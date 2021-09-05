@@ -117,7 +117,7 @@ public class SimulatePageTurner extends AbsPageTurner {
 
         if(isDirectionSetting)
         {
-
+            
             BackgroundManager.getInstance().draw(canvas);
 
             //获取当前页和底页
@@ -395,10 +395,18 @@ public class SimulatePageTurner extends AbsPageTurner {
         //scroller.startScroll(startX,startY,-drawParam.width-startX,drawParam.height-startY,3000);
         int startX= (int) e.getX();
         int startY= (int) e.getY();
-        setDirectionIfNeeded((int)e.getX(),(int)e.getY(),true);
-        if(direction==TURN_NONE) return false;
-        if(direction==TURN_PREVIOUS&&!canTurnPrevious()) return false;
-        if(direction==TURN_NEXT&&!canTurnNext()) return false;
+        if (startTurn(startX, startY)) return false;
+
+
+        return false;
+    }
+
+    @Override
+    protected boolean startTurn(int startX, int startY) {
+        setDirectionIfNeeded(startX, startY,true);
+        if(direction==TURN_NONE) return true;
+        if(direction==TURN_PREVIOUS&&!canTurnPrevious()) return true;
+        if(direction==TURN_NEXT&&!canTurnNext()) return true;
 
         hasStartScroll=true;
 
@@ -408,23 +416,20 @@ public class SimulatePageTurner extends AbsPageTurner {
         useInter=true;
         autoFlipPath.reset();
         PointF dragCorner=simulate.getDragCorner();
-       PointF pointF= simulate.getDestCorner();
-       if(longPressed)
-       {
-           autoFlipPath.moveTo(startX,startY);
-       }else {
+        PointF pointF= simulate.getDestCorner();
+        if(longPressed)
+        {
+            autoFlipPath.moveTo(startX, startY);
+        }else {
 
-           autoFlipPath.moveTo(dragCorner.x, dragCorner.y);
-       }
+            autoFlipPath.moveTo(dragCorner.x, dragCorner.y);
+        }
         autoFlipPath.quadTo(0,drawParam.height/2,pointF.x,pointF.y);
         pathMeasure.setPath(autoFlipPath,false);
         scroller.startScroll(0,0, (int) pathMeasure.getLength(),0, DURATION);
         handler.sendEmptyMessageDelayed(MSG_TURN,DURATION);
 
         computeScroll();
-
-
-
         return false;
     }
 
@@ -696,4 +701,7 @@ public class SimulatePageTurner extends AbsPageTurner {
 
         return isDirectionSetting;
     }
+
+
+
 }

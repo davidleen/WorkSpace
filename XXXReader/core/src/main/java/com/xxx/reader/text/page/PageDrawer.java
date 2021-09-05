@@ -58,7 +58,7 @@ public class PageDrawer {
 //                     paint.setColor(Color.DKGRAY);
 //                     canvas.drawLine(wordData.x,fontMetrics.bottom,wordData.width,fontMetrics.bottom,paint);
 //                     paint.setColor(textColor);
-                    canvas.drawText(String.valueOf(wordData.word), wordData.x, wordData.y + wordData.height-baseLine , paint);
+                    canvas.drawText( wordData.word, wordData.x, wordData.y + wordData.height-baseLine , paint);
 //                    paint.setTextSize(orginSize);
 //                    canvas.restore();
                 }

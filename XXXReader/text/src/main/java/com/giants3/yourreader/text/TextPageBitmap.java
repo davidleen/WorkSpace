@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.view.MotionEvent;
 
 import com.giants3.android.frame.util.BitmapHelper;
+import com.giants3.android.frame.util.Log;
 import com.giants3.pools.PoolCenter;
 import com.xxx.reader.text.layout.BitmapProvider;
 import com.xxx.reader.text.page.PageDrawer;
@@ -169,8 +170,8 @@ public class TextPageBitmap extends PageBitmap<TextPageInfo2, DrawParam> {
                     BackgroundManager.getInstance().draw(canvas);
 
                     backgroundDrawer.draw(canvas);
-                    pagePaint.setTextSize(SettingContent.getInstance().getTextSize());
-                    pagePaint.setColor(TextSchemeContent.getTextColor());
+//                    pagePaint.setTextSize(SettingContent.getInstance().getTextSize());
+//                    pagePaint.setColor(TextSchemeContent.getTextColor());
 
                     pageDrawer.onDraw(canvas, pagePaint);
                     if(isCancelled()) return null;
@@ -181,6 +182,8 @@ public class TextPageBitmap extends PageBitmap<TextPageInfo2, DrawParam> {
 
                     iDrawable.updateView();
                 } catch (Throwable t) {
+
+                    Log.e(t);
                 } finally {
                     PoolCenter.getObjectPool(Bitmap.class).release(temp);
                 }

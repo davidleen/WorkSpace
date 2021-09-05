@@ -119,6 +119,21 @@ public class ReaderView  extends View implements IDrawable{
         this.onSizeChangeLister = onSizeChangeLister;
     }
 
+    public void prePage() {
+
+
+        drawLayer.prePage();
+        
+    }
+
+    public void nextPage() {
+
+
+
+        drawLayer.nextPage();
+
+    }
+
 
     public interface onSizeChangeLister
     {

@@ -4,4 +4,7 @@
     <string name="hint_type_other">The selected file "%s" is not available .</string>
     <string name="common_message_emailReadError">Reading via email attachment is not supported now, please save it first. </string>
     <string name="common_message_fileReadError">File reading error.</string>
+    <string name="symbol_pre_page"><![CDATA[<]]></string>
+    <string name="symbol_next_page"><![CDATA[>]]></string>
+    <string name="label_progress">进度</string>
 </resources>

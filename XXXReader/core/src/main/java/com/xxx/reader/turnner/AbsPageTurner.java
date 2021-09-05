@@ -154,4 +154,20 @@ public abstract class AbsPageTurner implements IPageTurner, GestureDetector.OnGe
     }
 
 
+    @Override
+    public void nextPage() {
+
+        startTurn(drawParam.width*3/4,drawParam.height/2) ;
+    }
+
+    protected boolean startTurn(int x, int y) {
+        return false;
+    }
+
+    @Override
+    public void prePage() {
+
+
+        startTurn(drawParam.width/4,drawParam.height/2) ;
+    }
 }

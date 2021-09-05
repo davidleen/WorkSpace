@@ -16,6 +16,10 @@ public class PreparePageInfo {
 
 
 
+    //上下模式下 的起点
+    int startY;
+
+
       LinkedList<PageInfo> pageInfos;
       int midIndex;
 
@@ -94,6 +98,7 @@ public class PreparePageInfo {
         pageInfos.add(0,pageInfo);
         size=pageInfos.size();
         midIndex++;
+        startY-=pageInfo.getPageDrawHeight();
         adjustArray();
     }
 
@@ -190,7 +195,7 @@ public class PreparePageInfo {
 
 
         this.currentPageOffset= (long) (currentPageFileSize*progress);
-
+        currentPageOffset=Math.min(currentPageOffset,currentPageFileSize-100);
         clearPages();
 
 
@@ -244,6 +249,7 @@ public class PreparePageInfo {
             currentChapterIndex++;
         }
         currentChapterIndex=Math.max(0,currentChapterIndex);
+        currentPageOffset=0;
 
         clearPages();
 
@@ -263,7 +269,7 @@ public class PreparePageInfo {
 
         }
         currentChapterIndex=Math.max(0,currentChapterIndex);
-
+        currentPageOffset=0;
         clearPages();
 
     }

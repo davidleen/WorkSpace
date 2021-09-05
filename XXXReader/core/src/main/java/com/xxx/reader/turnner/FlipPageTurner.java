@@ -240,31 +240,15 @@ public abstract class FlipPageTurner extends AbsPageTurner implements GestureDet
             int y = (int) e.getY();
 
 
-            int width = drawParam.width;
-            int height = drawParam.height;
 
-            int startX = 0;
-            if (x < width / 3) {
-//                resetScroller();
 
-                handled = true;
-                direction = IPageTurner.TURN_PREVIOUS;
-                turnWorking = true;
-                startX=0;
-                scroller.startScroll(startX, 0, drawRect.width()  , 0, SCROLL_DURATION);
 
-            } else if (x > width * 2 / 3) {
-//                resetScroller();
 
-                handled = true;
-                turnWorking = true;
-                direction = IPageTurner.TURN_NEXT;
-                startX=drawRect.width();
-                scroller.startScroll(startX, 0, -drawRect.width()  , 0, SCROLL_DURATION);
-            }
+            handled= startTurn(x,y);
 
-            offsetX=startX;
-            if (handled) drawable.updateView();
+
+
+
         }
 
 
@@ -273,6 +257,45 @@ public abstract class FlipPageTurner extends AbsPageTurner implements GestureDet
 
     }
 
+
+    @Override
+    protected boolean startTurn(int x, int y) {
+
+        boolean handled=false;
+
+        int width = drawParam.width;
+        int height = drawParam.height;
+
+        int startX = 0;
+        if (x < width / 3) {
+//                resetScroller();
+
+            handled = true;
+            direction = IPageTurner.TURN_PREVIOUS;
+            turnWorking = true;
+            startX=0;
+            scroller.startScroll(startX, 0, drawRect.width()  , 0, SCROLL_DURATION);
+
+        } else if (x > width * 2 / 3) {
+//                resetScroller();
+
+            handled = true;
+            turnWorking = true;
+            direction = IPageTurner.TURN_NEXT;
+            startX=drawRect.width();
+            scroller.startScroll(startX, 0, -drawRect.width()  , 0, SCROLL_DURATION);
+        }
+
+        offsetX=startX;
+        if (handled) drawable.updateView();
+
+
+
+
+        return handled;
+
+
+    }
 
     private void scrollRest(int direction) {
         scroller.forceFinished(true);

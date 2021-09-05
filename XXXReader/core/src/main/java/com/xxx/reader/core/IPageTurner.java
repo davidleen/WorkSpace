@@ -39,6 +39,10 @@ public interface IPageTurner {
 
     void setOnScrollListener(ScrollListener listener);
 
+    void prePage();
+
+    void nextPage();
+
     interface ScrollListener {
         void onScrollBegin();
 

@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
@@ -37,6 +38,7 @@ import com.giants3.android.reader.window.TypesetPopupWindow;
 import com.giants3.android.service.ServiceBinderHelper;
 import com.giants3.android.window.WindowHelper;
 import com.giants3.reader.entity.Book;
+import com.giants3.yourreader.text.BookPlayService;
 import com.xxx.reader.text.page.ParaTypeset;
 import com.xxx.reader.TextScheme;
 import com.giants3.android.reader.vm.TextReadViewModel;
@@ -60,8 +62,10 @@ import com.xxx.reader.prepare.PagePlayer;
 import com.xxx.reader.prepare.PagePlayerBuilder;
 import com.xxx.reader.prepare.PrepareListener;
 import com.xxx.reader.prepare.PreparePageInfo;
+import com.xxx.reader.turnner.ScrollPageTurner;
 import com.xxx.reader.turnner.SimulatePageTurner;
 import com.xxx.reader.turnner.sim.SettingContent;
+import com.xxx.reader.turnner.slide.SlidePageTurner;
 
 import java.util.Calendar;
 import java.util.List;
@@ -84,6 +88,8 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
 
     private boolean isBookServiceBound;
     private ServiceBinderHelper bookServiceBinder;
+
+    PageSwitchListener pageSwitchListener;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,6 +146,13 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
 
             }
         });
+
+
+
+
+
+
+
 
         getViewModel().textSchemes.observe(this, new Observer<List<TextScheme>>() {
 
@@ -628,7 +641,7 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
 
             }
         });
-        PageSwitchListener pageSwitchListener = new PageSwitchListener() {
+         pageSwitchListener = new PageSwitchListener() {
             @Override
             public boolean canPageChanged(int direction) {
                 if (direction == PageSwitchListener.TURN_PREVIOUS)
@@ -664,18 +677,72 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
             }
         };
 
-        //  pageTurner = new ScrollPageTurner(this, pageSwitchListener, activityTextReaderBinding.reader, prepareLayer);
+//          pageTurner = new ScrollPageTurner(this, pageSwitchListener, readerView, prepareLayer);
 //        pageTurner=new SimPageTurner(this,pageSwitchListener,activityTextReaderBinding.reader,prepareLayer);
-        pageTurner = new SimulatePageTurner(this, pageSwitchListener, readerView, prepareLayer);
-        //   pageTurner = new SlidePageTurner(this, pageSwitchListener, activityTextReaderBinding.reader, prepareLayer);
+       // pageTurner = new SimulatePageTurner(this, pageSwitchListener, readerView, prepareLayer);
+           pageTurner =create(SettingContent.getInstance().getPageTurnMode()) ;
 
-        drawLayer.setPageTurner(pageTurner);
+        updatePageTurner(pageTurner);
         readerView.setDrawLayer(drawLayer);
 
 
         boolean fullScreen =SettingContent.getInstance().isFullScreen();
         getViewBinding().fullScreen.setChecked(fullScreen);
         updateFullScreen(fullScreen);
+        getViewBinding().turnScroll.setChecked(SettingContent.getInstance().getPageTurnMode()== SettingContent.PageTurnMode.MODE_LR_SCROLL);
+        getViewBinding().turnSim.setChecked(SettingContent.getInstance().getPageTurnMode()== SettingContent.PageTurnMode.MODE_LR_SIM);
+        getViewBinding().turnSlip.setChecked(SettingContent.getInstance().getPageTurnMode()== SettingContent.PageTurnMode.MODE_LR_SLIP);
+        getViewBinding().turnUpDown.setChecked(SettingContent.getInstance().getPageTurnMode()== SettingContent.PageTurnMode.MODE_UD);
+
+        getViewBinding().turnScroll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    SettingContent.getInstance().setPageTurnMode(SettingContent.PageTurnMode.MODE_LR_SCROLL);
+                    pageTurner =create(SettingContent.getInstance().getPageTurnMode())  ;
+                    updatePageTurner(pageTurner);
+                }
+            }
+        });
+        getViewBinding().turnSlip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    SettingContent.getInstance().setPageTurnMode(SettingContent.PageTurnMode.MODE_LR_SLIP);
+                    pageTurner =create(SettingContent.getInstance().getPageTurnMode())  ;
+                    updatePageTurner(pageTurner);
+                }
+            }
+        });
+        getViewBinding().turnSim.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if(isChecked) {
+                    SettingContent.getInstance().setPageTurnMode(SettingContent.PageTurnMode.MODE_LR_SIM);
+                    pageTurner =create(SettingContent.getInstance().getPageTurnMode())  ;
+                    updatePageTurner(pageTurner);
+                }
+            }
+        });
+
+
+        getViewBinding().prePage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readerView.prePage();
+            }
+        });
+
+        getViewBinding().nextPage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                readerView.nextPage();
+
+            }
+        });
 
         getViewBinding().fullScreen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -778,6 +845,40 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
 
 
 
+        getViewBinding().tts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //弹出听书选择
+                startBindBookPlayService();
+
+
+
+
+
+
+
+            }
+        });
+
+
+    }
+
+    private void startBindBookPlayService() {
+
+
+        Intent intent=new Intent(this, BookPlayService.class);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent);
+        }else
+        {
+            startService(intent);
+        }
+
+
+
+
     }
 
     private void updateFullScreen(boolean isChecked) {
@@ -812,6 +913,23 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
     }
 
 
+
+    private void updatePageTurner(IPageTurner pageTurner)
+    {
+
+
+
+        if(pageTurner!=null)
+        {
+
+
+            if(drawParam!=null)
+                pageTurner.updateDrawParam(drawParam);
+            drawLayer.setPageTurner(pageTurner);
+
+        }
+    }
+
     private void updatePaintBold(boolean bold)
     {
 
@@ -833,6 +951,35 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
         getViewBinding().panelSetting.setVisibility(View.GONE);
     }
 
+
+    private IPageTurner create(@SettingContent.PageTurnMode int pageTurnMode) {
+
+
+        IPageTurner pageTurner;
+        switch (pageTurnMode) {
+            case SettingContent.PageTurnMode
+                    .MODE_LR_SLIP:
+                pageTurner = new SlidePageTurner(this, pageSwitchListener, getViewBinding().reader, prepareLayer);
+                break;
+            case SettingContent.PageTurnMode
+                    .MODE_LR_SCROLL:
+                pageTurner = new ScrollPageTurner(this, pageSwitchListener, getViewBinding().reader, prepareLayer);
+
+                break;
+            case SettingContent.PageTurnMode
+                    .MODE_LR_SIM:
+            default:
+
+                pageTurner = new SimulatePageTurner(this, pageSwitchListener, getViewBinding().reader, prepareLayer);
+                break;
+        }
+
+
+        return pageTurner;
+
+
+
+    }
 
     private void updateTypeface()
     {
@@ -898,7 +1045,19 @@ public class TextReadActivity extends BaseViewModelActivity<ActivityTextReaderBi
             PageInfo currentPageInfo = preparePageInfo.getCurrentPageInfo();
 
 
-            getViewBinding().progress.setProgress(currentPageInfo == null||currentPageInfo.getFileSize()==0 ? 0 : (int) (currentPageInfo.getStartPos() * 100/ currentPageInfo.getFileSize()));
+            int progress=0;
+            if (currentPageInfo != null&&currentPageInfo.getFileSize()>0) {
+                if (currentPageInfo.isLastPage())
+                    progress = 100;
+                else if (currentPageInfo.isFirstPage()) {
+                    progress = 0;
+                } else
+                {
+                    progress=  (int) (currentPageInfo.getStartPos() * 100/ currentPageInfo.getFileSize());
+                }
+            }
+
+            getViewBinding().progress.setProgress(progress);
 
             prepareLayer.onPagePrepared(preparePageInfo);
 

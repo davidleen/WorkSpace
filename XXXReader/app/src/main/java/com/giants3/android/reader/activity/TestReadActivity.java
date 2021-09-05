@@ -62,19 +62,19 @@ public class TestReadActivity  extends Activity {
 
 
 
-        PageData pageData=null;
-
-           pageData=   Typing.typePage( null, chapter,300,typeParam);
-//           pageData=   Typing.typePage( pageData,destFilePath,0,typeParam);
-
-              pageData = Typing.typePrePage(pageData, chapter, typeParam);
-
-
+//        PageData pageData=null;
+//
+//           pageData=   Typing.typePage( null, chapter,300,typeParam);
+////           pageData=   Typing.typePage( pageData,destFilePath,0,typeParam);
+//
+//              pageData = Typing.typePrePage(pageData, chapter, typeParam);
 
 
-        PageDrawer pageDrawer=new PageDrawer(pageData);
 
-        testReadView.setDrawer(pageDrawer);
+
+//        PageDrawer pageDrawer=new PageDrawer(pageData);
+//
+//        testReadView.setDrawer(pageDrawer);
 
     }
 }
